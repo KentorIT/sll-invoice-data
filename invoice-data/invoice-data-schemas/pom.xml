@@ -85,7 +85,7 @@
               </defaultOptions>
               <wsdlOptions>
                 <wsdloption>
-                  <wsdl>${schema.path}/interactions/UpdateInvoiceDataInteraction/UpdateInvoiceDataInteraction_1.0_RIVTABP21.wsdl</wsdl>
+                  <wsdl>${schema.path}/interactions/RegisterInvoiceDataInteraction/RegisterInvoiceDataInteraction_1.0_RIVTABP21.wsdl</wsdl>
                 </wsdloption>
               </wsdlOptions>
             </configuration>

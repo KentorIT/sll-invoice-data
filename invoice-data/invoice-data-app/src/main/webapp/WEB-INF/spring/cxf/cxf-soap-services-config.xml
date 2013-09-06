@@ -39,9 +39,9 @@
     </property>
   </bean>
   
-  <jaxws:endpoint id="updateInvoiceData" 
-                  implementor="se.sll.invoicedata.app.ws.UpdateInvoiceDataProducer" 
-                  address="/ws/updateInvoiceData" >
+  <jaxws:endpoint id="registerInvoiceData" 
+                  implementor="se.sll.invoicedata.app.ws.RegisterInvoiceDataProducer" 
+                  address="/ws/registerInvoiceData" >
     <jaxws:properties>
       <entry key="schema-validation-enabled" value="true"/>
     </jaxws:properties>

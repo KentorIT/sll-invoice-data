@@ -20,8 +20,31 @@
 
 	<xs:complexType name="ProductType">
 		<xs:sequence>
-			<xs:element name="id" type="xs:string" /> 
-			<xs:element name="description" type="xs:string" /> 
+			<xs:element name="productId" type="xs:string" />
+			<xs:element name="description" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ProductListType">
+		<xs:sequence>
+			<xs:element name="product" type="tns:ProductType"
+				minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="EventType">
+		<xs:sequence>
+			<xs:element name="eventId" type="xs:string" />
+			<xs:element name="signedBy" type="xs:string" />
+			<xs:element name="signedTimestamp" type="xs:dateTime" />
+			<xs:element name="deliveredBy" type="xs:string" />
+			<xs:element name="startTimestamp" type="xs:dateTime" />
+			<xs:element name="endTimestamp" type="xs:dateTime" />
+			<xs:element name="serviceCode" type="xs:string" />
+			<xs:element name="obsoletesEventId" type="xs:string" />
+			<xs:element name="products" type="tns:ProductListType" />
+			<xs:any namespace="##other" processContents="lax" minOccurs="0"
+				maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 

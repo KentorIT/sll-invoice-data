@@ -27,28 +27,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import riv.sll.invoicedata.updateinvoicedata._1.rivtabp21.UpdateInvoiceDataResponderInterface;
-import riv.sll.invoicedata.updateinvoicedataresponder._1.UpdateInvoiceDataResponseType;
-import riv.sll.invoicedata.updateinvoicedataresponder._1.ObjectFactory;
+import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
+import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponseType;
+import riv.sll.invoicedata.registerinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnumType;
 
-public class UpdateInvoiceDataProducer extends AbstractProducer implements UpdateInvoiceDataResponderInterface {
+public class RegisterInvoiceDataProducer extends AbstractProducer implements RegisterInvoiceDataResponderInterface {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UpdateInvoiceDataProducer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RegisterInvoiceDataProducer.class);
     @Resource
     WebServiceContext wsctx;
             
       
     @Override      
-    public UpdateInvoiceDataResponseType updateInvoiceData(
+    public RegisterInvoiceDataResponseType registerInvoiceData(
         @WebParam(partName = "LogicalAddress", name = "LogicalAddress", targetNamespace = "urn:riv:itintegration:registry:1", header = true)
         java.lang.String logicalAddress,
-        @WebParam(partName = "parameters", name = "UpdateInvoiceData", targetNamespace = "urn:riv:sll:invoicedata:UpdateInvoiceDataResponder:1")
-        riv.sll.invoicedata.updateinvoicedataresponder._1.UpdateInvoiceDataType parameters
+        @WebParam(partName = "parameters", name = "RegisterInvoiceData", targetNamespace = "urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1")
+        riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataType parameters
     ) {
     	ObjectFactory f = new ObjectFactory();
-    	UpdateInvoiceDataResponseType ur = f.createUpdateInvoiceDataResponseType();
+    	RegisterInvoiceDataResponseType ur = f.createRegisterInvoiceDataResponseType();
     	
     	ResultCode rc = new ResultCode();
     	rc.setCode(ResultCodeEnumType.OK);
