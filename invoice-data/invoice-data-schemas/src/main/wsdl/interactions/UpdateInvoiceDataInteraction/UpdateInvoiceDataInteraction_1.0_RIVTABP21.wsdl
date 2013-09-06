@@ -52,7 +52,7 @@
   <wsdl:binding name='UpdateInvoiceDataResponderBinding' type='tns:UpdateInvoiceDataResponderInterface'>
     <soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
     <wsdl:operation name='UpdateInvoiceData'>
-      <soap:operation soapAction='urn:riv:eservicesupply:forminteractions:CancelFormResponder:1:CancelForm' style='document' />
+      <soap:operation soapAction='urn:riv:sll:invoicedata:UpdateInvoiceDataResponder:1:UpdateInvoiceData' style='document' />
       <wsdl:input>
         <soap:header use='literal' message='tns:UpdateInvoiceDataRequest' part='LogicalAddress' />
         <soap:body use='literal' parts='parameters' />
