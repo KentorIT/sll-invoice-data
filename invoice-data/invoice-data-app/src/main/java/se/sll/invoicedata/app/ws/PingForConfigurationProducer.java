@@ -19,35 +19,32 @@ package se.sll.invoicedata.app.ws;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationResponseType;
+import se.riv.itintegration.monitoring.v1.ObjectFactory;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationType;
 
-@WebService(serviceName = "PingForConfiguationProducer", endpointInterface = "se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface", portName = "PingForConfigurationResponderPort", targetNamespace = "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:rivtabp21")
-public class PingForConfigurationProducer implements PingForConfigurationResponderInterface {
+public class PingForConfigurationProducer extends AbstractProducer implements PingForConfigurationResponderInterface {
     
     private static final Logger LOG = LoggerFactory.getLogger(PingForConfigurationProducer.class);
     
+    private static ThreadLocal<SimpleDateFormat> formatter = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        public SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyyMMddHHmmss");
+        }
+    };
     
-    @WebResult(name = "PingForConfigurationResponse", targetNamespace = "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1", partName = "parameters")
-    @WebMethod(operationName = "PingForConfiguration", action = "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1:PingForConfiguration")
-    public PingForConfigurationResponseType pingForConfiguration(
-            @WebParam(partName = "LogicalAddress", name = "LogicalAddress", targetNamespace = "urn:riv:itintegration:registry:1", header = true) String arg0,
-            @WebParam(partName = "parameters", name = "PingForConfiguration", targetNamespace = "urn:riv:itintegration:monitoring:PingForConfigurationResponder:1") PingForConfigurationType arg1) {
-        
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        PingForConfigurationResponseType response = new PingForConfigurationResponseType();
+    private static ObjectFactory objectFactory = new ObjectFactory();
+    
+    public PingForConfigurationResponseType pingForConfiguration(String logicalAddress, PingForConfigurationType parameters) {
+        LOG.info("pingForConfiguration, logicalAdress: {}", logicalAddress);
+        PingForConfigurationResponseType response = objectFactory.createPingForConfigurationResponseType();
         response.setVersion("1.0");
-        response.setPingDateTime(formatter.format(new Date()));
+        response.setPingDateTime(formatter.get().format(new Date()));
         return response;
     }
 }
