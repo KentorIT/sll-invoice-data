@@ -28,9 +28,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract class used by WS Producers
  *
- * @author Albert Örwall
- * @author Khaled Daham
- *
  */
 public abstract class AbstractProducer {
 
