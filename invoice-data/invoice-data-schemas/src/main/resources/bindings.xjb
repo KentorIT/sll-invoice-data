@@ -1,0 +1,37 @@
+<jaxb:bindings
+xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+xmlns:tns='urn:riv:eservicesupply:forminteractions:1'
+xmlns:annox="http://annox.dev.java.net"
+version="2.0">
+
+  <!--jaxb:bindings schemaLocation="../wsdl/core_components/sll_invoice_data_1.0.xsd" node="/xs:schema">
+
+    <jaxb:bindings node="//xs:complexType[@name='FormTemplateType']">
+      <annox:annotate target="class">
+        <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="formTemplate"/>
+      </annox:annotate>
+    </jaxb:bindings>
+    
+    <jaxb:bindings node="//xs:complexType[@name='FormTemplateInfoType']">
+      <annox:annotate target="class">
+        <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="formTemplateInfo"/>
+      </annox:annotate>
+    </jaxb:bindings>
+    
+    <jaxb:bindings node="//xs:complexType[@name='FormsType']">
+      <annox:annotate target="class">
+        <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="FormType"/>
+      </annox:annotate>
+    </jaxb:bindings>
+    
+    <jaxb:bindings node="//xs:complexType[@name='FormType']">
+      <annox:annotate target="class">
+        <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="FormType"/>
+      </annox:annotate>
+    </jaxb:bindings>
+    
+  </jaxb:bindings-->
+  
+</jaxb:bindings>

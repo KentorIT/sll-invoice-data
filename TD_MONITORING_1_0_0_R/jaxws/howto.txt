@@ -1,0 +1,19 @@
+This is a maven project for generating JAXWS binding classes (jsr-181).
+-----------------------------------------------------------------------
+The purpose is to give producer- and consumer projects that use Java and Maven a head-start for setting up the build system to generate JAX-WS binding classes for the itintegration-monitoring service domain.
+
+The maven build uses the cxf wsdl2java tool. The generated binding classes will be fine to use with whatever JAXWS2 webstack you are using in runtime. This is guaranteed by the JSR-181, which defines exactly how the classes should be generated from wsdl and service schemas. There are several problems with the corresponding tool supplied by the JDK (the metro wsimport tool). Problems and drawbacks are documented on the rivta reference application wiki: http://forge.osor.eu/plugins/wiki/index.php?RivTaBp2.0-RefApp-JAXWS-JDK6&id=111&type=g
+
+How to build the jaxws project:
+
+1) Install the maven build automation tool (http://maven.apache.org)
+2) Open a command prompt in the directory of this file
+3) Run the following command: mvn clean package
+
+You will now have the generated java classes compiled and packaged into the following jar file: target/itintegration-monitoring-schemas-1.0-SNAPSHOT.jar. The jar file is ready to be used in your project as a jar dependency.
+
+Producer- and consumer examples:
+
+- All RIV TA 2.0 BP services are used the same way for Java and .Net. Please look at the RIV TA BP 2.0 reference application for a complete sample with producer and consumer: 
+	Instructions: http://forge.osor.eu/plugins/wiki/index.php?RivTaBp2.0-RefApp&id=111&type=gRivTaBp2.0-RefApp-CXF&id=111&type=g
+	The project source code: http://svn.forge.osor.eu/svn/rivta/RefApp/rivta-bp-20/java/cxf

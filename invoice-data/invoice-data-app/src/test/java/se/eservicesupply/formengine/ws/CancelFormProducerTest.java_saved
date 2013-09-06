@@ -1,0 +1,108 @@
+/*
+ * Copyright 2012 Stockholms läns landsting - Hälso- och sjukvårdsförvaltningen
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package se.eservicesupply.formengine.ws;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+
+import org.apache.cxf.binding.soap.SoapFault;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import riv.eservicesupply.forminteractions._1.ResultCodeEnumType;
+import riv.eservicesupply.forminteractions.cancelformresponder._1.CancelFormResponseType;
+import riv.eservicesupply.forminteractions.cancelformresponder._1.CancelFormType;
+import se.eservicesupply.formengine.exceptions.FormEngineException;
+import se.eservicesupply.formengine.exceptions.IllegalActionException;
+import se.eservicesupply.formengine.exceptions.NotFoundException;
+import se.eservicesupply.formengine.service.FormService;
+
+/**
+ * 
+ * @author Albert Örwall
+ *
+ */
+public class CancelFormProducerTest {
+
+    @Mock private FormService formService;
+
+    private CancelFormProducer producer;
+    
+    @Before public void initMocks() {
+        MockitoAnnotations.initMocks(this);
+        producer = new CancelFormProducer();
+        producer.setFormService(formService);
+    }
+    
+    @Test
+    public void testCancelFormProducer() {
+        CancelFormType cancelForm = new CancelFormType();
+        cancelForm.setFormId("id");
+        cancelForm.setSubjectOfCare("188803099368");
+        
+        CancelFormResponseType response = producer.cancelForm("logicalAddress", cancelForm);
+        try {
+            verify(formService).cancelForm("id", "188803099368");
+        } catch (FormEngineException e) {
+            fail(e.getMessage());
+        }
+        
+        assertEquals(ResultCodeEnumType.OK, response.getResultCode());
+    }
+    
+    @Test(expected=SoapFault.class)
+    public void testCancelFormProducer_internal_failure() throws Exception {
+        CancelFormType cancelForm = new CancelFormType();
+        cancelForm.setFormId("id");
+        cancelForm.setSubjectOfCare("188803099368");
+        doThrow(new RuntimeException()).when(formService).cancelForm("id", "188803099368");
+        producer.cancelForm("logicalAddress", cancelForm);
+    }
+
+    @Test
+    public void testCancelFormProducer_notFound() throws Exception {
+        CancelFormType cancelForm = new CancelFormType();
+        cancelForm.setFormId("id");
+        cancelForm.setSubjectOfCare("188803099368");
+
+        try {
+            doThrow(new NotFoundException("")).when(formService).cancelForm("id", "188803099368");
+            CancelFormResponseType response = producer.cancelForm("logicalAddress", cancelForm);
+            assertEquals(ResultCodeEnumType.ERROR, response.getResultCode());
+        } catch (FormEngineException e) {
+            fail(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testCancelFormProducer_notActive() throws Exception {
+        CancelFormType cancelForm = new CancelFormType();
+        cancelForm.setFormId("id");
+        cancelForm.setSubjectOfCare("188803099368");
+
+        try {
+            doThrow(new IllegalActionException("")).when(formService).cancelForm("id", "188803099368");
+            CancelFormResponseType response = producer.cancelForm("logicalAddress", cancelForm);
+            assertEquals(ResultCodeEnumType.ERROR, response.getResultCode());
+        } catch (FormEngineException e) {
+            fail(e.getMessage());
+        }
+    }
+}

@@ -1,0 +1,85 @@
+/*
+ * Copyright 2012 Stockholms läns landsting - Hälso- och sjukvårdsförvaltningen
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package se.eservicesupply.formengine.ws;
+
+import javax.annotation.Resource;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
+import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
+
+import org.apache.kahadb.util.Scheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import riv.eservicesupply.forminteractions._1.ResultCodeEnumType;
+import riv.eservicesupply.forminteractions.cancelform._1.rivtabp21.CancelFormResponderInterface;
+import riv.eservicesupply.forminteractions.cancelformresponder._1.CancelFormResponseType;
+import riv.eservicesupply.forminteractions.cancelformresponder._1.CancelFormType;
+import se.eservicesupply.formengine.exceptions.FormEngineException;
+import se.eservicesupply.formengine.service.FormService;
+
+/**
+ * Tjänsten används för att avbryta/radera formulär. - Pågående (ONGOING,
+ * PENDING_COMPLETION) formulär kan raderas på användarens begäran. - Ett
+ * avslutat formulär (SaveForm har anropats) behöver inte automatiskt raderas.
+ * Anropet skall i detta fall ses som en begäran om raderng. - Lokala
+ * verksamhetsregler gäller.
+ *
+ * @author Albert Örwall
+ *
+ */
+@WebService(serviceName = "CancelFormResponderService", endpointInterface = "riv.eservicesupply.forminteractions.cancelform._1.rivtabp21.CancelFormResponderInterface", portName = "CancelFormResponderPort", targetNamespace = "urn:riv:eservicesupply:forminteractions:CancelForm:1:rivtabp21")
+public class CancelFormProducer extends AbstractProducer implements CancelFormResponderInterface {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CancelFormProducer.class);
+    private FormService formService;
+    @Resource
+    WebServiceContext wsctx;
+        
+    @WebResult(name = "CancelFormResponse", targetNamespace = "urn:riv:eservicesupply:forminteractions:CancelFormResponder:1", partName = "parameters")
+    @WebMethod(operationName = "CancelForm", action = "urn:riv:eservicesupply:forminteractions:CancelFormResponder:1:CancelForm")
+    public CancelFormResponseType cancelForm(
+            @WebParam(partName = "LogicalAddress", name = "LogicalAddress", targetNamespace = "urn:riv:itintegration:registry:1", header = true) String logicalAddress,
+            @WebParam(partName = "parameters", name = "CancelForm", targetNamespace = "urn:riv:eservicesupply:forminteractions:CancelFormResponder:1") CancelFormType cancelForm) {
+
+        String msg = String.format("cancelForm(logicalAddress: %s, subjectOfCare: %s, formId: %s)", logicalAddress, cancelForm.getSubjectOfCare(),cancelForm.getFormId() );
+        this.logPDL(wsctx, msg);
+        LOG.debug(cancelForm.getSubjectOfCare());
+        LOG.debug("cancelForm(logicalAddress: {}, cancelForm: {})", logicalAddress, cancelForm);
+
+        CancelFormResponseType response = new CancelFormResponseType();
+
+        try {
+            formService.cancelForm(cancelForm.getFormId(), cancelForm.getSubjectOfCare());
+            response.setResultCode(ResultCodeEnumType.OK);
+        } catch (RuntimeException e) {
+            throwInternalServerError(e);
+        } catch (FormEngineException e) {
+            response.setComment(e.getMessage());
+            response.setResultCode(ResultCodeEnumType.ERROR);
+        }
+
+        return response;
+    }
+
+    @Autowired
+    public void setFormService(FormService formService) {
+        this.formService = formService;
+    }
+}

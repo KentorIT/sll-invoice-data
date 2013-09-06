@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>se.sll.invoicedata</groupId>
+    <artifactId>invoice-data</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>invoice-data-schemas</artifactId>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+
+  <properties>
+    <schema.path>${basedir}/src/main/wsdl</schema.path>
+  </properties>
+
+<!--
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>http://download.java.net/maven/1/</url>
+      <layout>legacy</layout>
+    </repository>
+    <repository>
+      <id>m2.java.net</id>
+      <name>Java.net Repository for Maven2</name>
+      <url>http://download.java.net/maven/2/</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repository.codehaus.org</id>
+      <url>http://repository.codehaus.org/</url>
+    </pluginRepository>
+  </pluginRepositories>
+-->
+
+  <build>
+    <resources>
+     <resource>
+      <directory>${basedir}/src/main</directory>
+      <includes>
+        <include>wsdl/**/*.*</include>
+      </includes>
+     </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-codegen-plugin</artifactId>
+        <version>${apache.cxf.version}</version>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+
+            <configuration>
+              <sourceRoot>${basedir}/target/generated/src/main/java</sourceRoot>
+              <defaultOptions>
+                <extraargs>
+                  <extraarg>-nexclude</extraarg>
+                  <extraarg>urn:riv:sll:invoice-data:1</extraarg>
+                </extraargs>
+              </defaultOptions>
+              <wsdlOptions>
+                <wsdloption>
+                  <wsdl>${schema.path}/interactions/UpdateInvoiceDataInteraction/UpdateInvoiceDataInteraction_1.0_RIVTABP21.wsdl</wsdl>
+                </wsdloption>
+              </wsdlOptions>
+            </configuration>
+            <goals>
+              <goal>wsdl2java</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jvnet.jaxb2.maven2</groupId>
+        <artifactId>maven-jaxb2-plugin</artifactId>
+        <version>0.8.2</version>
+        
+        <executions>
+          <execution>
+            <id>process-xsd</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <schemaDirectory>${schema.path}</schemaDirectory>
+              <schemaIncludes>
+                <include>admin/admin_1.0.xsd</include>
+                <include>admin/reporting_1.0.xsd</include>
+                <include>core_components/eservicesupply_forminteractions_1.0.xsd</include>
+              </schemaIncludes>
+              <bindingDirectory>${basedir}/src/main/resources</bindingDirectory>
+              <generateDirectory>${basedir}/target/generated-jaxb/src</generateDirectory>
+              <extension>true</extension>
+              <args>
+                <arg>-Xannotate</arg>
+                <arg>-Xsetters</arg>
+                <arg>-Xsetters-mode=direct</arg>
+              </args>
+              <plugins>
+                <plugin>
+                  <groupId>org.jvnet.jaxb2_commons</groupId>
+                  <artifactId>jaxb2-basics-annotate</artifactId>
+                  <version>0.6.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jvnet.jaxb2_commons</groupId>
+                    <artifactId>jaxb2-basics</artifactId>
+                    <version>0.6.4</version>
+                </plugin>
+              </plugins>
+            </configuration>
+            
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jvnet.jaxb2_commons</groupId>
+      <artifactId>jaxb2-basics-annotate</artifactId>
+      <version>0.6.4</version>
+    </dependency>
+  </dependencies>
+</project>
