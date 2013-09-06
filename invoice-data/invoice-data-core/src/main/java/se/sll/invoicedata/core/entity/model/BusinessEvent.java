@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.svc.entity.model;
+package se.sll.invoicedata.core.entity.model;
 
 import java.util.Date;
 

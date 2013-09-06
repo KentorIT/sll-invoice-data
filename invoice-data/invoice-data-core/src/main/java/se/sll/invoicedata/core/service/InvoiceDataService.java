@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.svc.service;
+package se.sll.invoicedata.core.service;
 
 import java.util.Date;
 

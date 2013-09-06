@@ -50,7 +50,7 @@
 -->
   
   <jaxws:endpoint id="pingForConfiguration" 
-                  implementor="se.sll.invoicedata.ping.ws.PingForConfigurationProducer" 
+                  implementor="se.sll.invoicedata.app.ws.PingForConfigurationProducer" 
                   address="/ws/pingForConfiguration" >
     <jaxws:properties>
       <entry key="schema-validation-enabled" value="true"/>

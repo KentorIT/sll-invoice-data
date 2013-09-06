@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.ws;
+package se.sll.invoicedata.app.ws;
 
 import java.util.Map;
 import java.util.UUID;

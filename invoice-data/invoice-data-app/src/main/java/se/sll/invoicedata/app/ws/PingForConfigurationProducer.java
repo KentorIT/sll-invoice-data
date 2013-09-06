@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.ping.ws;
+package se.sll.invoicedata.app.ws;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
