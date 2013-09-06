@@ -1,49 +1,43 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
-     license agreements. See the NOTICE file distributed with this work for additional 
-     information regarding copyright ownership. IPR holder licenses this file 
-     to you under the Apache License, Version 2.0 (the "License"); you may not 
-     use this file except in compliance with the License. You may obtain a copy 
-     of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
-     by applicable law or agreed to in writing, software distributed under the 
-     License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
-     OF ANY KIND, either express or implied. See the License for the specific 
-     language governing permissions and limitations under the License. -->
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. IPR holder licenses this file 
+	to you under the Apache License, Version 2.0 (the "License"); you may not 
+	use this file except in compliance with the License. You may obtain a copy 
+	of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
-	   xmlns:tns='urn:riv:sll:invoicedata:1' targetNamespace='urn:riv:sll:invoicedata:1'
-	   elementFormDefault='qualified' attributeFormDefault='unqualified'
-	   version='1.0'>
-  <xs:annotation>
-    <xs:documentation>Beskrivning: 
-    </xs:documentation>
-  </xs:annotation>
-  <xs:simpleType name="HsaIdType">
-    <xs:annotation>
-      <xs:documentation>Hsa-id enligt HSA standard.</xs:documentation>
-    </xs:annotation>
-    <xs:restriction base="xs:string"></xs:restriction>
-  </xs:simpleType>
+	xmlns:tns='urn:riv:sll:invoicedata:1' targetNamespace='urn:riv:sll:invoicedata:1'
+	elementFormDefault='qualified' attributeFormDefault='unqualified'
+	version='1.0'>
+	<xs:annotation>
+		<xs:documentation>Beskrivning:
+		</xs:documentation>
+	</xs:annotation>
 
-  <xs:simpleType name="SubjectOfCareIdType">
-    <xs:annotation>
-      <xs:documentation>Personnummer, reservnummer enligt format
-	yyyymmddnnnn. Ex: 191212121212</xs:documentation>
-    </xs:annotation>
-    <xs:restriction base="xs:string"></xs:restriction>
-  </xs:simpleType>
-  
-  <xs:simpleType name="ResultCodeEnumType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="OK"></xs:enumeration>
-      <xs:enumeration value="ERROR"></xs:enumeration>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:complexType name="ResultCode">
-    <xs:sequence>
-      <xs:element name="code" type="tns:ResultCodeEnumType" minOccurs="1" />
-      <xs:element name="comment" type="xs:string" minOccurs="0" />
-    </xs:sequence>
-  </xs:complexType>
-  
+	<xs:complexType name="ProductType">
+		<xs:sequence>
+			<xs:element name="id" type="xs:string" /> 
+			<xs:element name="description" type="xs:string" /> 
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="ResultCodeEnumType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OK"></xs:enumeration>
+			<xs:enumeration value="ERROR"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ResultCode">
+		<xs:sequence>
+			<xs:element name="code" type="tns:ResultCodeEnumType"
+				minOccurs="1" />
+			<xs:element name="comment" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
 </xs:schema>

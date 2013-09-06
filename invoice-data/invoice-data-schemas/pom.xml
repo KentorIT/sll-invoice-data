@@ -78,7 +78,9 @@
               <defaultOptions>
                 <extraargs>
                   <extraarg>-nexclude</extraarg>
-                  <extraarg>urn:riv:sll:invoice-data:1</extraarg>
+                  <extraarg>urn:riv:sll:invoicedata:1</extraarg>
+                  <extraarg>-frontend</extraarg>
+                  <extraarg>jaxws21</extraarg>
                 </extraargs>
               </defaultOptions>
               <wsdlOptions>
@@ -108,9 +110,7 @@
             <configuration>
               <schemaDirectory>${schema.path}</schemaDirectory>
               <schemaIncludes>
-                <include>admin/admin_1.0.xsd</include>
-                <include>admin/reporting_1.0.xsd</include>
-                <include>core_components/eservicesupply_forminteractions_1.0.xsd</include>
+                <include>core_components/sll_invoice_data_1.0.xsd</include>
               </schemaIncludes>
               <bindingDirectory>${basedir}/src/main/resources</bindingDirectory>
               <generateDirectory>${basedir}/target/generated-jaxb/src</generateDirectory>

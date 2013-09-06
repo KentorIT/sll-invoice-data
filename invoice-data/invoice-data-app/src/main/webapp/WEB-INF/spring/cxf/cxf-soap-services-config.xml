@@ -22,9 +22,9 @@
     xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:context="http://www.springframework.org/schema/context"
     xmlns:cxf="http://cxf.apache.org/core"
     xsi:schemaLocation="
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
         http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
         http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
 
   <import resource="classpath:META-INF/cxf/cxf.xml" />
@@ -38,17 +38,15 @@
       </list>
     </property>
   </bean>
-
-<!--
-  <jaxws:endpoint id="update" 
-                  implementor="" 
-                  address="/ws/update" >
+  
+  <jaxws:endpoint id="updateInvoiceData" 
+                  implementor="se.sll.invoicedata.app.ws.UpdateInvoiceDataProducer" 
+                  address="/ws/updateInvoiceData" >
     <jaxws:properties>
       <entry key="schema-validation-enabled" value="true"/>
     </jaxws:properties>
   </jaxws:endpoint>
--->
-  
+
   <jaxws:endpoint id="pingForConfiguration" 
                   implementor="se.sll.invoicedata.app.ws.PingForConfigurationProducer" 
                   address="/ws/pingForConfiguration" >
@@ -56,6 +54,7 @@
       <entry key="schema-validation-enabled" value="true"/>
     </jaxws:properties>
   </jaxws:endpoint>
+
 <!--   <bean id="FaultInterceptor" class="org.evactor.agent.ws.cxf.LoggingFaultInterceptor"/> -->
 
 <!--   <cxf:bus> -->
