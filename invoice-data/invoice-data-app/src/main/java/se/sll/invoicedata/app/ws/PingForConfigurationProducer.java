@@ -40,8 +40,9 @@ public class PingForConfigurationProducer extends AbstractProducer implements Pi
     
     private static ObjectFactory objectFactory = new ObjectFactory();
     
+    @Override
     public PingForConfigurationResponseType pingForConfiguration(String logicalAddress, PingForConfigurationType parameters) {
-        LOG.info("pingForConfiguration, logicalAdress: {}", logicalAddress);
+        LOG.info("logicalAdress: {}", logicalAddress);
         PingForConfigurationResponseType response = objectFactory.createPingForConfigurationResponseType();
         response.setVersion("1.0");
         response.setPingDateTime(formatter.get().format(new Date()));

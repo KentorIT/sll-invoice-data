@@ -36,6 +36,7 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
       
     @Override      
     public RegisterInvoiceDataResponseType registerInvoiceData(String logicalAddress, RegisterInvoiceDataType parameters) {
+        LOG.info("logicalAdress: {}", logicalAddress);
     	ObjectFactory f = new ObjectFactory();
     	RegisterInvoiceDataResponseType ur = f.createRegisterInvoiceDataResponseType();
     	
