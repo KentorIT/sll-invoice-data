@@ -52,7 +52,7 @@ public class BusinessEventEntity {
 
     @PrePersist
     void onPrePerist() {
-        createdTime = new Date();
+        setCreatedTime(new Date());
     }
 
 
@@ -88,6 +88,18 @@ public class BusinessEventEntity {
 
     public void setSignedBy(String signedBy) {
         this.signedBy = signedBy;
+    }
+
+
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
 
 }
