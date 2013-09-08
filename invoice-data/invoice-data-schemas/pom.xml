@@ -67,7 +67,6 @@
       <plugin>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-codegen-plugin</artifactId>
-        <version>${apache.cxf.version}</version>
         <executions>
           <execution>
             <id>generate-sources</id>
@@ -136,14 +135,6 @@
             
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
       </plugin>
     </plugins>
   </build>

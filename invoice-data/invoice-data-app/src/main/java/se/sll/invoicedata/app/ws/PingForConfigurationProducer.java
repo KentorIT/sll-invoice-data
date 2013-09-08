@@ -29,23 +29,23 @@ import se.riv.itintegration.monitoring.v1.PingForConfigurationType;
 
 public class PingForConfigurationProducer extends AbstractProducer implements PingForConfigurationResponderInterface {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PingForConfigurationProducer.class);
-    
+    private static final Logger LOG = LoggerFactory.getLogger(PingForConfigurationProducer.class); 
     private static ThreadLocal<SimpleDateFormat> formatter = new ThreadLocal<SimpleDateFormat>() {
         @Override
         public SimpleDateFormat initialValue() {
             return new SimpleDateFormat("yyyyMMddHHmmss");
         }
-    };
-    
+    };    
     private static ObjectFactory objectFactory = new ObjectFactory();
     
     @Override
-    public PingForConfigurationResponseType pingForConfiguration(String logicalAddress, PingForConfigurationType parameters) {
-        LOG.info("logicalAdress: {}", logicalAddress);
+    public PingForConfigurationResponseType pingForConfiguration(
+            String logicalAddress, PingForConfigurationType parameters) {      
+        LOG.info("logicalAdress: {}", logicalAddress);      
         PingForConfigurationResponseType response = objectFactory.createPingForConfigurationResponseType();
         response.setVersion("1.0");
         response.setPingDateTime(formatter.get().format(new Date()));
         return response;
     }
+
 }

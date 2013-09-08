@@ -29,7 +29,6 @@
 	
 	<properties>
 		<schema.path>${basedir}/../schemas</schema.path>
-		<cxf.version>2.2.2</cxf.version>
 	</properties>
 
 	<dependencies>
@@ -62,7 +61,6 @@
 		<plugin>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-codegen-plugin</artifactId>
-				<version>${cxf.version}</version>
 				<executions>
 					<execution>
 						<id>generate-sources</id>
@@ -122,13 +120,6 @@
 				</executions>
 			</plugin>
 		
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin> 
 
 <!-- When using JAX-WS RI wsimport. Not recommended. wsimport validates with none-WS-I Compliant wsdl-schema. wsimport lacks ability to manage package names for schema name spaces.
 			<plugin>
