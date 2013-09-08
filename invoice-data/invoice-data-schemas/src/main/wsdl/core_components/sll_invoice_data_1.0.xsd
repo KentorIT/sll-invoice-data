@@ -35,12 +35,14 @@
 	<xs:complexType name="EventType">
 		<xs:sequence>
 			<xs:element name="eventId" type="xs:string" />
+			<xs:element name="supplierId" type="xs:string" />
+			<xs:element name="supplierName" type="xs:string" />
+			<xs:element name="serviceCode" type="xs:string" />
 			<xs:element name="signedBy" type="xs:string" />
 			<xs:element name="signedTimestamp" type="xs:dateTime" />
 			<xs:element name="deliveredBy" type="xs:string" />
 			<xs:element name="startTimestamp" type="xs:dateTime" />
 			<xs:element name="endTimestamp" type="xs:dateTime" />
-			<xs:element name="serviceCode" type="xs:string" />
 			<xs:element name="obsoletesEventId" type="xs:string" />
 			<xs:element name="products" type="tns:ProductListType" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"

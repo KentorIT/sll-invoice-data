@@ -26,7 +26,7 @@
   <configuration>
     <date-format>yyyyMMdd'T'HHmmss</date-format>
   </configuration>
-  
+<!--   
   <mapping>
     <class-a>se.eservicesupply.formengine.types.Form</class-a>
     <class-b bean-factory="org.dozer.factory.JAXBBeanFactory">riv.eservicesupply.forminteractions._1.FormsType</class-b>
@@ -54,5 +54,6 @@
       <b>keepUntil</b>
     </field>
   </mapping>
-  
+   -->
+   
 </mappings> 

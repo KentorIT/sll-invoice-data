@@ -14,24 +14,12 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.core.entity.model;
+package se.sll.invoicedata.core.entity.model.repository;
 
-import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-/**
- * Placeholder
- *
- * @author Peter
- */
-@Entity
-public class BusinessEvent {
-    @Id
-    @Column(name="id", length=64)
-    private String id;
+import se.sll.invoicedata.core.entity.model.BusinessEventEntity;
+
+public interface BuinsessEventRepository extends JpaRepository<BusinessEventEntity, String> {
 }

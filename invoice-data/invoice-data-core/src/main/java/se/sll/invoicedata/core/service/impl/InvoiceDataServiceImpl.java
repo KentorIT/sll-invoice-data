@@ -14,12 +14,27 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.core.service;
+package se.sll.invoicedata.core.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.entity.model.BusinessEventEntity;
+import se.sll.invoicedata.core.entity.model.repository.BuinsessEventRepository;
+import se.sll.invoicedata.core.service.InvoiceDataService;
 
-public interface InvoiceDataService {
+
+@Service
+@Transactional
+public class InvoiceDataServiceImpl implements InvoiceDataService {
+
+    @Autowired
+    private BuinsessEventRepository buinsessEventRepository;
     
-    void registerBusinessEvent(BusinessEventEntity buinsessEventEntity);
-    
+    @Override
+    public void registerBusinessEvent(BusinessEventEntity buinsessEventEntity) {
+        buinsessEventRepository.save(buinsessEventEntity);
+    }
+
 }
