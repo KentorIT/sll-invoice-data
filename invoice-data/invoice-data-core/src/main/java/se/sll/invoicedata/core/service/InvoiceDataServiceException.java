@@ -16,21 +16,21 @@
 
 package se.sll.invoicedata.core.service;
 
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
-
 /**
- * Defines Invoice Data service API.
+ * Invoice data service layer exception.
  * 
  * @author Peter
- *
  */
-public interface InvoiceDataService {
-    
+public class InvoiceDataServiceException extends RuntimeException {
+    private static final long serialVersionUID = 1L;   
+
     /**
-     * Registers a business event.
+     * Creates an exception.
      * 
-     * @param buinsessEventEntity the business event entity.
+     * @param message the user message in plain text.
      */
-    void registerBusinessEvent(BusinessEventEntity buinsessEventEntity);
-    
+    protected InvoiceDataServiceException(String message) {
+        super(message);
+    }
+
 }

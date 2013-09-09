@@ -22,6 +22,12 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Initializes context when starting up Web application (see WEB-INF/web.xml).
+ *  
+ * @author Peter
+ *
+ */
 public class ApplicationContextLoaderListener extends ContextLoaderListener {
     private static final Logger log = LoggerFactory.getLogger(ApplicationContextLoaderListener.class);
 

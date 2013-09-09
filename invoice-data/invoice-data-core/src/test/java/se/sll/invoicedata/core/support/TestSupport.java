@@ -24,6 +24,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import se.sll.invoicedata.core.model.repository.BuinsessEventRepository;
 
+/**
+ * Abstracts JUnit and Spring configuration stuff, and is intended to extend
+ * all test classes.
+ * 
+ * @author Peter
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath:/invoice-data-service.xml")
 @ActiveProfiles(profiles={"db-embedded","test"}, inheritProfiles=true)
