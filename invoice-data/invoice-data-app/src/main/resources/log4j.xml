@@ -24,7 +24,7 @@
   <appender name="console" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d{yyMMdd HH:mm:ss,SSS} %-5p: %c %m%n" />
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p: %c %m%n" />
     </layout>
   </appender>
 
@@ -47,7 +47,7 @@
   </appender>
 
   <!-- Application Loggers -->
-  <logger name="org.formengine">
+  <logger name="se.sll">
     <level value="debug" />
   </logger>
 
@@ -83,22 +83,6 @@
     <level value="warn" />
   </logger>
   
-  <logger name="org.apache.activemq">
-    <level value="warn" />
-  </logger>
-  
-  <logger name="org.evactor.agent">
-    <level value="info" />
-  </logger>
-  
-  <logger name="org.springframework.data.mongodb.core">
-    <level value="debug" />
-  </logger>
-  
-  <logger name="org.springframework.data.mongodb.repository.query">
-    <level value="info" />
-  </logger>  
-  
   <!-- <logger name="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
   <!-- <level value="debug" /> -->
   <!-- </logger> -->
@@ -118,16 +102,6 @@
   <!-- <logger name="org.springframework.web"> -->
   <!-- <level value="info" /> -->
   <!-- </logger> -->
-
-  <logger name="pdl">
-    <level value="info" />
-    <appender-ref ref="pdlLog" />
-  </logger>  
-
-  <logger name="org.evactor.agent.service.impl">
-    <level value="info" />
-    <appender-ref ref="intsvcLog" />
-  </logger>  
   
   <!-- Root Logger -->
   <root>
