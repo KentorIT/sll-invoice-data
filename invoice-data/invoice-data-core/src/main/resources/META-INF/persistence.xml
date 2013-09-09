@@ -23,7 +23,7 @@
         version="2.0">
 
         <persistence-unit name="invoice-data-pu" transaction-type="RESOURCE_LOCAL">
-                <class>se.sll.invoicedata.core.entity.model.BusinessEventEntity</class>
+                <class>se.sll.invoicedata.core.model.entity.BusinessEventEntity</class>
         </persistence-unit>
 
 </persistence>

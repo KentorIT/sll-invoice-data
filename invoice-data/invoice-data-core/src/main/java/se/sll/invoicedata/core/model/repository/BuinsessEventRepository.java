@@ -14,12 +14,12 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.core.entity.model.repository;
+package se.sll.invoicedata.core.model.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import se.sll.invoicedata.core.entity.model.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
 public interface BuinsessEventRepository extends JpaRepository<BusinessEventEntity, String> {
 }

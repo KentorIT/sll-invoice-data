@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import se.sll.invoicedata.core.entity.model.repository.BuinsessEventRepository;
+import se.sll.invoicedata.core.model.repository.BuinsessEventRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath:/invoice-data-service.xml")

@@ -28,7 +28,7 @@ import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataTy
 import riv.sll.invoicedata._1.EventType;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnumType;
-import se.sll.invoicedata.core.entity.model.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 
 public class RegisterInvoiceDataProducer extends AbstractProducer implements RegisterInvoiceDataResponderInterface {

@@ -20,8 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import se.sll.invoicedata.core.entity.model.BusinessEventEntity;
-import se.sll.invoicedata.core.entity.model.repository.BuinsessEventRepository;
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.repository.BuinsessEventRepository;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 
 

@@ -65,7 +65,7 @@
 	<beans>
 		<context:annotation-config />
 		<context:component-scan base-package="se.sll.invoicedata.core.service.impl" />
-		<jpa:repositories base-package="se.sll.invoicedata.core.entity.model.repository" />
+		<jpa:repositories base-package="se.sll.invoicedata.core.model.repository" />
 		<tx:annotation-driven />
 		<tx:advice id="txAdvice" transaction-manager="transactionManager" />
 	</beans>

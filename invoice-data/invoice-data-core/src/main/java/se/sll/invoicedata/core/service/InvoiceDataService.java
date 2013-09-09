@@ -16,7 +16,7 @@
 
 package se.sll.invoicedata.core.service;
 
-import se.sll.invoicedata.core.entity.model.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
 public interface InvoiceDataService {
     

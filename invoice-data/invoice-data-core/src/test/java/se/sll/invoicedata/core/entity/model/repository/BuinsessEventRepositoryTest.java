@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import se.sll.invoicedata.core.entity.model.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.support.TestSupport;
 
 public class BuinsessEventRepositoryTest extends TestSupport {
