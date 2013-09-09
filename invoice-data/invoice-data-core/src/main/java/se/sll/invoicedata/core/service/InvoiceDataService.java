@@ -20,6 +20,6 @@ import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
 public interface InvoiceDataService {
     
-    void registerBusinessEvent(BusinessEventEntity buinsessEventEntity);
+    void registerBusinessEvent(BusinessEventEntity businessEventEntity);
     
 }

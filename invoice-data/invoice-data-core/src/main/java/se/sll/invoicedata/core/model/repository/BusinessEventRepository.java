@@ -21,5 +21,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
-public interface BuinsessEventRepository extends JpaRepository<BusinessEventEntity, String> {
+public interface BusinessEventRepository extends JpaRepository<BusinessEventEntity, String> {
 }
