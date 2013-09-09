@@ -30,41 +30,57 @@ import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnumType;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
+/**
+ * Registers new business events.
+ * 
+ * @author Peter
+ */
 public class RegisterInvoiceDataProducer extends AbstractProducer implements RegisterInvoiceDataResponderInterface {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RegisterInvoiceDataProducer.class);
-//    @Resource
-//    WebServiceContext wsctx;
+    private static final Logger log = LoggerFactory.getLogger(RegisterInvoiceDataProducer.class);
             
     @Autowired
     private InvoiceDataService invoiceDataService;
       
     @Override      
     public RegisterInvoiceDataResponseType registerInvoiceData(String logicalAddress, RegisterInvoiceDataType registerInvoiceDataType) {
-        LOG.info("logicalAdress: {}", logicalAddress);
+        log.info("logicalAdress: {}", logicalAddress);
     	final ObjectFactory f = new ObjectFactory();
     	final RegisterInvoiceDataResponseType ur = f.createRegisterInvoiceDataResponseType();
-    	
-    	invoiceDataService.registerBusinessEvent(toEntity(registerInvoiceDataType.getEvent()));
-    	
-    	final ResultCode rc = new ResultCode();
-    	rc.setCode(ResultCodeEnumType.OK);
-    	
-    	ur.setResultCode(rc);
+
+        final ResultCode rc = new ResultCode();
+
+        try {
+            invoiceDataService.registerBusinessEvent(toEntity(registerInvoiceDataType.getEvent()));
+            rc.setCode(ResultCodeEnumType.OK);
+            log.info("OK");
+        } catch (InvoiceDataServiceException ex) {
+            rc.setCode(ResultCodeEnumType.ERROR);
+            rc.setComment(ex.getMessage());
+            log.error(ex.getMessage());
+        }
+
+        ur.setResultCode(rc);
     	
     	return ur;
     	
     }
 
-    // 
-    BusinessEventEntity toEntity(EventType event) {
-        final BusinessEventEntity e = new BusinessEventEntity();
+    /**
+     * Maps XML JAXB object to an entity bean.
+     * 
+     * @param event the JAXB object.
+     * @return the entity bean.
+     */
+    static BusinessEventEntity toEntity(final EventType event) {
+        final BusinessEventEntity entity = new BusinessEventEntity();
         
-        e.setId(event.getEventId());
-        e.setSupplierName(event.getSupplierName());
-        e.setSignedBy(event.getSignedBy());
+        entity.setId(event.getEventId());
+        entity.setSupplierName(event.getSupplierName());
+        entity.setSignedBy(event.getSignedBy());
         
-        return e;
+        return entity;
     }
 }
