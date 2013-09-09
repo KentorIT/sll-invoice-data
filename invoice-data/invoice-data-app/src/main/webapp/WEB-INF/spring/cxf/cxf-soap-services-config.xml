@@ -29,16 +29,7 @@
 
   <import resource="classpath:META-INF/cxf/cxf.xml" />
   <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
-  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
 
-  <bean id="mapper" class="org.dozer.DozerBeanMapper">
-    <property name="mappingFiles">
-      <list>
-        <value>object-mapping.xml</value>
-      </list>
-    </property>
-  </bean>
-  
   <jaxws:endpoint id="registerInvoiceData" 
                   implementor="se.sll.invoicedata.app.ws.RegisterInvoiceDataProducer" 
                   address="/ws/registerInvoiceData" >
@@ -55,21 +46,4 @@
     </jaxws:properties>
   </jaxws:endpoint>
 
-<!--   <bean id="FaultInterceptor" class="org.evactor.agent.ws.cxf.LoggingFaultInterceptor"/> -->
-
-<!--   <cxf:bus> -->
-<!--     <cxf:inInterceptors> -->
-<!--       <ref bean="InInterceptor"/> -->
-<!--     </cxf:inInterceptors> -->
-<!--     <cxf:outInterceptors> -->
-<!--       <ref bean="OutInterceptor"/> -->
-<!--     </cxf:outInterceptors> -->
-<!--     <cxf:inFaultInterceptors> -->
-<!--       <ref bean="FaultInterceptor"/> -->
-<!--     </cxf:inFaultInterceptors> -->
-<!--     <cxf:outFaultInterceptors> -->
-<!--       <ref bean="FaultInterceptor"/> -->
-<!--     </cxf:outFaultInterceptors> -->
-<!--   </cxf:bus> -->
-  
 </beans>
