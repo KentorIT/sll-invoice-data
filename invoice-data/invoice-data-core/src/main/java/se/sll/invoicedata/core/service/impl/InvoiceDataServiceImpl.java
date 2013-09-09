@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
-import se.sll.invoicedata.core.model.repository.BuinsessEventRepository;
+import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 
 
@@ -30,11 +30,11 @@ import se.sll.invoicedata.core.service.InvoiceDataService;
 public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Autowired
-    private BuinsessEventRepository buinsessEventRepository;
+    private BusinessEventRepository businessEventRepository;
     
     @Override
-    public void registerBusinessEvent(BusinessEventEntity buinsessEventEntity) {
-        buinsessEventRepository.save(buinsessEventEntity);
+    public void registerBusinessEvent(BusinessEventEntity businessEventEntity) {
+        businessEventRepository.save(businessEventEntity);
     }
 
 }

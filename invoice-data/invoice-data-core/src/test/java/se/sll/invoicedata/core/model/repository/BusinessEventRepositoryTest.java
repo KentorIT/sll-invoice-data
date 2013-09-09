@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.support.TestSupport;
 
-public class BuinsessEventRepositoryTest extends TestSupport {
+public class BusinessEventRepositoryTest extends TestSupport {
     
 
     @Test
@@ -39,10 +39,10 @@ public class BuinsessEventRepositoryTest extends TestSupport {
         e.setSignedBy("Peter Larsson");
         e.setSupplierName("Dummy");
         
-        getBuinsessEventRepository().save(e);
-        getBuinsessEventRepository().flush();
+        getBusinessEventRepository().save(e);
+        getBusinessEventRepository().flush();
         
-        final List<BusinessEventEntity> all = getBuinsessEventRepository().findAll();
+        final List<BusinessEventEntity> all = getBusinessEventRepository().findAll();
         assertNotNull(all);
         assertEquals(1, all.size());
         

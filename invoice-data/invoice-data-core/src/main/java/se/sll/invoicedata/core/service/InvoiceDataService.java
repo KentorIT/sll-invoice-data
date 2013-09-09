@@ -31,6 +31,5 @@ public interface InvoiceDataService {
      * 
      * @param buinsessEventEntity the business event entity.
      */
-    void registerBusinessEvent(BusinessEventEntity buinsessEventEntity);
-    
+    void registerBusinessEvent(BusinessEventEntity businessEventEntity);    
 }

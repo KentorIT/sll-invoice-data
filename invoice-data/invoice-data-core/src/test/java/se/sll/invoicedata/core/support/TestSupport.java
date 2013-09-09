@@ -22,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import se.sll.invoicedata.core.model.repository.BuinsessEventRepository;
+import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 
 /**
  * Abstracts JUnit and Spring configuration stuff, and is intended to extend
@@ -37,10 +37,10 @@ import se.sll.invoicedata.core.model.repository.BuinsessEventRepository;
 public abstract class TestSupport {
 
     @Autowired
-    private BuinsessEventRepository buinsessEventRepository;
+    private BusinessEventRepository businessEventRepository;
 
-    protected BuinsessEventRepository getBuinsessEventRepository() {
-        return buinsessEventRepository;
+    protected BusinessEventRepository getBusinessEventRepository() {
+        return businessEventRepository;
     }
 
 }
