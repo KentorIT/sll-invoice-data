@@ -51,8 +51,9 @@ public abstract class AbstractProducer {
         } else {
             logger.error("wsctx is null");
             return;
-        }
-        Map http_headers = (Map) mctx.get(MessageContext.HTTP_REQUEST_HEADERS);
+        }                
+        @SuppressWarnings (value="unchecked")
+        Map<String, Object> http_headers = (Map<String, Object>) mctx.get(MessageContext.HTTP_REQUEST_HEADERS);
         if (http_headers.containsKey("x-rivta-original-serviceconsumer-hsaid")) {
             logger.info("{} invoked by HSAid: {}", msg, http_headers.get("x-rivta-original-serviceconsumer-hsaid"));
         } else {
