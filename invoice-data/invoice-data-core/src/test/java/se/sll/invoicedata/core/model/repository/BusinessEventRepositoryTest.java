@@ -27,14 +27,18 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.support.TestSupport;
 
+/**
+ * Unit tests.
+ * 
+ * @author Peter
+ */
 public class BusinessEventRepositoryTest extends TestSupport {
-    
 
     @Test
     @Transactional
     @Rollback(true)
     public void testInsertFind() {
-        BusinessEventEntity e = new BusinessEventEntity();
+        final BusinessEventEntity e = new BusinessEventEntity();
         e.setId("event-123");
         e.setSignedBy("Peter Larsson");
         e.setSupplierName("Dummy");
@@ -46,14 +50,12 @@ public class BusinessEventRepositoryTest extends TestSupport {
         assertNotNull(all);
         assertEquals(1, all.size());
         
-        BusinessEventEntity f = all.get(0);
+        final BusinessEventEntity f = all.get(0);
         
         assertEquals(e.getId(), f.getId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getSignedBy(), f.getSignedBy());
         assertNull(e.getCreatedTime());
-        assertNotNull(f.getCreatedTime());
-        
+        assertNotNull(f.getCreatedTime());   
     }
-
 }
