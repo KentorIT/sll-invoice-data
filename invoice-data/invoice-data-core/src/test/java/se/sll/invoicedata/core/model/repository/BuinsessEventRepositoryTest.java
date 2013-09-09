@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.core.entity.model.repository;
+package se.sll.invoicedata.core.model.repository;
 
 import static org.junit.Assert.*;
 
