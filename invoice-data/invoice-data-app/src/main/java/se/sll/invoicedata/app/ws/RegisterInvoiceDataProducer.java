@@ -25,10 +25,12 @@ import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataR
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponseType;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataType;
-import riv.sll.invoicedata._1.EventType;
+import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnumType;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
@@ -46,8 +48,11 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
       
     @Override      
     public RegisterInvoiceDataResponseType registerInvoiceData(String logicalAddress, RegisterInvoiceDataType registerInvoiceDataType) {
+        log("registerInvoiceData");
+        
         log.info("logicalAdress: {}", logicalAddress);
-    	final ObjectFactory f = new ObjectFactory();
+
+        final ObjectFactory f = new ObjectFactory();
     	final RegisterInvoiceDataResponseType ur = f.createRegisterInvoiceDataResponseType();
 
         final ResultCode rc = new ResultCode();
@@ -58,7 +63,7 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
             log.info("OK");
         } catch (InvoiceDataServiceException ex) {
             rc.setCode(ResultCodeEnumType.ERROR);
-            rc.setComment(ex.getMessage());
+            rc.setMessage(ex.getMessage());
             log.error(ex.getMessage());
         }
 
@@ -74,12 +79,27 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
      * @param event the JAXB object.
      * @return the entity bean.
      */
-    static BusinessEventEntity toEntity(final EventType event) {
+    static BusinessEventEntity toEntity(final Event event) {
         final BusinessEventEntity entity = new BusinessEventEntity();
         
         entity.setId(event.getEventId());
         entity.setSupplierName(event.getSupplierName());
+        entity.setSupplierId(event.getSupplierId());
+        entity.setServiceCode(event.getServiceCode());
+        entity.setStartTimestamp(event.getStartTimestamp().toGregorianCalendar().getTime());
+        entity.setEndTimestamp(event.getEndTimestamp().toGregorianCalendar().getTime());
+        entity.setSignedTimestamp(event.getSignedTimestamp().toGregorianCalendar().getTime());
         entity.setSignedBy(event.getSignedBy());
+        
+        for (Item item : event.getItems().getItem()) {
+            final ItemEntity itemEntity = new ItemEntity();
+            
+            itemEntity.setItemId(item.getItemId());;
+            itemEntity.setQty(item.getQty().floatValue());
+            itemEntity.setDescription(item.getDescription());
+     
+            entity.addItemEntity(itemEntity);
+        }
         
         return entity;
     }

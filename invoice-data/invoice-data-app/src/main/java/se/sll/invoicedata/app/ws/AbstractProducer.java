@@ -18,6 +18,8 @@ package se.sll.invoicedata.app.ws;
 
 import java.util.Map;
 import java.util.UUID;
+
+import javax.annotation.Resource;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
@@ -31,8 +33,13 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractProducer {
 
-    private final Logger logger = LoggerFactory.getLogger("pdl");
+    private static final Logger logger = LoggerFactory.getLogger("ws-api");
+    
+    private static final String SERVICE_CONSUMER_HEADER_NAME = "x-rivta-original-serviceconsumer-hsaid";
 
+    @Resource
+    private WebServiceContext wsctx;
+    
     protected void throwInternalServerError(Throwable t) {
         String errorText = "Internal server error (reference: " + UUID.randomUUID().toString() + ")";
         logger.error(errorText, t);
@@ -44,20 +51,17 @@ public abstract class AbstractProducer {
      * @param wsctx
      * @param msg
      */
-    protected void logPDL(WebServiceContext wsctx, String msg) {
-        MessageContext mctx = null;
-        if (wsctx != null) {
-            mctx = wsctx.getMessageContext();
-        } else {
-            logger.error("wsctx is null");
+    protected void log(String msg) {
+        MessageContext mctx = (wsctx == null) ? null : wsctx.getMessageContext();
+        if (mctx == null) {
+            logger.error("MessageContext is null, WebServiceContext is {}", wsctx);
             return;
-        }                
-        @SuppressWarnings (value="unchecked")
-        Map<String, Object> http_headers = (Map<String, Object>) mctx.get(MessageContext.HTTP_REQUEST_HEADERS);
-        if (http_headers.containsKey("x-rivta-original-serviceconsumer-hsaid")) {
-            logger.info("{} invoked by HSAid: {}", msg, http_headers.get("x-rivta-original-serviceconsumer-hsaid"));
-        } else {
-            logger.info("{} invoked by HSAid: NOT FOUND.", msg);
         }
+        
+        @SuppressWarnings (value="rawtypes")
+        Map headers = (Map)mctx.get(MessageContext.HTTP_REQUEST_HEADERS);      
+        Object serviceConsumer = headers.get(SERVICE_CONSUMER_HEADER_NAME);
+
+        logger.info("{} invoked by HSAid: {}", msg, (serviceConsumer == null) ? "<NOT FOUND>" : serviceConsumer);
     }
 }

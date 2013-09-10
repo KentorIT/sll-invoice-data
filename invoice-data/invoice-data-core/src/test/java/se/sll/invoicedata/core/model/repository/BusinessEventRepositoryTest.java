@@ -18,6 +18,7 @@ package se.sll.invoicedata.core.model.repository;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -42,6 +43,11 @@ public class BusinessEventRepositoryTest extends TestSupport {
         e.setId("event-123");
         e.setSignedBy("Peter Larsson");
         e.setSupplierName("Dummy");
+        e.setSignedTimestamp(new Date());
+        e.setServiceCode("XYZ");
+        e.setSupplierId("12342");
+        e.setStartTimestamp(new Date());
+        e.setEndTimestamp(new Date());
         
         getBusinessEventRepository().save(e);
         getBusinessEventRepository().flush();
@@ -55,7 +61,7 @@ public class BusinessEventRepositoryTest extends TestSupport {
         assertEquals(e.getId(), f.getId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getSignedBy(), f.getSignedBy());
-        assertNull(e.getCreatedTime());
-        assertNotNull(f.getCreatedTime());   
+        assertNull(e.getCreatedTimestamp());
+        assertNotNull(f.getCreatedTimestamp());   
     }
 }

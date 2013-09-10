@@ -18,21 +18,30 @@
 		</xs:documentation>
 	</xs:annotation>
 
-	<xs:complexType name="ProductType">
+	<xs:complexType name="Item">
 		<xs:sequence>
-			<xs:element name="productId" type="xs:string" />
+			<xs:element name="itemId" type="xs:string" />
 			<xs:element name="description" type="xs:string" />
+			<xs:element name="qty">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:totalDigits value="5"/>
+						<xs:fractionDigits value="2"/>
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="ProductListType">
+	<xs:complexType name="ItemList">
 		<xs:sequence>
-			<xs:element name="product" type="tns:ProductType"
+			<xs:element name="item" type="tns:Item"
 				minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="EventType">
+	<xs:complexType name="Event">
 		<xs:sequence>
 			<xs:element name="eventId" type="xs:string" />
 			<xs:element name="supplierId" type="xs:string" />
@@ -40,11 +49,9 @@
 			<xs:element name="serviceCode" type="xs:string" />
 			<xs:element name="signedBy" type="xs:string" />
 			<xs:element name="signedTimestamp" type="xs:dateTime" />
-			<xs:element name="deliveredBy" type="xs:string" />
 			<xs:element name="startTimestamp" type="xs:dateTime" />
 			<xs:element name="endTimestamp" type="xs:dateTime" />
-			<xs:element name="obsoletesEventId" type="xs:string" />
-			<xs:element name="products" type="tns:ProductListType" />
+			<xs:element name="items" type="tns:ItemList" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
@@ -61,7 +68,7 @@
 		<xs:sequence>
 			<xs:element name="code" type="tns:ResultCodeEnumType"
 				minOccurs="1" />
-			<xs:element name="comment" type="xs:string" minOccurs="0" />
+			<xs:element name="message" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 

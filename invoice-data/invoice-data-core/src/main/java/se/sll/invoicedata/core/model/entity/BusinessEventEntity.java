@@ -17,10 +17,15 @@
 package se.sll.invoicedata.core.model.entity;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -32,27 +37,48 @@ import javax.persistence.TemporalType;
  * @author Peter
  */
 @Entity
-@Table(name="id_business_entity")
+@Table(name="invoice_data_event")
 public class BusinessEventEntity {
     @Id
-    @Column(name="id", length=64)
+    @Column(name="event_id", length=64)
     private String id;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_time", nullable = false, updatable = false)
-    private Date createdTime;
+    @Column(name = "created_timestamp", nullable = false, updatable = false)
+    private Date createdTimestamp;
+    
+    @Column(name="supplier_id", length=64, nullable=false, updatable=false)
+    private String supplierId;
     
     @Column(name="supplier_name", length=256, nullable=false, updatable=false)
     private String supplierName;
+
+    @Column(name="service_code", length=64, nullable=false, updatable=false)
+    private String serviceCode;
     
     @Column(name="signed_by", length=64, nullable=false, updatable=false)
     private String signedBy;
     
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "signed_timestamp", nullable=false, updatable=false)
+    private Date signedTimestamp;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "start_timestamp", nullable=false, updatable=false)
+    private Date startTimestamp;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "end_timestamp", nullable=false, updatable=false)
+    private Date endTimestamp;
     
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "event", orphanRemoval = true, cascade = CascadeType.ALL)    
+    private List<ItemEntity> itemEntities = new LinkedList<ItemEntity>();
+    
+
 
     @PrePersist
     void onPrePerist() {
-        setCreatedTime(new Date());
+        setCreatedTimestamp(new Date());
     }
 
 
@@ -92,14 +118,86 @@ public class BusinessEventEntity {
 
 
 
-    public Date getCreatedTime() {
-        return createdTime;
+    public Date getCreatedTimestamp() {
+        return createdTimestamp;
     }
 
 
 
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
+    public void setCreatedTimestamp(Date createdTimestamp) {
+        this.createdTimestamp = createdTimestamp;
     }
+
+
+
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+
+
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
+    }
+
+
+
+    public String getServiceCode() {
+        return serviceCode;
+    }
+
+
+
+    public void setServiceCode(String serviceCode) {
+        this.serviceCode = serviceCode;
+    }
+
+
+
+    public Date getSignedTimestamp() {
+        return signedTimestamp;
+    }
+
+
+
+    public void setSignedTimestamp(Date signedTimestamp) {
+        this.signedTimestamp = signedTimestamp;
+    }
+
+
+
+    public Date getStartTimestamp() {
+        return startTimestamp;
+    }
+
+
+
+    public void setStartTimestamp(Date startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+
+
+    public Date getEndTimestamp() {
+        return endTimestamp;
+    }
+
+
+
+    public void setEndTimestamp(Date endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
+
+
+    public void addItemEntity(ItemEntity itemEntity) {
+        itemEntity.setEvent(this);
+        itemEntities.add(itemEntity);
+    }
+    
+    public List<ItemEntity> getItemEntities() {
+        return itemEntities;
+    }
+
 
 }

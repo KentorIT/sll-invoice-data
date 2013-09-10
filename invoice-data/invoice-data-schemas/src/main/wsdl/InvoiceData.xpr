@@ -6,6 +6,6 @@
     </meta>
     <projectTree name="InvoiceData.xpr">
         <folder path="core_components/"/>
-        <folder path="interactions/UpdateInvoiceDataInteraction/"/>
+        <folder path="interactions/"/>
     </projectTree>
 </project>

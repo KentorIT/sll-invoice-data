@@ -17,12 +17,13 @@
 
 	<xs:import schemaLocation='../../core_components/sll_invoice_data_1.0.xsd'
 		namespace='urn:riv:sll:invoicedata:1' />
+	
 	<xs:element name='RegisterInvoiceData' type='tns:RegisterInvoiceDataType' />
 	<xs:element name='RegisterInvoiceDataResponse' type='tns:RegisterInvoiceDataResponseType' />
 
 	<xs:complexType name='RegisterInvoiceDataType'>
 		<xs:sequence>
-			<xs:element name="event" type="core:EventType" />
+			<xs:element name="event" type="core:Event" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
