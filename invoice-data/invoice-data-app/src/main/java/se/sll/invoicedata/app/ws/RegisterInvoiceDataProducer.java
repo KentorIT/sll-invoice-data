@@ -91,7 +91,7 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
         entity.setSignedTimestamp(event.getSignedTimestamp().toGregorianCalendar().getTime());
         entity.setSignedBy(event.getSignedBy());
         
-        for (Item item : event.getItems().getItem()) {
+        for (final Item item : event.getItems().getItem()) {
             final ItemEntity itemEntity = new ItemEntity();
             
             itemEntity.setItemId(item.getItemId());;

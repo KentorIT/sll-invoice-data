@@ -9,10 +9,9 @@
 	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
 	OF ANY KIND, either express or implied. See the License for the specific 
 	language governing permissions and limitations under the License. -->
-<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
-	xmlns:tns='urn:riv:sll:invoicedata:1' targetNamespace='urn:riv:sll:invoicedata:1'
-	elementFormDefault='qualified' attributeFormDefault='unqualified'
-	version='1.0'>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:1"
+	targetNamespace="urn:riv:sll:invoicedata:1" elementFormDefault="qualified"
+	attributeFormDefault="unqualified" version="1.0">
 	<xs:annotation>
 		<xs:documentation>Beskrivning:
 		</xs:documentation>
@@ -20,8 +19,8 @@
 
 	<xs:complexType name="Item">
 		<xs:sequence>
-			<xs:element name="itemId" type="xs:string" />
-			<xs:element name="description" type="xs:string" />
+			<xs:element name="itemId" type="xs:string"/>
+			<xs:element name="description" type="xs:string"/>
 			<xs:element name="qty">
 				<xs:simpleType>
 					<xs:restriction base="xs:decimal">
@@ -36,39 +35,44 @@
 
 	<xs:complexType name="ItemList">
 		<xs:sequence>
-			<xs:element name="item" type="tns:Item"
-				minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="item" type="tns:Item" minOccurs="1" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:complexType name="Event">
 		<xs:sequence>
-			<xs:element name="eventId" type="xs:string" />
-			<xs:element name="supplierId" type="xs:string" />
-			<xs:element name="supplierName" type="xs:string" />
-			<xs:element name="serviceCode" type="xs:string" />
-			<xs:element name="signedBy" type="xs:string" />
-			<xs:element name="signedTimestamp" type="xs:dateTime" />
-			<xs:element name="startTimestamp" type="xs:dateTime" />
-			<xs:element name="endTimestamp" type="xs:dateTime" />
-			<xs:element name="items" type="tns:ItemList" />
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"
-				maxOccurs="unbounded" />
+			<xs:element name="eventId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Event id is defined by the user, and expected to be globally unique.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="supplierId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Supplier (of interpreters) identity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="supplierName" type="xs:string"/>
+			<xs:element name="serviceCode" type="xs:string"/>
+			<xs:element name="signedBy" type="xs:string"/>
+			<xs:element name="signedTimestamp" type="xs:dateTime"/>
+			<xs:element name="startTimestamp" type="xs:dateTime"/>
+			<xs:element name="endTimestamp" type="xs:dateTime"/>
+			<xs:element name="items" type="tns:ItemList"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 
 	<xs:simpleType name="ResultCodeEnumType">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="OK"></xs:enumeration>
-			<xs:enumeration value="ERROR"></xs:enumeration>
+			<xs:enumeration value="OK"/>
+			<xs:enumeration value="ERROR"/>
 		</xs:restriction>
 	</xs:simpleType>
 
 	<xs:complexType name="ResultCode">
 		<xs:sequence>
-			<xs:element name="code" type="tns:ResultCodeEnumType"
-				minOccurs="1" />
-			<xs:element name="message" type="xs:string" minOccurs="0" />
+			<xs:element name="code" type="tns:ResultCodeEnumType" minOccurs="1"/>
+			<xs:element name="message" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
