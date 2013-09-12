@@ -21,14 +21,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
-import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponseType;
-import riv.sll.invoicedata.registerinvoicedataresponder._1.ObjectFactory;
-import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataType;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.ResultCode;
-import riv.sll.invoicedata._1.ResultCodeEnumType;
+import riv.sll.invoicedata._1.ResultCodeEnum;
+import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
+import riv.sll.invoicedata.registerinvoicedataresponder._1.ObjectFactory;
+import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceData;
+import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
@@ -47,22 +47,23 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
     private InvoiceDataService invoiceDataService;
       
     @Override      
-    public RegisterInvoiceDataResponseType registerInvoiceData(String logicalAddress, RegisterInvoiceDataType registerInvoiceDataType) {
+    public RegisterInvoiceDataResponse registerInvoiceData(String logicalAddress, RegisterInvoiceData registerInvoiceDataType) {
         log("registerInvoiceData");
         
         log.info("logicalAdress: {}", logicalAddress);
 
         final ObjectFactory f = new ObjectFactory();
-    	final RegisterInvoiceDataResponseType ur = f.createRegisterInvoiceDataResponseType();
+    	final RegisterInvoiceDataResponse ur = f.createRegisterInvoiceDataResponse();
 
         final ResultCode rc = new ResultCode();
 
         try {
-            invoiceDataService.registerBusinessEvent(toEntity(registerInvoiceDataType.getEvent()));
-            rc.setCode(ResultCodeEnumType.OK);
+        	BusinessEventEntity bee = toEntity(registerInvoiceDataType.getEvent());
+            invoiceDataService.registerBusinessEvent(bee);
+            rc.setCode(ResultCodeEnum.OK);
             log.info("OK");
         } catch (InvoiceDataServiceException ex) {
-            rc.setCode(ResultCodeEnumType.ERROR);
+            rc.setCode(ResultCodeEnum.ERROR);
             rc.setMessage(ex.getMessage());
             log.error(ex.getMessage());
         }

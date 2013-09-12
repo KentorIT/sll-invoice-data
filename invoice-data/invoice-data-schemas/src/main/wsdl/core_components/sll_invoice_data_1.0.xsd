@@ -62,7 +62,7 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:simpleType name="ResultCodeEnumType">
+	<xs:simpleType name="ResultCodeEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OK"/>
 			<xs:enumeration value="ERROR"/>
@@ -71,7 +71,7 @@
 
 	<xs:complexType name="ResultCode">
 		<xs:sequence>
-			<xs:element name="code" type="tns:ResultCodeEnumType" minOccurs="1"/>
+			<xs:element name="code" type="tns:ResultCodeEnum" minOccurs="1"/>
 			<xs:element name="message" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>

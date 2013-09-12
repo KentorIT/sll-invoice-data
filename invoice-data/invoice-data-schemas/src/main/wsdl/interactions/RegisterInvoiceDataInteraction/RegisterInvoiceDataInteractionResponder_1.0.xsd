@@ -18,10 +18,10 @@
 	<xs:import schemaLocation='../../core_components/sll_invoice_data_1.0.xsd'
 		namespace='urn:riv:sll:invoicedata:1' />
 	
-	<xs:element name='RegisterInvoiceData' type='tns:RegisterInvoiceDataType' />
-	<xs:element name='RegisterInvoiceDataResponse' type='tns:RegisterInvoiceDataResponseType' />
+	<xs:element name='RegisterInvoiceData' type='tns:RegisterInvoiceData' />
+	<xs:element name='RegisterInvoiceDataResponse' type='tns:RegisterInvoiceDataResponse' />
 
-	<xs:complexType name='RegisterInvoiceDataType'>
+	<xs:complexType name='RegisterInvoiceData'>
 		<xs:sequence>
 			<xs:element name="event" type="core:Event" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
@@ -29,7 +29,7 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name='RegisterInvoiceDataResponseType'>
+	<xs:complexType name='RegisterInvoiceDataResponse'>
 		<xs:sequence>
 			<xs:element name='resultCode' type='core:ResultCode'
 				maxOccurs="1" minOccurs="1" />

@@ -6,7 +6,7 @@ xmlns:tns='urn:riv:eservicesupply:forminteractions:1'
 xmlns:annox="http://annox.dev.java.net"
 version="2.0">
 
-  <!--jaxb:bindings schemaLocation="../wsdl/core_components/sll_invoice_data_1.0.xsd" node="/xs:schema">
+  <!--jaxb:bindings schemaLocation="../wsdl/core_components/sll_payment_responsible_1.0.xsd" node="/xs:schema">
 
     <jaxb:bindings node="//xs:complexType[@name='FormTemplateType']">
       <annox:annotate target="class">

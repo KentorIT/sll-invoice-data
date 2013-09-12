@@ -48,7 +48,6 @@ public abstract class AbstractProducer {
 
     /**
      *
-     * @param wsctx
      * @param msg
      */
     protected void log(String msg) {
