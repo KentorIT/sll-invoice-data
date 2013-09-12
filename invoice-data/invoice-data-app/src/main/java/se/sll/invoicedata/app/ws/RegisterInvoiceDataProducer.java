@@ -58,8 +58,7 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
         final ResultCode rc = new ResultCode();
 
         try {
-        	BusinessEventEntity bee = toEntity(registerInvoiceDataType.getEvent());
-            invoiceDataService.registerBusinessEvent(bee);
+            invoiceDataService.registerBusinessEvent(toEntity(registerInvoiceDataType.getEvent()));
             rc.setCode(ResultCodeEnum.OK);
             log.info("OK");
         } catch (InvoiceDataServiceException ex) {

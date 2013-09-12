@@ -26,6 +26,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.support.TestSupport;
 
 /**
@@ -38,17 +39,9 @@ public class BusinessEventRepositoryTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testInsertFind() {
-        final BusinessEventEntity e = new BusinessEventEntity();
-        e.setId("event-123");
-        e.setSignedBy("Peter Larsson");
-        e.setSupplierName("Dummy");
-        e.setSignedTimestamp(new Date());
-        e.setServiceCode("XYZ");
-        e.setSupplierId("12342");
-        e.setStartTimestamp(new Date());
-        e.setEndTimestamp(new Date());
+    public void testInsertFind_BusinessEventEntity() {
         
+        final BusinessEventEntity e = createSampleBusinessEventEntity();
         getBusinessEventRepository().save(e);
         getBusinessEventRepository().flush();
         
@@ -63,5 +56,57 @@ public class BusinessEventRepositoryTest extends TestSupport {
         assertEquals(e.getSignedBy(), f.getSignedBy());
         assertNull(e.getCreatedTimestamp());
         assertNotNull(f.getCreatedTimestamp());   
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testInsertFind_ItemEntity() {
+        
+        final BusinessEventEntity e = createSampleBusinessEventEntity();
+        e.addItemEntity(createSampleItemEntity());
+        
+        getBusinessEventRepository().save(e);
+        getBusinessEventRepository().flush();
+        
+        final List<BusinessEventEntity> all = getBusinessEventRepository().findAll();
+        assertNotNull(all);
+        assertEquals(1, all.size());
+        
+        final BusinessEventEntity f = all.get(0);
+        
+        assertEquals(e.getId(), f.getId());
+        assertEquals(e.getSupplierName(), f.getSupplierName());
+        assertEquals(e.getSignedBy(), f.getSignedBy());
+        assertNull(e.getCreatedTimestamp());
+        assertNotNull(f.getCreatedTimestamp());
+        assertNotNull(f.getItemEntities());
+        assertEquals(e.getItemEntities().get(0).getItemId(), 
+        		f.getItemEntities().get(0).getItemId());
+       
+    }
+    
+    private ItemEntity createSampleItemEntity() {
+    	ItemEntity i = new ItemEntity();
+    	i.setDescription("Item is kind of a product");
+		i.setItemId("IT101");
+		i.setQty(2.0f);
+		
+		return i;
+	
+    }
+    
+    private BusinessEventEntity createSampleBusinessEventEntity() {
+    	BusinessEventEntity e = new BusinessEventEntity();
+        e.setId("event-123");
+        e.setSignedBy("Peter Larsson");
+        e.setSupplierName("Dummy");
+        e.setSignedTimestamp(new Date());
+        e.setServiceCode("XYZ");
+        e.setSupplierId("12342");
+        e.setStartTimestamp(new Date());
+        e.setEndTimestamp(new Date());
+        
+        return e;
     }
 }
