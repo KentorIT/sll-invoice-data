@@ -16,6 +16,7 @@
 
 package se.sll.invoicedata.core.model.entity;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,6 +88,17 @@ public class BusinessEventEntity {
         return id;
     }
 
+    
+    @Override
+    public boolean equals(Object r) {
+        if (this == r) {
+            return true;
+        }
+        if (r instanceof BusinessEventEntity) {
+            return getId().equals(((BusinessEventEntity)r).getId());
+        }
+        return false;
+    }
 
 
     public void setId(String id) {
@@ -189,14 +201,21 @@ public class BusinessEventEntity {
     }
 
 
+    public boolean removeItemEntity(ItemEntity itemEntity) {
+        if (this.equals(itemEntity.getEvent())) {
+            itemEntity.setEvent(null);
+            return itemEntities.remove(itemEntity);
+        }
+        return false;
+    }
 
-    public void addItemEntity(ItemEntity itemEntity) {
+    public boolean addItemEntity(ItemEntity itemEntity) {
         itemEntity.setEvent(this);
-        itemEntities.add(itemEntity);
+        return itemEntities.add(itemEntity);
     }
     
     public List<ItemEntity> getItemEntities() {
-        return itemEntities;
+        return Collections.unmodifiableList(itemEntities);
     }
 
 
