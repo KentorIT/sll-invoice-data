@@ -22,6 +22,7 @@ package se.sll.invoicedata.app.ws;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,11 +32,9 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
-import javax.xml.ws.soap.SOAPFaultException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
@@ -64,20 +63,51 @@ public class RegisterInvoiceDataProducerTest {
 
 	}
 	
-	@Test
+	//@Test
 	public void registerInvoiceData_without_Items_result_pass() {
 		
 		RegisterInvoiceData invoiceData = createSampleInvoiceData();
 		invoiceData.getEvent().getItems().setItem(null);
 		
 		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
-				.registerInvoiceData(LOGICAL_ADDRESS, createSampleInvoiceData());
+				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
 		
 		Assert.assertNotNull("Should not be null: OK|ERROR", response);
 		Assert.assertEquals("Result code should be OK in this case", ResultCodeEnum.OK, response.getResultCode().getCode());	
 	}
 	
-	@Test(expected = SOAPFaultException.class)
+	//@Test
+	public void registerInvoiceData_with_incorrect_qty_fail() {
+		
+		RegisterInvoiceData invoiceData = createSampleInvoiceData();
+		invoiceData.getEvent().getItems().getItem().get(0).setQty(new BigDecimal(-2));
+						
+		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
+				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+		
+		Assert.assertNotNull("Should not be null: OK|ERROR", response);
+		Assert.assertEquals("Result code should be ERROR in this case", ResultCodeEnum.ERROR, response.getResultCode().getCode());	
+	}
+	
+	//@Test
+	public void registerInvoiceData_with_incorrect_start_end_time_fail() {
+		
+		RegisterInvoiceData invoiceData = createSampleInvoiceData();
+		Calendar currentDate = getCurrentDate().toGregorianCalendar();
+		Calendar startTime = getCurrentDate().toGregorianCalendar();
+		startTime.set(Calendar.DAY_OF_MONTH, currentDate.get(Calendar.DAY_OF_MONTH) - 1);
+		
+		invoiceData.getEvent().setStartTimestamp(getXMLGCalendar(startTime));
+		invoiceData.getEvent().setEndTimestamp(getCurrentDate());
+						
+		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
+				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+		
+		Assert.assertNotNull("Should not be null: OK|ERROR", response);
+		Assert.assertEquals("Result code should be ERROR in this case", ResultCodeEnum.ERROR, response.getResultCode().getCode());	
+	}
+	
+	//@Test(expected = SOAPFaultException.class)
 	public void registerInvoiceData_with_empty_invoicedata_result_exception() {
 		
 		RegisterInvoiceData invoiceData = new RegisterInvoiceData();
@@ -133,8 +163,10 @@ public class RegisterInvoiceDataProducerTest {
 			QName serviceQN = new QName(namespaceURI, serviceName);
 
 			Service service = Service.create(wsdlURL, serviceQN);
+			
 			iRegisterInvoiceDataResponder = service
 					.getPort(RegisterInvoiceDataResponderInterface.class);
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -148,6 +180,17 @@ public class RegisterInvoiceDataProducerTest {
 		try {
 			calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
 					new GregorianCalendar());
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
+		return calendar;
+	}
+	
+	private XMLGregorianCalendar getXMLGCalendar(Calendar date) {
+		XMLGregorianCalendar calendar = null;
+		try {
+			calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
+					(GregorianCalendar) date);
 		} catch (DatatypeConfigurationException e) {
 			e.printStackTrace();
 		}
