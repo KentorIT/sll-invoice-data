@@ -24,7 +24,7 @@
 			<xs:element name="qty">
 				<xs:simpleType>
 					<xs:restriction base="xs:decimal">
-						<xs:totalDigits value="5"/>
+						<xs:maxExclusive value="99999"/>
 						<xs:fractionDigits value="2"/>
 						<xs:minInclusive value="0"/>
 					</xs:restriction>
@@ -61,7 +61,19 @@
 			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-
+	
+	<xs:complexType name="InvoiceData">
+		<xs:sequence>
+			<xs:element name="supplierName" type="xs:string"/>
+			<xs:element name="eventIdList" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Globally unique and registered event id list</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>		
+	</xs:complexType>
+			
 	<xs:simpleType name="ResultCodeEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OK"/>
