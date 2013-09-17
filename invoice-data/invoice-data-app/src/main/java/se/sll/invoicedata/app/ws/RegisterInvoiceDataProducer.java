@@ -72,35 +72,5 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
     	return ur;
     	
     }
-
-    /**
-     * Maps XML JAXB object to an entity bean.
-     * 
-     * @param event the JAXB object.
-     * @return the entity bean.
-     */
-    static BusinessEventEntity toEntity(final Event event) {
-        final BusinessEventEntity entity = new BusinessEventEntity();
-        
-        entity.setId(event.getEventId());
-        entity.setSupplierName(event.getSupplierName());
-        entity.setSupplierId(event.getSupplierId());
-        entity.setServiceCode(event.getServiceCode());
-        entity.setStartTimestamp(event.getStartTimestamp().toGregorianCalendar().getTime());
-        entity.setEndTimestamp(event.getEndTimestamp().toGregorianCalendar().getTime());
-        entity.setSignedTimestamp(event.getSignedTimestamp().toGregorianCalendar().getTime());
-        entity.setSignedBy(event.getSignedBy());
-        
-        for (final Item item : event.getItems().getItem()) {
-            final ItemEntity itemEntity = new ItemEntity();
-            
-            itemEntity.setItemId(item.getItemId());;
-            itemEntity.setQty(item.getQty().floatValue());
-            itemEntity.setDescription(item.getDescription());
-     
-            entity.addItemEntity(itemEntity);
-        }
-        
-        return entity;
-    }
+    
 }

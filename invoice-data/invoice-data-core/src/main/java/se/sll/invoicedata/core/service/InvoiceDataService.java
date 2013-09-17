@@ -16,6 +16,8 @@
 
 package se.sll.invoicedata.core.service;
 
+import java.util.List;
+
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
 /**
@@ -31,5 +33,9 @@ public interface InvoiceDataService {
      * 
      * @param buinsessEventEntity the business event entity.
      */
-    void registerBusinessEvent(BusinessEventEntity businessEventEntity);    
+    void registerBusinessEvent(BusinessEventEntity businessEventEntity);
+    
+    BusinessEventEntity getBusinessEvent(String eventId);
+    
+    List<BusinessEventEntity> getAllUnprocessedBusinessEvents(String supplierId);
 }

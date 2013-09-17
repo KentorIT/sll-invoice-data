@@ -16,6 +16,9 @@
 
 package se.sll.invoicedata.core.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,5 +39,26 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     public void registerBusinessEvent(BusinessEventEntity businessEventEntity) {
         businessEventRepository.save(businessEventEntity);
     }
+
+	@Override
+	public BusinessEventEntity getBusinessEvent(String eventId) {
+		return businessEventRepository.findOne(eventId);
+	}
+
+	@Override
+	public List<BusinessEventEntity> getAllUnprocessedBusinessEvents(
+			String supplierId) {
+		List<BusinessEventEntity> bEEntitiesBySupplier = new ArrayList<BusinessEventEntity>();
+		List<BusinessEventEntity> bEventEntities = businessEventRepository.findAll();
+		//TODO: Condition for unprocessed business events required!!
+		for (BusinessEventEntity bEEntity : bEventEntities) {
+			
+			if (bEEntity.getSupplierId() != null &&
+					bEEntity.getSupplierId().equalsIgnoreCase(supplierId)) {				
+				bEEntitiesBySupplier.add(bEEntity);
+			}
+		}		
+		return bEEntitiesBySupplier;
+	}
 
 }

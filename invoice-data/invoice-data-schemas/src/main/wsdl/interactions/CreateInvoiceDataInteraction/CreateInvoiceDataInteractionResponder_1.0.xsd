@@ -23,7 +23,7 @@
 
 	<xs:complexType name='CreateInvoiceData'>
 		<xs:sequence>
-			<xs:element name="invoiceData" type="core:InvoiceData" />
+			<xs:element name="invoiceEvents" type="core:InvoiceEvents" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>

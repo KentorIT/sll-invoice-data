@@ -62,7 +62,7 @@
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="InvoiceData">
+	<xs:complexType name="InvoiceEvents">
 		<xs:sequence>
 			<xs:element name="supplierName" type="xs:string"/>
 			<xs:element name="eventIdList" type="xs:string" minOccurs="1" maxOccurs="unbounded">
@@ -73,7 +73,19 @@
 			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>		
 	</xs:complexType>
-			
+
+	<xs:complexType name="GetInvoices">
+		<xs:sequence>
+			<xs:element name="supplierName" type="xs:string"/>
+			<xs:element name="eventId" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>This field can be left empty in-case if the request is to get all unprocessed invoices</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>		
+	</xs:complexType>	
+	
 	<xs:simpleType name="ResultCodeEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OK"/>
