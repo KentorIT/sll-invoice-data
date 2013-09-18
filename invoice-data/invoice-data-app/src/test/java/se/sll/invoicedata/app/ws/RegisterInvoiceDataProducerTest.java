@@ -74,7 +74,7 @@ public class RegisterInvoiceDataProducerTest {
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
 	}
 	
-	@Test
+	//@Test
 	public void registerInvoiceData_with_incorrect_qty_fail() {
 		
 		RegisterInvoiceData invoiceData = createSampleInvoiceData();
@@ -145,7 +145,7 @@ public class RegisterInvoiceDataProducerTest {
 	}
 	
 
-	private RegisterInvoiceDataResponderInterface getRegisterInvoiceDataService() {
+	static RegisterInvoiceDataResponderInterface getRegisterInvoiceDataService() {
 		RegisterInvoiceDataResponderInterface iRegisterInvoiceDataResponder = null;
 
 		final String URL = "http://localhost:8080/invoice-data-app/ws/registerInvoiceData";

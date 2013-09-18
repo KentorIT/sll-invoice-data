@@ -16,12 +16,16 @@
 
 package se.sll.invoicedata.core.support;
 
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 
 /**
@@ -41,6 +45,30 @@ public abstract class TestSupport {
 
     protected BusinessEventRepository getBusinessEventRepository() {
         return businessEventRepository;
+    }
+    
+    protected ItemEntity createSampleItemEntity() {
+    	ItemEntity i = new ItemEntity();
+    	i.setDescription("Item is kind of a product");
+		i.setItemId("IT101");
+		i.setQty(2.0f);
+		
+		return i;
+	
+    }
+    
+    protected BusinessEventEntity createSampleBusinessEventEntity() {
+    	BusinessEventEntity e = new BusinessEventEntity();
+        e.setId("event-123");
+        e.setSignedBy("Peter Larsson");
+        e.setSupplierName("Dummy");
+        e.setSignedTimestamp(new Date());
+        e.setServiceCode("XYZ");
+        e.setSupplierId("12342");
+        e.setStartTimestamp(new Date());
+        e.setEndTimestamp(new Date());
+        
+        return e;
     }
 
 }

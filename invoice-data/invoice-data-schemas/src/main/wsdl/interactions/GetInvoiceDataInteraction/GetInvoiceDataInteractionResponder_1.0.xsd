@@ -18,16 +18,8 @@
 	<xs:import schemaLocation='../../core_components/sll_invoice_data_1.0.xsd'
 		namespace='urn:riv:sll:invoicedata:1' />
 	
-	<xs:element name='GetInvoiceData' type='tns:GetInvoiceData' />
+	<xs:element name='GetInvoiceDataRequest' type='core:GetInvoiceRequest' />
 	<xs:element name='GetInvoiceDataResponse' type='tns:GetInvoiceDataResponse' />
-
-	<xs:complexType name='GetInvoiceData'>
-		<xs:sequence>
-			<xs:element name="getInvoices" type="core:GetInvoices" />
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
 	
 	<xs:complexType name='GetInvoiceDataResponse'>
 		<xs:sequence>

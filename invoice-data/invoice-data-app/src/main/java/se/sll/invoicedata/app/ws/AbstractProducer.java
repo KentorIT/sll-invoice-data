@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
+import riv.sll.invoicedata._1.ItemList;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 
@@ -124,6 +125,7 @@ public abstract class AbstractProducer {
         event.setSignedTimestamp(getXMLGCalendar(entity.getSignedTimestamp()));
         event.setSignedBy(entity.getSignedBy());
         
+        ItemList itemList = new ItemList();
         
         for (final ItemEntity itemEntity : entity.getItemEntities()) {
             final Item item = new Item();
@@ -132,8 +134,9 @@ public abstract class AbstractProducer {
             item.setQty(new BigDecimal(itemEntity.getQty()));
             item.setDescription(itemEntity.getDescription());
      
-            event.getItems().getItem().add(item);
+            itemList.getItem().add(item);
         }
+        event.setItems(itemList);
         
         return event;
     }

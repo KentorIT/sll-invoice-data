@@ -16,9 +16,10 @@
 
 package se.sll.invoicedata.core.model.repository;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -26,7 +27,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
-import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.support.TestSupport;
 
 /**
@@ -119,27 +119,4 @@ public class BusinessEventRepositoryTest extends TestSupport {
        
     }
     
-    private ItemEntity createSampleItemEntity() {
-    	ItemEntity i = new ItemEntity();
-    	i.setDescription("Item is kind of a product");
-		i.setItemId("IT101");
-		i.setQty(2.0f);
-		
-		return i;
-	
-    }
-    
-    private BusinessEventEntity createSampleBusinessEventEntity() {
-    	BusinessEventEntity e = new BusinessEventEntity();
-        e.setId("event-123");
-        e.setSignedBy("Peter Larsson");
-        e.setSupplierName("Dummy");
-        e.setSignedTimestamp(new Date());
-        e.setServiceCode("XYZ");
-        e.setSupplierId("12342");
-        e.setStartTimestamp(new Date());
-        e.setEndTimestamp(new Date());
-        
-        return e;
-    }
 }

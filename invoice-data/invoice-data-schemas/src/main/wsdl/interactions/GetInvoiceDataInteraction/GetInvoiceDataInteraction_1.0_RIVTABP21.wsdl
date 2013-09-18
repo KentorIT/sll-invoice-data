@@ -38,7 +38,7 @@
     <wsdl:part name='LogicalAddress' element='itr:LogicalAddress'>
       <wsdl:documentation>Logical address description</wsdl:documentation>
     </wsdl:part>
-    <wsdl:part name='parameters' element='tjsr:GetInvoiceData' />
+    <wsdl:part name='parameters' element='tjsr:GetInvoiceDataRequest' />
   </wsdl:message>
   <wsdl:message name='GetInvoiceDataResponse'>
     <wsdl:part name='parameters' element='tjsr:GetInvoiceDataResponse' />

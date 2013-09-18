@@ -27,10 +27,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.GetInvoiceRequest;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
-import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceData;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.getinvoicedataresponder._1.ObjectFactory;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
@@ -52,9 +52,9 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
 
 	@Override
 	public GetInvoiceDataResponse getInvoiceData(String logicalAddress,
-			GetInvoiceData parameters) {
+			GetInvoiceRequest request) {
 		log("getInvoiceData");
-		log.info("logicalAdress: {}", logicalAddress);
+		log.info("logicalAddress: {}", logicalAddress);
 
 		final ObjectFactory oFactory = new ObjectFactory();
 		final GetInvoiceDataResponse response = oFactory
@@ -64,13 +64,13 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
 		List<Event> eventEntityList = new ArrayList<Event>();
 		try {
 			
-			if (parameters.getGetInvoices().getEventId() != null) {
+			if (request.getEventId() != null) {
 				final Event event = fromEntity(invoiceDataService.getBusinessEvent(
-						parameters.getGetInvoices().getEventId()));				
+						request.getEventId()));				
 				eventEntityList.add(event);
-			} else if (parameters.getGetInvoices().getSupplierName() != null) {
+			} else if (request.getSupplierName() != null) {
 				final List<BusinessEventEntity> tmpEEntityList = invoiceDataService.
-						getAllUnprocessedBusinessEvents(parameters.getGetInvoices().getSupplierName());
+						getAllUnprocessedBusinessEvents(request.getSupplierName());
 				
 				for (BusinessEventEntity bEE : tmpEEntityList) {
 					eventEntityList.add(fromEntity(bEE));
@@ -85,7 +85,10 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
 			log.error(ex.getMessage());
 		}
 		response.setResultCode(rc);
+		response.getEvent().addAll(eventEntityList);
 		return response;
 	}
 
+
+	
 }

@@ -52,17 +52,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
     public List<BusinessEventEntity> getAllUnprocessedBusinessEvents(
             String supplierId) {
-        List<BusinessEventEntity> bEEntitiesBySupplier = new ArrayList<BusinessEventEntity>();
-        List<BusinessEventEntity> bEventEntities = businessEventRepository.findAll();
-        //TODO: Condition for unprocessed business events required!!
-        for (BusinessEventEntity bEEntity : bEventEntities) {
-
-            if (bEEntity.getSupplierId() != null &&
-                    bEEntity.getSupplierId().equalsIgnoreCase(supplierId)) {				
-                bEEntitiesBySupplier.add(bEEntity);
-            }
-        }		
-        return bEEntitiesBySupplier;
+        // TODO: Condition for unprocessed business events required!!
+        return businessEventRepository.findBySupplierId(supplierId);
     }
     
     
