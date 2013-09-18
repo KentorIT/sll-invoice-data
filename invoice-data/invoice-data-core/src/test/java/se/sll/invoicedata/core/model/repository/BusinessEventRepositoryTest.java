@@ -76,7 +76,21 @@ public class BusinessEventRepositoryTest extends TestSupport {
         assertNull(e.getCreatedTimestamp());
         assertNotNull(f.getCreatedTimestamp());   
     }
-    
+
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testFind_BusinessEvent_By_Supplier_Id() {
+        final BusinessEventEntity e = createSampleBusinessEventEntity();
+        getBusinessEventRepository().save(e);
+        getBusinessEventRepository().flush();
+        
+        List<BusinessEventEntity> l = getBusinessEventRepository().findBySupplierId("12342");
+        
+        assertNotNull(l);
+        assertEquals(1, l.size());
+    }
+
     @Test
     @Transactional
     @Rollback(true)
