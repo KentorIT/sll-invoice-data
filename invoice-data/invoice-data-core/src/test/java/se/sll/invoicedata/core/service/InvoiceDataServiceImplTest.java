@@ -17,7 +17,7 @@
 /**
  * 
  */
-package se.sll.invoicedata.core.model.repository;
+package se.sll.invoicedata.core.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
