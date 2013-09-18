@@ -76,7 +76,7 @@ public class RegisterInvoiceDataProducerTest {
 		Assert.assertEquals("Result code should be OK in this case", ResultCodeEnum.OK, response.getResultCode().getCode());	
 	}
 	
-	//@Test
+	@Test
 	public void registerInvoiceData_with_incorrect_qty_fail() {
 		
 		RegisterInvoiceData invoiceData = createSampleInvoiceData();
