@@ -17,7 +17,6 @@
 package se.sll.invoicedata.core.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +39,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Override
     public void registerBusinessEvent(BusinessEventEntity businessEventEntity) {
-        validateBusinessEntity(businessEventEntity);
-        businessEventRepository.save(businessEventEntity);
+        businessEventRepository.save(validate(businessEventEntity));
     }
 
     @Override
@@ -58,14 +56,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     
     
     //
-    private static void mandatory(String s, String field) {
+    private static void mandatory(final String s, final String field) {
         if (s == null || s.length() ==  0) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException(field);            
         }
     }
 
     //
-    private static void mandatory(Object s, String field) {
+    private static void mandatory(final Object s, final String field) {
         if (s == null) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException(field);            
         }
@@ -75,8 +73,9 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      * Validates business entity.
      * 
      * @param businessEventEntity the entity.
+     * @return the same entity reference as passed as argument.
      */
-    protected void validateBusinessEntity(BusinessEventEntity businessEventEntity) {
+    protected BusinessEventEntity validate(final BusinessEventEntity businessEventEntity) {
         
         // mandatory fields according to schema
         mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");
@@ -99,7 +98,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
 
         // items
-        for (ItemEntity itemEntity : items) {
+        for (final ItemEntity itemEntity : items) {
             mandatory(itemEntity.getDescription(), "item.description");
             mandatory(itemEntity.getItemId(), "item.id");
             mandatory(itemEntity.getEvent(), "item.event");
@@ -112,6 +111,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
                 throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, invalid scale: " + qty);                
             }
         }
+        
+        return businessEventEntity;
     }
 
 }
