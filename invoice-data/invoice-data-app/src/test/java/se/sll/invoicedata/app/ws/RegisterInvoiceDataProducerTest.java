@@ -74,7 +74,7 @@ public class RegisterInvoiceDataProducerTest {
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
 	}
 	
-	//@Test
+	@Test
 	public void registerInvoiceData_with_incorrect_qty_fail() {
 		
 		RegisterInvoiceData invoiceData = createSampleInvoiceData();
