@@ -68,9 +68,9 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
 				final Event event = fromEntity(invoiceDataService.getBusinessEvent(
 						request.getEventId()));				
 				eventEntityList.add(event);
-			} else if (request.getSupplierName() != null) {
+			} else if (request.getSupplierId() != null) {
 				final List<BusinessEventEntity> tmpEEntityList = invoiceDataService.
-						getAllUnprocessedBusinessEvents(request.getSupplierName());
+						getAllUnprocessedBusinessEvents(request.getSupplierId());
 				
 				for (BusinessEventEntity bEE : tmpEEntityList) {
 					eventEntityList.add(fromEntity(bEE));

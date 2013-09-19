@@ -70,7 +70,7 @@ public class RegisterInvoiceDataProducerTest {
 		RegisterInvoiceData invoiceData = createSampleInvoiceData();
 		invoiceData.getEvent().getItems().setItem(null);
 		
-		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
+		getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
 	}
 	
