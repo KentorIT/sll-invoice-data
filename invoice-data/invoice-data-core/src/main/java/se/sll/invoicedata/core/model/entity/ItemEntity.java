@@ -26,7 +26,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="invoice_data_item")
+@Table(name="invoice_data_event_item")
 public class ItemEntity {
 
     @Id

@@ -50,8 +50,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
     public List<BusinessEventEntity> getAllUnprocessedBusinessEvents(
             String supplierId) {
-        // TODO: Condition for unprocessed business events required!!
-        return businessEventRepository.findBySupplierId(supplierId);
+        return businessEventRepository.findBySupplierIdAndPendingIsTrue(supplierId);
     }
     
     

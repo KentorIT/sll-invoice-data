@@ -35,7 +35,19 @@ public interface InvoiceDataService {
      */
     void registerBusinessEvent(BusinessEventEntity businessEventEntity);
     
+    /**
+     * Returns a business event by id.
+     * 
+     * @param eventId the event id.
+     * @return the business event with the given id or null if none found.
+     */
     BusinessEventEntity getBusinessEvent(String eventId);
     
+    /**
+     * Returns all unprocessed events for a particular supplier.
+     * 
+     * @param supplierId the supplier id.
+     * @return the result list, might be empty if no none events found.
+     */
     List<BusinessEventEntity> getAllUnprocessedBusinessEvents(String supplierId);
 }

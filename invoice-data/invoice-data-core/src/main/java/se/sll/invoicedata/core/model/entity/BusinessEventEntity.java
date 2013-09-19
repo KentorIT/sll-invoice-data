@@ -48,7 +48,7 @@ indexes={ @Index(name=BusinessEventEntity.INDEX_NAME,
 columnNames= { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ) } )
 public class BusinessEventEntity {
     static final String TABLE_NAME = "invoice_data_event";
-    static final String INDEX_NAME = "invoice_data_event_search_index";
+    static final String INDEX_NAME = "invoice_data_event_query_index";
     static final String SUPPLIER_ID = "supplier_id";
     static final String PENDING = "pending";
     

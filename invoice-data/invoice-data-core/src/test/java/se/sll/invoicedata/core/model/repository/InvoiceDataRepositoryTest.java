@@ -16,15 +16,18 @@
 
 package se.sll.invoicedata.core.model.repository;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.support.TestSupport;
 
@@ -36,8 +39,7 @@ import se.sll.invoicedata.core.support.TestSupport;
  */
 public class InvoiceDataRepositoryTest extends TestSupport {
 
-    @Autowired
-    private InvoiceDataRepository invoiceDataRepository;
+    
     
     @Test
     @Transactional
@@ -45,10 +47,10 @@ public class InvoiceDataRepositoryTest extends TestSupport {
     public void testInsertFind_InvocieDataEntity() {
         final InvoiceDataEntity e = createSampleInvoiceDataEntity();
         
-        invoiceDataRepository.save(e);
-        invoiceDataRepository.flush();
+        getInvoiceDataRepository().save(e);
+        getInvoiceDataRepository().flush();
         
-        final List<InvoiceDataEntity> l = invoiceDataRepository.findBySupplierId(e.getSupplierId());
+        final List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierId(e.getSupplierId());
         
         assertNotNull(l);
         assertEquals(1, l.size());      
@@ -71,21 +73,49 @@ public class InvoiceDataRepositoryTest extends TestSupport {
     public void testGetReferenceId_success() {
         final InvoiceDataEntity e = createSampleInvoiceDataEntity();
         
-        final InvoiceDataEntity saved = invoiceDataRepository.save(e);
-        invoiceDataRepository.flush();
+        final InvoiceDataEntity saved = getInvoiceDataRepository().save(e);
+        getInvoiceDataRepository().flush();
         
         final String expected = String.format("%s.%06d", "supplierId", saved.getId());
         
         assertEquals(expected, saved.getReferenceId());
      }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testInsertUpdateFind_assign_business_event() {
+        final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+        final BusinessEventEntity be = createSampleBusinessEventEntity();
 
-    
-    static InvoiceDataEntity createSampleInvoiceDataEntity() {
-        final InvoiceDataEntity e = new InvoiceDataEntity();
+        // can only be added if supplierId matches, i.e. returns false at this stage
+        assertFalse(ie.addBusinessEventEntity(be));
+
+        // save
+        // from now on it should be correct
+        be.setSupplierId(ie.getSupplierId());
+        getBusinessEventRepository().save(be);
+        getBusinessEventRepository().flush();
         
-        e.setSupplierId("supplierId");
-        e.setCreatedBy("createdBy");
-    
-        return e;
-    }
+        //
+        final BusinessEventEntity beSaved = getBusinessEventRepository().findBySupplierIdAndPendingIsTrue(ie.getSupplierId()).get(0);      
+        assertTrue(ie.addBusinessEventEntity(beSaved));
+        
+        final BusinessEventEntity bePending = createSampleBusinessEventEntity();
+        bePending.setId("anotherEventId");
+        bePending.setSupplierId(ie.getSupplierId());
+        getBusinessEventRepository().save(bePending);
+                
+        getInvoiceDataRepository().save(ie);
+        getInvoiceDataRepository().flush();
+        
+        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierId(ie.getSupplierId());
+        
+        assertEquals(1, l.size());
+        
+        assertEquals(1, l.get(0).getBusinessEventEntities().size());
+        
+        // should be one pending left
+        assertEquals(1, getBusinessEventRepository().findBySupplierIdAndPendingIsTrue(ie.getSupplierId()).size());
+    }    
 }

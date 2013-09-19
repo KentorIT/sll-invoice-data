@@ -25,8 +25,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
+import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 
 /**
  * Abstracts JUnit and Spring configuration stuff, and is intended to extend
@@ -42,11 +44,17 @@ public abstract class TestSupport {
 
     @Autowired
     private BusinessEventRepository businessEventRepository;
+    @Autowired
+    private InvoiceDataRepository invoiceDataRepository;
 
     protected BusinessEventRepository getBusinessEventRepository() {
         return businessEventRepository;
     }
-    
+
+    protected InvoiceDataRepository getInvoiceDataRepository() {
+        return invoiceDataRepository;
+    }
+
     protected ItemEntity createSampleItemEntity() {
     	ItemEntity i = new ItemEntity();
     	i.setDescription("Item is kind of a product");
@@ -71,4 +79,12 @@ public abstract class TestSupport {
         return e;
     }
 
+    protected InvoiceDataEntity createSampleInvoiceDataEntity() {
+        final InvoiceDataEntity e = new InvoiceDataEntity();
+        
+        e.setSupplierId("supplierId");
+        e.setCreatedBy("createdBy");
+    
+        return e;
+    }
 }

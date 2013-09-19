@@ -32,10 +32,10 @@ import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 public interface BusinessEventRepository extends JpaRepository<BusinessEventEntity, String> {
     
     /**
-     * Returns all events for a particular supplier.
+     * Returns all pending events for a particular supplier.
      * 
      * @param supplierId the supplier id.
-     * @return the list of unprocessed events.
+     * @return the list of pending/unprocessed events.
      */
-    List<BusinessEventEntity> findBySupplierId(String supplierId);
+    List<BusinessEventEntity> findBySupplierIdAndPendingIsTrue(String supplierId);
 }

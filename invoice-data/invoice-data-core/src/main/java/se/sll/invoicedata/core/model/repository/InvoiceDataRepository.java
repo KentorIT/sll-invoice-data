@@ -30,5 +30,11 @@ import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
  */
 public interface InvoiceDataRepository  extends JpaRepository<InvoiceDataEntity, Long> {
     
+    /**
+     * Returns all invoice data entities for a particular supplier.
+     * 
+     * @param supplierId the supplier id.
+     * @return the list of invoice data entities.
+     */
     List<InvoiceDataEntity> findBySupplierId(String supplierId);
 }

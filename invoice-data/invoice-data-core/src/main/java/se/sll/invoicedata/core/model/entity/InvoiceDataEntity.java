@@ -97,6 +97,15 @@ public class InvoiceDataEntity {
         this.createdTimestamp = createdTimestamp;
     }
 
+    /**
+     * Returns if a business entity has been removed from this invoice data. <p>
+     * 
+     * In order to be removed the business event entity must have been previously added to this
+     * invoice data object.
+     * 
+     * @param businessEventEntity the entity to add.
+     * @return true if removed, otherwise false.
+     */
     public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
         if (this.equals(businessEventEntity.getInvoiceData())) {
             businessEventEntity.setInvoiceData(null);
@@ -105,8 +114,17 @@ public class InvoiceDataEntity {
         return false;
     }
     
+    /**
+     * Returns if a business entity has been added/assign to this invoice data. <p>
+     * 
+     * In order to be added the business entity must be assigned to another invoice data object, nor have 
+     * a reference to a different supplier identity.
+     * 
+     * @param businessEventEntity the entity to add.
+     * @return true if added, otherwise false.
+     */
     public boolean addBusinessEventEntity(BusinessEventEntity businessEventEntity) {
-        if (businessEventEntity.getInvoiceData() == null) {
+        if (businessEventEntity.getInvoiceData() == null && getSupplierId().equals(businessEventEntity.getSupplierId())) {
             businessEventEntity.setInvoiceData(this);
             return businessEventEntities.add(businessEventEntity);
         }
