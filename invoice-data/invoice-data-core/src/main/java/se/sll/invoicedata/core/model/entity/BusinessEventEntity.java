@@ -26,6 +26,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -33,7 +35,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Placeholder
+ * Business event information.
  *
  * @author Peter
  */
@@ -72,16 +74,17 @@ public class BusinessEventEntity {
     @Column(name = "end_timestamp", nullable=false, updatable=false)
     private Date endTimestamp;
     
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "event", orphanRemoval = true, cascade = CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
     private List<ItemEntity> itemEntities = new LinkedList<ItemEntity>();
-    
 
+    @ManyToOne(optional=true)
+    @JoinColumn(name="invoice_data_id")
+    private InvoiceDataEntity invoiceData;
 
     @PrePersist
     void onPrePerist() {
         setCreatedTimestamp(new Date());
     }
-
 
 
     public String getId() {
@@ -136,7 +139,7 @@ public class BusinessEventEntity {
 
 
 
-    public void setCreatedTimestamp(Date createdTimestamp) {
+    protected void setCreatedTimestamp(Date createdTimestamp) {
         this.createdTimestamp = createdTimestamp;
     }
 
@@ -210,13 +213,23 @@ public class BusinessEventEntity {
     }
 
     public boolean addItemEntity(ItemEntity itemEntity) {
-        itemEntity.setEvent(this);
-        return itemEntities.add(itemEntity);
+        if (itemEntity.getEvent() == null) {
+            itemEntity.setEvent(this);
+            return itemEntities.add(itemEntity);
+        }
+        return false;
     }
     
     public List<ItemEntity> getItemEntities() {
         return Collections.unmodifiableList(itemEntities);
     }
 
+    public InvoiceDataEntity getInvoiceData() {
+        return invoiceData;
+    }
+
+    public void setInvoiceData(InvoiceDataEntity invoiceData) {
+        this.invoiceData = invoiceData;
+    }
 
 }

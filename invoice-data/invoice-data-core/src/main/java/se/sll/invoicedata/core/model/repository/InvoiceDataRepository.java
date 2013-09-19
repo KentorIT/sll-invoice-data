@@ -16,26 +16,19 @@
 
 package se.sll.invoicedata.core.model.repository;
 
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
 /**
- * Business event repository functions.
+ * Invoice data repository functions.
  * 
  * @author Peter
  *
  */
-public interface BusinessEventRepository extends JpaRepository<BusinessEventEntity, String> {
+public interface InvoiceDataRepository  extends JpaRepository<InvoiceDataEntity, Long> {
     
-    /**
-     * Returns all events for a particular supplier.
-     * 
-     * @param supplierId the supplier id.
-     * @return the list of unprocessed events.
-     */
-    List<BusinessEventEntity> findBySupplierId(String supplierId);
+    List<InvoiceDataEntity> findBySupplierId(String supplierId);
 }
