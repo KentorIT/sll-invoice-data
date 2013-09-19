@@ -31,8 +31,8 @@ public class ItemEntity {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private String id;
-    
+    private Long id;
+
     @Column(name="item_id", length=64, nullable=false, updatable=false)
     private String itemId;
 
@@ -41,12 +41,12 @@ public class ItemEntity {
 
     @Column(name="qty", updatable=false)
     private float qty;
-    
+
     @ManyToOne(optional=false)
     @JoinColumn(name="event_id")
     private BusinessEventEntity event;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -81,5 +81,22 @@ public class ItemEntity {
     public void setEvent(BusinessEventEntity event) {
         this.event = event;
     }
-    
+
+    @Override
+    public boolean equals(Object r) {
+        if (this == r) {
+            return true;
+        }
+        if (getId() != null && r instanceof ItemEntity) {
+            return getId().equals(((ItemEntity)r).getId());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final Long id = getId();
+        return (id == null) ? super.hashCode() : id.hashCode();
+    }
+
 }

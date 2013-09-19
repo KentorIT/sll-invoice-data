@@ -125,4 +125,20 @@ public class InvoiceDataEntity {
         this.createdBy = createdBy;
     }
     
+    @Override
+    public boolean equals(Object r) {
+        if (this == r) {
+            return true;
+        }
+        if (getId() != null && r instanceof InvoiceDataEntity) {
+            return getId().equals(((InvoiceDataEntity)r).getId());
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        final Long id = getId();
+        return (id == null) ? super.hashCode() : id.hashCode();
+    }
 }

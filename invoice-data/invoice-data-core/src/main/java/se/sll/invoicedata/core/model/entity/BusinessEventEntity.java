@@ -91,18 +91,6 @@ public class BusinessEventEntity {
         return id;
     }
 
-    
-    @Override
-    public boolean equals(Object r) {
-        if (this == r) {
-            return true;
-        }
-        if (r instanceof BusinessEventEntity) {
-            return getId().equals(((BusinessEventEntity)r).getId());
-        }
-        return false;
-    }
-
 
     public void setId(String id) {
         this.id = id;
@@ -230,6 +218,24 @@ public class BusinessEventEntity {
 
     public void setInvoiceData(InvoiceDataEntity invoiceData) {
         this.invoiceData = invoiceData;
+    }
+    
+    
+    @Override
+    public boolean equals(Object r) {
+        if (this == r) {
+            return true;
+        }
+        if (getId() != null && r instanceof BusinessEventEntity) {
+            return getId().equals(((BusinessEventEntity)r).getId());
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        final String id = getId();
+        return (id == null) ? super.hashCode() : id.hashCode();
     }
 
 }
