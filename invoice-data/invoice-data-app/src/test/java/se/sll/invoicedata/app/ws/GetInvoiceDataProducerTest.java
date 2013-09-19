@@ -53,14 +53,13 @@ public class GetInvoiceDataProducerTest {
 	private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 	
 	@Test
-	public void getInvoiceData_by_id_normal_test() {
+	public void getInvoiceData_by_event_id_normal_test() {
 		
 		RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, createSampleInvoiceData());
 		
 		GetInvoiceRequest request = new GetInvoiceRequest();
 		request.setEventId("EID1234");
-		//request.setSupplierName("SNX");
 		
 		GetInvoiceDataResponse response = getGetInvoiceDataService().
 				getInvoiceData(LOGICAL_ADDRESS, request);
@@ -72,6 +71,26 @@ public class GetInvoiceDataProducerTest {
 		Assert.assertEquals(1, response.getEvent().size());			
 		
 	}
+	
+	@Test
+    public void getInvoiceData_by_supplier_id_normal_test() {
+        
+        RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
+                .registerInvoiceData(LOGICAL_ADDRESS, createSampleInvoiceData());
+        
+        GetInvoiceRequest request = new GetInvoiceRequest();
+        request.setSupplierId("SID123");
+        
+        GetInvoiceDataResponse response = getGetInvoiceDataService().
+                getInvoiceData(LOGICAL_ADDRESS, request);
+        
+        Assert.assertNotNull(response);
+        Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode().getCode());
+        
+        Assert.assertNotNull(response.getEvent());
+        Assert.assertEquals(1, response.getEvent().size());         
+        
+    }
 	
 	private RegisterInvoiceData createSampleInvoiceData() {
 		RegisterInvoiceData invoiceData = new RegisterInvoiceData();

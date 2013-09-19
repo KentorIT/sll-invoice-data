@@ -64,7 +64,7 @@
 	
 	<xs:complexType name="InvoiceEvents">
 		<xs:sequence>
-			<xs:element name="supplierName" type="xs:string"/>
+			<xs:element name="supplierId" type="xs:string"/>
 			<xs:element name="eventIdList" type="xs:string" minOccurs="1" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Globally unique and registered event id list</xs:documentation>
@@ -76,7 +76,7 @@
 
 	<xs:complexType name="GetInvoiceRequest">
 		<xs:sequence>
-			<xs:element name="supplierName" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="supplierId" type="xs:string" minOccurs="0" maxOccurs="1" />
 			<xs:element name="eventId" type="xs:string" minOccurs="0" maxOccurs="1">
 				<xs:annotation>
 					<xs:documentation>This field can be left empty in-case if the request is to get all unprocessed invoices</xs:documentation>
