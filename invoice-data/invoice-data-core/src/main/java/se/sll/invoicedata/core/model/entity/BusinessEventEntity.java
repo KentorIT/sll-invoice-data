@@ -30,18 +30,28 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
-import javax.persistence.Table;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 
 /**
  * Business event information.
  *
  * @author Peter
  */
-@Entity
-@Table(name="invoice_data_event")
+@Entity(name=BusinessEventEntity.TABLE_NAME)
+@Table(appliesTo=BusinessEventEntity.TABLE_NAME,
+indexes={ @Index(name=BusinessEventEntity.INDEX_NAME, 
+columnNames= { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ) } )
 public class BusinessEventEntity {
+    static final String TABLE_NAME = "invoice_data_event";
+    static final String INDEX_NAME = "invoice_data_event_search_index";
+    static final String SUPPLIER_ID = "supplier_id";
+    static final String PENDING = "pending";
+    
     @Id
     @Column(name="event_id", length=64)
     private String id;
@@ -50,7 +60,7 @@ public class BusinessEventEntity {
     @Column(name = "created_timestamp", nullable = false, updatable = false)
     private Date createdTimestamp;
     
-    @Column(name="supplier_id", length=64, nullable=false, updatable=false)
+    @Column(name=SUPPLIER_ID, length=64, nullable=false, updatable=false)
     private String supplierId;
     
     @Column(name="supplier_name", length=256, nullable=false, updatable=false)
@@ -81,11 +91,30 @@ public class BusinessEventEntity {
     @JoinColumn(name="invoice_data_id")
     private InvoiceDataEntity invoiceData;
 
+    /** Derived field enabling indexed queries on supplier and pending events.
+     * 
+     * If pending is true the event is not yet assigned to any invoice data.
+     */
+    @Column(name=PENDING, nullable=true, updatable=true)
+    private Boolean pending;
+
     @PrePersist
     void onPrePerist() {
+        updatePending();
         setCreatedTimestamp(new Date());
     }
+    
+    @PreUpdate
+    void onPreUpdate() {
+        updatePending();
+    }
 
+    /**
+     * Updates the pending value (derived).
+     */
+    private void updatePending() {
+        setPending((getInvoiceData() == null) ? Boolean.TRUE : null);        
+    }
 
     public String getId() {
         return id;
@@ -220,7 +249,14 @@ public class BusinessEventEntity {
         this.invoiceData = invoiceData;
     }
     
-    
+    public boolean isPending() {
+        return pending;
+    }
+
+    protected void setPending(Boolean pending) {
+        this.pending = pending;
+    }
+
     @Override
     public boolean equals(Object r) {
         if (this == r) {
@@ -237,5 +273,4 @@ public class BusinessEventEntity {
         final String id = getId();
         return (id == null) ? super.hashCode() : id.hashCode();
     }
-
 }
