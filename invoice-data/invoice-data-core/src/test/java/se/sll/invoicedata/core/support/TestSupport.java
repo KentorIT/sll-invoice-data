@@ -16,6 +16,7 @@
 
 package se.sll.invoicedata.core.support;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.junit.runner.RunWith;
@@ -59,7 +60,7 @@ public abstract class TestSupport {
     	ItemEntity i = new ItemEntity();
     	i.setDescription("Item is kind of a product");
 		i.setItemId("IT101");
-		i.setQty(2.0f);
+		i.setQty(BigDecimal.valueOf(2.0f));
 		
 		return i;
 	
@@ -72,6 +73,7 @@ public abstract class TestSupport {
         e.setSupplierName("Dummy");
         e.setSignedTimestamp(new Date());
         e.setServiceCode("XYZ");
+        e.setPaymentResponsible("HSF");
         e.setSupplierId("12342");
         e.setStartTimestamp(new Date());
         e.setEndTimestamp(new Date());

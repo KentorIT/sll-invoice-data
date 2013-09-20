@@ -53,6 +53,7 @@
 			</xs:element>
 			<xs:element name="supplierName" type="xs:string"/>
 			<xs:element name="serviceCode" type="xs:string"/>
+			<xs:element name="paymentResponsible" type="xs:string" />
 			<xs:element name="signedBy" type="xs:string"/>
 			<xs:element name="signedTimestamp" type="xs:dateTime"/>
 			<xs:element name="startTimestamp" type="xs:dateTime"/>

@@ -45,21 +45,21 @@ public class InvoiceDataEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
-    
+
     @Column(name="supplier_id", length=64, nullable=false, updatable=false)
     private String supplierId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_timestamp", nullable=false, updatable=false)
     private Date createdTimestamp;
-    
+
     @Column(name="created_by", length=64, nullable=false, updatable=false)
     private String createdBy;
- 
+
     @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
     private List<BusinessEventEntity> businessEventEntities = new LinkedList<BusinessEventEntity>();
 
-    
+
     @PrePersist
     void onPrePerist() {
         setCreatedTimestamp(new Date());
@@ -80,11 +80,11 @@ public class InvoiceDataEntity {
         }
         return String.format("%s.%06d", getSupplierId(), getId());
     }
-    
+
     public String getSupplierId() {
         return supplierId;
     }
-    
+
     public void setSupplierId(String supplierId) {
         this.supplierId = supplierId;
     }
@@ -113,7 +113,7 @@ public class InvoiceDataEntity {
         }
         return false;
     }
-    
+
     /**
      * Returns if a business entity has been added/assign to this invoice data. <p>
      * 
@@ -142,18 +142,19 @@ public class InvoiceDataEntity {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
-    
+
     @Override
     public boolean equals(Object r) {
         if (this == r) {
             return true;
         }
-        if (getId() != null && r instanceof InvoiceDataEntity) {
-            return getId().equals(((InvoiceDataEntity)r).getId());
+        final Long id = getId();
+        if (id != null && r instanceof BusinessEventEntity) {
+            return id.equals(((BusinessEventEntity)r).getId());
         }
         return false;
     }
-    
+
     @Override
     public int hashCode() {
         final Long id = getId();

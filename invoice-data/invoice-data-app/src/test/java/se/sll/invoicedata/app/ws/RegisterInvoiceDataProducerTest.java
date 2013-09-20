@@ -124,6 +124,7 @@ public class RegisterInvoiceDataProducerTest {
 
 		event.setSignedTimestamp(getCurrentDate());
 		event.setServiceCode("SCABCD");
+	    event.setPaymentResponsible("HSF");
 		event.setSupplierId("SID123");
 		event.setStartTimestamp(getCurrentDate());
 		event.setEndTimestamp(getCurrentDate());

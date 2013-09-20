@@ -28,6 +28,7 @@ import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.RatingService;
 
 
 @Service
@@ -36,10 +37,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Autowired
     private BusinessEventRepository businessEventRepository;
+    
+    @Autowired
+    private RatingService ratingService;
 
+    
     @Override
     public void registerBusinessEvent(BusinessEventEntity businessEventEntity) {
-        businessEventRepository.save(validate(businessEventEntity));
+        businessEventRepository.save(rate(validate(businessEventEntity)));
     }
 
     @Override
@@ -66,6 +71,19 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         if (s == null) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException(field);            
         }
+    }
+
+    /**
+     * Rates all items of a {@link BusinessEventEntity}
+     * 
+     * @param businessEventEntity the business event.
+     * @return the rated business event, i.e. price has been set to all items.
+     */
+    protected BusinessEventEntity rate(BusinessEventEntity businessEventEntity) {
+        for (ItemEntity itemEntity : validate(businessEventEntity).getItemEntities()) {
+            itemEntity.setPrice(ratingService.rate(itemEntity));
+        }
+        return businessEventEntity;
     }
 
     /**
@@ -101,13 +119,12 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             mandatory(itemEntity.getDescription(), "item.description");
             mandatory(itemEntity.getItemId(), "item.id");
             mandatory(itemEntity.getEvent(), "item.event");
-            final float qty = itemEntity.getQty();
-            if (qty < 0f || qty > 99999f) {
-                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, out of range: " + qty);
+            final BigDecimal qty = itemEntity.getQty();
+            if (qty.floatValue() < 0f || qty.floatValue() > 99999f) {
+                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, out of range: " + qty.floatValue());
             }
-            final float roundedQty = BigDecimal.valueOf(qty).setScale(2, BigDecimal.ROUND_HALF_EVEN).floatValue();
-            if (roundedQty != qty) {
-                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, invalid scale: " + qty);                
+            if (qty.scale() > 2) {
+                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, invalid scale: " + qty.floatValue());                
             }
         }
         

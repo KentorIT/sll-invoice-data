@@ -16,6 +16,8 @@
 
 package se.sll.invoicedata.core.model.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,11 +41,14 @@ public class ItemEntity {
     @Column(name="description", length=256, nullable=false, updatable=false)
     private String description;
 
-    @Column(name="qty", updatable=false)
-    private float qty;
+    @Column(name="qty", precision=8, scale=2, updatable=false)
+    private BigDecimal qty;
+
+    @Column(name="price", precision=8, scale=2, updatable=false)
+    private BigDecimal price;
 
     @ManyToOne(optional=false)
-    @JoinColumn(name="event_id")
+    @JoinColumn(name="event_id", updatable=false)
     private BusinessEventEntity event;
 
     public Long getId() {
@@ -66,11 +71,11 @@ public class ItemEntity {
         this.description = description;
     }
 
-    public float getQty() {
+    public BigDecimal getQty() {
         return qty;
     }
 
-    public void setQty(float qty) {
+    public void setQty(BigDecimal qty) {
         this.qty = qty;
     }
 
@@ -82,13 +87,22 @@ public class ItemEntity {
         this.event = event;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     @Override
     public boolean equals(Object r) {
         if (this == r) {
             return true;
         }
-        if (getId() != null && r instanceof ItemEntity) {
-            return getId().equals(((ItemEntity)r).getId());
+        final Long id = getId();
+        if (id != null && r instanceof BusinessEventEntity) {
+            return id.equals(((BusinessEventEntity)r).getId());
         }
         return false;
     }

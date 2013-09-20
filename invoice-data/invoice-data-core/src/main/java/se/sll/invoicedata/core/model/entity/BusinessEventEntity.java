@@ -45,7 +45,7 @@ import org.hibernate.annotations.Table;
 @Entity(name=BusinessEventEntity.TABLE_NAME)
 @Table(appliesTo=BusinessEventEntity.TABLE_NAME,
 indexes={ @Index(name=BusinessEventEntity.INDEX_NAME, 
-columnNames= { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ) } )
+columnNames={ BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ) } )
 public class BusinessEventEntity {
     static final String TABLE_NAME = "invoice_data_event";
     static final String INDEX_NAME = "invoice_data_event_query_index";
@@ -71,6 +71,9 @@ public class BusinessEventEntity {
     
     @Column(name="signed_by", length=64, nullable=false, updatable=false)
     private String signedBy;
+    
+    @Column(name="payment_responsible", length=64, nullable=false, updatable=false)
+    private String paymentResponsible;
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "signed_timestamp", nullable=false, updatable=false)
@@ -249,6 +252,14 @@ public class BusinessEventEntity {
         this.invoiceData = invoiceData;
     }
     
+    public String getPaymentResponsible() {
+        return paymentResponsible;
+    }
+
+    public void setPaymentResponsible(String paymentResponsible) {
+        this.paymentResponsible = paymentResponsible;
+    }
+
     public boolean isPending() {
         return pending;
     }
@@ -262,8 +273,9 @@ public class BusinessEventEntity {
         if (this == r) {
             return true;
         }
-        if (getId() != null && r instanceof BusinessEventEntity) {
-            return getId().equals(((BusinessEventEntity)r).getId());
+        final String id = getId();
+        if (id != null && r instanceof BusinessEventEntity) {
+            return id.equals(((BusinessEventEntity)r).getId());
         }
         return false;
     }

@@ -16,7 +16,6 @@
 
 package se.sll.invoicedata.app.ws;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
@@ -89,6 +88,7 @@ public abstract class AbstractProducer {
         entity.setSupplierName(event.getSupplierName());
         entity.setSupplierId(event.getSupplierId());
         entity.setServiceCode(event.getServiceCode());
+        entity.setPaymentResponsible(event.getPaymentResponsible());
         entity.setStartTimestamp(event.getStartTimestamp().toGregorianCalendar().getTime());
         entity.setEndTimestamp(event.getEndTimestamp().toGregorianCalendar().getTime());
         entity.setSignedTimestamp(event.getSignedTimestamp().toGregorianCalendar().getTime());
@@ -98,7 +98,7 @@ public abstract class AbstractProducer {
             final ItemEntity itemEntity = new ItemEntity();
             
             itemEntity.setItemId(item.getItemId());;
-            itemEntity.setQty(item.getQty().floatValue());
+            itemEntity.setQty(item.getQty());
             itemEntity.setDescription(item.getDescription());
      
             entity.addItemEntity(itemEntity);
@@ -120,6 +120,7 @@ public abstract class AbstractProducer {
         event.setSupplierName(entity.getSupplierName());
         event.setSupplierId(entity.getSupplierId());
         event.setServiceCode(entity.getServiceCode());
+        event.setPaymentResponsible(entity.getPaymentResponsible());
         event.setStartTimestamp(getXMLGCalendar(entity.getStartTimestamp()));
         event.setEndTimestamp(getXMLGCalendar(entity.getEndTimestamp()));
         event.setSignedTimestamp(getXMLGCalendar(entity.getSignedTimestamp()));
@@ -130,8 +131,8 @@ public abstract class AbstractProducer {
         for (final ItemEntity itemEntity : entity.getItemEntities()) {
             final Item item = new Item();
             
-            item.setItemId(itemEntity.getItemId());;
-            item.setQty(new BigDecimal(itemEntity.getQty()));
+            item.setItemId(itemEntity.getItemId());
+            item.setQty(itemEntity.getQty());
             item.setDescription(itemEntity.getDescription());
      
             itemList.getItem().add(item);
