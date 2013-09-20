@@ -16,6 +16,7 @@
 
 package se.sll.invoicedata.core.model.entity;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -142,6 +143,20 @@ public class InvoiceDataEntity {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
+    
+    /**
+     * Returns the total amount for all events.
+     * 
+     * @return the total amount for all events.
+     */
+    public BigDecimal getTotalAmount() {
+        BigDecimal amount = BigDecimal.valueOf(0.0);
+        for (final BusinessEventEntity businessEventEntity : businessEventEntities) {
+           amount = amount.add(businessEventEntity.getTotalAmount()); 
+        }
+        return amount;
+    }
+
 
     @Override
     public boolean equals(Object r) {

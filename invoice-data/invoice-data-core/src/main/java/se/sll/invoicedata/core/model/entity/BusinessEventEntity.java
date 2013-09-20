@@ -16,6 +16,7 @@
 
 package se.sll.invoicedata.core.model.entity;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -266,6 +267,19 @@ public class BusinessEventEntity {
 
     protected void setPending(Boolean pending) {
         this.pending = pending;
+    }
+ 
+    /**
+     * Returns the total amount for all items.
+     * 
+     * @return the total amount for all items.
+     */
+    public BigDecimal getTotalAmount() {
+        BigDecimal amount = BigDecimal.valueOf(0.0);
+        for (final ItemEntity itemEntity : itemEntities) {
+           amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty())); 
+        }
+        return amount;
     }
 
     @Override
