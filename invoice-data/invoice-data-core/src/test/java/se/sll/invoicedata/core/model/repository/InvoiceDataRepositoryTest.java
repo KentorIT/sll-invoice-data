@@ -82,6 +82,25 @@ public class InvoiceDataRepositoryTest extends TestSupport {
      }
     
     @Test
+    public void testAggregateTotalAmount_invoice_data() {
+        final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+        
+        final BusinessEventEntity be2 = createSampleBusinessEventEntity();
+        be2.setSupplierId(ie.getSupplierId());
+        be2.addItemEntity(createSampleItemEntity());
+        be2.addItemEntity(createSampleItemEntity());
+        assertTrue(ie.addBusinessEventEntity(be2));
+        
+        final BusinessEventEntity be3 = createSampleBusinessEventEntity();
+        be3.setId("anotherid");
+        be3.addItemEntity(createSampleItemEntity());
+        be3.setSupplierId(ie.getSupplierId());
+        assertTrue(ie.addBusinessEventEntity(be3));
+        
+        assertEquals(2100, ie.getTotalAmount().intValue());
+    }
+    
+    @Test
     @Transactional
     @Rollback(true)
     public void testInsertUpdateFind_assign_business_event() {

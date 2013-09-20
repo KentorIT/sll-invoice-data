@@ -60,7 +60,8 @@ public abstract class TestSupport {
     	ItemEntity i = new ItemEntity();
     	i.setDescription("Item is kind of a product");
 		i.setItemId("IT101");
-		i.setQty(BigDecimal.valueOf(2.0f));
+		i.setQty(BigDecimal.valueOf(2.0));
+		i.setPrice(BigDecimal.valueOf(350.0));
 		
 		return i;
 	
