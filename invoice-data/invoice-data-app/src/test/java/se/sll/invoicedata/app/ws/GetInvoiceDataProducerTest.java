@@ -142,7 +142,7 @@ public class GetInvoiceDataProducerTest {
         Assert.assertEquals(1, response.getInvoiceList().size());
     }
 
-   // @Test
+    @Test
     public void get_InvoiceData_Some_Processed_Some_Unprocessed_By_Supplier_id_And_Event_Id_Success() {
 
         RegisterInvoiceDataResponderInterface registerIDRInterface = RegisterInvoiceDataProducerTest
