@@ -30,7 +30,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="price" type="xs:double"/>
+			<xs:element name="price" type="xs:double" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 
