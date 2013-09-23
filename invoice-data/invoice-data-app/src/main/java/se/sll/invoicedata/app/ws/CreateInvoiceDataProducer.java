@@ -24,9 +24,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import riv.sll.invoicedata._1.InvoiceEvents;
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedata._1.rivtabp21.CreateInvoiceDataResponderInterface;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
+import riv.sll.invoicedata.createinvoicedataresponder._1.ObjectFactory;
 import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
 /**
  * @author muqkha
@@ -34,16 +38,33 @@ import se.sll.invoicedata.core.service.InvoiceDataService;
  */
 public class CreateInvoiceDataProducer extends AbstractProducer implements CreateInvoiceDataResponderInterface {
 
-	private static final Logger log = LoggerFactory.getLogger(RegisterInvoiceDataProducer.class);
-    
+	private static final Logger log = LoggerFactory.getLogger(CreateInvoiceDataProducer.class);
+	
     @Autowired
     private InvoiceDataService invoiceDataService;
 
     @Override
     public CreateInvoiceDataResponse createInvoiceData(String logicalAddress,
             InvoiceEvents parameters) {
-        // TODO Auto-generated method stub
-        return null;
+        log("createInvoiceData");
+        log.info("logicalAddress: {}", logicalAddress);
+        
+        final ObjectFactory oFactory = new ObjectFactory();
+        final ResultCode rc = new ResultCode();
+        
+        try {
+            invoiceDataService.createInvoiceData(parameters.getSupplierId());
+            rc.setCode(ResultCodeEnum.OK);
+        } catch (InvoiceDataServiceException ex) {
+            rc.setCode(ResultCodeEnum.ERROR);
+            rc.setMessage(ex.getMessage());
+            log.error(ex.getMessage());
+        }
+        
+        CreateInvoiceDataResponse createInvoiceDataResp = oFactory.createCreateInvoiceDataResponse();
+        createInvoiceDataResp.setResultCode(rc);
+        
+        return createInvoiceDataResp;        
     }
 
 }

@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.Invoice;
 import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.ItemList;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
@@ -113,18 +114,17 @@ public abstract class AbstractProducer {
      * @param event the JAXB object.
      * @return the entity bean.
      */
-    Event fromEntity(final BusinessEventEntity entity) {
-        final Event event = new Event();
+    Invoice fromEntity(final BusinessEventEntity entity) {
+        final Invoice invoice = new Invoice();
         
-        event.setEventId(entity.getId());
-        event.setSupplierName(entity.getSupplierName());
-        event.setSupplierId(entity.getSupplierId());
-        event.setServiceCode(entity.getServiceCode());
-        event.setPaymentResponsible(entity.getPaymentResponsible());
-        event.setStartTimestamp(getXMLGCalendar(entity.getStartTimestamp()));
-        event.setEndTimestamp(getXMLGCalendar(entity.getEndTimestamp()));
-        event.setSignedTimestamp(getXMLGCalendar(entity.getSignedTimestamp()));
-        event.setSignedBy(entity.getSignedBy());
+        invoice.setEventId(entity.getId());
+        invoice.setPaymentResponsible(entity.getPaymentResponsible());
+        invoice.setStartTimestamp(getXMLGCalendar(entity.getStartTimestamp()));
+        invoice.setEndTimestamp(getXMLGCalendar(entity.getEndTimestamp()));
+        invoice.setSupplierId(entity.getSupplierId());
+        invoice.setSignedBy(entity.getSignedBy());        
+        invoice.setTotalAmount(entity.getTotalAmount().doubleValue());
+        invoice.setIsPending(entity.getInvoiceData() == null);
         
         ItemList itemList = new ItemList();
         
@@ -134,12 +134,13 @@ public abstract class AbstractProducer {
             item.setItemId(itemEntity.getItemId());
             item.setQty(itemEntity.getQty());
             item.setDescription(itemEntity.getDescription());
+            item.setPrice(itemEntity.getPrice().doubleValue());
      
             itemList.getItem().add(item);
         }
-        event.setItems(itemList);
+        invoice.setItems(itemList);
         
-        return event;
+        return invoice;
     }
     
     private XMLGregorianCalendar getXMLGCalendar(Date date) {

@@ -21,11 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.ObjectFactory;
-import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceData;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
@@ -41,20 +41,21 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
             
     @Autowired
     private InvoiceDataService invoiceDataService;
-      
-    @Override      
-    public RegisterInvoiceDataResponse registerInvoiceData(String logicalAddress, RegisterInvoiceData registerInvoiceDataType) {
+    
+    @Override
+    public RegisterInvoiceDataResponse registerInvoiceData(
+            String logicalAddress, Event parameters) {
         log("registerInvoiceData");
         
         log.info("logicalAdress: {}", logicalAddress);
 
         final ObjectFactory f = new ObjectFactory();
-    	final RegisterInvoiceDataResponse ur = f.createRegisterInvoiceDataResponse();
+        final RegisterInvoiceDataResponse ur = f.createRegisterInvoiceDataResponse();
 
         final ResultCode rc = new ResultCode();
 
-        try {        	
-            invoiceDataService.registerBusinessEvent(toEntity(registerInvoiceDataType.getEvent()));
+        try {           
+            invoiceDataService.registerBusinessEvent(toEntity(parameters));
             rc.setCode(ResultCodeEnum.OK);
             log.info("OK");
         } catch (InvoiceDataServiceException ex) {
@@ -64,9 +65,8 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
         }
 
         ur.setResultCode(rc);
-    	
-    	return ur;
-    	
+        
+        return ur;
     }
     
 }

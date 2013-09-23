@@ -30,6 +30,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
+			<xs:element name="price" type="xs:double"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -63,10 +64,29 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="Invoice">
+		<xs:sequence>
+			<xs:element name="eventId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Event id is defined by the user, and expected to be globally unique.</xs:documentation>
+				</xs:annotation>
+			</xs:element>			
+			<xs:element name="paymentResponsible" type="xs:string" />
+			<xs:element name="supplierId" type="xs:string"/>
+			<xs:element name="signedBy" type="xs:string"/>			
+			<xs:element name="startTimestamp" type="xs:dateTime"/>
+			<xs:element name="endTimestamp" type="xs:dateTime"/>
+			<xs:element name="totalAmount" type="xs:double"/>
+			<xs:element name="isPending" type="xs:boolean"/>
+			<xs:element name="items" type="tns:ItemList"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
 	<xs:complexType name="InvoiceEvents">
 		<xs:sequence>
 			<xs:element name="supplierId" type="xs:string"/>
-			<xs:element name="eventIdList" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="eventIdList" type="xs:string" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Globally unique and registered event id list</xs:documentation>
 				</xs:annotation>
@@ -77,12 +97,9 @@
 
 	<xs:complexType name="GetInvoiceRequest">
 		<xs:sequence>
-			<xs:element name="supplierId" type="xs:string" minOccurs="0" maxOccurs="1" />
-			<xs:element name="eventId" type="xs:string" minOccurs="0" maxOccurs="1">
-				<xs:annotation>
-					<xs:documentation>This field can be left empty in-case if the request is to get all unprocessed invoices</xs:documentation>
-				</xs:annotation>
-			</xs:element>
+			<xs:element name="supplierId" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="eventIdList" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="paymentResponsible" type="xs:string" minOccurs="0" maxOccurs="1" />			
 			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>		
 	</xs:complexType>	

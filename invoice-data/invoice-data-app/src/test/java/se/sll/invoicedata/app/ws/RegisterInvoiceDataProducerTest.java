@@ -42,7 +42,6 @@ import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.ItemList;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
-import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceData;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
 
 /**
@@ -67,8 +66,8 @@ public class RegisterInvoiceDataProducerTest {
 	@Test(expected = SOAPFaultException.class)
 	public void registerInvoiceData_without_Items_result_fail() {
 		
-		RegisterInvoiceData invoiceData = createSampleInvoiceData();
-		invoiceData.getEvent().getItems().setItem(null);
+		Event invoiceData = createSampleInvoiceData();
+		invoiceData.getItems().setItem(null);
 		
 		getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
@@ -77,8 +76,8 @@ public class RegisterInvoiceDataProducerTest {
 	@Test
 	public void registerInvoiceData_with_incorrect_qty_fail() {
 		
-		RegisterInvoiceData invoiceData = createSampleInvoiceData();
-		invoiceData.getEvent().getItems().getItem().get(0).setQty(new BigDecimal(-2));
+		Event invoiceData = createSampleInvoiceData();
+		invoiceData.getItems().getItem().get(0).setQty(new BigDecimal(-2));
 						
 		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
@@ -90,12 +89,12 @@ public class RegisterInvoiceDataProducerTest {
 	@Test
 	public void registerInvoiceData_with_incorrect_start_end_time_fail() {
 		
-		RegisterInvoiceData invoiceData = createSampleInvoiceData();
+		Event invoiceData = createSampleInvoiceData();
 		Calendar startTime = getCurrentDate().toGregorianCalendar();
 		startTime.add(Calendar.DAY_OF_MONTH, +1);
 		
-		invoiceData.getEvent().setStartTimestamp(getXMLGCalendar(startTime));
-		invoiceData.getEvent().setEndTimestamp(getCurrentDate());
+		invoiceData.setStartTimestamp(getXMLGCalendar(startTime));
+		invoiceData.setEndTimestamp(getCurrentDate());
 						
 		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
@@ -107,16 +106,12 @@ public class RegisterInvoiceDataProducerTest {
 	@Test(expected = SOAPFaultException.class)
 	public void registerInvoiceData_with_empty_invoicedata_result_exception() {
 		
-		RegisterInvoiceData invoiceData = new RegisterInvoiceData();
-		Event event = new Event();
-		invoiceData.setEvent(event);
-		
+		Event event = new Event();		
 		getRegisterInvoiceDataService()
-				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);		
+				.registerInvoiceData(LOGICAL_ADDRESS, event);		
 	}
 		
-	private RegisterInvoiceData createSampleInvoiceData() {
-		RegisterInvoiceData invoiceData = new RegisterInvoiceData();
+	private Event createSampleInvoiceData() {
 		Event event = new Event();
 		event.setEventId("EID1234");
 		event.setSignedBy("sign:X");
@@ -140,9 +135,8 @@ public class RegisterInvoiceDataProducerTest {
 		itemList.setItem(items);
 
 		event.setItems(itemList);
-		invoiceData.setEvent(event);
 		
-		return invoiceData;
+		return event;
 	}
 	
 

@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.GetInvoiceRequest;
+import riv.sll.invoicedata._1.Invoice;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
@@ -61,20 +62,21 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
 				.createGetInvoiceDataResponse();
 		final ResultCode rc = new ResultCode();
 		
-		List<Event> eventEntityList = new ArrayList<Event>();
-		try {
-			
-			if (request.getEventId() != null) {
-				final Event event = fromEntity(invoiceDataService.getBusinessEvent(
-						request.getEventId()));				
-				eventEntityList.add(event);
-			} else if (request.getSupplierId() != null) {
+		try {			
+			if (request.getSupplierId() != null) {
 				final List<BusinessEventEntity> tmpEEntityList = invoiceDataService.
 						getAllUnprocessedBusinessEvents(request.getSupplierId());
 				
-				for (BusinessEventEntity bEE : tmpEEntityList) {
-					eventEntityList.add(fromEntity(bEE));
+				for (final BusinessEventEntity bEE : tmpEEntityList) {
+				    response.getInvoiceList().add(fromEntity(bEE));
 				}				
+			}
+			
+			if (!request.getEventIdList().isEmpty()) {
+			    for (final String eventId : request.getEventIdList()) {
+			        final BusinessEventEntity tmpBEE = invoiceDataService.getBusinessEvent(request.getSupplierId(), eventId);
+			        response.getInvoiceList().add(fromEntity(tmpBEE));
+			    }
 			}
 			
 			rc.setCode(ResultCodeEnum.OK);
@@ -85,10 +87,7 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
 			log.error(ex.getMessage());
 		}
 		response.setResultCode(rc);
-		response.getEvent().addAll(eventEntityList);
 		return response;
 	}
 
-
-	
 }

@@ -38,4 +38,6 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * @return the list of pending/unprocessed events.
      */
     List<BusinessEventEntity> findBySupplierIdAndPendingIsTrue(String supplierId);
+    
+    BusinessEventEntity findBySupplierIdAndId(String supplierId, String eventId);
 }

@@ -24,8 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
+import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.RatingService;
@@ -37,6 +39,9 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Autowired
     private BusinessEventRepository businessEventRepository;
+    
+    @Autowired
+    private InvoiceDataRepository invoiceDataRepository;
     
     @Autowired
     private RatingService ratingService;
@@ -51,7 +56,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     public BusinessEventEntity getBusinessEvent(String eventId) {
         return businessEventRepository.findOne(eventId);
     }
-
+    
+    @Override
+    public BusinessEventEntity getBusinessEvent(String supplierId,
+            String eventId) {
+        return businessEventRepository.findBySupplierIdAndId(supplierId, eventId);
+    }
+    
     @Override
     public List<BusinessEventEntity> getAllUnprocessedBusinessEvents(
             String supplierId) {
@@ -129,6 +140,20 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
         
         return businessEventEntity;
+    }
+
+    @Override
+    public void createInvoiceData(String supplierId) {
+        List<BusinessEventEntity> businesEventList = businessEventRepository.findBySupplierIdAndPendingIsTrue(supplierId);
+        for (BusinessEventEntity bEE : businesEventList) {
+            final InvoiceDataEntity iDE = new InvoiceDataEntity();
+            iDE.setCreatedBy(bEE.getSignedBy());
+            iDE.setSupplierId(bEE.getSupplierId());
+            
+            iDE.addBusinessEventEntity(bEE);
+            invoiceDataRepository.save(iDE);
+        }
+        
     }
 
 }

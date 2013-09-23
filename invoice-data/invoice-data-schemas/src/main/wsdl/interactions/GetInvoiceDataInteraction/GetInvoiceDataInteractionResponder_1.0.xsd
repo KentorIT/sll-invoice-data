@@ -25,7 +25,7 @@
 		<xs:sequence>
 			<xs:element name='resultCode' type='core:ResultCode'
 				maxOccurs="1" minOccurs="1" />
-			<xs:element name='event' type='core:Event' minOccurs="0" 
+			<xs:element name='invoiceList' type='core:Invoice' minOccurs="0" 
 				maxOccurs="unbounded" />			
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
