@@ -54,7 +54,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         
         assertEquals(e.getId(), f.getId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
-        assertEquals(e.getSignedBy(), f.getSignedBy());
+        assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
         assertNull(e.getCreatedTimestamp());
         assertNotNull(f.getCreatedTimestamp());   
     } 

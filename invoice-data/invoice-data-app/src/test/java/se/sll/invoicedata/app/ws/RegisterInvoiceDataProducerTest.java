@@ -115,10 +115,11 @@ public class RegisterInvoiceDataProducerTest {
         event.setEventId("EID1234");
         event.setAcknowledgedBy("sign:X");
         event.setSupplierName("SNX");
-
+        
         event.setAcknowledgedTime(getCurrentDate());
         event.setServiceCode("SCABCD");
         event.setPaymentResponsible("HSF");
+        event.setHealthCareComission("BVC");
         event.setSupplierId("SID123");
         event.setStartTime(getCurrentDate());
         event.setEndTime(getCurrentDate());

@@ -70,14 +70,15 @@ public abstract class TestSupport {
     protected BusinessEventEntity createSampleBusinessEventEntity() {
     	BusinessEventEntity e = new BusinessEventEntity();
         e.setId("event-123");
-        e.setSignedBy("Peter Larsson");
+        e.setAcknowledgedBy("Peter Larsson");
         e.setSupplierName("Dummy");
-        e.setSignedTimestamp(new Date());
+        e.setAcknowledgedTime(new Date());
+        e.setHealthCareCommission("HSF");
         e.setServiceCode("XYZ");
         e.setPaymentResponsible("HSF");
         e.setSupplierId("12342");
-        e.setStartTimestamp(new Date());
-        e.setEndTimestamp(new Date());
+        e.setStartTime(new Date());
+        e.setEndTime(new Date());
         
         return e;
     }

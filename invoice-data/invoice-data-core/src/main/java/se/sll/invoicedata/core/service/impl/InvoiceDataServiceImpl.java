@@ -110,12 +110,12 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
         mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
         mandatory(businessEventEntity.getAcknowledgedBy(), "event.acknowledgedBy");
-        mandatory(businessEventEntity.getAcknowledgedTimestamp(), "event.acknowledgedTime");
-        mandatory(businessEventEntity.getStartTimestamp(), "event.startTime");
-        mandatory(businessEventEntity.getEndTimestamp(), "event.endTime");
+        mandatory(businessEventEntity.getAcknowledgedTime(), "event.acknowledgedTime");
+        mandatory(businessEventEntity.getStartTime(), "event.startTime");
+        mandatory(businessEventEntity.getEndTime(), "event.endTime");
 
         // valid time period
-        if (businessEventEntity.getEndTimestamp().before(businessEventEntity.getStartTimestamp())) {
+        if (businessEventEntity.getEndTime().before(businessEventEntity.getStartTime())) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.endTimestamp is before event.startTimestamp");            
         }
         

@@ -76,20 +76,20 @@ public class BusinessEventEntity {
     @Column(name="payment_responsible", length=64, nullable=false, updatable=false)
     private String paymentResponsible;
     
-    @Column(name="healcare_commission", length=64, nullable=false, updatable=false)
-    private String healCareCommission;
+    @Column(name="healthcare_commission", length=64, nullable=false, updatable=false)
+    private String healthCareCommission;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "acknowledged_timestamp", nullable=false, updatable=false)
-    private Date acknowledgedTimestamp;
+    @Column(name = "acknowledged_time", nullable=false, updatable=false)
+    private Date acknowledgedTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_timestamp", nullable=false, updatable=false)
-    private Date startTimestamp;
+    @Column(name = "start_time", nullable=false, updatable=false)
+    private Date startTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_timestamp", nullable=false, updatable=false)
-    private Date endTimestamp;
+    @Column(name = "end_time", nullable=false, updatable=false)
+    private Date endTime;
     
     @OneToMany(fetch=FetchType.EAGER, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
     private List<ItemEntity> itemEntities = new LinkedList<ItemEntity>();
@@ -193,38 +193,38 @@ public class BusinessEventEntity {
 
 
 
-    public Date getAcknowledgedTimestamp() {
-        return acknowledgedTimestamp;
+    public Date getAcknowledgedTime() {
+        return acknowledgedTime;
     }
 
 
 
-    public void setAcknowledgedTimestamp(Date acknowledgedTimestamp) {
-        this.acknowledgedTimestamp = acknowledgedTimestamp;
+    public void setAcknowledgedTime(Date acknowledgedTime) {
+        this.acknowledgedTime = acknowledgedTime;
     }
 
 
 
-    public Date getStartTimestamp() {
-        return startTimestamp;
+    public Date getStartTime() {
+        return startTime;
     }
 
 
 
-    public void setStartTimestamp(Date startTimestamp) {
-        this.startTimestamp = startTimestamp;
+    public void setStartTime(Date startTimestamp) {
+        this.startTime = startTimestamp;
     }
 
 
 
-    public Date getEndTimestamp() {
-        return endTimestamp;
+    public Date getEndTime() {
+        return endTime;
     }
 
 
 
-    public void setEndTimestamp(Date endTimestamp) {
-        this.endTimestamp = endTimestamp;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
 
@@ -262,6 +262,14 @@ public class BusinessEventEntity {
 
     public void setPaymentResponsible(String paymentResponsible) {
         this.paymentResponsible = paymentResponsible;
+    }
+
+    public String getHealthCareCommission() {
+        return healthCareCommission;
+    }
+
+    public void setHealthCareCommission(String healthCareCommission) {
+        this.healthCareCommission = healthCareCommission;
     }
 
     public boolean isPending() {

@@ -89,9 +89,10 @@ public abstract class AbstractProducer {
         entity.setSupplierId(event.getSupplierId());
         entity.setServiceCode(event.getServiceCode());
         entity.setPaymentResponsible(event.getPaymentResponsible());
-        entity.setStartTimestamp(event.getStartTime().toGregorianCalendar().getTime());
-        entity.setEndTimestamp(event.getEndTime().toGregorianCalendar().getTime());
-        entity.setAcknowledgedTimestamp(event.getAcknowledgedTime().toGregorianCalendar().getTime());
+        entity.setHealthCareCommission(event.getHealthCareComission());
+        entity.setStartTime(event.getStartTime().toGregorianCalendar().getTime());
+        entity.setEndTime(event.getEndTime().toGregorianCalendar().getTime());
+        entity.setAcknowledgedTime(event.getAcknowledgedTime().toGregorianCalendar().getTime());
         entity.setAcknowledgedBy(event.getAcknowledgedBy());
         
         for (final Item item : event.getItemList()) {
