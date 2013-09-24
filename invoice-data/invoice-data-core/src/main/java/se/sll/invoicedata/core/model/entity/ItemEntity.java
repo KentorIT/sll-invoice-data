@@ -102,7 +102,7 @@ public class ItemEntity {
         }
         final Long id = getId();
         if (id != null && r instanceof BusinessEventEntity) {
-            return id.equals(((BusinessEventEntity)r).getId());
+            return id.equals(((BusinessEventEntity)r).getEventId());
         }
         return false;
     }

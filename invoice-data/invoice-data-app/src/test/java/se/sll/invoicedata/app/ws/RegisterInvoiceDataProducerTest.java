@@ -14,22 +14,13 @@
  *    limitations under the License.
  */
 
-/**
- * 
- */
 package se.sll.invoicedata.app.ws;
 
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.LinkedList;
-import java.util.List;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPFaultException;
@@ -38,16 +29,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
 
 /**
  * @author muqkha
- * 
  */
-public class RegisterInvoiceDataProducerTest {
+public class RegisterInvoiceDataProducerTest extends TestSupport {
 
 	private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 	
@@ -55,7 +44,7 @@ public class RegisterInvoiceDataProducerTest {
 	public void registerInvoiceData_normal_test_result_pass() {
 
 		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
-				.registerInvoiceData(LOGICAL_ADDRESS, createSampleInvoiceData());
+				.registerInvoiceData(LOGICAL_ADDRESS, createSampleEventData());
 		
 		Assert.assertNotNull("Should not be null: OK|ERROR", response);
 		Assert.assertEquals("Result code should be OK in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.OK, response.getResultCode().getCode());	
@@ -65,7 +54,7 @@ public class RegisterInvoiceDataProducerTest {
 	@Test(expected = SOAPFaultException.class)
 	public void registerInvoiceData_without_Items_result_fail() {
 		
-		Event invoiceData = createSampleInvoiceData();
+		Event invoiceData = createSampleEventData();
 		invoiceData.setItemList(null);
 		
 		getRegisterInvoiceDataService()
@@ -75,7 +64,7 @@ public class RegisterInvoiceDataProducerTest {
 	@Test
 	public void registerInvoiceData_with_incorrect_qty_fail() {
 		
-		Event invoiceData = createSampleInvoiceData();
+		Event invoiceData = createSampleEventData();
 		invoiceData.getItemList().get(0).setQty(new BigDecimal(-2));
 						
 		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
@@ -88,11 +77,11 @@ public class RegisterInvoiceDataProducerTest {
 	@Test
 	public void registerInvoiceData_with_incorrect_start_end_time_fail() {
 		
-		Event invoiceData = createSampleInvoiceData();
+		Event invoiceData = createSampleEventData();
 		Calendar startTime = getCurrentDate().toGregorianCalendar();
 		startTime.add(Calendar.DAY_OF_MONTH, +1);
 		
-		invoiceData.setStartTime(getXMLGCalendar(startTime));
+		invoiceData.setStartTime(toXMLGregorianCalendar(startTime.getTime()));
 		invoiceData.setEndTime(getCurrentDate());
 						
 		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
@@ -110,29 +99,6 @@ public class RegisterInvoiceDataProducerTest {
 				.registerInvoiceData(LOGICAL_ADDRESS, event);		
 	}
 		
-	private Event createSampleInvoiceData() {
-        Event event = new Event();
-        event.setEventId("EID1234");
-        event.setAcknowledgedBy("sign:X");
-        event.setSupplierName("SNX");
-        
-        event.setAcknowledgedTime(getCurrentDate());
-        event.setServiceCode("SCABCD");
-        event.setPaymentResponsible("HSF");
-        event.setHealthCareComission("BVC");
-        event.setSupplierId("SID123");
-        event.setStartTime(getCurrentDate());
-        event.setEndTime(getCurrentDate());
-
-        Item item = new Item();
-        item.setDescription("Item is kind of a product");
-        item.setItemId("IT101");
-        item.setQty(new BigDecimal(2));
-        event.getItemList().add(item);
-
-        return event;
-    }
-	
 
 	static RegisterInvoiceDataResponderInterface getRegisterInvoiceDataService() {
 		RegisterInvoiceDataResponderInterface iRegisterInvoiceDataResponder = null;
@@ -160,27 +126,4 @@ public class RegisterInvoiceDataProducerTest {
 		}
 		return iRegisterInvoiceDataResponder;
 	}
-
-	private XMLGregorianCalendar getCurrentDate() {
-		XMLGregorianCalendar calendar = null;
-		try {
-			calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-					new GregorianCalendar());
-		} catch (DatatypeConfigurationException e) {
-			e.printStackTrace();
-		}
-		return calendar;
-	}
-	
-	private XMLGregorianCalendar getXMLGCalendar(Calendar date) {
-		XMLGregorianCalendar calendar = null;
-		try {
-			calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-					(GregorianCalendar) date);
-		} catch (DatatypeConfigurationException e) {
-			e.printStackTrace();
-		}
-		return calendar;
-	}
-
 }

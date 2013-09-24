@@ -54,13 +54,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Override
     public BusinessEventEntity getBusinessEvent(String eventId) {
-        return businessEventRepository.findOne(eventId);
+        return businessEventRepository.findByEventId(eventId);
     }
     
     @Override
     public BusinessEventEntity getBusinessEvent(String supplierId,
             String eventId) {
-        return businessEventRepository.findBySupplierIdAndId(supplierId, eventId);
+        return businessEventRepository.findBySupplierIdAndEventId(supplierId, eventId);
     }
     
     @Override

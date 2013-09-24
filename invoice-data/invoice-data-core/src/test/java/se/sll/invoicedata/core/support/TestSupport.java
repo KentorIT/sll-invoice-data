@@ -69,11 +69,11 @@ public abstract class TestSupport {
     
     protected BusinessEventEntity createSampleBusinessEventEntity() {
     	BusinessEventEntity e = new BusinessEventEntity();
-        e.setId("event-123");
+        e.setEventId("event-123");
         e.setAcknowledgedBy("Peter Larsson");
         e.setSupplierName("Dummy");
         e.setAcknowledgedTime(new Date());
-        e.setHealthCareCommission("HSF");
+        e.setHealthCareCommission("BVC");
         e.setServiceCode("XYZ");
         e.setPaymentResponsible("HSF");
         e.setSupplierId("12342");
@@ -88,6 +88,7 @@ public abstract class TestSupport {
         
         e.setSupplierId("supplierId");
         e.setCreatedBy("createdBy");
+        e.setPaymentResponsible("HSF");
     
         return e;
     }

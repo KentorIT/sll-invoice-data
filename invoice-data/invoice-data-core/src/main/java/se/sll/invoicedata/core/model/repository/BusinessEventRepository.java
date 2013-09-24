@@ -29,7 +29,7 @@ import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
  * @author Peter
  *
  */
-public interface BusinessEventRepository extends JpaRepository<BusinessEventEntity, String> {
+public interface BusinessEventRepository extends JpaRepository<BusinessEventEntity, Long> {
     
     /**
      * Returns all pending events for a particular supplier.
@@ -39,5 +39,8 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      */
     List<BusinessEventEntity> findBySupplierIdAndPendingIsTrue(String supplierId);
     
-    BusinessEventEntity findBySupplierIdAndId(String supplierId, String eventId);
+    BusinessEventEntity findBySupplierIdAndEventId(String supplierId, String eventId);
+    
+    BusinessEventEntity findByEventId(String eventId);
+    
 }

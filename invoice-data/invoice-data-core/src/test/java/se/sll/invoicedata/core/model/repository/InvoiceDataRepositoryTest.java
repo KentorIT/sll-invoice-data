@@ -92,7 +92,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         assertTrue(ie.addBusinessEventEntity(be2));
         
         final BusinessEventEntity be3 = createSampleBusinessEventEntity();
-        be3.setId("anotherid");
+        be3.setEventId("anotherid");
         be3.addItemEntity(createSampleItemEntity());
         be3.setSupplierId(ie.getSupplierId());
         assertTrue(ie.addBusinessEventEntity(be3));
@@ -121,7 +121,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         assertTrue(ie.addBusinessEventEntity(beSaved));
         
         final BusinessEventEntity bePending = createSampleBusinessEventEntity();
-        bePending.setId("anotherEventId");
+        bePending.setEventId("anotherEventId");
         bePending.setSupplierId(ie.getSupplierId());
         getBusinessEventRepository().save(bePending);
                 

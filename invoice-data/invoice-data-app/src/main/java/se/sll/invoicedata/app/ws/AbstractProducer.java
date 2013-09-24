@@ -35,7 +35,9 @@ import org.slf4j.LoggerFactory;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.Item;
+import se.sll.invoicedata.app.AppUtil;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 
 /**
@@ -81,15 +83,15 @@ public abstract class AbstractProducer {
      * @param event the JAXB object.
      * @return the entity bean.
      */
-    BusinessEventEntity toEntity(final Event event) {
+    static BusinessEventEntity toEntity(final Event event) {
         final BusinessEventEntity entity = new BusinessEventEntity();
         
-        entity.setId(event.getEventId());
+        entity.setEventId(event.getEventId());
         entity.setSupplierName(event.getSupplierName());
         entity.setSupplierId(event.getSupplierId());
         entity.setServiceCode(event.getServiceCode());
         entity.setPaymentResponsible(event.getPaymentResponsible());
-        entity.setHealthCareCommission(event.getHealthCareComission());
+        entity.setHealthCareCommission(event.getHealthCareCommission());
         entity.setStartTime(event.getStartTime().toGregorianCalendar().getTime());
         entity.setEndTime(event.getEndTime().toGregorianCalendar().getTime());
         entity.setAcknowledgedTime(event.getAcknowledgedTime().toGregorianCalendar().getTime());
@@ -114,30 +116,16 @@ public abstract class AbstractProducer {
      * @param event the JAXB object.
      * @return the entity bean.
      */
-    InvoiceDataHeader fromEntity(final BusinessEventEntity entity) {
-        final InvoiceDataHeader invoice = new InvoiceDataHeader();
+    static InvoiceDataHeader fromEntity(final InvoiceDataEntity entity) {
+        final InvoiceDataHeader invoiceDataHeader = new InvoiceDataHeader();
         
-        invoice.setPaymentResponsible(entity.getPaymentResponsible());
-        invoice.setCreatedTime(getXMLGCalendar(entity.getInvoiceData().getCreatedTimestamp()));
-        invoice.setSupplierId(entity.getSupplierId());
-        invoice.setCreatedBy(entity.getInvoiceData().getCreatedBy());        
-        invoice.setTotalAmount(entity.getTotalAmount());
-        invoice.setReferenceId(entity.getInvoiceData().getReferenceId());
+        invoiceDataHeader.setPaymentResponsible(entity.getPaymentResponsible());
+        invoiceDataHeader.setCreatedTime(AppUtil.toXMLGregorianCalendar(entity.getCreatedTimestamp()));
+        invoiceDataHeader.setSupplierId(entity.getSupplierId());
+        invoiceDataHeader.setCreatedBy(entity.getCreatedBy());        
+        invoiceDataHeader.setTotalAmount(entity.getTotalAmount());
+        invoiceDataHeader.setReferenceId(entity.getReferenceId());
         
-        return invoice;
+        return invoiceDataHeader;
     }
-    
-    private XMLGregorianCalendar getXMLGCalendar(Date date) {
-    	GregorianCalendar gCal = new GregorianCalendar();
-    	gCal.setTime(date);
-    	XMLGregorianCalendar calendar = null;
-    	
-    	try {
-    		calendar = DatatypeFactory.newInstance().
-    				newXMLGregorianCalendar(gCal);
-		} catch (DatatypeConfigurationException e) {			
-			e.printStackTrace();
-		}
-    	return calendar;
-	}
 }

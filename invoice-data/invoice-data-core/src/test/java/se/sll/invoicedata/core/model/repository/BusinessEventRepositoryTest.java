@@ -51,10 +51,9 @@ public class BusinessEventRepositoryTest extends TestSupport {
         
         final BusinessEventEntity f = all.get(0);
         
-        assertEquals(e.getId(), f.getId());
+        assertEquals(e.getEventId(), f.getEventId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
-        assertNull(e.getCreatedTimestamp());
         assertNotNull(f.getCreatedTimestamp());   
     }
     
@@ -67,13 +66,12 @@ public class BusinessEventRepositoryTest extends TestSupport {
         getBusinessEventRepository().save(e);
         getBusinessEventRepository().flush();
         
-        final BusinessEventEntity f = getBusinessEventRepository().findOne("event-123");
+        final BusinessEventEntity f = getBusinessEventRepository().findByEventId("event-123");
         assertNotNull(f);
         
-        assertEquals(e.getId(), f.getId());
+        assertEquals(e.getEventId(), f.getEventId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
-        assertNull(e.getCreatedTimestamp());
         assertNotNull(f.getCreatedTimestamp());   
     }
 
@@ -108,10 +106,9 @@ public class BusinessEventRepositoryTest extends TestSupport {
         
         final BusinessEventEntity f = all.get(0);
         
-        assertEquals(e.getId(), f.getId());
+        assertEquals(e.getEventId(), f.getEventId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
-        assertNull(e.getCreatedTimestamp());
         assertNotNull(f.getCreatedTimestamp());
         assertNotNull(f.getItemEntities());
         assertEquals(e.getItemEntities().get(0).getItemId(), 

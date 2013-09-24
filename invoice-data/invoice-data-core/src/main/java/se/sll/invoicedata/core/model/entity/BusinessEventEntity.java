@@ -26,6 +26,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -36,6 +38,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Index;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Table;
 
 /**
@@ -54,11 +57,15 @@ public class BusinessEventEntity {
     static final String PENDING = "pending";
     
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+    
+    @NaturalId
     @Column(name="event_id", length=64)
-    private String id;
+    private String eventId;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_timestamp", nullable = false, updatable = false)
+    @Column(name = "created_timestamp", nullable=false, updatable=false)
     private Date createdTimestamp;
     
     @Column(name=SUPPLIER_ID, length=64, nullable=false, updatable=false)
@@ -123,13 +130,17 @@ public class BusinessEventEntity {
         setPending((getInvoiceData() == null) ? Boolean.TRUE : null);        
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
+    }
+    
+    public String getEventId() {
+        return eventId;
     }
 
 
-    public void setId(String id) {
-        this.id = id;
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
 
@@ -298,16 +309,16 @@ public class BusinessEventEntity {
         if (this == r) {
             return true;
         }
-        final String id = getId();
+        final String id = getEventId();
         if (id != null && r instanceof BusinessEventEntity) {
-            return id.equals(((BusinessEventEntity)r).getId());
+            return id.equals(((BusinessEventEntity)r).getEventId());
         }
         return false;
     }
     
     @Override
     public int hashCode() {
-        final String id = getId();
+        final String id = getEventId();
         return (id == null) ? super.hashCode() : id.hashCode();
     }
 }

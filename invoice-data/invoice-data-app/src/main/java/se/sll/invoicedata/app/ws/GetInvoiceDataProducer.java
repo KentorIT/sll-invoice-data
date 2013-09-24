@@ -61,12 +61,13 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
         
         try {           
             if (request.getSupplierId() != null) {
-                final List<BusinessEventEntity> tmpEEntityList = invoiceDataService.
-                        getAllUnprocessedBusinessEvents(request.getSupplierId());
-                
-                for (final BusinessEventEntity bEE : tmpEEntityList) {
-                    response.getInvoiceDataList().add(fromEntity(bEE));
-                }               
+                // TODO: Update according to new WSDL
+//                final List<BusinessEventEntity> tmpEEntityList = invoiceDataService.
+//                        getAllUnprocessedBusinessEvents(request.getSupplierId());
+//                
+//                for (final BusinessEventEntity bEE : tmpEEntityList) {
+//                    response.getInvoiceDataList().add(fromEntity(bEE));
+//                }               
             }
             rc.setCode(ResultCodeEnum.OK);
             

@@ -19,22 +19,15 @@
  */
 package se.sll.invoicedata.app.ws;
 
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.GregorianCalendar;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
@@ -46,7 +39,7 @@ import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataR
  * @author muqkha
  * 
  */
-public class GetInvoiceDataProducerTest {
+public class GetInvoiceDataProducerTest extends TestSupport {
 
     private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 
@@ -83,8 +76,8 @@ public class GetInvoiceDataProducerTest {
         invoiceDataRequest.setSupplierId("SID123");
         invoiceDataRequest.setCreatedBy("createdBy");
 
-        CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
-                .createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
+//        CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
+//                .createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
 
         GetInvoiceDataRequest request = new GetInvoiceDataRequest();
         request.setSupplierId("SID123");
@@ -138,40 +131,6 @@ public class GetInvoiceDataProducerTest {
 
         Assert.assertNotNull(response.getInvoiceDataList());
         Assert.assertEquals(1, response.getInvoiceDataList().size());
-    }
-
-    private Event createSampleEventData() {
-        Event event = new Event();
-        event.setEventId("EID1234");
-        event.setAcknowledgedBy("sign:X");
-        event.setSupplierName("SNX");
-
-        event.setAcknowledgedTime(getCurrentDate());
-        event.setHealthCareComission("BVC");
-        event.setServiceCode("SCABCD");
-        event.setPaymentResponsible("HSF");
-        event.setSupplierId("SID123");
-        event.setStartTime(getCurrentDate());
-        event.setEndTime(getCurrentDate());
-
-        Item item = new Item();
-        item.setDescription("Item is kind of a product");
-        item.setItemId("IT101");
-        item.setQty(new BigDecimal(2));
-        event.getItemList().add(item);
-
-        return event;
-    }
-
-    private XMLGregorianCalendar getCurrentDate() {
-        XMLGregorianCalendar calendar = null;
-        try {
-            calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-                    new GregorianCalendar());
-        } catch (DatatypeConfigurationException e) {
-            e.printStackTrace();
-        }
-        return calendar;
     }
 
     private GetInvoiceDataResponderInterface getGetInvoiceDataService() {

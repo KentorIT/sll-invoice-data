@@ -52,10 +52,9 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         final BusinessEventEntity f = invoiceDataService.getBusinessEvent("event-123");
         assertNotNull(f);
         
-        assertEquals(e.getId(), f.getId());
+        assertEquals(e.getEventId(), f.getEventId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
-        assertNull(e.getCreatedTimestamp());
         assertNotNull(f.getCreatedTimestamp());   
     } 
 	

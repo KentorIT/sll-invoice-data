@@ -50,12 +50,15 @@ public class InvoiceDataEntity {
     @Column(name="supplier_id", length=64, nullable=false, updatable=false)
     private String supplierId;
 
+    @Column(name="payment_responsible", length=64, nullable=false, updatable=false)
+    private String paymentResponsible;
+    
+    @Column(name="created_by", length=64, nullable=false, updatable=false)
+    private String createdBy;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_timestamp", nullable=false, updatable=false)
     private Date createdTimestamp;
-
-    @Column(name="created_by", length=64, nullable=false, updatable=false)
-    private String createdBy;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
     private List<BusinessEventEntity> businessEventEntities = new LinkedList<BusinessEventEntity>();
@@ -90,6 +93,14 @@ public class InvoiceDataEntity {
         this.supplierId = supplierId;
     }
 
+    public String getPaymentResponsible() {
+        return paymentResponsible;
+    }
+
+    public void setPaymentResponsible(String paymentResponsible) {
+        this.paymentResponsible = paymentResponsible;
+    }
+    
     public Date getCreatedTimestamp() {
         return createdTimestamp;
     }
@@ -165,7 +176,7 @@ public class InvoiceDataEntity {
         }
         final Long id = getId();
         if (id != null && r instanceof BusinessEventEntity) {
-            return id.equals(((BusinessEventEntity)r).getId());
+            return id.equals(((BusinessEventEntity)r).getEventId());
         }
         return false;
     }
