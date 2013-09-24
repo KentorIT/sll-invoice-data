@@ -115,13 +115,20 @@ public class AppUtil {
             Object value = getMethod.invoke(from);
             Class<?> type = field.getType();
 
-            if (value instanceof Date) {
-                value = toXMLGregorianCalendar((Date)value);
-                type = XMLGregorianCalendar.class;
-            } else if (value instanceof XMLGregorianCalendar) {
-                value = toDate((XMLGregorianCalendar)value);
-                type = Date.class;
+            //
+            // special handling of generic type conversion between externally published XMLJAXB types 
+            // and Internal data-types, today it's about dates only
+            //
+            if (!to.getClass().equals(from.getClass())) {
+                if (value instanceof Date) {
+                    value = toXMLGregorianCalendar((Date)value);
+                    type = XMLGregorianCalendar.class;
+                } else if (value instanceof XMLGregorianCalendar) {
+                    value = toDate((XMLGregorianCalendar)value);
+                    type = Date.class;
+                }
             }
+            
             final Method setMethod = getSetMethod(to.getClass(), field, type);
             if (setMethod != null) {
                 setMethod.invoke(to, value);
