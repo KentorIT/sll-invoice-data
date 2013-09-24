@@ -10,41 +10,35 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
-	xmlns:tns='urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1'
-	xmlns:core='urn:riv:sll:invoicedata:1' targetNamespace='urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1'
+	xmlns:tns='urn:riv:sll:invoicedata:ViewInvoiceDataResponder:1'
+	xmlns:core='urn:riv:sll:invoicedata:1' targetNamespace='urn:riv:sll:invoicedata:ViewInvoiceDataResponder:1'
 	elementFormDefault='qualified' attributeFormDefault='unqualified'
 	version='1.0'>
 
 	<xs:import schemaLocation='../../core_components/sll_invoice_data_1.0.xsd'
 		namespace='urn:riv:sll:invoicedata:1' />
 
-	<xs:element name='CreateInvoiceData' type="tns:CreateInvoiceDataRequest" />
-	<xs:element name='CreateInvoiceDataResponse' type='tns:CreateInvoiceDataResponse' />
+	<xs:element name='ViewInvoiceDataRequest' type='tns:ViewInvoiceDataRequest' />
+	<xs:element name='ViewInvoiceDataResponse' type='tns:ViewInvoiceDataResponse' />
 
-	<xs:complexType name='CreateInvoiceDataResponse'>
+	<xs:complexType name="ViewInvoiceDataRequest">
+		<xs:sequence>
+			<xs:element name="referenceId" type="xs:string" minOccurs="1"
+				maxOccurs="1" />
+			<xs:any namespace="##other" processContents="lax" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name='ViewInvoiceDataResponse'>
 		<xs:sequence>
 			<xs:element name='resultCode' type='core:ResultCode'
 				maxOccurs="1" minOccurs="1" />
-			<xs:element name="referenceId" type="xs:string" minOccurs="1" />
+			<xs:element name="invoiceData" type="core:InvoiceData" minOccurs="0" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="CreateInvoiceDataRequest">
-		<xs:sequence>
-			<xs:element name="supplierId" type="xs:string" />
-			<xs:element name="createdBy" type="xs:string" />
-			<xs:element name="eventList" type="xs:string" minOccurs="1"
-				maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>Globally unique and registered event id list
-					</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
 
 </xs:schema>

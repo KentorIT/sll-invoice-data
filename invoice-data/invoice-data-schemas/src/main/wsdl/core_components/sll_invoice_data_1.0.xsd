@@ -30,13 +30,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="price" type="xs:double" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="ItemList">
-		<xs:sequence>
-			<xs:element name="item" type="tns:Item" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="price" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -55,55 +49,51 @@
 			<xs:element name="supplierName" type="xs:string"/>
 			<xs:element name="serviceCode" type="xs:string"/>
 			<xs:element name="paymentResponsible" type="xs:string" />
-			<xs:element name="signedBy" type="xs:string"/>
-			<xs:element name="signedTimestamp" type="xs:dateTime"/>
-			<xs:element name="startTimestamp" type="xs:dateTime"/>
-			<xs:element name="endTimestamp" type="xs:dateTime"/>
-			<xs:element name="items" type="tns:ItemList"/>
+			<xs:element name="healthCareComission" type="xs:string" />
+			<xs:element name="acknowledgedBy" type="xs:string"/>
+			<xs:element name="acknowledgedTime" type="xs:dateTime"/>
+			<xs:element name="startTime" type="xs:dateTime"/>
+			<xs:element name="endTime" type="xs:dateTime"/>
+			<xs:element name="itemList" type="tns:Item" maxOccurs="unbounded"/>
 			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	
-	<xs:complexType name="Invoice">
+	<xs:complexType name="RegisteredEvent">
+		<xs:complexContent>
+			<xs:extension base="tns:Event">
+				<xs:sequence>
+					<xs:element name="totalAmount" type="xs:decimal"/>					
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+		<xs:complexType name="InvoiceData">
+		<xs:complexContent>
+			<xs:extension base="tns:InvoiceDataHeader">
+				<xs:sequence>
+					<xs:element name='eventList' type='tns:RegisteredEvent'
+						maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="InvoiceDataHeader">
 		<xs:sequence>
-			<xs:element name="eventId" type="xs:string">
-				<xs:annotation>
-					<xs:documentation>Event id is defined by the user, and expected to be globally unique.</xs:documentation>
-				</xs:annotation>
-			</xs:element>			
+			<xs:element name="referenceId" type="xs:string"/>
+			<xs:element name="supplierId" type="xs:string"/>
 			<xs:element name="paymentResponsible" type="xs:string" />
-			<xs:element name="supplierId" type="xs:string"/>
-			<xs:element name="signedBy" type="xs:string"/>			
-			<xs:element name="startTimestamp" type="xs:dateTime"/>
-			<xs:element name="endTimestamp" type="xs:dateTime"/>
-			<xs:element name="totalAmount" type="xs:double"/>
-			<xs:element name="isPending" type="xs:boolean"/>
-			<xs:element name="items" type="tns:ItemList"/>
+			<xs:element name="createdBy" type="xs:string"/>			
+			<xs:element name="createdTime" type="xs:dateTime"/>
+			<xs:element name="totalAmount" type="xs:decimal"/>
 			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
-	</xs:complexType>
-	
-	<xs:complexType name="InvoiceEvents">
-		<xs:sequence>
-			<xs:element name="supplierId" type="xs:string"/>
-			<xs:element name="eventIdList" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>Globally unique and registered event id list</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>		
 	</xs:complexType>
 
-	<xs:complexType name="GetInvoiceRequest">
-		<xs:sequence>
-			<xs:element name="supplierId" type="xs:string" minOccurs="1" maxOccurs="1" />
-			<xs:element name="eventIdList" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="paymentResponsible" type="xs:string" minOccurs="0" maxOccurs="1" />			
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
-		</xs:sequence>		
-	</xs:complexType>	
-	
+
 	<xs:simpleType name="ResultCodeEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OK"/>
