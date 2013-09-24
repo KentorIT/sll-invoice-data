@@ -19,19 +19,16 @@
  */
 package se.sll.invoicedata.app.ws;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.GetInvoiceRequest;
-import riv.sll.invoicedata._1.Invoice;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.getinvoicedataresponder._1.ObjectFactory;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
@@ -51,43 +48,35 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
 	@Autowired
 	private InvoiceDataService invoiceDataService;
 
-	@Override
-	public GetInvoiceDataResponse getInvoiceData(String logicalAddress,
-			GetInvoiceRequest request) {
-		log("getInvoiceData");
-		log.info("logicalAddress: {}", logicalAddress);
+    @Override
+    public GetInvoiceDataResponse getInvoiceData(String logicalAddress,
+            GetInvoiceDataRequest request) {
+        log("getInvoiceData");
+        log.info("logicalAddress: {}", logicalAddress);
 
-		final ObjectFactory oFactory = new ObjectFactory();
-		final GetInvoiceDataResponse response = oFactory
-				.createGetInvoiceDataResponse();
-		final ResultCode rc = new ResultCode();
-		
-		try {			
-			if (request.getSupplierId() != null) {
-				final List<BusinessEventEntity> tmpEEntityList = invoiceDataService.
-						getAllUnprocessedBusinessEvents(request.getSupplierId());
-				
-				for (final BusinessEventEntity bEE : tmpEEntityList) {
-				    response.getInvoiceList().add(fromEntity(bEE));
-				}				
-			}
-			
-			if (!request.getEventIdList().isEmpty()) {
-			    for (final String eventId : request.getEventIdList()) {
-			        final BusinessEventEntity tmpBEE = invoiceDataService.getBusinessEvent(request.getSupplierId(), eventId);
-			        response.getInvoiceList().add(fromEntity(tmpBEE));
-			    }
-			}
-			
-			rc.setCode(ResultCodeEnum.OK);
-			
-		} catch (InvoiceDataServiceException ex) {
-			rc.setCode(ResultCodeEnum.ERROR);
-			rc.setMessage(ex.getMessage());
-			log.error(ex.getMessage());
-		}
-		response.setResultCode(rc);
-		return response;
-	}
+        final ObjectFactory oFactory = new ObjectFactory();
+        final GetInvoiceDataResponse response = oFactory
+                .createGetInvoiceDataResponse();
+        final ResultCode rc = new ResultCode();
+        
+        try {           
+            if (request.getSupplierId() != null) {
+                final List<BusinessEventEntity> tmpEEntityList = invoiceDataService.
+                        getAllUnprocessedBusinessEvents(request.getSupplierId());
+                
+                for (final BusinessEventEntity bEE : tmpEEntityList) {
+                    response.getInvoiceDataList().add(fromEntity(bEE));
+                }               
+            }
+            rc.setCode(ResultCodeEnum.OK);
+            
+        } catch (InvoiceDataServiceException ex) {
+            rc.setCode(ResultCodeEnum.ERROR);
+            rc.setMessage(ex.getMessage());
+            log.error(ex.getMessage());
+        }
+        response.setResultCode(rc);
+        return response;
+    }
 
 }

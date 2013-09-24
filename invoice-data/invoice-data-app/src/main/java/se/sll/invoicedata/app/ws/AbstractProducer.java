@@ -33,9 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.Invoice;
+import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.Item;
-import riv.sll.invoicedata._1.ItemList;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 
@@ -90,12 +89,12 @@ public abstract class AbstractProducer {
         entity.setSupplierId(event.getSupplierId());
         entity.setServiceCode(event.getServiceCode());
         entity.setPaymentResponsible(event.getPaymentResponsible());
-        entity.setStartTimestamp(event.getStartTimestamp().toGregorianCalendar().getTime());
-        entity.setEndTimestamp(event.getEndTimestamp().toGregorianCalendar().getTime());
-        entity.setSignedTimestamp(event.getSignedTimestamp().toGregorianCalendar().getTime());
-        entity.setSignedBy(event.getSignedBy());
+        entity.setStartTimestamp(event.getStartTime().toGregorianCalendar().getTime());
+        entity.setEndTimestamp(event.getEndTime().toGregorianCalendar().getTime());
+        entity.setAcknowledgedTimestamp(event.getAcknowledgedTime().toGregorianCalendar().getTime());
+        entity.setAcknowledgedBy(event.getAcknowledgedBy());
         
-        for (final Item item : event.getItems().getItem()) {
+        for (final Item item : event.getItemList()) {
             final ItemEntity itemEntity = new ItemEntity();
             
             itemEntity.setItemId(item.getItemId());;
@@ -114,31 +113,15 @@ public abstract class AbstractProducer {
      * @param event the JAXB object.
      * @return the entity bean.
      */
-    Invoice fromEntity(final BusinessEventEntity entity) {
-        final Invoice invoice = new Invoice();
+    InvoiceDataHeader fromEntity(final BusinessEventEntity entity) {
+        final InvoiceDataHeader invoice = new InvoiceDataHeader();
         
-        invoice.setEventId(entity.getId());
         invoice.setPaymentResponsible(entity.getPaymentResponsible());
-        invoice.setStartTimestamp(getXMLGCalendar(entity.getStartTimestamp()));
-        invoice.setEndTimestamp(getXMLGCalendar(entity.getEndTimestamp()));
+        invoice.setCreatedTime(getXMLGCalendar(entity.getInvoiceData().getCreatedTimestamp()));
         invoice.setSupplierId(entity.getSupplierId());
-        invoice.setSignedBy(entity.getSignedBy());        
-        invoice.setTotalAmount(entity.getTotalAmount().doubleValue());
-        invoice.setIsPending(entity.getInvoiceData() == null);
-        
-        ItemList itemList = new ItemList();
-        
-        for (final ItemEntity itemEntity : entity.getItemEntities()) {
-            final Item item = new Item();
-            
-            item.setItemId(itemEntity.getItemId());
-            item.setQty(itemEntity.getQty());
-            item.setDescription(itemEntity.getDescription());
-            item.setPrice(itemEntity.getPrice().doubleValue());
-     
-            itemList.getItem().add(item);
-        }
-        invoice.setItems(itemList);
+        invoice.setCreatedBy(entity.getInvoiceData().getCreatedBy());        
+        invoice.setTotalAmount(entity.getTotalAmount());
+        invoice.setReferenceId(entity.getInvoiceData().getReferenceId());
         
         return invoice;
     }

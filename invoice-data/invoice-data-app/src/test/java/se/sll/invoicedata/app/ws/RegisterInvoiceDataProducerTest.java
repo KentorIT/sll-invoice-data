@@ -39,7 +39,6 @@ import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
-import riv.sll.invoicedata._1.ItemList;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
@@ -67,7 +66,7 @@ public class RegisterInvoiceDataProducerTest {
 	public void registerInvoiceData_without_Items_result_fail() {
 		
 		Event invoiceData = createSampleInvoiceData();
-		invoiceData.getItems().setItem(null);
+		invoiceData.setItemList(null);
 		
 		getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
@@ -77,7 +76,7 @@ public class RegisterInvoiceDataProducerTest {
 	public void registerInvoiceData_with_incorrect_qty_fail() {
 		
 		Event invoiceData = createSampleInvoiceData();
-		invoiceData.getItems().getItem().get(0).setQty(new BigDecimal(-2));
+		invoiceData.getItemList().get(0).setQty(new BigDecimal(-2));
 						
 		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
@@ -93,8 +92,8 @@ public class RegisterInvoiceDataProducerTest {
 		Calendar startTime = getCurrentDate().toGregorianCalendar();
 		startTime.add(Calendar.DAY_OF_MONTH, +1);
 		
-		invoiceData.setStartTimestamp(getXMLGCalendar(startTime));
-		invoiceData.setEndTimestamp(getCurrentDate());
+		invoiceData.setStartTime(getXMLGCalendar(startTime));
+		invoiceData.setEndTime(getCurrentDate());
 						
 		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
@@ -112,32 +111,26 @@ public class RegisterInvoiceDataProducerTest {
 	}
 		
 	private Event createSampleInvoiceData() {
-		Event event = new Event();
-		event.setEventId("EID1234");
-		event.setSignedBy("sign:X");
-		event.setSupplierName("SNX");
+        Event event = new Event();
+        event.setEventId("EID1234");
+        event.setAcknowledgedBy("sign:X");
+        event.setSupplierName("SNX");
 
-		event.setSignedTimestamp(getCurrentDate());
-		event.setServiceCode("SCABCD");
-	    event.setPaymentResponsible("HSF");
-		event.setSupplierId("SID123");
-		event.setStartTimestamp(getCurrentDate());
-		event.setEndTimestamp(getCurrentDate());
+        event.setAcknowledgedTime(getCurrentDate());
+        event.setServiceCode("SCABCD");
+        event.setPaymentResponsible("HSF");
+        event.setSupplierId("SID123");
+        event.setStartTime(getCurrentDate());
+        event.setEndTime(getCurrentDate());
 
-		Item item = new Item();
-		item.setDescription("Item is kind of a product");
-		item.setItemId("IT101");
-		item.setQty(new BigDecimal(0.5));
-		List<Item> items = new LinkedList<Item>();
-		items.add(item);
+        Item item = new Item();
+        item.setDescription("Item is kind of a product");
+        item.setItemId("IT101");
+        item.setQty(new BigDecimal(2));
+        event.getItemList().add(item);
 
-		ItemList itemList = new ItemList();
-		itemList.setItem(items);
-
-		event.setItems(itemList);
-		
-		return event;
-	}
+        return event;
+    }
 	
 
 	static RegisterInvoiceDataResponderInterface getRegisterInvoiceDataService() {

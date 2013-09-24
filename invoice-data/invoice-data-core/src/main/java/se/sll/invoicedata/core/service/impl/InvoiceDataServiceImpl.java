@@ -109,10 +109,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");
         mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
         mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
-        mandatory(businessEventEntity.getSignedBy(), "event.signedBy");
-        mandatory(businessEventEntity.getSignedTimestamp(), "event.signedTimestamp");
-        mandatory(businessEventEntity.getStartTimestamp(), "event.startTimestamp");
-        mandatory(businessEventEntity.getEndTimestamp(), "event.endTimestamp");
+        mandatory(businessEventEntity.getAcknowledgedBy(), "event.acknowledgedBy");
+        mandatory(businessEventEntity.getAcknowledgedTimestamp(), "event.acknowledgedTime");
+        mandatory(businessEventEntity.getStartTimestamp(), "event.startTime");
+        mandatory(businessEventEntity.getEndTimestamp(), "event.endTime");
 
         // valid time period
         if (businessEventEntity.getEndTimestamp().before(businessEventEntity.getStartTimestamp())) {
@@ -147,7 +147,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         List<BusinessEventEntity> businesEventList = businessEventRepository.findBySupplierIdAndPendingIsTrue(supplierId);
         for (BusinessEventEntity bEE : businesEventList) {
             final InvoiceDataEntity iDE = new InvoiceDataEntity();
-            iDE.setCreatedBy(bEE.getSignedBy());
+            iDE.setCreatedBy(bEE.getAcknowledgedBy());
             iDE.setSupplierId(bEE.getSupplierId());
             
             iDE.addBusinessEventEntity(bEE);

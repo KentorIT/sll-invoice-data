@@ -70,15 +70,18 @@ public class BusinessEventEntity {
     @Column(name="service_code", length=64, nullable=false, updatable=false)
     private String serviceCode;
     
-    @Column(name="signed_by", length=64, nullable=false, updatable=false)
-    private String signedBy;
+    @Column(name="acknowledged_by", length=64, nullable=false, updatable=false)
+    private String acknowledgedBy;
     
     @Column(name="payment_responsible", length=64, nullable=false, updatable=false)
     private String paymentResponsible;
     
+    @Column(name="healcare_commission", length=64, nullable=false, updatable=false)
+    private String healCareCommission;
+    
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "signed_timestamp", nullable=false, updatable=false)
-    private Date signedTimestamp;
+    @Column(name = "acknowledged_timestamp", nullable=false, updatable=false)
+    private Date acknowledgedTimestamp;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_timestamp", nullable=false, updatable=false)
@@ -142,14 +145,14 @@ public class BusinessEventEntity {
 
 
 
-    public String getSignedBy() {
-        return signedBy;
+    public String getAcknowledgedBy() {
+        return acknowledgedBy;
     }
 
 
 
-    public void setSignedBy(String signedBy) {
-        this.signedBy = signedBy;
+    public void setAcknowledgedBy(String acknowledgedBy) {
+        this.acknowledgedBy = acknowledgedBy;
     }
 
 
@@ -190,14 +193,14 @@ public class BusinessEventEntity {
 
 
 
-    public Date getSignedTimestamp() {
-        return signedTimestamp;
+    public Date getAcknowledgedTimestamp() {
+        return acknowledgedTimestamp;
     }
 
 
 
-    public void setSignedTimestamp(Date signedTimestamp) {
-        this.signedTimestamp = signedTimestamp;
+    public void setAcknowledgedTimestamp(Date acknowledgedTimestamp) {
+        this.acknowledgedTimestamp = acknowledgedTimestamp;
     }
 
 

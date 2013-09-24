@@ -23,10 +23,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import riv.sll.invoicedata._1.InvoiceEvents;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedata._1.rivtabp21.CreateInvoiceDataResponderInterface;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
 import riv.sll.invoicedata.createinvoicedataresponder._1.ObjectFactory;
 import se.sll.invoicedata.core.service.InvoiceDataService;
@@ -45,7 +45,7 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
 
     @Override
     public CreateInvoiceDataResponse createInvoiceData(String logicalAddress,
-            InvoiceEvents parameters) {
+            CreateInvoiceDataRequest parameters) {
         log("createInvoiceData");
         log.info("logicalAddress: {}", logicalAddress);
         
@@ -64,7 +64,7 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
         CreateInvoiceDataResponse createInvoiceDataResp = oFactory.createCreateInvoiceDataResponse();
         createInvoiceDataResp.setResultCode(rc);
         
-        return createInvoiceDataResp;        
+        return createInvoiceDataResp;  
     }
 
 }

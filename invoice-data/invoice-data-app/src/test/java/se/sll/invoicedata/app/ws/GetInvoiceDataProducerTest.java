@@ -22,10 +22,7 @@ package se.sll.invoicedata.app.ws;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -37,12 +34,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.GetInvoiceRequest;
-import riv.sll.invoicedata._1.InvoiceEvents;
 import riv.sll.invoicedata._1.Item;
-import riv.sll.invoicedata._1.ItemList;
 import riv.sll.invoicedata._1.ResultCodeEnum;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 
@@ -61,7 +57,7 @@ public class GetInvoiceDataProducerTest {
                 .getRegisterInvoiceDataService()
                 .registerInvoiceData(LOGICAL_ADDRESS, createSampleInvoiceData());
 
-        GetInvoiceRequest request = new GetInvoiceRequest();
+        GetInvoiceDataRequest request = new GetInvoiceDataRequest();
         request.setSupplierId("SID123");
 
         GetInvoiceDataResponse response = getGetInvoiceDataService()
@@ -71,8 +67,8 @@ public class GetInvoiceDataProducerTest {
         Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
                 .getCode());
 
-        Assert.assertNotNull(response.getInvoiceList());
-        Assert.assertEquals(2, response.getInvoiceList().size());
+        Assert.assertNotNull(response.getInvoiceDataList());
+        Assert.assertEquals(2, response.getInvoiceDataList().size());
 
     }
 
@@ -83,13 +79,13 @@ public class GetInvoiceDataProducerTest {
                 .getRegisterInvoiceDataService()
                 .registerInvoiceData(LOGICAL_ADDRESS, createSampleInvoiceData());
 
-        InvoiceEvents invoiceEvents = new InvoiceEvents();
+        CreateInvoiceDataRequest invoiceEvents = new CreateInvoiceDataRequest();
         invoiceEvents.setSupplierId("SID123");
 
         CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
                 .createInvoiceData(LOGICAL_ADDRESS, invoiceEvents);
 
-        GetInvoiceRequest request = new GetInvoiceRequest();
+        GetInvoiceDataRequest request = new GetInvoiceDataRequest();
         request.setSupplierId("SID123");
 
         GetInvoiceDataResponse response = getGetInvoiceDataService()
@@ -99,8 +95,8 @@ public class GetInvoiceDataProducerTest {
         Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
                 .getCode());
 
-        Assert.assertNotNull(response.getInvoiceList());
-        Assert.assertEquals(0, response.getInvoiceList().size());
+        Assert.assertNotNull(response.getInvoiceDataList());
+        Assert.assertEquals(0, response.getInvoiceDataList().size());
     }
 
     @Test
@@ -115,7 +111,7 @@ public class GetInvoiceDataProducerTest {
         event.setEventId("EID5678");
         registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
 
-        InvoiceEvents invoiceEvents = new InvoiceEvents();
+        CreateInvoiceDataRequest invoiceEvents = new CreateInvoiceDataRequest();
         invoiceEvents.setSupplierId("SID123");
 
         CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
@@ -128,7 +124,7 @@ public class GetInvoiceDataProducerTest {
         // processed!
         // One unprocessed event shall be returned on getInvoiceData
 
-        GetInvoiceRequest request = new GetInvoiceRequest();
+        GetInvoiceDataRequest request = new GetInvoiceDataRequest();
         request.setSupplierId("SID123");
 
         GetInvoiceDataResponse response = getGetInvoiceDataService()
@@ -138,77 +134,28 @@ public class GetInvoiceDataProducerTest {
         Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
                 .getCode());
 
-        Assert.assertNotNull(response.getInvoiceList());
-        Assert.assertEquals(1, response.getInvoiceList().size());
-    }
-
-    @Test
-    public void get_InvoiceData_Some_Processed_Some_Unprocessed_By_Supplier_id_And_Event_Id_Success() {
-
-        RegisterInvoiceDataResponderInterface registerIDRInterface = RegisterInvoiceDataProducerTest
-                .getRegisterInvoiceDataService();
-
-        Event event = createSampleInvoiceData();
-
-        registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
-        event.setEventId("EID5678");
-        registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
-
-        InvoiceEvents invoiceEvents = new InvoiceEvents();
-        invoiceEvents.setSupplierId("SID123");
-
-        CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
-                .createInvoiceData(LOGICAL_ADDRESS, invoiceEvents);
-
-        event.setEventId("EID901011");
-        registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
-
-        // Now we have 3 events connected to same supplier of which 2 events got
-        // processed!
-        // We now will fetch both by supplierId and by eventId
-
-        GetInvoiceRequest request = new GetInvoiceRequest();
-        request.setSupplierId("SID123");
-        List<String> eventIdList = new ArrayList<String>();
-        eventIdList.add("EID1234");
-        eventIdList.add("EID5678");
-        request.setEventIdList(eventIdList);
-
-        GetInvoiceDataResponse response = getGetInvoiceDataService()
-                .getInvoiceData(LOGICAL_ADDRESS, request);
-
-        Assert.assertNotNull(response);
-        Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
-                .getCode());
-
-        Assert.assertNotNull(response.getInvoiceList());
-        Assert.assertEquals(3, response.getInvoiceList().size());
+        Assert.assertNotNull(response.getInvoiceDataList());
+        Assert.assertEquals(1, response.getInvoiceDataList().size());
     }
 
     private Event createSampleInvoiceData() {
         Event event = new Event();
         event.setEventId("EID1234");
-        event.setSignedBy("sign:X");
+        event.setAcknowledgedBy("sign:X");
         event.setSupplierName("SNX");
 
-        event.setSignedTimestamp(getCurrentDate());
+        event.setAcknowledgedTime(getCurrentDate());
         event.setServiceCode("SCABCD");
         event.setPaymentResponsible("HSF");
         event.setSupplierId("SID123");
-        event.setStartTimestamp(getCurrentDate());
-        event.setEndTimestamp(getCurrentDate());
+        event.setStartTime(getCurrentDate());
+        event.setEndTime(getCurrentDate());
 
         Item item = new Item();
         item.setDescription("Item is kind of a product");
         item.setItemId("IT101");
         item.setQty(new BigDecimal(2));
-        List<Item> items = new LinkedList<Item>();
-        items.add(item);
-
-        ItemList itemList = new ItemList();
-        itemList.setItem(items);
-
-        event.setItems(itemList);
+        event.getItemList().add(item);
 
         return event;
     }
