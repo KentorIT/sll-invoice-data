@@ -169,8 +169,29 @@ public class CoreUtil {
             throw new RuntimeException("Unable to copy object field: " + field, e);
         }
     }
-
-
+    
+    /**
+     * Copies data from generic lists
+     * @param to
+     * @param from
+     * @param type
+     * @param spec
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T,F> List<T> copyGenericLists(List<T> to, List<F> from, Class<?> type, Class<?> spec) {
+    	//TODO: Need to find way to skip type and spec!
+        for (int i = 0; i < from.size(); i++) {
+            try {
+                to.add((T) Class.forName(type.getName()).newInstance());
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            copyProperties(to.get(i), from.get(i), spec);
+        }         
+        return to;        
+    }
+    
     //
     private static List<Field> allFields(Class<?> clazz) {
         final List<Field> list = new ArrayList<Field>();
