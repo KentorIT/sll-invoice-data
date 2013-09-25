@@ -14,7 +14,9 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.app.ws;
+package se.sll.invoicedata.app;
+
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -23,16 +25,20 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.junit.Test;
 
-import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.app.AppUtil;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
-public class TestSupport extends AppUtil {
+/**
+ * Testing base class.
+ * 
+ * @author Peter
+ */
+public abstract class TestSupport extends AppUtil {
 
     
-    static RegisteredEvent createSampleEventData() {
+    public static RegisteredEvent createSampleEventData() {
         RegisteredEvent event = new RegisteredEvent();
         event.setEventId("EID1234");
         event.setAcknowledgedBy("sign:X");
@@ -57,19 +63,7 @@ public class TestSupport extends AppUtil {
         return event;
     }
     
-    static XMLGregorianCalendar getCurrentDate() {
+    public static XMLGregorianCalendar getCurrentDate() {
         return toXMLGregorianCalendar(new Date());
-    }
-    
-    
-    @Test
-    public void testAppUtil_copyProperties() {
-        Event e = createSampleEventData();
-        BusinessEventEntity be = new BusinessEventEntity();
-        copyProperties(be, e, RegisteredEvent.class);
-        
-        RegisteredEvent e2 = new RegisteredEvent();
-        copyProperties(e2, be, RegisteredEvent.class);
-        
     }
 }

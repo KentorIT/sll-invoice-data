@@ -34,6 +34,7 @@ import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderIn
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
+import se.sll.invoicedata.app.TestSupport;
 
 /**
  * @author muqkha

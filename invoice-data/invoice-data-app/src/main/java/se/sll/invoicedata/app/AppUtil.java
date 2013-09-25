@@ -34,10 +34,17 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.WordUtils;
 
+/**
+ * Helper functions, primarily carrying out transformation stuff.
+ * 
+ * @author Peter
+ */
 public class AppUtil {
 
-    static HashSet<String> stopMethodSet = new HashSet<String>();
-    static Map<Class<?>, List<Field>> fieldCacheMap = Collections.synchronizedMap(new HashMap<Class<?>, List<Field>>());
+    /** Cache of non-existing methods during copy. */
+    private static HashSet<String> stopMethodSet = new HashSet<String>();
+    /** Cache of class fields to be copied. */
+    private static Map<Class<?>, List<Field>> fieldCacheMap = Collections.synchronizedMap(new HashMap<Class<?>, List<Field>>());
 
     private static final DatatypeFactory datatypeFactory;
     static {
@@ -48,7 +55,12 @@ public class AppUtil {
         }
     }
 
-    //
+    /**
+     * Returns a {@link XMLGregorianCalendar} date and time representation.
+     * 
+     * @param date the actual date and time.
+     * @return the {@link XMLGregorianCalendar} representation.
+     */
     public static XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
         if (date == null) {
             return null;
@@ -58,6 +70,12 @@ public class AppUtil {
         return datatypeFactory.newXMLGregorianCalendar(gCal);
     }
 
+    /**
+     * Returns a {@link Date} date and time representation.
+     * 
+     * @param cal the actual date and time.
+     * @return the {@link Date} representation.
+     */
     public static Date toDate(XMLGregorianCalendar cal) {
         return cal.toGregorianCalendar().getTime();
     }
