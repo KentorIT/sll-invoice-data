@@ -104,6 +104,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         return data;
     }
     
+    @Override
+    public List<InvoiceDataEntity> getAllInvoicedData(String supplierId, String paymentResponsible) {        
+        return invoiceDataRepository.findBySupplierIdAndPaymentResponsible(
+                validate(supplierId, "supplierId"), 
+                validate(paymentResponsible, "paymentResponsible"));
+    }
+    
     //
     private static void mandatory(final String s, final String field) {
         if (s == null || s.length() ==  0) {
@@ -205,7 +212,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 
     @Override
-    public void registerInvociceData(InvoiceDataEntity invoiceDataEntity) {
+    public void registerInvoiceData(InvoiceDataEntity invoiceDataEntity) {
         invoiceDataRepository.save(invoiceDataEntity);
     }
 

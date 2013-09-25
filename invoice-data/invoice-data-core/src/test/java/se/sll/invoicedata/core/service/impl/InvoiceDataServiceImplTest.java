@@ -92,7 +92,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
             ie.addBusinessEventEntity(e);
         }
         
-        invoiceDataService.registerInvociceData(ie);
+        invoiceDataService.registerInvoiceData(ie);
 	    
         return ie;
 	}

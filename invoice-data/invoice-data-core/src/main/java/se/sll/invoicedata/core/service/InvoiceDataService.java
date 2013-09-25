@@ -75,5 +75,14 @@ public interface InvoiceDataService {
      * 
      * @param invoiceDataEntity the entity to create.
      */
-    void registerInvociceData(InvoiceDataEntity invoiceDataEntity);
+    void registerInvoiceData(InvoiceDataEntity invoiceDataEntity);
+    
+    /**
+     * Fetches all invoiced data for a particular supplier and payee
+     * @param supplierId
+     * @param paymentResponsible
+     * @return
+     */
+	List<InvoiceDataEntity> getAllInvoicedData(String supplierId,
+			String paymentResponsible);
 }
