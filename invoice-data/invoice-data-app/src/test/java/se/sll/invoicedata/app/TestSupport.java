@@ -16,19 +16,13 @@
 
 package se.sll.invoicedata.app;
 
-import static org.junit.Assert.assertEquals;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.junit.Test;
-
+import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
-import riv.sll.invoicedata._1.RegisteredEvent;
-import se.sll.invoicedata.app.AppUtil;
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
 /**
  * Testing base class.
@@ -38,8 +32,8 @@ import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 public abstract class TestSupport extends AppUtil {
 
     
-    public static RegisteredEvent createSampleEventData() {
-        RegisteredEvent event = new RegisteredEvent();
+    public static Event createSampleEventData() {
+    	Event event = new Event();
         event.setEventId("EID1234");
         event.setAcknowledgedBy("sign:X");
         event.setSupplierName("SNX");
@@ -51,8 +45,7 @@ public abstract class TestSupport extends AppUtil {
         event.setSupplierId("SID123");
         event.setStartTime(getCurrentDate());
         event.setEndTime(getCurrentDate());
-        event.setTotalAmount(BigDecimal.valueOf(0));
-        
+               
         Item item = new Item();
         item.setDescription("Item is kind of a product");
         item.setItemId("IT101");

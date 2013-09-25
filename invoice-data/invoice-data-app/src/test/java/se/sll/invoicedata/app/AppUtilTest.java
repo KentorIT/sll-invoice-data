@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
@@ -34,11 +35,11 @@ public class AppUtilTest extends TestSupport {
 
     @Test
     public void testAppUtil_copyProperties() {
-        RegisteredEvent e = createSampleEventData();
+        Event e = createSampleEventData();
         BusinessEventEntity be = new BusinessEventEntity();
-        copyProperties(be, e, RegisteredEvent.class);
+        copyProperties(be, e, Event.class);
         
-        final RegisteredEvent e2 =  copyProperties(new RegisteredEvent(), be, RegisteredEvent.class);        
+        final RegisteredEvent e2 =  copyProperties(new RegisteredEvent(), be, Event.class);        
 
         assertEquals(e.getEventId(), e2.getEventId());
         assertEquals(e.getHealthCareCommission(), e2.getHealthCareCommission());
