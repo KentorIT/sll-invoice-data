@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +67,8 @@ public class BusinessEventRepositoryTest extends TestSupport {
         getBusinessEventRepository().save(e);
         getBusinessEventRepository().flush();
         
-        final BusinessEventEntity f = getBusinessEventRepository().findByEventId("event-123");
+        final List<BusinessEventEntity> list = getBusinessEventRepository().findByEventIdAndCreditIsNull("event-123", null);
+        final BusinessEventEntity f = list.get(0);
         assertNotNull(f);
         
         assertEquals(e.getEventId(), f.getEventId());

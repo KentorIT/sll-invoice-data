@@ -38,7 +38,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Table;
 
 /**
@@ -48,21 +47,29 @@ import org.hibernate.annotations.Table;
  */
 @Entity(name=BusinessEventEntity.TABLE_NAME)
 @Table(appliesTo=BusinessEventEntity.TABLE_NAME,
-indexes={ @Index(name=BusinessEventEntity.INDEX_NAME, 
-columnNames={ BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ) } )
+indexes={ @Index(name=BusinessEventEntity.INDEX_NAME_1, 
+columnNames={ BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ),
+@Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }) } )
 public class BusinessEventEntity {
     static final String TABLE_NAME = "invoice_data_event";
-    static final String INDEX_NAME = "invoice_data_event_query_index";
+    static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";
+    static final String INDEX_NAME_2 = "invoice_data_event_query_ix_2";
     static final String SUPPLIER_ID = "supplier_id";
     static final String PENDING = "pending";
+    static final String EVENT_ID = "event_id";
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     
-    @NaturalId
-    @Column(name="event_id", length=64)
+    @Column(name=EVENT_ID, nullable=false, updatable=false, length=64)
     private String eventId;
+    
+    @Column(name="credit", updatable=false, length=64)
+    private Boolean credit;
+
+    @Column(name="credited", updatable=true, length=64)
+    private Boolean credited;
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_timestamp", nullable=false, updatable=false)
@@ -144,6 +151,30 @@ public class BusinessEventEntity {
     }
 
 
+    public Boolean getCredit() {
+        return credit;
+    }
+
+    public void setCredit(Boolean credit) {
+        this.credit = credit;
+    }
+    
+    public boolean isCredit() {
+        return (this.credit == Boolean.TRUE);
+    }
+
+    public Boolean getCredited() {
+        return credited;
+    }
+
+    public void setCredited(Boolean credited) {
+        this.credited = credited;
+    }
+
+    public boolean isCredited() {
+        return (this.credited == Boolean.TRUE);
+    }
+    
     public String getSupplierName() {
         return supplierName;
     }
@@ -284,7 +315,7 @@ public class BusinessEventEntity {
     }
 
     public boolean isPending() {
-        return pending;
+        return (pending == Boolean.TRUE);
     }
 
     protected void setPending(Boolean pending) {

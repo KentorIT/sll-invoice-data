@@ -17,9 +17,11 @@
 package se.sll.invoicedata.core.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,21 +49,47 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     private RatingService ratingService;
 
     
+    private InvoiceDataServiceImpl save(BusinessEventEntity... entities) {
+        businessEventRepository.save(Arrays.asList(entities));
+        return this;
+    }
+
+    private InvoiceDataServiceImpl remove(BusinessEventEntity... entities) {
+        businessEventRepository.save(Arrays.asList(entities));
+        return this;
+    }
+
     @Override
-    public void registerBusinessEvent(BusinessEventEntity businessEventEntity) {
-        businessEventRepository.save(rate(validate(businessEventEntity)));
+    public void registerBusinessEvent(BusinessEventEntity newEntity) {
+        rate(validate(newEntity));
+        final BusinessEventEntity oldEntity = getBusinessEvent(newEntity.getEventId());
+        
+        if (oldEntity == null) {
+            save(newEntity);
+        } else if (oldEntity.isPending()) {
+            remove(oldEntity).save(newEntity);
+        } else if (!oldEntity.isCredited()) {
+            oldEntity.setCredited(true);
+            // create credit event.
+            final BusinessEventEntity creditEntity = CoreUtil.copyProperties(new BusinessEventEntity(), oldEntity, BusinessEventEntity.class);
+            creditEntity.setCredit(true);
+            creditEntity.setInvoiceData(null);
+            for (ItemEntity itemEntity : oldEntity.getItemEntities()) {
+                creditEntity.addItemEntity(CoreUtil.copyProperties(new ItemEntity(), itemEntity, ItemEntity.class));
+            }
+            save(oldEntity, newEntity, creditEntity);
+        } else {
+            throw new IllegalStateException("Unpredicted database state detected, for business event: " + newEntity.getEventId());
+        }
     }
 
     @Override
     public BusinessEventEntity getBusinessEvent(String eventId) {
-        return businessEventRepository.findByEventId(eventId);
+        Sort sort = new Sort(Sort.Direction.DESC, "createdTimestamp");
+        List<BusinessEventEntity> list = businessEventRepository.findByEventIdAndCreditIsNull(eventId, sort);
+        return (list.size() == 0) ? null : list.get(0);
     }
     
-    @Override
-    public BusinessEventEntity getBusinessEvent(String supplierId,
-            String eventId) {
-        return businessEventRepository.findBySupplierIdAndEventId(supplierId, eventId);
-    }
     
     @Override
     public List<BusinessEventEntity> getAllUnprocessedBusinessEvents(
@@ -109,6 +137,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");
         mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
         mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
+        mandatory(businessEventEntity.getHealthCareCommission(), "event.healthCareCommission");
         mandatory(businessEventEntity.getAcknowledgedBy(), "event.acknowledgedBy");
         mandatory(businessEventEntity.getAcknowledgedTime(), "event.acknowledgedTime");
         mandatory(businessEventEntity.getStartTime(), "event.startTime");
@@ -116,7 +145,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
         // valid time period
         if (businessEventEntity.getEndTime().before(businessEventEntity.getStartTime())) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.endTimestamp is before event.startTimestamp");            
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.endTime is before event.startTime");            
         }
         
         // mandatory fields according to schema
@@ -154,6 +183,21 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             invoiceDataRepository.save(iDE);
         }
         
+    }
+
+    @Override
+    public List<BusinessEventEntity> getPendingBusinessEntities(
+            String supplierId, List<String> eventIdList) {
+        final List<BusinessEventEntity> list = businessEventRepository.findBySupplierIdAndEventIdInAndPendingIsTrue(supplierId, eventIdList);
+        if (list.size() != eventIdList.size()) {
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("The provided list of events doesn't match database state");
+        }
+        return list;
+    }
+
+    @Override
+    public void registerInvociceData(InvoiceDataEntity invoiceDataEntity) {
+        invoiceDataRepository.save(invoiceDataEntity);
     }
 
 }

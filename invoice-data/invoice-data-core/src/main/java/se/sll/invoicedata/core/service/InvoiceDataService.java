@@ -19,6 +19,7 @@ package se.sll.invoicedata.core.service;
 import java.util.List;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
 /**
  * Defines Invoice Data service API.
@@ -43,13 +44,6 @@ public interface InvoiceDataService {
      */
     BusinessEventEntity getBusinessEvent(String eventId);
     
-    /**
-     * Returns a business event by supplier id and event id
-     * @param eventId
-     * @param supplierId
-     * @return
-     */
-    BusinessEventEntity getBusinessEvent(String supplierId, String eventId);
     
     /**
      * Returns all unprocessed events for a particular supplier.
@@ -65,4 +59,21 @@ public interface InvoiceDataService {
      * @return
      */
     void createInvoiceData(String supplierId);
+    
+    /**
+     * Returns all pending business entities by event ids.
+     * 
+     * @param eventIdList the list of event ids.
+     * @return the list, exactly matching the number of ids.
+     * 
+     * @throws IllegalArgumentException when the number of ids doesn't match expected result.
+     */
+    List<BusinessEventEntity> getPendingBusinessEntities(String supplierId, List<String> eventIdList);
+    
+    /**
+     * Creates an invoice data.
+     * 
+     * @param invoiceDataEntity the entity to create.
+     */
+    void registerInvociceData(InvoiceDataEntity invoiceDataEntity);
 }
