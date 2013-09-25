@@ -70,7 +70,7 @@ public class AppUtil {
      * 
      * The purpose of this method is primarily to transfer state between JAXB XML objects 
      * to and from JPA entities, and therefore are typical data type conversions carried out. 
-     * Lists are note traversed, i.e. it's about shallow copies only. 
+     * Lists are not traversed, i.e. it's about shallow copies only. 
      * 
      * @param to the object instance to copy state to.
      * @param from the object instance to copy state from.
