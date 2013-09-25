@@ -78,7 +78,7 @@ public class CoreUtil {
      * @return the {@link Date} representation.
      */
     public static Date toDate(XMLGregorianCalendar cal) {
-        return cal.toGregorianCalendar().getTime();
+        return (cal == null) ? null : cal.toGregorianCalendar().getTime();
     }
 
     /**
