@@ -18,11 +18,16 @@ package se.sll.invoicedata.app;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.ItemEntity;
 
 /**
  * Unit tests AppUtil.
@@ -49,6 +54,33 @@ public class AppUtilTest extends TestSupport {
         assertEquals(e.getSupplierName(), e2.getSupplierName());
         assertEquals(e.getStartTime(), e2.getStartTime());
         assertEquals(e.getEndTime(), e2.getEndTime());
+        
+    }
+    
+    //@Test
+    public void testSupport_copy_from_event_to_businessEntity() {
+        Event e = createSampleEventData();
+        BusinessEventEntity be = new BusinessEventEntity();
+        copyProperties(be, e, Event.class);
+        
+        //TODO: asserts
+        List<Item> item = e.getItemList();
+        List<ItemEntity> itemEntity = new ArrayList<ItemEntity>();
+        copyGenericLists(itemEntity, item, ItemEntity.class, Item.class);
+        
+        //be.addItemEntity(itemEntity);
+        
+        
+//        RegisteredEvent e2 = new RegisteredEvent();
+//        copyFields(e2, be, RegisteredEvent.class);
+//        
+//        RegisteredEvent rEvent = new RegisteredEvent();
+//        AppUtil.copyFields(rEvent, be, RegisteredEvent.class);
+//        
+//        List<Item> itemList = new ArrayList<Item>();
+//        AppUtil.copyFields(itemList, be.getItemEntities(), Item.class);
+//        
+//        rEvent.setItemList(itemList);
         
     }
 }

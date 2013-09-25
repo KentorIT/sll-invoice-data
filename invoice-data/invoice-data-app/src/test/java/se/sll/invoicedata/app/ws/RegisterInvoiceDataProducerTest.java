@@ -92,6 +92,51 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 		Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());	
 	}
 	
+	@Test
+    public void registerInvoiceData_with_incorrect_data_result_fail() {
+        
+	    String emptyStr = new String("");
+        Event invoiceData = createSampleEventData();
+        invoiceData.setAcknowledgedBy(emptyStr);
+        
+        RegisterInvoiceDataResponderInterface registerInvoiceHandlar = getRegisterInvoiceDataService();
+        RegisterInvoiceDataResponse response = registerInvoiceHandlar
+                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+        
+        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
+        
+        invoiceData.setEventId(emptyStr);
+        response = registerInvoiceHandlar
+                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
+        
+        invoiceData.setHealthCareCommission(emptyStr);
+        response = registerInvoiceHandlar
+                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
+        
+        invoiceData.setPaymentResponsible(emptyStr);
+        response = registerInvoiceHandlar
+                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
+        
+        invoiceData.setServiceCode(emptyStr);
+        response = registerInvoiceHandlar
+                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
+        
+        invoiceData.setSupplierId(emptyStr);
+        response = registerInvoiceHandlar
+                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
+        
+        invoiceData.setSupplierName(emptyStr);
+        response = registerInvoiceHandlar
+                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
+        
+    }
+	
 	@Test(expected = SOAPFaultException.class)
 	public void registerInvoiceData_with_empty_invoicedata_result_exception() {
 		

@@ -32,6 +32,7 @@ import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.getinvoicedataresponder._1.ObjectFactory;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
@@ -59,18 +60,19 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
                 .createGetInvoiceDataResponse();
         final ResultCode rc = new ResultCode();
         
-        try {           
-            if (request.getSupplierId() != null) {
-                // TODO: Update according to new WSDL
-//                final List<BusinessEventEntity> tmpEEntityList = invoiceDataService.
-//                        getAllUnprocessedBusinessEvents(request.getSupplierId());
-//                
-//                for (final BusinessEventEntity bEE : tmpEEntityList) {
-//                    response.getInvoiceDataList().add(fromEntity(bEE));
-//                }               
-            }
-            rc.setCode(ResultCodeEnum.OK);
+        try {
+            //Fetching unprocessed events with price
+            List<BusinessEventEntity> bEEntityList = invoiceDataService
+                    .getAllUnprocessedBusinessEvents(request.getSupplierId(),
+                            request.getPaymentResponsible());
+            response.getRegisteredEventList().addAll(fromBEntity(bEEntityList));
             
+            //Fetching invoiced data
+            List<InvoiceDataEntity> iDEntityList = invoiceDataService
+                    .getAllInvoicedData(request.getSupplierId(), request.getPaymentResponsible());
+            response.getInvoiceDataList().addAll(fromIEntity(iDEntityList));
+            rc.setCode(ResultCodeEnum.OK);
+
         } catch (InvoiceDataServiceException ex) {
             rc.setCode(ResultCodeEnum.ERROR);
             rc.setMessage(ex.getMessage());

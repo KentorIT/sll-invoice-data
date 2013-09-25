@@ -16,6 +16,10 @@
 
 package se.sll.invoicedata.app.ws;
 
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,10 +34,11 @@ import org.slf4j.LoggerFactory;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.Item;
+import riv.sll.invoicedata._1.RegisteredEvent;
+import se.sll.invoicedata.app.AppUtil;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
-import static se.sll.invoicedata.app.AppUtil.copyProperties;
 
 /**
  * Abstract class used by WS Producers
@@ -95,5 +100,34 @@ public abstract class AbstractProducer {
      */
     static InvoiceDataHeader fromEntity(final InvoiceDataEntity entity) {
         return copyProperties(new InvoiceDataHeader(), entity, InvoiceDataHeader.class);
+    }
+    
+    List<InvoiceDataHeader> fromIEntity(final List<InvoiceDataEntity> entityList) {
+        List<InvoiceDataHeader> iDHeaderList = new ArrayList<InvoiceDataHeader>();
+        for (final InvoiceDataEntity iDE : entityList) {
+            iDHeaderList.add(fromEntity(iDE));            
+        }        
+        return iDHeaderList;
+    }
+    
+    RegisteredEvent fromEntity(final BusinessEventEntity bEEntity) {
+        RegisteredEvent rEvent = new RegisteredEvent();
+        AppUtil.copyProperties(rEvent, bEEntity, RegisteredEvent.class);
+        
+        List<Item> itemList = new ArrayList<Item>();
+        AppUtil.copyGenericLists(itemList, bEEntity.getItemEntities(), Item.class, ItemEntity.class);
+        
+        rEvent.setItemList(itemList);
+        
+        return rEvent;
+    }
+    
+    List<RegisteredEvent> fromBEntity(final List<BusinessEventEntity> bEEntityList) {
+        List<RegisteredEvent> registeredEventList = new ArrayList<RegisteredEvent>();
+        for (final BusinessEventEntity bEEntity : bEEntityList) {
+            registeredEventList.add(fromEntity(bEEntity));
+            
+        }
+        return registeredEventList;
     }
 }

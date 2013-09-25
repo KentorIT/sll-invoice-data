@@ -118,5 +118,41 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         }
         assertEquals(3, credits);
 	}
+    
+    //@Test
+    @Rollback(true)
+    public void testGetAllUnprocessedBusinessEvents() {
+        
+        final BusinessEventEntity e = createSampleBusinessEventEntity();
+        e.addItemEntity(createSampleItemEntity());
+        
+        invoiceDataService.registerBusinessEvent(e);
+        
+        final List<BusinessEventEntity> bEEntityList = invoiceDataService.getAllUnprocessedBusinessEvents(e.getSupplierId(), e.getPaymentResponsible());
+        
+        assertNotNull(bEEntityList);        
+        assertEquals(1, bEEntityList.size());
+        assertEquals(e.getSupplierName(), bEEntityList.get(0).getSupplierName());
+        assertEquals(e.getAcknowledgedBy(), bEEntityList.get(0).getAcknowledgedBy());
+        assertNotNull(bEEntityList.get(0).getCreatedTimestamp());   
+    }
+	
+	//@Test
+    @Rollback(true)
+    public void testGetAllInvoicedData() {
+        
+        final BusinessEventEntity e = createSampleBusinessEventEntity();
+        e.addItemEntity(createSampleItemEntity());
+        
+        invoiceDataService.registerBusinessEvent(e);
+        invoiceDataService.createInvoiceData(e.getSupplierId());
+        
+        final List<InvoiceDataEntity> invoiceDataList = invoiceDataService.getAllInvoicedData(e.getSupplierId(), e.getPaymentResponsible());
+        
+        assertNotNull(invoiceDataList);        
+        assertEquals(1, invoiceDataList.size());
+        assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
+        assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0).getPaymentResponsible());
+    }
 		
 }
