@@ -63,13 +63,13 @@ public class TestSupport extends AppUtil {
     
     
     @Test
-    public void testSupport_copy() {
+    public void testAppUtil_copyProperties() {
         Event e = createSampleEventData();
         BusinessEventEntity be = new BusinessEventEntity();
-        copyFields(be, e, RegisteredEvent.class);
+        copyProperties(be, e, RegisteredEvent.class);
         
         RegisteredEvent e2 = new RegisteredEvent();
-        copyFields(e2, be, RegisteredEvent.class);
+        copyProperties(e2, be, RegisteredEvent.class);
         
     }
 }

@@ -20,7 +20,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -63,8 +62,22 @@ public class AppUtil {
         return cal.toGregorianCalendar().getTime();
     }
 
-    //
-    public static <T> T copyFields(T to, Object from, Class<?> spec) {
+    /**
+     * Copies properties/state from one class to another. <p>
+     * 
+     * If public getter (from) and setters (to) exists are non-static and non-final fields in a specification 
+     * class copied, i.e. the names of the fields must be identical. Lists are ignored. <p>
+     * 
+     * The purpose of this method is primarily to transfer state between JAXB XML objects 
+     * to and from JPA entities, and therefore are typical data type conversions carried out. 
+     * Lists are note traversed, i.e. it's about shallow copies only. 
+     * 
+     * @param to the object instance to copy state to.
+     * @param from the object instance to copy state from.
+     * @param spec the class specifying fields to be copied,
+     * @return the to object.
+     */
+    public static <T> T copyProperties(T to, Object from, Class<?> spec) {
 
         List<Field> list = fieldCacheMap.get(spec);
         if (list == null) {

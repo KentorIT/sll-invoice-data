@@ -16,15 +16,10 @@
 
 package se.sll.invoicedata.app.ws;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
@@ -35,10 +30,10 @@ import org.slf4j.LoggerFactory;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.Item;
-import se.sll.invoicedata.app.AppUtil;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
+import static se.sll.invoicedata.app.AppUtil.copyProperties;
 
 /**
  * Abstract class used by WS Producers
@@ -84,27 +79,9 @@ public abstract class AbstractProducer {
      * @return the entity bean.
      */
     static BusinessEventEntity toEntity(final Event event) {
-        final BusinessEventEntity entity = new BusinessEventEntity();
-        
-        entity.setEventId(event.getEventId());
-        entity.setSupplierName(event.getSupplierName());
-        entity.setSupplierId(event.getSupplierId());
-        entity.setServiceCode(event.getServiceCode());
-        entity.setPaymentResponsible(event.getPaymentResponsible());
-        entity.setHealthCareCommission(event.getHealthCareCommission());
-        entity.setStartTime(event.getStartTime().toGregorianCalendar().getTime());
-        entity.setEndTime(event.getEndTime().toGregorianCalendar().getTime());
-        entity.setAcknowledgedTime(event.getAcknowledgedTime().toGregorianCalendar().getTime());
-        entity.setAcknowledgedBy(event.getAcknowledgedBy());
-        
-        for (final Item item : event.getItemList()) {
-            final ItemEntity itemEntity = new ItemEntity();
-            
-            itemEntity.setItemId(item.getItemId());;
-            itemEntity.setQty(item.getQty());
-            itemEntity.setDescription(item.getDescription());
-     
-            entity.addItemEntity(itemEntity);
+        final BusinessEventEntity entity = copyProperties(new BusinessEventEntity(), event, Event.class);
+        for (final Item item : event.getItemList()) {     
+            entity.addItemEntity(copyProperties(new ItemEntity(), item, Item.class));
         }
         
         return entity;
@@ -117,15 +94,6 @@ public abstract class AbstractProducer {
      * @return the entity bean.
      */
     static InvoiceDataHeader fromEntity(final InvoiceDataEntity entity) {
-        final InvoiceDataHeader invoiceDataHeader = new InvoiceDataHeader();
-        
-        invoiceDataHeader.setPaymentResponsible(entity.getPaymentResponsible());
-        invoiceDataHeader.setCreatedTime(AppUtil.toXMLGregorianCalendar(entity.getCreatedTimestamp()));
-        invoiceDataHeader.setSupplierId(entity.getSupplierId());
-        invoiceDataHeader.setCreatedBy(entity.getCreatedBy());        
-        invoiceDataHeader.setTotalAmount(entity.getTotalAmount());
-        invoiceDataHeader.setReferenceId(entity.getReferenceId());
-        
-        return invoiceDataHeader;
+        return copyProperties(new InvoiceDataHeader(), entity, InvoiceDataHeader.class);
     }
 }
