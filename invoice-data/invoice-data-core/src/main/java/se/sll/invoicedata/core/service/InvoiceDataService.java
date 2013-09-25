@@ -51,7 +51,7 @@ public interface InvoiceDataService {
      * @param supplierId the supplier id.
      * @return the result list, might be empty if no none events found.
      */
-    List<BusinessEventEntity> getAllUnprocessedBusinessEvents(String supplierId);
+    List<BusinessEventEntity> getAllUnprocessedBusinessEvents(String supplierId, String paymentResponsible);
     
     /**
      * Creates invoice data for a particular supplier.

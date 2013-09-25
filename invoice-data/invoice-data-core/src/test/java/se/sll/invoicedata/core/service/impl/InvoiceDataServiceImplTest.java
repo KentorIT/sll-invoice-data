@@ -102,10 +102,11 @@ public class InvoiceDataServiceImplTest extends TestSupport {
     @Rollback(true)
 	public void testRegisterInvocieData_From_Pending_And_Credit() {
         final String supplierId = "test-supplier-45";
+        final String paymentResponsible = "HSF";
         final InvoiceDataEntity ie = registerInvocieData(supplierId);
         
         registerEvents(supplierId, Arrays.asList(new String[] { "event-1", "event-2", "event-3" }));
-        final List<BusinessEventEntity> l = invoiceDataService.getAllUnprocessedBusinessEvents(supplierId);
+        final List<BusinessEventEntity> l = invoiceDataService.getAllUnprocessedBusinessEvents(supplierId, paymentResponsible);
         // one credit event shall be created for each new
         assertEquals(ie.getBusinessEventEntities().size()*2, l.size());
         

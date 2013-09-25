@@ -37,4 +37,12 @@ public interface InvoiceDataRepository  extends JpaRepository<InvoiceDataEntity,
      * @return the list of invoice data entities.
      */
     List<InvoiceDataEntity> findBySupplierId(String supplierId);
+    
+    /**
+     * Returns all invoiced data for a particular suppier and payee
+     * @param supplierId
+     * @param paymentResponsible
+     * @return
+     */
+    List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsible(String supplierId, String paymentResponsible);
 }

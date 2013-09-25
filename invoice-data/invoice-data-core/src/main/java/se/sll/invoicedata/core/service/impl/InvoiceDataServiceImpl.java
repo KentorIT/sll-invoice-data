@@ -93,10 +93,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     
     @Override
     public List<BusinessEventEntity> getAllUnprocessedBusinessEvents(
-            String supplierId) {
-        return businessEventRepository.findBySupplierIdAndPendingIsTrue(supplierId);
+            String supplierId, String paymentResponsible) {
+        return businessEventRepository.findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(
+                validate(supplierId, "supplierId"), 
+                validate(paymentResponsible, "paymentResponsible"));
     }
     
+    protected String validate(final String data, final String field) {
+        mandatory(data, field);
+        return data;
+    }
     
     //
     private static void mandatory(final String s, final String field) {
@@ -134,12 +140,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     protected BusinessEventEntity validate(final BusinessEventEntity businessEventEntity) {
         
         // mandatory fields according to schema
-        mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");
-        mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
-        mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
+    	mandatory(businessEventEntity.getEventId(), "event.eventId");
+    	mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
+    	mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
+    	mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");        
+    	mandatory(businessEventEntity.getPaymentResponsible(), "event.paymentResponsible");
         mandatory(businessEventEntity.getHealthCareCommission(), "event.healthCareCommission");
         mandatory(businessEventEntity.getAcknowledgedBy(), "event.acknowledgedBy");
         mandatory(businessEventEntity.getAcknowledgedTime(), "event.acknowledgedTime");
+        
         mandatory(businessEventEntity.getStartTime(), "event.startTime");
         mandatory(businessEventEntity.getEndTime(), "event.endTime");
 

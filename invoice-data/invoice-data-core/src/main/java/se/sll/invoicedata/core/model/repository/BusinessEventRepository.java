@@ -59,5 +59,12 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      */
     List<BusinessEventEntity> findBySupplierIdAndEventIdInAndPendingIsTrue(String supplierId, List<String> eventIdList);
     
+    /**
+     * Returns all pending events for a particular suppier and payee
+     * @param supplierId
+     * @param paymentResponsible
+     * @return
+     */
+    List<BusinessEventEntity> findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(String supplierId, String paymentResponsible);
     
 }
