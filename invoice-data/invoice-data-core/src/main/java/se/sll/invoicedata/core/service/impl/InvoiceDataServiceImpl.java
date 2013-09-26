@@ -190,17 +190,20 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 
     @Override
-    public void createInvoiceData(String supplierId) {
+    public String createInvoiceData(String supplierId) {
         List<BusinessEventEntity> businesEventList = businessEventRepository.findBySupplierIdAndPendingIsTrue(supplierId);
-        for (BusinessEventEntity bEE : businesEventList) {
-            final InvoiceDataEntity iDE = new InvoiceDataEntity();
-            iDE.setCreatedBy(bEE.getAcknowledgedBy());
-            iDE.setSupplierId(bEE.getSupplierId());
-            
-            iDE.addBusinessEventEntity(bEE);
-            invoiceDataRepository.save(iDE);
-        }
+                
+        final InvoiceDataEntity iDE = new InvoiceDataEntity();
+        iDE.setSupplierId(supplierId);
         
+        for (BusinessEventEntity bEE : businesEventList) {
+        	//TODO: Will be taken from in params later
+            iDE.setCreatedBy(bEE.getAcknowledgedBy());        
+            iDE.setPaymentResponsible(bEE.getPaymentResponsible());
+            iDE.addBusinessEventEntity(bEE);            
+        }
+        invoiceDataRepository.save(iDE);
+        return iDE.getReferenceId();
     }
 
     @Override

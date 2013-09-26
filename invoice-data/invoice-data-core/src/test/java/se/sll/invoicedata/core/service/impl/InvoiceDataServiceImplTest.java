@@ -119,7 +119,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         assertEquals(3, credits);
 	}
     
-    //@Test
+    @Test
     @Rollback(true)
     public void testGetAllUnprocessedBusinessEvents() {
         
@@ -137,8 +137,9 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         assertNotNull(bEEntityList.get(0).getCreatedTimestamp());   
     }
 	
-	//@Test
+	@Test
     @Rollback(true)
+	@Transactional
     public void testGetAllInvoicedData() {
         
         final BusinessEventEntity e = createSampleBusinessEventEntity();

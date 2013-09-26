@@ -58,7 +58,7 @@ public interface InvoiceDataService {
      * @param supplierId
      * @return
      */
-    void createInvoiceData(String supplierId);
+    String createInvoiceData(String supplierId);
     
     /**
      * Returns all pending business entities by event ids.

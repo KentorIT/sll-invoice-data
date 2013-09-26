@@ -103,13 +103,15 @@ public abstract class AbstractProducer {
         copyProperties(iDHeader, entity, InvoiceDataEntity.class);
         //Need to manually set reference id since entity has no setter method for referenceId
         iDHeader.setReferenceId(entity.getReferenceId());
+        iDHeader.setTotalAmount(entity.getTotalAmount());
+        
         return iDHeader;
     }
     
     List<InvoiceDataHeader> fromIEntity(final List<InvoiceDataEntity> entityList) {
         List<InvoiceDataHeader> iDHeaderList = new ArrayList<InvoiceDataHeader>();
         for (final InvoiceDataEntity iDE : entityList) {
-            iDHeaderList.add(fromEntity(iDE));            
+            iDHeaderList.add(fromEntity(iDE));
         }        
         return iDHeaderList;
     }
@@ -118,6 +120,7 @@ public abstract class AbstractProducer {
         RegisteredEvent rEvent = new RegisteredEvent();
         AppUtil.copyProperties(rEvent, bEEntity, RegisteredEvent.class);
         
+        rEvent.setEventId(bEEntity.getEventId());
         List<Item> itemList = new ArrayList<Item>();
         AppUtil.copyGenericLists(itemList, bEEntity.getItemEntities(), Item.class, ItemEntity.class);
         

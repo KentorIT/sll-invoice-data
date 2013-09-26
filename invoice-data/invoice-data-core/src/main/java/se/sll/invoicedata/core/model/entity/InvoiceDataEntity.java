@@ -58,7 +58,7 @@ public class InvoiceDataEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_timestamp", nullable=false, updatable=false)
-    private Date createdTimestamp;
+    private Date createdTime;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
     private List<BusinessEventEntity> businessEventEntities = new LinkedList<BusinessEventEntity>();
@@ -66,7 +66,7 @@ public class InvoiceDataEntity {
 
     @PrePersist
     void onPrePerist() {
-        setCreatedTimestamp(new Date());
+        setCreatedTime(new Date());
     }
 
     public Long getId() {
@@ -101,12 +101,12 @@ public class InvoiceDataEntity {
         this.paymentResponsible = paymentResponsible;
     }
     
-    public Date getCreatedTimestamp() {
-        return createdTimestamp;
+    public Date getCreatedTime() {
+        return createdTime;
     }
 
-    protected void setCreatedTimestamp(Date createdTimestamp) {
-        this.createdTimestamp = createdTimestamp;
+    protected void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
 
     /**
