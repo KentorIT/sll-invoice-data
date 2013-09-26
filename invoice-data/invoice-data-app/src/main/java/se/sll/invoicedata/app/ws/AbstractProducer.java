@@ -99,7 +99,11 @@ public abstract class AbstractProducer {
      * @return the entity bean.
      */
     static InvoiceDataHeader fromEntity(final InvoiceDataEntity entity) {
-        return copyProperties(new InvoiceDataHeader(), entity, InvoiceDataHeader.class);
+    	InvoiceDataHeader iDHeader = new InvoiceDataHeader();
+        copyProperties(iDHeader, entity, InvoiceDataEntity.class);
+        //Need to manually set reference id since entity has no setter method for referenceId
+        iDHeader.setReferenceId(entity.getReferenceId());
+        return iDHeader;
     }
     
     List<InvoiceDataHeader> fromIEntity(final List<InvoiceDataEntity> entityList) {
