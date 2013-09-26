@@ -25,7 +25,11 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
+import org.h2.tools.Server;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.ResultCodeEnum;
@@ -43,16 +47,18 @@ import se.sll.invoicedata.app.TestSupport;
 public class GetInvoiceDataProducerTest extends TestSupport {
 
     private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
-
-   // @Test
-    public void get_InvoiceData_By_Supplier_Id_success() {
-
+    
+    @Test
+    public void get_InvoiceData_Unprocessed_Success() {
+    	
+    	Event event = createSampleEventData();
         RegisterInvoiceDataProducerTest
                 .getRegisterInvoiceDataService()
-                .registerInvoiceData(LOGICAL_ADDRESS, createSampleEventData());
+                .registerInvoiceData(LOGICAL_ADDRESS, event);
 
         GetInvoiceDataRequest request = new GetInvoiceDataRequest();
-        request.setSupplierId("SID123");
+        request.setSupplierId(event.getSupplierId());
+        request.setPaymentResponsible(event.getPaymentResponsible());
 
         GetInvoiceDataResponse response = getGetInvoiceDataService()
                 .getInvoiceData(LOGICAL_ADDRESS, request);
@@ -60,13 +66,34 @@ public class GetInvoiceDataProducerTest extends TestSupport {
         Assert.assertNotNull(response);
         Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
                 .getCode());
+        
+        Assert.assertNotNull(response.getRegisteredEventList());
+    }
+    
+    @Test
+    public void get_InvoiceData_Incomplete_Request_Data_Fail() {
+    	Event event = createSampleEventData();
+        RegisterInvoiceDataProducerTest
+                .getRegisterInvoiceDataService()
+                .registerInvoiceData(LOGICAL_ADDRESS, event);
 
-        Assert.assertNotNull(response.getInvoiceDataList());
-        Assert.assertEquals(2, response.getInvoiceDataList().size());
+        GetInvoiceDataRequest request = new GetInvoiceDataRequest();
+        request.setSupplierId(event.getSupplierId());
 
+        GetInvoiceDataResponse response = getGetInvoiceDataService()
+                .getInvoiceData(LOGICAL_ADDRESS, request);
+        
+        Assert.assertNotNull(response);
+        Assert.assertEquals(ResultCodeEnum.ERROR, response.getResultCode()
+                .getCode());
+        
+        request.setSupplierId("");
+        request.setPaymentResponsible(event.getPaymentResponsible());
+        response = getGetInvoiceDataService()
+                .getInvoiceData(LOGICAL_ADDRESS, request);        
     }
 
-   // @Test
+    //@Test
     public void get_InvoiceData_On_Processed_By_supplier_id_success() {
 
         RegisterInvoiceDataProducerTest
