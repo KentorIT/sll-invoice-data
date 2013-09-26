@@ -49,13 +49,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     private RatingService ratingService;
 
     
+    //
     private InvoiceDataServiceImpl save(BusinessEventEntity... entities) {
         businessEventRepository.save(Arrays.asList(entities));
         return this;
     }
 
-    private InvoiceDataServiceImpl remove(BusinessEventEntity... entities) {
-        businessEventRepository.save(Arrays.asList(entities));
+    //
+    private InvoiceDataServiceImpl delete(BusinessEventEntity... entities) {
+        businessEventRepository.delete(Arrays.asList(entities));
         return this;
     }
 
@@ -67,7 +69,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         if (oldEntity == null) {
             save(newEntity);
         } else if (oldEntity.isPending()) {
-            remove(oldEntity).save(newEntity);
+            delete(oldEntity).save(newEntity);
         } else if (!oldEntity.isCredited()) {
             oldEntity.setCredited(true);
             // create credit event.
