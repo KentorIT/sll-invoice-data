@@ -35,10 +35,11 @@
 		<xs:sequence>
 			<xs:element name="supplierId" type="xs:string" />
 			<xs:element name="createdBy" type="xs:string" />
-			<xs:element name="eventList" type="xs:string" minOccurs="1"
+			<xs:element name="paymentResponsible" type="xs:string" />			
+			<xs:element name="eventRefIdList" type="xs:long" minOccurs="1"
 				maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>Globally unique and registered event id list
+					<xs:documentation>Internal existing id of an event, i.e. same reference as provided by the service GetInvocieDataInteraction
 					</xs:documentation>
 				</xs:annotation>
 			</xs:element>

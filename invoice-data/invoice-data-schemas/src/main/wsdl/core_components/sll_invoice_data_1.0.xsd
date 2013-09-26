@@ -63,7 +63,9 @@
 		<xs:complexContent>
 			<xs:extension base="tns:Event">
 				<xs:sequence>
-					<xs:element name="totalAmount" type="xs:decimal"/>					
+					<xs:element name="id" type="xs:long" />
+					<xs:element name="credit" type="xs:boolean" />
+					<xs:element name="totalAmount" type="xs:decimal" />					
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
