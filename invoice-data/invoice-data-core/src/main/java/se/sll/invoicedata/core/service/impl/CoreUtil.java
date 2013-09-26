@@ -16,23 +16,21 @@
 
 package se.sll.invoicedata.core.service.impl;
 
+import static java.util.Collections.synchronizedMap;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.apache.commons.lang.WordUtils;
 
 /**
  * Transformation stuff moved to here.
@@ -42,10 +40,10 @@ import org.apache.commons.lang.WordUtils;
  *
  */
 public class CoreUtil {
-    /** Cache of non-existing methods during copy. */
-    private static HashSet<String> stopMethodSet = new HashSet<String>();
     /** Cache of class fields to be copied. */
-    private static Map<Class<?>, List<Field>> fieldCacheMap = Collections.synchronizedMap(new HashMap<Class<?>, List<Field>>());
+    private static Map<Class<?>, List<Field>> fieldCacheMap = synchronizedMap(new HashMap<Class<?>, List<Field>>());
+    /** Cache of methods, to avoid creation of an exception when a method doesn't exist. */
+    private static Map<String, Method> methodCacheMap = synchronizedMap(new HashMap<String, Method>());
 
     private static final DatatypeFactory datatypeFactory;
     static {
@@ -113,27 +111,44 @@ public class CoreUtil {
 
     //
     private static Method getMethodByName(Class<?> clazz, String name, Class<?> type) {
-        final String key = clazz.getName() + "." + name;
-        if (!stopMethodSet.contains(key)) {
-            try {
-                return (type == null) ? clazz.getMethod(name) : clazz.getMethod(name, type);
-            } catch (NoSuchMethodException e) {
-                stopMethodSet.add(key);
-            }
+        final String key = clazz.getName() + "." + name + ((type == null) ? "" : ("." + type.getName()));
+        
+        if (methodCacheMap.containsKey(key)) {
+            return methodCacheMap.get(key);
         }
+
+        try {
+            Method m = (type == null) ? clazz.getMethod(name) : clazz.getMethod(name, type);
+            methodCacheMap.put(key, m);
+            return m;
+        } catch (NoSuchMethodException e) {
+            ;
+        }
+        // add null method, i.e. doesn't exists
+        methodCacheMap.put(key, null);
         return null;
     }
 
     //
+    private static String capitalize(String s) {
+        if (s == null || s.length() == 0 || Character.isUpperCase(s.charAt(0))) {
+            return s;
+        }
+        final char[] chars = s.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+    
+    //
     private static Method getGetMethod(Class<?> clazz, Field field) {
-        final String name = "get" + WordUtils.capitalize(field.getName());
+        final String name = "get" + capitalize(field.getName());
         return getMethodByName(clazz, name, null);
 
     }
 
     //
     private static Method getSetMethod(Class<?> clazz, Field field, Class<?> type) throws SecurityException {        
-        final String name = "set" + WordUtils.capitalize(field.getName());
+        final String name = "set" + capitalize(field.getName());
         return getMethodByName(clazz, name, type);
     }
 

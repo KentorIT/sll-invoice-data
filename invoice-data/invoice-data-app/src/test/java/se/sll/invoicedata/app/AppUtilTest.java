@@ -56,7 +56,17 @@ public class AppUtilTest extends TestSupport {
         assertEquals(e.getEndTime(), e2.getEndTime());
         
     }
-    
+
+    @Test
+    public void testAppUtil_copyProperties2() {
+        Event e = createSampleEventData();
+        BusinessEventEntity be = new BusinessEventEntity();
+        copyProperties(be, e, Event.class);
+        
+        copyProperties(new RegisteredEvent(), new String(), String.class);        
+        copyProperties(new RegisteredEvent(), new String(), String.class);        
+    }
+
     //@Test
     public void testSupport_copy_from_event_to_businessEntity() {
         Event e = createSampleEventData();

@@ -64,7 +64,7 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
         CreateInvoiceDataResponse createInvoiceDataResp = oFactory.createCreateInvoiceDataResponse();
         createInvoiceDataResp.setResultCode(rc);
         
-        return createInvoiceDataResp;  
+        return createInvoiceDataResp;        
     }
 
 }
