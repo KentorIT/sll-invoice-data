@@ -18,6 +18,9 @@ package se.sll.invoicedata.core.service;
 
 import java.util.List;
 
+import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
@@ -25,64 +28,75 @@ import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
  * Defines Invoice Data service API.
  * 
  * @author Peter
- *
+ * 
  */
 public interface InvoiceDataService {
-    
-    /**
-     * Registers a business event.
-     * 
-     * @param buinsessEventEntity the business event entity.
-     */
-    void registerBusinessEvent(BusinessEventEntity businessEventEntity);
-    
-    /**
-     * Returns a business event by id.
-     * 
-     * @param eventId the event id.
-     * @return the business event with the given id or null if none found.
-     */
-    BusinessEventEntity getBusinessEvent(String eventId);
-    
-    
-    /**
-     * Returns all unprocessed events for a particular supplier.
-     * 
-     * @param supplierId the supplier id.
-     * @return the result list, might be empty if no none events found.
-     */
-    List<BusinessEventEntity> getAllUnprocessedBusinessEvents(String supplierId, String paymentResponsible);
-    
-    /**
-     * Creates invoice data for a particular supplier.
-     * @param supplierId
-     * @return
-     */
-    String createInvoiceData(String supplierId);
-    
-    /**
-     * Returns all pending business entities by event ids.
-     * 
-     * @param eventIdList the list of event ids.
-     * @return the list, exactly matching the number of ids.
-     * 
-     * @throws IllegalArgumentException when the number of ids doesn't match expected result.
-     */
-    List<BusinessEventEntity> getPendingBusinessEntities(String supplierId, List<String> eventIdList);
-    
-    /**
-     * Creates an invoice data.
-     * 
-     * @param invoiceDataEntity the entity to create.
-     */
-    void registerInvoiceData(InvoiceDataEntity invoiceDataEntity);
-    
-    /**
-     * Fetches all invoiced data for a particular supplier and payee
-     * @param supplierId
-     * @param paymentResponsible
-     * @return
-     */
-	List<InvoiceDataEntity> getAllInvoicedData(String supplierId,
+
+	/**
+	 * Registers a business event.
+	 * 
+	 * @param buinsessEventEntity
+	 *            the business event entity.
+	 */
+	void registerEvent(Event event);
+	
+	void registerBusinessEvent(BusinessEventEntity event);
+	
+	/**
+	 * Returns a business event by id.
+	 * 
+	 * @param eventId
+	 *            the event id.
+	 * @return the business event with the given id or null if none found.
+	 */
+	BusinessEventEntity getBusinessEvent(String eventId);
+
+	/**
+	 * Returns all unprocessed events for a particular supplier.
+	 * 
+	 * @param supplierId
+	 *            the supplier id.
+	 * @return the result list, might be empty if no none events found.
+	 */
+	List<RegisteredEvent> getAllUnprocessedBusinessEvents(
+			String supplierId, String paymentResponsible);
+
+	/**
+	 * Creates invoice data for a particular supplier.
+	 * 
+	 * @param supplierId
+	 * @return
+	 */
+	String createInvoiceData(String supplierId);
+
+	/**
+	 * Returns all pending business entities by event ids.
+	 * 
+	 * @param eventIdList
+	 *            the list of event ids.
+	 * @return the list, exactly matching the number of ids.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             when the number of ids doesn't match expected result.
+	 */
+	List<BusinessEventEntity> getPendingBusinessEntities(String supplierId,
+			List<String> eventIdList);
+
+	/**
+	 * Creates an invoice data.
+	 * 
+	 * @param invoiceDataEntity
+	 *            the entity to create.
+	 */
+	void registerInvoiceData(InvoiceDataEntity invoiceDataEntity);
+
+	/**
+	 * Fetches all invoiced data for a particular supplier and payee
+	 * 
+	 * @param supplierId
+	 * @param paymentResponsible
+	 * @return
+	 */
+	List<InvoiceDataHeader> getAllInvoicedData(String supplierId,
 			String paymentResponsible);
 }

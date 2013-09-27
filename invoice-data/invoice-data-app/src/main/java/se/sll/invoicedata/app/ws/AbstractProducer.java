@@ -18,6 +18,7 @@ package se.sll.invoicedata.app.ws;
 
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,64 +78,4 @@ public abstract class AbstractProducer {
         logger.info("{} invoked by HSAid: {}", msg, (serviceConsumer == null) ? "<NOT FOUND>" : serviceConsumer);
     }
     
-    /**
-     * Maps XML JAXB object to an entity bean.
-     * 
-     * @param event the JAXB object.
-     * @return the entity bean.
-     */
-    static BusinessEventEntity toEntity(final Event event) {
-        final BusinessEventEntity entity = copyProperties(new BusinessEventEntity(), event, Event.class);
-        for (final Item item : event.getItemList()) {     
-            entity.addItemEntity(copyProperties(new ItemEntity(), item, Item.class));
-        }
-        
-        return entity;
-    }
-    
-    /**
-     * Maps XML JAXB object to an entity bean.
-     * 
-     * @param event the JAXB object.
-     * @return the entity bean.
-     */
-    static InvoiceDataHeader fromEntity(final InvoiceDataEntity entity) {
-    	InvoiceDataHeader iDHeader = new InvoiceDataHeader();
-        copyProperties(iDHeader, entity, InvoiceDataEntity.class);
-        //Need to manually set reference id since entity has no setter method for referenceId
-        iDHeader.setReferenceId(entity.getReferenceId());
-        iDHeader.setTotalAmount(entity.getTotalAmount());
-        
-        return iDHeader;
-    }
-    
-    List<InvoiceDataHeader> fromIEntity(final List<InvoiceDataEntity> entityList) {
-        List<InvoiceDataHeader> iDHeaderList = new ArrayList<InvoiceDataHeader>();
-        for (final InvoiceDataEntity iDE : entityList) {
-            iDHeaderList.add(fromEntity(iDE));
-        }        
-        return iDHeaderList;
-    }
-    
-    RegisteredEvent fromEntity(final BusinessEventEntity bEEntity) {
-        RegisteredEvent rEvent = new RegisteredEvent();
-        AppUtil.copyProperties(rEvent, bEEntity, RegisteredEvent.class);
-        
-        rEvent.setEventId(bEEntity.getEventId());
-        List<Item> itemList = new ArrayList<Item>();
-        AppUtil.copyGenericLists(itemList, bEEntity.getItemEntities(), Item.class, ItemEntity.class);
-        
-        rEvent.setItemList(itemList);
-        
-        return rEvent;
-    }
-    
-    List<RegisteredEvent> fromBEntity(final List<BusinessEventEntity> bEEntityList) {
-        List<RegisteredEvent> registeredEventList = new ArrayList<RegisteredEvent>();
-        for (final BusinessEventEntity bEEntity : bEEntityList) {
-            registeredEventList.add(fromEntity(bEEntity));
-            
-        }
-        return registeredEventList;
-    }
 }

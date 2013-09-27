@@ -25,6 +25,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
@@ -61,7 +64,11 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         return this;
     }
 
-    @Override
+    public void registerEvent(Event event) {
+    	BusinessEventEntity newEntity = EntityBeanConverter.toEntity(event);
+    	registerBusinessEvent(newEntity);
+    }
+    
     public void registerBusinessEvent(BusinessEventEntity newEntity) {
         rate(validate(newEntity));
         final BusinessEventEntity oldEntity = getBusinessEvent(newEntity.getEventId());
@@ -85,34 +92,36 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
     }
 
-    @Override
+     @Override
     public BusinessEventEntity getBusinessEvent(String eventId) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdTimestamp");
         List<BusinessEventEntity> list = businessEventRepository.findByEventIdAndCreditIsNull(eventId, sort);
         return (list.size() == 0) ? null : list.get(0);
     }
     
-    
     @Override
-    public List<BusinessEventEntity> getAllUnprocessedBusinessEvents(
+    public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
             String supplierId, String paymentResponsible) {
-        return businessEventRepository.findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(
+    	List<BusinessEventEntity> bEEntityList = businessEventRepository.findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(
                 validate(supplierId, "supplierId"), 
                 validate(paymentResponsible, "paymentResponsible"));
+    	
+        return EntityBeanConverter.fromBEntity(bEEntityList);
     }
     
     protected String validate(final String data, final String field) {
         mandatory(data, field);
         return data;
     }
-    
+      
     @Override
-    public List<InvoiceDataEntity> getAllInvoicedData(String supplierId, String paymentResponsible) {        
-        return invoiceDataRepository.findBySupplierIdAndPaymentResponsible(
+    public List<InvoiceDataHeader> getAllInvoicedData(String supplierId, String paymentResponsible) {
+    	List<InvoiceDataEntity> iDEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsible(
                 validate(supplierId, "supplierId"), 
                 validate(paymentResponsible, "paymentResponsible"));
+        return EntityBeanConverter.fromIEntity(iDEntityList);
     }
-    
+
     //
     private static void mandatory(final String s, final String field) {
         if (s == null || s.length() ==  0) {

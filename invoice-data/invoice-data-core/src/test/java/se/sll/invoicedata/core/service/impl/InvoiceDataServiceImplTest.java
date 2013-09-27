@@ -30,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
@@ -106,12 +109,12 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         final InvoiceDataEntity ie = registerInvocieData(supplierId);
         
         registerEvents(supplierId, Arrays.asList(new String[] { "event-1", "event-2", "event-3" }));
-        final List<BusinessEventEntity> l = invoiceDataService.getAllUnprocessedBusinessEvents(supplierId, paymentResponsible);
+        final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(supplierId, paymentResponsible);
         // one credit event shall be created for each new
         assertEquals(ie.getBusinessEventEntities().size()*2, l.size());
         
         int credits = 0;
-        for (final BusinessEventEntity e : l) {
+        for (final RegisteredEvent e : l) {
             if (e.isCredit()) {
                 credits++;
             }
@@ -128,13 +131,12 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         
         invoiceDataService.registerBusinessEvent(e);
         
-        final List<BusinessEventEntity> bEEntityList = invoiceDataService.getAllUnprocessedBusinessEvents(e.getSupplierId(), e.getPaymentResponsible());
+        final List<RegisteredEvent> regEventList = invoiceDataService.getAllUnprocessedBusinessEvents(e.getSupplierId(), e.getPaymentResponsible());
         
-        assertNotNull(bEEntityList);        
-        assertEquals(1, bEEntityList.size());
-        assertEquals(e.getSupplierName(), bEEntityList.get(0).getSupplierName());
-        assertEquals(e.getAcknowledgedBy(), bEEntityList.get(0).getAcknowledgedBy());
-        assertNotNull(bEEntityList.get(0).getCreatedTimestamp());   
+        assertNotNull(regEventList);        
+        assertEquals(1, regEventList.size());
+        assertEquals(e.getSupplierName(), regEventList.get(0).getSupplierName());
+        assertEquals(e.getAcknowledgedBy(), regEventList.get(0).getAcknowledgedBy());
     }
 	
 	@Test
@@ -148,7 +150,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         invoiceDataService.registerBusinessEvent(e);
         invoiceDataService.createInvoiceData(e.getSupplierId());
         
-        final List<InvoiceDataEntity> invoiceDataList = invoiceDataService.getAllInvoicedData(e.getSupplierId(), e.getPaymentResponsible());
+        final List<InvoiceDataHeader> invoiceDataList = invoiceDataService.getAllInvoicedData(e.getSupplierId(), e.getPaymentResponsible());
         
         assertNotNull(invoiceDataList);        
         assertEquals(1, invoiceDataList.size());

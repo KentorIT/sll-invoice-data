@@ -62,15 +62,12 @@ public class GetInvoiceDataProducer extends AbstractProducer implements
         
         try {
             //Fetching unprocessed events with price
-            List<BusinessEventEntity> bEEntityList = invoiceDataService
-                    .getAllUnprocessedBusinessEvents(request.getSupplierId(),
-                            request.getPaymentResponsible());
-            response.getRegisteredEventList().addAll(fromBEntity(bEEntityList));
+        	response.getRegisteredEventList().addAll(invoiceDataService
+            		.getAllUnprocessedBusinessEvents(request.getSupplierId(), request.getPaymentResponsible()));
             
-            //Fetching invoiced data
-            List<InvoiceDataEntity> iDEntityList = invoiceDataService
-                    .getAllInvoicedData(request.getSupplierId(), request.getPaymentResponsible());
-            response.getInvoiceDataList().addAll(fromIEntity(iDEntityList));
+            //Fetching invoiced data            
+            response.getInvoiceDataList().addAll(invoiceDataService
+            		.getAllInvoicedData(request.getSupplierId(), request.getPaymentResponsible()));
             rc.setCode(ResultCodeEnum.OK);
 
         } catch (InvoiceDataServiceException ex) {
