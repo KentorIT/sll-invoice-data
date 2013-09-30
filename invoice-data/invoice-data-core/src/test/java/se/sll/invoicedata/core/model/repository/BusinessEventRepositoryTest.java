@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
@@ -62,7 +63,7 @@ public class BusinessEventRepositoryTest extends TestSupport {
     @Transactional
     @Rollback(true)
     public void testFind_BusinessEvent_By_Id() {
-        
+                
         final BusinessEventEntity e = createSampleBusinessEventEntity();
         getBusinessEventRepository().save(e);
         getBusinessEventRepository().flush();

@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -69,6 +70,16 @@ public class CoreUtil {
         return datatypeFactory.newXMLGregorianCalendar(gCal);
     }
 
+    /**
+     * Returns a {@link XMLGregorianCalendar} date and time representation.
+     * 
+     * @param cal the actual date and time represented as {@link GregorianCalendar}.
+     * @return the {@link XMLGregorianCalendar} representation.
+     */    
+    public static XMLGregorianCalendar toXMGregorianCalendar(GregorianCalendar cal) {
+        return (cal == null) ? null : datatypeFactory.newXMLGregorianCalendar(cal);
+    }
+    
     /**
      * Returns a {@link Date} date and time representation.
      * 
@@ -141,13 +152,14 @@ public class CoreUtil {
     
     //
     private static Method getGetMethod(Class<?> clazz, Field field) {
-        final String name = "get" + capitalize(field.getName());
+        final String prefix = field.getType().equals(boolean.class) ? "is" : "get";
+        final String name = prefix + capitalize(field.getName());
         return getMethodByName(clazz, name, null);
 
     }
 
     //
-    private static Method getSetMethod(Class<?> clazz, Field field, Class<?> type) throws SecurityException {        
+    private static Method getSetMethod(Class<?> clazz, Field field, Class<?> type) throws SecurityException {   
         final String name = "set" + capitalize(field.getName());
         return getMethodByName(clazz, name, type);
     }
@@ -160,6 +172,7 @@ public class CoreUtil {
                 return;
             }
             Object value = getMethod.invoke(from);
+            
             Class<?> type = field.getType();
 
             //
@@ -200,7 +213,7 @@ public class CoreUtil {
             try {
                 to.add((T) Class.forName(type.getName()).newInstance());
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
             copyProperties(to.get(i), from.get(i), spec);
         }         

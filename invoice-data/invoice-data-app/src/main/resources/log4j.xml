@@ -68,17 +68,9 @@
   </logger>
 
   <logger name="org.springframework.data">
-    <level value="debug" />
+    <level value="info" />
   </logger>
 
-  <logger name="org.bson">
-    <level value="debug" />
-  </logger>
-
-  <logger name="org.dozer">
-    <level value="warn" />
-  </logger>
-  
   <logger name="org.apache.commons.beanutils">
     <level value="warn" />
   </logger>
@@ -105,7 +97,7 @@
   
   <!-- Root Logger -->
   <root>
-    <priority value="debug" />
+    <priority value="warn" />
     <appender-ref ref="console" />
   </root>
 

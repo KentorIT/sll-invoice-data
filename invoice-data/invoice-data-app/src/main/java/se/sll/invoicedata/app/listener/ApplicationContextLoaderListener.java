@@ -16,11 +16,22 @@
 
 package se.sll.invoicedata.app.listener;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
+import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.impl.TestDataHelperService;
 
 /**
  * Initializes context when starting up Web application (see WEB-INF/web.xml).
@@ -29,11 +40,27 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class ApplicationContextLoaderListener extends ContextLoaderListener {
+    private static final String UNUSED = "unused";
     private static final Logger log = LoggerFactory.getLogger(ApplicationContextLoaderListener.class);
 
+    @SuppressWarnings(UNUSED)
     @Override
     public void contextInitialized(ServletContextEvent event) {
         super.contextInitialized(event);
+        if (isProfileActive(event.getServletContext(), "test")) {
+            log.info("======== Invoice Data Application (profile testdata active) :: Generate Test Data ========");
+            final WebApplicationContext wc = getWebRequest(event.getServletContext());
+            final TestDataHelperService testDataHelperService = wc.getBean(TestDataHelperService.class);
+            final InvoiceDataService invoiceDataService = wc.getBean(InvoiceDataService.class);
+            
+            // initialize repositories
+            wc.getBean(BusinessEventRepository.class);
+            wc.getBean(InvoiceDataRepository.class);
+            
+            final int n = testDataHelperService.generateTestData();
+            
+            log.info("{} test events created", n);
+        }
         log.info("======== Invoice Data Application :: Started ========");
     }
 
@@ -41,5 +68,25 @@ public class ApplicationContextLoaderListener extends ContextLoaderListener {
     public void contextDestroyed(ServletContextEvent event) {
         super.contextDestroyed(event);
         log.info("======== Invoice Data Application :: Stopped ========");
+    }
+
+
+    public static final WebApplicationContext getWebRequest(final ServletContext sc) {
+        return WebApplicationContextUtils.getWebApplicationContext(sc);
+    }
+
+    public static List<String> getActiveProfiles(final ServletContext sc) {
+        return Arrays.asList(getWebRequest(sc).getEnvironment().getActiveProfiles());
+    }
+
+    public static final boolean isProfileActive(final ServletContext sc, final String name) {
+        final List<String> profiles = getActiveProfiles(sc);
+        for (final String s : profiles) {
+            if (s.equals(name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -21,6 +21,7 @@ import java.util.List;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
@@ -61,34 +62,6 @@ public interface InvoiceDataService {
 	List<RegisteredEvent> getAllUnprocessedBusinessEvents(
 			String supplierId, String paymentResponsible);
 
-	/**
-	 * Creates invoice data for a particular supplier.
-	 * 
-	 * @param supplierId
-	 * @return
-	 */
-	String createInvoiceData(String supplierId);
-
-	/**
-	 * Returns all pending business entities by event ids.
-	 * 
-	 * @param eventIdList
-	 *            the list of event ids.
-	 * @return the list, exactly matching the number of ids.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             when the number of ids doesn't match expected result.
-	 */
-	List<BusinessEventEntity> getPendingBusinessEntities(String supplierId,
-			List<String> eventIdList);
-
-	/**
-	 * Creates an invoice data.
-	 * 
-	 * @param invoiceDataEntity
-	 *            the entity to create.
-	 */
-	void registerInvoiceData(InvoiceDataEntity invoiceDataEntity);
 
 	/**
 	 * Fetches all invoiced data for a particular supplier and payee
@@ -99,4 +72,12 @@ public interface InvoiceDataService {
 	 */
 	List<InvoiceDataHeader> getAllInvoicedData(String supplierId,
 			String paymentResponsible);
+
+	/**
+	 * Creates an invoice data object.
+	 * 
+	 * @param createInvoiceDataRequest
+	 * @return the invoice data reference id.
+	 */
+    String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest);
 }

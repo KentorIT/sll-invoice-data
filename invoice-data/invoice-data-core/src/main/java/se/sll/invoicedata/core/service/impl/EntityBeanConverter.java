@@ -61,11 +61,7 @@ public class EntityBeanConverter extends CoreUtil {
 	 */
 	static InvoiceDataHeader fromEntity(final InvoiceDataEntity entity) {
 		InvoiceDataHeader iDHeader = new InvoiceDataHeader();
-		copyProperties(iDHeader, entity, InvoiceDataEntity.class);
-		// Need to manually set reference id since entity has no setter method
-		// for referenceId
-		iDHeader.setReferenceId(entity.getReferenceId());
-		iDHeader.setTotalAmount(entity.getTotalAmount());
+		copyProperties(iDHeader, entity, InvoiceDataHeader.class);
 
 		return iDHeader;
 	}
@@ -76,7 +72,7 @@ public class EntityBeanConverter extends CoreUtil {
 	 * @return
 	 */
 	static List<InvoiceDataHeader> fromIEntity(final List<InvoiceDataEntity> entityList) {
-		List<InvoiceDataHeader> iDHeaderList = new ArrayList<InvoiceDataHeader>();
+		List<InvoiceDataHeader> iDHeaderList = new ArrayList<InvoiceDataHeader>(entityList.size());
 		for (final InvoiceDataEntity iDE : entityList) {
 			iDHeaderList.add(fromEntity(iDE));
 		}
@@ -89,15 +85,10 @@ public class EntityBeanConverter extends CoreUtil {
 	 * @return
 	 */
 	static RegisteredEvent fromEntity(final BusinessEventEntity bEEntity) {
-		RegisteredEvent rEvent = new RegisteredEvent();
-		rEvent.setEventId(bEEntity.getEventId());
-		rEvent.setTotalAmount(bEEntity.getTotalAmount());
-		rEvent.setCredit(bEEntity.isCredit());
-		copyProperties(rEvent, bEEntity, BusinessEventEntity.class);
+		final RegisteredEvent rEvent = copyProperties(new RegisteredEvent(), bEEntity, RegisteredEvent.class);
 
-		List<Item> itemList = new ArrayList<Item>();
-		copyGenericLists(itemList, bEEntity.getItemEntities(), Item.class,
-				ItemEntity.class);
+		List<Item> itemList = new ArrayList<Item>(bEEntity.getItemEntities().size());
+		copyGenericLists(itemList, bEEntity.getItemEntities(), Item.class, Item.class);
 
 		rEvent.setItemList(itemList);
 
@@ -111,7 +102,7 @@ public class EntityBeanConverter extends CoreUtil {
 	 */
 	static List<RegisteredEvent> fromBEntity(
 			final List<BusinessEventEntity> bEEntityList) {
-		List<RegisteredEvent> registeredEventList = new ArrayList<RegisteredEvent>();
+		List<RegisteredEvent> registeredEventList = new ArrayList<RegisteredEvent>(bEEntityList.size());
 		for (final BusinessEventEntity bEEntity : bEEntityList) {
 			registeredEventList.add(fromEntity(bEEntity));
 

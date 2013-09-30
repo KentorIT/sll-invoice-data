@@ -28,13 +28,11 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 
-import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
-import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.support.TestSupport;
 
@@ -77,41 +75,39 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	}
 	
 	
-	private InvoiceDataEntity registerInvocieData(String supplierId) {
+	private CreateInvoiceDataRequest createInvocieData(String supplierId) {
         final List<String> ids = Arrays.asList(new String[] { "event-1", "event-2", "event-3" });
         
         registerEvents(supplierId, ids);
         
-        final InvoiceDataEntity ie = new InvoiceDataEntity();
+        final CreateInvoiceDataRequest ie = new CreateInvoiceDataRequest();
         ie.setSupplierId(supplierId);
         ie.setPaymentResponsible("HSF");
         ie.setCreatedBy("test-auto");
         
         
-        final List<BusinessEventEntity> l = invoiceDataService.getPendingBusinessEntities(supplierId, ids);
-        assertEquals(l.size(), ids.size());
+        final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(ie.getSupplierId(), ie.getPaymentResponsible());
         
-        for (final BusinessEventEntity e : l) {
-            ie.addBusinessEventEntity(e);
+        for (final RegisteredEvent e : l) {
+            ie.getEventRefIdList().add(e.getId());
         }
         
-        invoiceDataService.registerInvoiceData(ie);
+        invoiceDataService.createInvoiceData(ie);
 	    
         return ie;
 	}
 	
     @Test
-    @Transactional
     @Rollback(true)
-	public void testRegisterInvocieData_From_Pending_And_Credit() {
+	public void testRegisterInvoiceData_From_Pending_And_Credit() {
         final String supplierId = "test-supplier-45";
         final String paymentResponsible = "HSF";
-        final InvoiceDataEntity ie = registerInvocieData(supplierId);
-        
+        final CreateInvoiceDataRequest ie = createInvocieData(supplierId);
+      
         registerEvents(supplierId, Arrays.asList(new String[] { "event-1", "event-2", "event-3" }));
         final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(supplierId, paymentResponsible);
         // one credit event shall be created for each new
-        assertEquals(ie.getBusinessEventEntities().size()*2, l.size());
+        assertEquals(ie.getEventRefIdList().size()*2, l.size());
         
         int credits = 0;
         for (final RegisteredEvent e : l) {
@@ -141,21 +137,17 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	
 	@Test
     @Rollback(true)
-	@Transactional
     public void testGetAllInvoicedData() {
+	    final String supplierId = "test-supplier-all";
         
-        final BusinessEventEntity e = createSampleBusinessEventEntity();
-        e.addItemEntity(createSampleItemEntity());
+	    createInvocieData(supplierId);
         
-        invoiceDataService.registerBusinessEvent(e);
-        invoiceDataService.createInvoiceData(e.getSupplierId());
-        
-        final List<InvoiceDataHeader> invoiceDataList = invoiceDataService.getAllInvoicedData(e.getSupplierId(), e.getPaymentResponsible());
+        final List<InvoiceDataHeader> invoiceDataList = invoiceDataService.getAllInvoicedData(supplierId, "HSF");
         
         assertNotNull(invoiceDataList);        
         assertEquals(1, invoiceDataList.size());
-        assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
-        assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0).getPaymentResponsible());
+        assertEquals(supplierId, invoiceDataList.get(0).getSupplierId());
+        assertEquals("HSF", invoiceDataList.get(0).getPaymentResponsible());
     }
 		
 }

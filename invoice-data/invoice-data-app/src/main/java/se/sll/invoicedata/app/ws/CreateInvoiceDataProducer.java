@@ -54,7 +54,7 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
         final CreateInvoiceDataResponse createInvoiceDataResp = oFactory.createCreateInvoiceDataResponse();
         
         try {
-        	createInvoiceDataResp.setReferenceId(invoiceDataService.createInvoiceData(parameters.getSupplierId()));
+        	createInvoiceDataResp.setReferenceId(invoiceDataService.createInvoiceData(parameters));
             rc.setCode(ResultCodeEnum.OK);
         } catch (InvoiceDataServiceException ex) {
             rc.setCode(ResultCodeEnum.ERROR);

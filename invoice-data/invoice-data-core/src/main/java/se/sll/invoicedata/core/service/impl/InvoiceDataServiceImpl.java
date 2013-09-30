@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
@@ -44,14 +45,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Autowired
     private BusinessEventRepository businessEventRepository;
-    
+
     @Autowired
     private InvoiceDataRepository invoiceDataRepository;
-    
+
     @Autowired
     private RatingService ratingService;
 
-    
+
     //
     private InvoiceDataServiceImpl save(BusinessEventEntity... entities) {
         businessEventRepository.save(Arrays.asList(entities));
@@ -65,14 +66,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 
     public void registerEvent(Event event) {
-    	BusinessEventEntity newEntity = EntityBeanConverter.toEntity(event);
-    	registerBusinessEvent(newEntity);
+        BusinessEventEntity newEntity = EntityBeanConverter.toEntity(event);
+        registerBusinessEvent(newEntity);
     }
-    
+
     public void registerBusinessEvent(BusinessEventEntity newEntity) {
         rate(validate(newEntity));
         final BusinessEventEntity oldEntity = getBusinessEvent(newEntity.getEventId());
-        
+
         if (oldEntity == null) {
             save(newEntity);
         } else if (oldEntity.isPending()) {
@@ -92,31 +93,31 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
     }
 
-     @Override
+    @Override
     public BusinessEventEntity getBusinessEvent(String eventId) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdTimestamp");
         List<BusinessEventEntity> list = businessEventRepository.findByEventIdAndCreditIsNull(eventId, sort);
         return (list.size() == 0) ? null : list.get(0);
     }
-    
+
     @Override
     public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
             String supplierId, String paymentResponsible) {
-    	List<BusinessEventEntity> bEEntityList = businessEventRepository.findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(
+        List<BusinessEventEntity> bEEntityList = businessEventRepository.findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(
                 validate(supplierId, "supplierId"), 
                 validate(paymentResponsible, "paymentResponsible"));
-    	
+
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
-    
+
     protected String validate(final String data, final String field) {
         mandatory(data, field);
         return data;
     }
-      
+
     @Override
     public List<InvoiceDataHeader> getAllInvoicedData(String supplierId, String paymentResponsible) {
-    	List<InvoiceDataEntity> iDEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsible(
+        List<InvoiceDataEntity> iDEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsible(
                 validate(supplierId, "supplierId"), 
                 validate(paymentResponsible, "paymentResponsible"));
         return EntityBeanConverter.fromIEntity(iDEntityList);
@@ -156,17 +157,17 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      * @return the same entity reference as passed as argument.
      */
     protected BusinessEventEntity validate(final BusinessEventEntity businessEventEntity) {
-        
+
         // mandatory fields according to schema
-    	mandatory(businessEventEntity.getEventId(), "event.eventId");
-    	mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
-    	mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
-    	mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");        
-    	mandatory(businessEventEntity.getPaymentResponsible(), "event.paymentResponsible");
+        mandatory(businessEventEntity.getEventId(), "event.eventId");
+        mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
+        mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
+        mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");        
+        mandatory(businessEventEntity.getPaymentResponsible(), "event.paymentResponsible");
         mandatory(businessEventEntity.getHealthCareCommission(), "event.healthCareCommission");
         mandatory(businessEventEntity.getAcknowledgedBy(), "event.acknowledgedBy");
         mandatory(businessEventEntity.getAcknowledgedTime(), "event.acknowledgedTime");
-        
+
         mandatory(businessEventEntity.getStartTime(), "event.startTime");
         mandatory(businessEventEntity.getEndTime(), "event.endTime");
 
@@ -174,7 +175,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         if (businessEventEntity.getEndTime().before(businessEventEntity.getStartTime())) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.endTime is before event.startTime");            
         }
-        
+
         // mandatory fields according to schema
         final List<ItemEntity> items = businessEventEntity.getItemEntities();
         if (items.size() == 0) {
@@ -194,40 +195,48 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
                 throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, invalid scale: " + qty.floatValue());                
             }
         }
-        
+
         return businessEventEntity;
     }
 
-    @Override
-    public String createInvoiceData(String supplierId) {
-        List<BusinessEventEntity> businesEventList = businessEventRepository.findBySupplierIdAndPendingIsTrue(supplierId);
-                
-        final InvoiceDataEntity iDE = new InvoiceDataEntity();
-        iDE.setSupplierId(supplierId);
-        
-        for (BusinessEventEntity bEE : businesEventList) {
-        	//TODO: Will be taken from in params later
-            iDE.setCreatedBy(bEE.getAcknowledgedBy());        
-            iDE.setPaymentResponsible(bEE.getPaymentResponsible());
-            iDE.addBusinessEventEntity(bEE);            
+    protected InvoiceDataEntity validate(InvoiceDataEntity invoiceDataEntity) {
+        mandatory(invoiceDataEntity.getCreatedBy(), "invoiceData.createdBy");
+        mandatory(invoiceDataEntity.getPaymentResponsible(), "invoiceData.paymentResponsible");
+        mandatory(invoiceDataEntity.getSupplierId(), "invoiceData.supplierId");
+        if (invoiceDataEntity.getBusinessEventEntities().size() == 0) {
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("invoiceData.events");            
         }
-        invoiceDataRepository.save(iDE);
-        return iDE.getReferenceId();
+
+        return invoiceDataEntity;
     }
 
-    @Override
-    public List<BusinessEventEntity> getPendingBusinessEntities(
-            String supplierId, List<String> eventIdList) {
-        final List<BusinessEventEntity> list = businessEventRepository.findBySupplierIdAndEventIdInAndPendingIsTrue(supplierId, eventIdList);
-        if (list.size() != eventIdList.size()) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("The provided list of events doesn't match database state");
-        }
-        return list;
-    }
 
     @Override
-    public void registerInvoiceData(InvoiceDataEntity invoiceDataEntity) {
-        invoiceDataRepository.save(invoiceDataEntity);
+    public String createInvoiceData(
+            CreateInvoiceDataRequest createInvoiceDataRequest) {
+        final InvoiceDataEntity invoiceDataEntity = CoreUtil.copyProperties(new InvoiceDataEntity(), createInvoiceDataRequest, CreateInvoiceDataRequest.class);
+        System.err.println(createInvoiceDataRequest.getEventRefIdList());
+        final Iterable<BusinessEventEntity> entities = businessEventRepository.findAll(createInvoiceDataRequest.getEventRefIdList());
+        int actual = 0;
+        for (BusinessEventEntity entity : entities) {
+            System.err.printf("%s, %b, %b\n", entity.getId(), entity.isPending(), entity.isCredited());
+            if (!entity.isPending()) {
+                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("trying to assign a non-pending event " + entity.getEventId() + " to invoice data");
+            }
+            invoiceDataEntity.addBusinessEventEntity(entity);
+            actual++;
+        }
+
+        final int expected = createInvoiceDataRequest.getEventRefIdList().size();
+        if (expected != actual) {
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state: " + actual + ", expected: " + expected); 
+        }
+        validate(invoiceDataEntity);
+
+        final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
+        invoiceDataRepository.flush();
+
+        return saved.getReferenceId();
     }
 
 }
