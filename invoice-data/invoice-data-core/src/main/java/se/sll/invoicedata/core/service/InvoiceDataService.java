@@ -19,11 +19,11 @@ package se.sll.invoicedata.core.service;
 import java.util.List;
 
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
-import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
 /**
  * Defines Invoice Data service API.
@@ -80,4 +80,11 @@ public interface InvoiceDataService {
 	 * @return the invoice data reference id.
 	 */
     String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest);
+    
+    /**
+     * 
+     * @param referenceId
+     * @return
+     */
+    InvoiceData getInvoiceDataByReferenceId(String referenceId);
 }

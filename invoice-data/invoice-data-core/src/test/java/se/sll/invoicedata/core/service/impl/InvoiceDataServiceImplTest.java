@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
@@ -149,5 +150,32 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         assertEquals(supplierId, invoiceDataList.get(0).getSupplierId());
         assertEquals("HSF", invoiceDataList.get(0).getPaymentResponsible());
     }
+	
+	@Test
+	@Rollback(true)
+	public void testGetInvoiceData() {
+		final BusinessEventEntity e = createSampleBusinessEventEntity();
+        e.addItemEntity(createSampleItemEntity());
+        
+        invoiceDataService.registerBusinessEvent(e);
+        
+        List<RegisteredEvent> regEvtList = invoiceDataService.getAllUnprocessedBusinessEvents(e.getSupplierId(), e.getPaymentResponsible());
+        
+        final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
+        createReq.setSupplierId(regEvtList.get(0).getSupplierId());
+        createReq.setPaymentResponsible(regEvtList.get(0).getPaymentResponsible());
+        createReq.setCreatedBy("test-auto");
+        createReq.getEventRefIdList().add(regEvtList.get(0).getId());
+        
+        invoiceDataService.createInvoiceData(createReq);
+        
+        List<InvoiceDataHeader> iDH = invoiceDataService.getAllInvoicedData(e.getSupplierId(), e.getPaymentResponsible());
+        
+        InvoiceData iData = invoiceDataService.getInvoiceDataByReferenceId(iDH.get(0).getReferenceId());
+        
+        assertNotNull(iData);
+        assertEquals(e.getPaymentResponsible(), iData.getPaymentResponsible());
+        assertEquals(e.getSupplierId(), iData.getSupplierId());
+	}
 		
 }

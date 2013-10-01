@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
@@ -238,5 +239,20 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
         return saved.getReferenceId();
     }
+
+	@Override
+	public InvoiceData getInvoiceDataByReferenceId(String referenceId) {
+		long id = Long.parseLong(referenceId.substring(referenceId.indexOf('.') + 6));
+		InvoiceDataEntity iDE = invoiceDataRepository.findById(id);
+		List<BusinessEventEntity> bEEList = iDE.getBusinessEventEntities();
+		
+		InvoiceDataHeader iDataHeader = EntityBeanConverter.fromEntity(iDE);
+		InvoiceData iData = new InvoiceData();
+		CoreUtil.copyProperties(iData, iDataHeader, InvoiceDataHeader.class);
+		for (BusinessEventEntity bEE : bEEList) {
+			iData.getEventList().add(EntityBeanConverter.fromEntity(bEE));
+		}
+		return iData;
+	}
 
 }
