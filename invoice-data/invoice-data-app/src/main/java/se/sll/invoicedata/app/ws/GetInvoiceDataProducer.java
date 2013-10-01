@@ -19,8 +19,6 @@
  */
 package se.sll.invoicedata.app.ws;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +29,6 @@ import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderIn
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.getinvoicedataresponder._1.ObjectFactory;
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
-import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 

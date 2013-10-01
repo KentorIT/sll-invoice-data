@@ -29,8 +29,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
@@ -46,32 +48,41 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	@Autowired	
 	private InvoiceDataService invoiceDataService;
 	
+	protected Event createSampleEvent() {
+        final BusinessEventEntity e = createSampleBusinessEventEntity();
+        e.addItemEntity(createSampleItemEntity());
+        
+        final Event event = CoreUtil.copyProperties(new Event(), e, Event.class);
+
+        CoreUtil.copyGenericLists(event.getItemList(), e.getItemEntities(), Item.class, Item.class);
+        
+        return event;
+	}
+	
 	@Test
     @Rollback(true)
     public void testFind_BusinessEvent_By_Id() {
         
-        final BusinessEventEntity e = createSampleBusinessEventEntity();
-        e.addItemEntity(createSampleItemEntity());
+        final Event e = createSampleEvent();
         
-        invoiceDataService.registerBusinessEvent(e);
+        invoiceDataService.registerEvent(e);
         
-        final BusinessEventEntity f = invoiceDataService.getBusinessEvent("event-123");
-        assertNotNull(f);
-        
+       final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(e.getSupplierId(), e.getPaymentResponsible());
+       final RegisteredEvent f = l.get(0);
+               
         assertEquals(e.getEventId(), f.getEventId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
-        assertNotNull(f.getCreatedTimestamp());   
     } 
 	
 	
 	private void registerEvents(String supplierId, List<String> ids) {
 	    for (final String id : ids) {
-	        final BusinessEventEntity e = createSampleBusinessEventEntity();
+	        final Event e = createSampleEvent();
 	        e.setEventId(id);
 	        e.setSupplierId(supplierId);
-	        e.addItemEntity(createSampleItemEntity());
-	        invoiceDataService.registerBusinessEvent(e);
+	        
+	        invoiceDataService.registerEvent(e);
 	    }
 	}
 	
@@ -123,10 +134,9 @@ public class InvoiceDataServiceImplTest extends TestSupport {
     @Rollback(true)
     public void testGetAllUnprocessedBusinessEvents() {
         
-        final BusinessEventEntity e = createSampleBusinessEventEntity();
-        e.addItemEntity(createSampleItemEntity());
+        final Event e = createSampleEvent();
         
-        invoiceDataService.registerBusinessEvent(e);
+        invoiceDataService.registerEvent(e);
         
         final List<RegisteredEvent> regEventList = invoiceDataService.getAllUnprocessedBusinessEvents(e.getSupplierId(), e.getPaymentResponsible());
         
@@ -154,10 +164,9 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	@Test
 	@Rollback(true)
 	public void testGetInvoiceData() {
-		final BusinessEventEntity e = createSampleBusinessEventEntity();
-        e.addItemEntity(createSampleItemEntity());
         
-        invoiceDataService.registerBusinessEvent(e);
+        final Event e = createSampleEvent();        
+        invoiceDataService.registerEvent(e);
         
         List<RegisteredEvent> regEvtList = invoiceDataService.getAllUnprocessedBusinessEvents(e.getSupplierId(), e.getPaymentResponsible());
         

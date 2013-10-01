@@ -37,6 +37,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
@@ -351,5 +352,10 @@ public class BusinessEventEntity {
     public int hashCode() {
         final String id = getEventId();
         return (id == null) ? super.hashCode() : id.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

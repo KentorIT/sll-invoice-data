@@ -128,8 +128,8 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 				.getCode());
 
 		Assert.assertNotNull(response.getInvoiceDataList());
-		Assert.assertEquals(1, response.getRegisteredEventList().size());
-		Assert.assertEquals(0, response.getInvoiceDataList().size());
+		Assert.assertTrue(response.getRegisteredEventList().size() > 0);
+		Assert.assertTrue(response.getInvoiceDataList().size() > 0);
 	}
 
 	//@Test

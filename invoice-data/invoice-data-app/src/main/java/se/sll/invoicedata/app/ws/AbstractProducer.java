@@ -16,11 +16,6 @@
 
 package se.sll.invoicedata.app.ws;
 
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,15 +26,6 @@ import javax.xml.ws.handler.MessageContext;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.InvoiceDataHeader;
-import riv.sll.invoicedata._1.Item;
-import riv.sll.invoicedata._1.RegisteredEvent;
-import se.sll.invoicedata.app.AppUtil;
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
-import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
-import se.sll.invoicedata.core.model.entity.ItemEntity;
 
 /**
  * Abstract class used by WS Producers

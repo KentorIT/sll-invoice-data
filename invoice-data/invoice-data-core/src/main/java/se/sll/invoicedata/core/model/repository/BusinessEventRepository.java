@@ -19,7 +19,6 @@ package se.sll.invoicedata.core.model.repository;
 
 import java.util.List;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
@@ -40,16 +39,18 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      */
     List<BusinessEventEntity> findBySupplierIdAndPendingIsTrue(String supplierId);
     
-    
+  
     /**
-     * Returns non-credit events by an event id.
+     * Returns events by an event id.
      * 
      * @param eventId the event id.
-     * @param sort the sort order, or null if none.
      * @return the event or null if none found.
      */
-    List<BusinessEventEntity> findByEventIdAndCreditIsNull(String eventId, Sort sort);
+    List<BusinessEventEntity> findByEventIdAndPendingIsTrueAndCreditIsNull(String eventId);
+
     
+    List<BusinessEventEntity> findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(String eventId);
+
     /**
      * Returns all pending events for a particular supplier.
      * 

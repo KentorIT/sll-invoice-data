@@ -87,10 +87,7 @@ public class EntityBeanConverter extends CoreUtil {
 	static RegisteredEvent fromEntity(final BusinessEventEntity bEEntity) {
 		final RegisteredEvent rEvent = copyProperties(new RegisteredEvent(), bEEntity, RegisteredEvent.class);
 
-		List<Item> itemList = new ArrayList<Item>(bEEntity.getItemEntities().size());
-		copyGenericLists(itemList, bEEntity.getItemEntities(), Item.class, Item.class);
-
-		rEvent.setItemList(itemList);
+		copyGenericLists(rEvent.getItemList(), bEEntity.getItemEntities(), Item.class, Item.class);
 
 		return rEvent;
 	}
