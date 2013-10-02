@@ -185,7 +185,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		//Assert.assertEquals(1, getInvoiceResp.getInvoiceDataList().size());
 	}
 
-	private GetInvoiceDataResponderInterface getGetInvoiceDataService() {
+	public static GetInvoiceDataResponderInterface getGetInvoiceDataService() {
 		GetInvoiceDataResponderInterface iGetInvoiceDataResponder = null;
 
 		final String URL = "http://localhost:8080/invoice-data-app/ws/getInvoiceData";

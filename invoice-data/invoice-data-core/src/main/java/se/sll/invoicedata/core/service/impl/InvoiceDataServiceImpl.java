@@ -252,15 +252,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         return saved.getReferenceId();
     }
 
-	@Override
+    @Override
 	public InvoiceData getInvoiceDataByReferenceId(String referenceId) {
-		long id = Long.parseLong(referenceId.substring(referenceId.indexOf('.') + 6));
+		long id = Long.parseLong(referenceId.substring(referenceId.lastIndexOf('.') + 1));
 		InvoiceDataEntity iDE = invoiceDataRepository.findById(id);
 		List<BusinessEventEntity> bEEList = iDE.getBusinessEventEntities();
 		
-		InvoiceDataHeader iDataHeader = EntityBeanConverter.fromEntity(iDE);
-		InvoiceData iData = new InvoiceData();
-		copyProperties(iData, iDataHeader, InvoiceDataHeader.class);
+		InvoiceData iData = EntityBeanConverter.fromIDEntity(iDE);
 		for (BusinessEventEntity bEE : bEEList) {
 			iData.getEventList().add(EntityBeanConverter.fromEntity(bEE));
 		}

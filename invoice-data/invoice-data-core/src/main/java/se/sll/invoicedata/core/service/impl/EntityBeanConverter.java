@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
@@ -105,5 +106,17 @@ public class EntityBeanConverter extends CoreUtil {
 
 		}
 		return registeredEventList;
+	}
+	
+	/**
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	static InvoiceData fromIDEntity(final InvoiceDataEntity entity) {
+		InvoiceData iData = new InvoiceData();
+		copyProperties(iData, entity, InvoiceData.class);
+
+		return iData;
 	}
 }
