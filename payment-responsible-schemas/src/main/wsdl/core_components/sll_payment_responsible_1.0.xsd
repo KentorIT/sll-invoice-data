@@ -10,7 +10,7 @@
 	OF ANY KIND, either express or implied. See the License for the specific 
 	language governing permissions and limitations under the License. -->
 <xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
-	xmlns:tns='urn:riv:sll:invoicedata:1' targetNamespace='urn:riv:sll:invoicedata:1'
+	xmlns:tns='urn:riv:sll:paymentresponsible:1' targetNamespace='urn:riv:sll:paymentresponsible:1'
 	elementFormDefault='qualified' attributeFormDefault='unqualified'
 	version='1.0'>
 	<xs:annotation>
@@ -18,33 +18,46 @@
 		</xs:documentation>
 	</xs:annotation>
 
-	<xs:complexType name="ProductType">
+	<xs:complexType name="ListPaymentResponsibleDataRequest">
 		<xs:sequence>
-			<xs:element name="productId" type="xs:string" />
+			<xs:element name="hsaId" type="xs:string" />
+			<xs:element name="healcareServiceType" type="xs:long" />
+			<xs:element name="bookingDate" type="xs:dateTime" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Contract">
+		<xs:sequence>
+			<xs:element name="id" type="xs:string" />
+			<xs:element name="abbrevation" type="xs:string" />
 			<xs:element name="description" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
-
-	<xs:complexType name="ProductListType">
+	
+	<xs:complexType name="HealthcareCommission">
 		<xs:sequence>
-			<xs:element name="product" type="tns:ProductType"
-				minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="id" type="xs:string" />
+			<xs:element name="type" type="xs:string" />
+			<xs:element name="contract" type="tns:Contract" />
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="EventType">
+	<xs:complexType name="PaymentResponsible">
 		<xs:sequence>
-			<xs:element name="eventId" type="xs:string" />
-			<xs:element name="supplierId" type="xs:string" />
-			<xs:element name="supplierName" type="xs:string" />
-			<xs:element name="serviceCode" type="xs:string" />
-			<xs:element name="signedBy" type="xs:string" />
-			<xs:element name="signedTimestamp" type="xs:dateTime" />
-			<xs:element name="deliveredBy" type="xs:string" />
-			<xs:element name="startTimestamp" type="xs:dateTime" />
-			<xs:element name="endTimestamp" type="xs:dateTime" />
-			<xs:element name="obsoletesEventId" type="xs:string" />
-			<xs:element name="products" type="tns:ProductListType" />
+			<xs:element name="id" type="xs:string" />
+			<xs:element name="name" type="xs:string" />
+			<xs:element name="address" type="xs:string" />
+			<xs:element name="healcareCommissionList" type="tns:HealthcareCommission" 
+				minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ListPaymentResponsibleDataResponse">
+		<xs:sequence>
+			<xs:element name="hsaId" type="xs:string" />
+			<xs:element name="healthcareServiceType" type="xs:string" />
+			<xs:element name="paymentResponsible" type="tns:PaymentResponsible" minOccurs="1" 
+				maxOccurs="unbounded"/>			
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>

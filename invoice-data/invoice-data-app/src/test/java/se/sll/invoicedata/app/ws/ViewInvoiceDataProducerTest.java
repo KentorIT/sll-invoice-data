@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.RegisteredEvent;

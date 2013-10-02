@@ -17,44 +17,44 @@
   specific language governing permissions and limitations
   under the License.
 -->		
-<wsdl:definitions name='RegisterInvoiceDataInteraction' xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' 
+<wsdl:definitions name='ListPaymentResponsibleInteraction' xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' 
   xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
   xmlns:xs='http://www.w3.org/2001/XMLSchema' 
-  xmlns:tjsr='urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1' 
-  xmlns:tns='urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21' 
-  targetNamespace='urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21' 
+  xmlns:tjsr='urn:riv:sll:paymentresponsible:ListPaymentResponsibleDataResponder:1' 
+  xmlns:tns='urn:riv:sll:paymentresponsible:ListPaymentResponsibleData:1:rivtabp21' 
+  targetNamespace='urn:riv:sll:paymentresponsible:ListPaymentResponsibleData:1:rivtabp21' 
   xmlns:itr='urn:riv:itintegration:registry:1'>
   <wsdl:documentation>
-    Tjänsteinteraktionens namn: RegisterInvoiceDataInteraction
+    Tjänsteinteraktionens namn: ListPaymentResponsibleInteraction
     Beskrivning: 
   </wsdl:documentation>
   <wsdl:types>
-    <xs:schema targetNamespace='urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21'>
-      <xs:import schemaLocation='RegisterInvoiceDataInteractionResponder_1.0.xsd' namespace='urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1' />
+    <xs:schema targetNamespace='urn:riv:sll:paymentresponsible:ListPaymentResponsibleData:1:rivtabp21'>
+      <xs:import schemaLocation='ListPaymentResponsibleInteractionResponder_1.0.xsd' namespace='urn:riv:sll:paymentresponsible:ListPaymentResponsibleDataResponder:1' />
       <xs:import schemaLocation='../../core_components/itintegration_registry_1.0.xsd' namespace='urn:riv:itintegration:registry:1' />
     </xs:schema>
   </wsdl:types>
-  <wsdl:message name='RegisterInvoiceDataRequest'>
+  <wsdl:message name='ListPaymentResponsibleDataRequest'>
     <wsdl:part name='LogicalAddress' element='itr:LogicalAddress'>
       <wsdl:documentation>Logical address description</wsdl:documentation>
     </wsdl:part>
-    <wsdl:part name='parameters' element='tjsr:RegisterInvoiceData' />
+    <wsdl:part name='parameters' element='tjsr:ListPaymentResponsibleData' />
   </wsdl:message>
-  <wsdl:message name='RegisterInvoiceDataResponse'>
-    <wsdl:part name='parameters' element='tjsr:RegisterInvoiceDataResponse' />
+  <wsdl:message name='ListPaymentResponsibleDataResponse'>
+    <wsdl:part name='parameters' element='tjsr:ListPaymentResponsibleDataResponse' />
   </wsdl:message>
-  <wsdl:portType name='RegisterInvoiceDataResponderInterface'>
-    <wsdl:operation name='RegisterInvoiceData'>
-      <wsdl:input message='tns:RegisterInvoiceDataRequest' />
-      <wsdl:output message='tns:RegisterInvoiceDataResponse' />
+  <wsdl:portType name='ListPaymentResponsibleDataResponderInterface'>
+    <wsdl:operation name='ListPaymentResponsibleData'>
+      <wsdl:input message='tns:ListPaymentResponsibleDataRequest' />
+      <wsdl:output message='tns:ListPaymentResponsibleDataResponse' />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name='RegisterInvoiceDataResponderBinding' type='tns:RegisterInvoiceDataResponderInterface'>
+  <wsdl:binding name='ListPaymentResponsibleDataResponderBinding' type='tns:ListPaymentResponsibleDataResponderInterface'>
     <soap:binding style='document' transport='http://schemas.xmlsoap.org/soap/http' />
-    <wsdl:operation name='RegisterInvoiceData'>
-      <soap:operation soapAction='urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData' style='document' />
+    <wsdl:operation name='ListPaymentResponsibleData'>
+      <soap:operation soapAction='urn:riv:sll:paymentresponsible:ListPaymentResponsibleDataResponder:1:ListPaymentResponsibleData' style='document' />
       <wsdl:input>
-        <soap:header use='literal' message='tns:RegisterInvoiceDataRequest' part='LogicalAddress' />
+        <soap:header use='literal' message='tns:ListPaymentResponsibleDataRequest' part='LogicalAddress' />
         <soap:body use='literal' parts='parameters' />
       </wsdl:input>
       <wsdl:output>
@@ -62,8 +62,8 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name='RegisterInvoiceDataResponderService'>
-    <wsdl:port name='RegisterInvoiceDataResponderPort' binding='tns:RegisterInvoiceDataResponderBinding'>
+  <wsdl:service name='ListPaymentResponsibleDataResponderService'>
+    <wsdl:port name='ListPaymentResponsibleDataResponderPort' binding='tns:ListPaymentResponsibleDataResponderBinding'>
       <soap:address location='http://tempuri.org' />
     </wsdl:port>
   </wsdl:service>
