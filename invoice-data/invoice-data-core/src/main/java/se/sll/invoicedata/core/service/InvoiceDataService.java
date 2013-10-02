@@ -23,7 +23,6 @@ import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
 /**
  * Defines Invoice Data service API.
@@ -40,18 +39,7 @@ public interface InvoiceDataService {
 	 *            the business event entity.
 	 */
 	void registerEvent(Event event);
-	
-	void registerBusinessEvent(BusinessEventEntity event);
-	
-	/**
-	 * Returns a business event by id.
-	 * 
-	 * @param eventId
-	 *            the event id.
-	 * @return the business event with the given id or null if none found.
-	 */
-	BusinessEventEntity getBusinessEvent(String eventId);
-
+		
 	/**
 	 * Returns all unprocessed events for a particular supplier.
 	 * 

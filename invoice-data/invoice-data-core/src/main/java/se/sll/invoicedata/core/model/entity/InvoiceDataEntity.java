@@ -35,6 +35,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * Persistent invoice data information.
  *
@@ -185,5 +187,10 @@ public class InvoiceDataEntity {
     public int hashCode() {
         final Long id = getId();
         return (id == null) ? super.hashCode() : id.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

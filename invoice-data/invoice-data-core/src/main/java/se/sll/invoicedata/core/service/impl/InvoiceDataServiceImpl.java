@@ -20,8 +20,9 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,12 +39,15 @@ import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.RatingService;
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 
 @Service
 @Transactional
 public class InvoiceDataServiceImpl implements InvoiceDataService {
 
+    private static final Logger log = LoggerFactory.getLogger(InvoiceDataService.class);
+    
     @Autowired
     private BusinessEventRepository businessEventRepository;
 
@@ -53,53 +57,64 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Autowired
     private RatingService ratingService;
 
-
     //
     private InvoiceDataServiceImpl save(BusinessEventEntity... entities) {
         businessEventRepository.save(Arrays.asList(entities));
+        log.debug("saved = {}", entities);
         return this;
     }
 
     //
     private InvoiceDataServiceImpl delete(BusinessEventEntity... entities) {
         businessEventRepository.delete(Arrays.asList(entities));
+        log.debug("deleted = {}", entities);
         return this;
     }
 
+    @Override
     public void registerEvent(Event event) {
         BusinessEventEntity newEntity = EntityBeanConverter.toEntity(event);
         registerBusinessEvent(newEntity);
     }
 
-    public void registerBusinessEvent(BusinessEventEntity newEntity) {
+    //
+    protected void registerBusinessEvent(final BusinessEventEntity newEntity) {
         rate(validate(newEntity));
-        final BusinessEventEntity oldEntity = getBusinessEvent(newEntity.getEventId());
+        
+        final BusinessEventEntity oldEntity = one(businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId()));
+        final BusinessEventEntity creditCandidate = one(businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId()));
 
-        if (oldEntity == null) {
-            save(newEntity);
-        } else if (oldEntity.isPending()) {
-            delete(oldEntity).save(newEntity);
-        } else if (!oldEntity.isCredited()) {
-            oldEntity.setCredited(true);
-            // create credit event.
-            final BusinessEventEntity creditEntity = CoreUtil.copyProperties(new BusinessEventEntity(), oldEntity, BusinessEventEntity.class);
+        if (oldEntity != null) {
+            delete(oldEntity);
+        }
+
+        save(newEntity);
+
+        if (creditCandidate != null) {
+            final BusinessEventEntity creditEntity = copyProperties(new BusinessEventEntity(), creditCandidate, BusinessEventEntity.class);
             creditEntity.setCredit(true);
             creditEntity.setInvoiceData(null);
-            for (ItemEntity itemEntity : oldEntity.getItemEntities()) {
-                creditEntity.addItemEntity(CoreUtil.copyProperties(new ItemEntity(), itemEntity, ItemEntity.class));
-            }
-            save(oldEntity, newEntity, creditEntity);
-        } else {
-            throw new IllegalStateException("Unpredicted database state detected, for business event: " + newEntity.getEventId());
+            creditCandidate.setCredited(true);
+            for (final ItemEntity itemEntity : creditCandidate.getItemEntities()) {
+                final ItemEntity copy = copyProperties(new ItemEntity(), itemEntity, ItemEntity.class);
+                // set parent to null to ensure acceptance by the new
+                copy.setEvent(null);
+                creditEntity.addItemEntity(copy);
+            }            
+            save(creditCandidate, creditEntity);
         }
+        
     }
 
-    @Override
-    public BusinessEventEntity getBusinessEvent(String eventId) {
-        Sort sort = new Sort(Sort.Direction.DESC, "createdTimestamp");
-        List<BusinessEventEntity> list = businessEventRepository.findByEventIdAndCreditIsNull(eventId, sort);
+    //
+    static <T> T one(List<T> list) {
+        if (list.size() > 1) {
+            throw new IllegalStateException(String.format("More than one object exists (%s)", list.get(1)));
+        }
         return (list.size() == 0) ? null : list.get(0);
     }
+    
+
 
     @Override
     public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
@@ -215,19 +230,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
     public String createInvoiceData(
             CreateInvoiceDataRequest createInvoiceDataRequest) {
-        final InvoiceDataEntity invoiceDataEntity = CoreUtil.copyProperties(new InvoiceDataEntity(), createInvoiceDataRequest, CreateInvoiceDataRequest.class);
-        System.err.println(createInvoiceDataRequest.getEventRefIdList());
+        final InvoiceDataEntity invoiceDataEntity = copyProperties(new InvoiceDataEntity(), createInvoiceDataRequest, CreateInvoiceDataRequest.class);
         final Iterable<BusinessEventEntity> entities = businessEventRepository.findAll(createInvoiceDataRequest.getEventRefIdList());
         int actual = 0;
         for (BusinessEventEntity entity : entities) {
-            System.err.printf("%s, %b, %b\n", entity.getId(), entity.isPending(), entity.isCredited());
             if (!entity.isPending()) {
                 throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("trying to assign a non-pending event " + entity.getEventId() + " to invoice data");
             }
             invoiceDataEntity.addBusinessEventEntity(entity);
             actual++;
         }
-
         final int expected = createInvoiceDataRequest.getEventRefIdList().size();
         if (expected != actual) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state: " + actual + ", expected: " + expected); 
@@ -248,7 +260,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 		
 		InvoiceDataHeader iDataHeader = EntityBeanConverter.fromEntity(iDE);
 		InvoiceData iData = new InvoiceData();
-		CoreUtil.copyProperties(iData, iDataHeader, InvoiceDataHeader.class);
+		copyProperties(iData, iDataHeader, InvoiceDataHeader.class);
 		for (BusinessEventEntity bEE : bEEList) {
 			iData.getEventList().add(EntityBeanConverter.fromEntity(bEE));
 		}

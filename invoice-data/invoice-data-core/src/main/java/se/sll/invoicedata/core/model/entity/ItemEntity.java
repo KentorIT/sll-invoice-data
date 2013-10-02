@@ -27,6 +27,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 @Entity
 @Table(name="invoice_data_event_item")
 public class ItemEntity {
@@ -111,6 +113,11 @@ public class ItemEntity {
     public int hashCode() {
         final Long id = getId();
         return (id == null) ? super.hashCode() : id.hashCode();
+    }
+    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

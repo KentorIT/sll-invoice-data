@@ -128,9 +128,9 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 				.getCode());
 
 		Assert.assertNotNull(response.getInvoiceDataList());
+		// FIXME: doesn't work when running multiple tests without cleaning the database
 		Assert.assertEquals(1, response.getRegisteredEventList().size());
-		Assert.assertEquals(0, response.getInvoiceDataList().size());
-	}
+        Assert.assertEquals(0, response.getInvoiceDataList().size());	}
 
 	//@Test
 	public void get_InvoiceData_Some_Processed_Some_Unprocessed_Success() {
