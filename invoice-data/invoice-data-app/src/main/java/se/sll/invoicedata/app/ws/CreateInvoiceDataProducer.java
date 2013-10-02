@@ -19,49 +19,32 @@
  */
 package se.sll.invoicedata.app.ws;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import riv.sll.invoicedata._1.ResultCode;
-import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedata._1.rivtabp21.CreateInvoiceDataResponderInterface;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
 import riv.sll.invoicedata.createinvoicedataresponder._1.ObjectFactory;
-import se.sll.invoicedata.core.service.InvoiceDataService;
-import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
 /**
  * @author muqkha
  *
  */
 public class CreateInvoiceDataProducer extends AbstractProducer implements CreateInvoiceDataResponderInterface {
-
-	private static final Logger log = LoggerFactory.getLogger(CreateInvoiceDataProducer.class);
 	
-    @Autowired
-    private InvoiceDataService invoiceDataService;
-
+    static final ObjectFactory factory = new ObjectFactory();
+    
     @Override
-    public CreateInvoiceDataResponse createInvoiceData(String logicalAddress,
-            CreateInvoiceDataRequest parameters) {
-        log("createInvoiceData");
-        log.info("logicalAddress: {}", logicalAddress);
+    public CreateInvoiceDataResponse createInvoiceData(final String logicalAddress,
+            final CreateInvoiceDataRequest parameters) {
         
-        final ObjectFactory oFactory = new ObjectFactory();
-        final ResultCode rc = new ResultCode();
-        final CreateInvoiceDataResponse createInvoiceDataResp = oFactory.createCreateInvoiceDataResponse();
+
+        final CreateInvoiceDataResponse createInvoiceDataResp = factory.createCreateInvoiceDataResponse();
         
-        try {
-        	createInvoiceDataResp.setReferenceId(invoiceDataService.createInvoiceData(parameters));
-            rc.setCode(ResultCodeEnum.OK);
-        } catch (InvoiceDataServiceException ex) {
-            rc.setCode(ResultCodeEnum.ERROR);
-            rc.setMessage(ex.getMessage());
-            log.error(ex.getMessage());
-        }
-        createInvoiceDataResp.setResultCode(rc);
+        createInvoiceDataResp.setResultCode(invoke(new Runnable() {
+            @Override
+            public void run() {
+                createInvoiceDataResp.setReferenceId(getInvoiceDataService().createInvoiceData(parameters));                
+            }
+        }));
         
         return createInvoiceDataResp;        
     }

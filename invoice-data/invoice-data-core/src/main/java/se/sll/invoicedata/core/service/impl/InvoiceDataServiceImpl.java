@@ -109,7 +109,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     //
     static <T> T one(List<T> list) {
         if (list.size() > 1) {
-            throw new IllegalStateException(String.format("More than one object exists (%s)", list.get(1)));
+            throw new IllegalStateException(String.format("More than one object exists (%s)", list));
         }
         return (list.size() == 0) ? null : list.get(0);
     }

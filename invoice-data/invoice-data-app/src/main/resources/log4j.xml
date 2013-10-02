@@ -74,6 +74,10 @@
   <logger name="org.apache.commons.beanutils">
     <level value="warn" />
   </logger>
+
+  <logger name="WS-API">
+    <level value="debug" />
+  </logger>
   
   <!-- <logger name="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
   <!-- <level value="debug" /> -->
@@ -97,7 +101,7 @@
   
   <!-- Root Logger -->
   <root>
-    <priority value="warn" />
+    <priority value="info" />
     <appender-ref ref="console" />
   </root>
 

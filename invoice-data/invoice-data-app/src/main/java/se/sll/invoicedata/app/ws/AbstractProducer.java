@@ -26,6 +26,13 @@ import javax.xml.ws.handler.MessageContext;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
+import se.sll.invoicedata.core.jmx.StatusBean;
+import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
 /**
  * Abstract class used by WS Producers
@@ -33,35 +40,68 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractProducer {
 
-    private static final Logger logger = LoggerFactory.getLogger("ws-api");
+    private static final Logger log = LoggerFactory.getLogger("WS-API");
     
     private static final String SERVICE_CONSUMER_HEADER_NAME = "x-rivta-original-serviceconsumer-hsaid";
 
+    @Autowired
+    private StatusBean statusBean;
+    
+    @Autowired
+    private InvoiceDataService invoiceDataService;
+
+    
     @Resource
     private WebServiceContext wsctx;
     
     protected void throwInternalServerError(Throwable t) {
         String errorText = "Internal server error (reference: " + UUID.randomUUID().toString() + ")";
-        logger.error(errorText, t);
+        log.error(errorText, t);
         throw new SoapFault(errorText, SoapFault.FAULT_CODE_SERVER);
     }
 
     /**
      *
-     * @param msg
+     * Returns path name, and logs basic data.
+     * 
+     * @return the service path name.
      */
-    protected void log(String msg) {
-        MessageContext mctx = (wsctx == null) ? null : wsctx.getMessageContext();
-        if (mctx == null) {
-            logger.error("MessageContext is null, WebServiceContext is {}", wsctx);
-            return;
-        }
-        
+    protected String logConsumer() {
+        final MessageContext mctx = wsctx.getMessageContext();
         @SuppressWarnings (value="rawtypes")
-        Map headers = (Map)mctx.get(MessageContext.HTTP_REQUEST_HEADERS);      
-        Object serviceConsumer = headers.get(SERVICE_CONSUMER_HEADER_NAME);
-
-        logger.info("{} invoked by HSAid: {}", msg, (serviceConsumer == null) ? "<NOT FOUND>" : serviceConsumer);
+        final Map headers = (Map)mctx.get(MessageContext.HTTP_REQUEST_HEADERS);
+        final Object serviceConsumer = (headers == null) ? null : headers.get(SERVICE_CONSUMER_HEADER_NAME);
+        final String path = (String)mctx.get(MessageContext.PATH_INFO);
+        
+        log.info("{}, {}", path, (serviceConsumer == null) ? "NA" : serviceConsumer);
+        log.debug("HTTP Headers {}", headers);
+        
+        return path;
     }
     
+    /**
+     * Invokes a run method in an instrumented manner.
+     * 
+     * @param runnable the runnable to run.
+     * @return the result code.
+     */
+    protected ResultCode invoke(final Runnable runnable) {
+        statusBean.start(logConsumer());
+        final ResultCode rc = new ResultCode();
+        try {
+            runnable.run();
+            rc.setCode(ResultCodeEnum.OK);
+        } catch (InvoiceDataServiceException ex) {
+            rc.setCode(ResultCodeEnum.ERROR);
+            rc.setMessage(ex.getMessage());
+            log.error(ex.getMessage());
+        } finally {
+            statusBean.stop();
+        }
+        return rc;
+    }
+
+    protected InvoiceDataService getInvoiceDataService() {
+        return invoiceDataService;
+    }
 }

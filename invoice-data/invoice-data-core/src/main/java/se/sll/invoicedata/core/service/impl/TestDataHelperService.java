@@ -44,10 +44,7 @@ public class TestDataHelperService {
     
     @Autowired
     private InvoiceDataService invoiceDataService;
-    
-    @Value("${testdata.create:false}")
-    private boolean enabled;
-
+  
     @Value("${testdata.months:3}")
     private int months;
 
@@ -56,10 +53,7 @@ public class TestDataHelperService {
 
     
     public int generateTestData() {
-        if (enabled) {
-            return generateTestData0();
-        }
-        return 0;
+        return generateTestData0();
     }
     
     @Transactional    
@@ -98,7 +92,7 @@ public class TestDataHelperService {
     
     //
     int createEvents(GregorianCalendar cal) {
-        int n = getNumPendingEventsPerDay();
+        final int n = getDailyEvents();
         for (int i = 0; i < n; i++) {
             Event e = new Event();
             e.setEventId(UUID.randomUUID().toString());
@@ -142,11 +136,6 @@ public class TestDataHelperService {
     }
     
     //
-    int getMonths() {
-        return months;
-    }
-    
-    //
     XMLGregorianCalendar addRandomTime(GregorianCalendar cal) {
         int h = random(3);
         int m = random(60);
@@ -163,9 +152,21 @@ public class TestDataHelperService {
         cal.set(GregorianCalendar.MINUTE, m);
         return CoreUtil.toXMGregorianCalendar(cal);    
     }
-    
-    //
-    int getNumPendingEventsPerDay() {
+
+    public int getMonths() {
+        return months;
+    }
+
+    public void setMonths(int months) {
+        this.months = months;
+    }
+
+    public int getDailyEvents() {
         return dailyEvents;
     }
+
+    public void setDailyEvents(int dailyEvents) {
+        this.dailyEvents = dailyEvents;
+    }
 }
+ 

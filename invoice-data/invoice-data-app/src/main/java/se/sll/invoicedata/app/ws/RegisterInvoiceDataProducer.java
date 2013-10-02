@@ -17,18 +17,10 @@
 package se.sll.invoicedata.app.ws;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.ResultCode;
-import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
-import se.sll.invoicedata.core.service.InvoiceDataService;
-import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
 /**
  * Registers new business events.
@@ -36,37 +28,22 @@ import se.sll.invoicedata.core.service.InvoiceDataServiceException;
  * @author Peter
  */
 public class RegisterInvoiceDataProducer extends AbstractProducer implements RegisterInvoiceDataResponderInterface {
-
-    private static final Logger log = LoggerFactory.getLogger(RegisterInvoiceDataProducer.class);
-            
-    @Autowired
-    private InvoiceDataService invoiceDataService;
+    static final ObjectFactory factory = new ObjectFactory();
     
     @Override
     public RegisterInvoiceDataResponse registerInvoiceData(
-            String logicalAddress, Event parameters) {
-        log("registerInvoiceData");
+            final String logicalAddress, final Event parameters) {
         
-        log.info("logicalAdress: {}", logicalAddress);
+        final RegisterInvoiceDataResponse response = factory.createRegisterInvoiceDataResponse();
 
-        final ObjectFactory f = new ObjectFactory();
-        final RegisterInvoiceDataResponse ur = f.createRegisterInvoiceDataResponse();
-
-        final ResultCode rc = new ResultCode();
-
-        try {           
-            invoiceDataService.registerEvent(parameters);
-            rc.setCode(ResultCodeEnum.OK);
-            log.info("OK");
-        } catch (InvoiceDataServiceException ex) {
-            rc.setCode(ResultCodeEnum.ERROR);
-            rc.setMessage(ex.getMessage());
-            log.error(ex.getMessage());
-        }
-
-        ur.setResultCode(rc);
+        response.setResultCode(invoke(new Runnable() {
+            @Override
+            public void run() {
+                getInvoiceDataService().registerEvent(parameters);
+            }
+        }));
         
-        return ur;
+        return response;
     }
     
 }

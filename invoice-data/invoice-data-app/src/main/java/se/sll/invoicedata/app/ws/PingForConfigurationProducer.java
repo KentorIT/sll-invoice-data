@@ -19,17 +19,13 @@ package se.sll.invoicedata.app.ws;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface;
-import se.riv.itintegration.monitoring.v1.PingForConfigurationResponseType;
 import se.riv.itintegration.monitoring.v1.ObjectFactory;
+import se.riv.itintegration.monitoring.v1.PingForConfigurationResponseType;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationType;
 
 public class PingForConfigurationProducer extends AbstractProducer implements PingForConfigurationResponderInterface {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PingForConfigurationProducer.class); 
     private static ThreadLocal<SimpleDateFormat> formatter = new ThreadLocal<SimpleDateFormat>() {
         @Override
         public SimpleDateFormat initialValue() {
@@ -40,12 +36,19 @@ public class PingForConfigurationProducer extends AbstractProducer implements Pi
     
     @Override
     public PingForConfigurationResponseType pingForConfiguration(
-            String logicalAddress, PingForConfigurationType parameters) {      
-        LOG.info("logicalAdress: {}", logicalAddress);      
-        PingForConfigurationResponseType response = objectFactory.createPingForConfigurationResponseType();
-        response.setVersion("1.0");
-        response.setPingDateTime(formatter.get().format(new Date()));
+            final String logicalAddress, final PingForConfigurationType parameters) {      
+
+        
+        final PingForConfigurationResponseType response = objectFactory.createPingForConfigurationResponseType();
+        
+        invoke(new Runnable() {
+            @Override
+            public void run() {
+                response.setVersion("1.0");
+                response.setPingDateTime(formatter.get().format(new Date()));
+            }
+        });
+        
         return response;
     }
-
 }

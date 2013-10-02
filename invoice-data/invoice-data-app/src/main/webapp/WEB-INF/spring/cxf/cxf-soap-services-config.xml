@@ -51,5 +51,5 @@
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
 	</jaxws:endpoint>
-	
+
 </beans>

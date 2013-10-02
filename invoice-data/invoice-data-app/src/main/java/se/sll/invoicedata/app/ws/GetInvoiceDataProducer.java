@@ -19,59 +19,39 @@
  */
 package se.sll.invoicedata.app.ws;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import riv.sll.invoicedata._1.ResultCode;
-import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.getinvoicedataresponder._1.ObjectFactory;
-import se.sll.invoicedata.core.service.InvoiceDataService;
-import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
 /**
  * @author muqkha
  * 
  */
-public class GetInvoiceDataProducer extends AbstractProducer implements
-		GetInvoiceDataResponderInterface {
+public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoiceDataResponderInterface {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(GetInvoiceDataProducer.class);
-
-	@Autowired
-	private InvoiceDataService invoiceDataService;
+    static final ObjectFactory factory = new ObjectFactory();
 
     @Override
-    public GetInvoiceDataResponse getInvoiceData(String logicalAddress,
-            GetInvoiceDataRequest request) {
-        log("getInvoiceData");
-        log.info("logicalAddress: {}", logicalAddress);
+    public GetInvoiceDataResponse getInvoiceData(final String logicalAddress,
+            final GetInvoiceDataRequest request) {
 
-        final ObjectFactory oFactory = new ObjectFactory();
-        final GetInvoiceDataResponse response = oFactory
+        final GetInvoiceDataResponse response = factory
                 .createGetInvoiceDataResponse();
-        final ResultCode rc = new ResultCode();
-        
-        try {
-            //Fetching unprocessed events with price
-        	response.getRegisteredEventList().addAll(invoiceDataService
-            		.getAllUnprocessedBusinessEvents(request.getSupplierId(), request.getPaymentResponsible()));
-            
-            //Fetching invoiced data            
-            response.getInvoiceDataList().addAll(invoiceDataService
-            		.getAllInvoicedData(request.getSupplierId(), request.getPaymentResponsible()));
-            rc.setCode(ResultCodeEnum.OK);
 
-        } catch (InvoiceDataServiceException ex) {
-            rc.setCode(ResultCodeEnum.ERROR);
-            rc.setMessage(ex.getMessage());
-            log.error(ex.getMessage());
-        }
-        response.setResultCode(rc);
+        response.setResultCode(invoke(new Runnable() {
+            @Override
+            public void run() {
+                //Fetching unprocessed events with price
+                response.getRegisteredEventList().addAll(getInvoiceDataService()
+                        .getAllUnprocessedBusinessEvents(request.getSupplierId(), request.getPaymentResponsible()));
+
+                //Fetching invoiced data            
+                response.getInvoiceDataList().addAll(getInvoiceDataService()
+                        .getAllInvoicedData(request.getSupplierId(), request.getPaymentResponsible()));               
+            }
+        }));
+        
         return response;
     }
 
