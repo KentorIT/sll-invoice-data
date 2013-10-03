@@ -17,7 +17,6 @@
 package se.sll.invoicedata.app.ws;
 
 import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.xml.ws.WebServiceContext;
@@ -35,8 +34,9 @@ import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
 /**
- * Abstract class used by WS Producers
- *
+ * Abstracts generic logging and error handling for WS Producers
+ * 
+ * @author Peter
  */
 public abstract class AbstractProducer {
 
@@ -50,33 +50,75 @@ public abstract class AbstractProducer {
     @Autowired
     private InvoiceDataService invoiceDataService;
 
-    
     @Resource
     private WebServiceContext wsctx;
     
-    protected void throwInternalServerError(Throwable t) {
-        String errorText = "Internal server error (reference: " + UUID.randomUUID().toString() + ")";
-        log.error(errorText, t);
-        throw new SoapFault(errorText, SoapFault.FAULT_CODE_SERVER);
+    /**
+     * Creates a soap fault.
+     * 
+     * @param throwable the cause.
+     * @return the soap fault object.
+     */
+    protected SoapFault createSoapFault(Throwable throwable) {
+        final String msg = createLogMessage(throwable.toString());
+        log.error(msg, throwable);
+        
+        final SoapFault soapFault = new SoapFault(msg, SoapFault.FAULT_CODE_SERVER);
+
+        return soapFault;
+    }
+    
+    
+    /**
+     * Returns the invoice data service.
+     * 
+     * @return the invoice data service.
+     */
+    protected InvoiceDataService getInvoiceDataService() {
+        return invoiceDataService;
+    }
+    
+    /**
+     * Returns status bean.
+     * 
+     * @return the status bean.
+     */
+    protected StatusBean getStatusBean() {
+        return statusBean;
     }
 
+    
+    /**
+     * Returns the actual message context.
+     * 
+     * 
+     * @return the message context.
+     */
+    protected MessageContext getMessageContext() {
+        return wsctx.getMessageContext();
+    }
+    
     /**
      *
-     * Returns path name, and logs basic data.
+     * Logs message context information.
      * 
-     * @return the service path name.
+     * @param messageContext the context.
      */
-    protected String logConsumer() {
-        final MessageContext mctx = wsctx.getMessageContext();
-        @SuppressWarnings (value="rawtypes")
-        final Map headers = (Map)mctx.get(MessageContext.HTTP_REQUEST_HEADERS);
-        final Object serviceConsumer = (headers == null) ? null : headers.get(SERVICE_CONSUMER_HEADER_NAME);
-        final String path = (String)mctx.get(MessageContext.PATH_INFO);
-        
-        log.info("{}, {}", path, (serviceConsumer == null) ? "NA" : serviceConsumer);
+    private void log(MessageContext messageContext) {
+        final Map<?, ?> headers = (Map<?, ?>)messageContext.get(MessageContext.HTTP_REQUEST_HEADERS);
+        log.info(createLogMessage(headers.get(SERVICE_CONSUMER_HEADER_NAME)));
         log.debug("HTTP Headers {}", headers);
-        
-        return path;
+    }
+    
+    
+    /**
+     * Creates a log message.
+     * 
+     * @param msg the message.
+     * @return the log message.
+     */
+    protected String createLogMessage(Object msg) {
+        return String.format("%s - %s - \"%s\"", statusBean.getName(), statusBean.getGUID(), (msg == null) ? "NA" : msg);
     }
     
     /**
@@ -86,22 +128,24 @@ public abstract class AbstractProducer {
      * @return the result code.
      */
     protected ResultCode invoke(final Runnable runnable) {
-        statusBean.start(logConsumer());
+        final MessageContext messageContext = getMessageContext();
+        final String path = (String)messageContext.get(MessageContext.PATH_INFO);
+        statusBean.start(path);
+        log(messageContext);
         final ResultCode rc = new ResultCode();
         try {
             runnable.run();
             rc.setCode(ResultCodeEnum.OK);
         } catch (InvoiceDataServiceException ex) {
             rc.setCode(ResultCodeEnum.ERROR);
-            rc.setMessage(ex.getMessage());
-            log.error(ex.getMessage());
+            rc.setMessage(ex.getMessage() + " (" + statusBean.getGUID() + ")");
+            log.error(createLogMessage(ex.getMessage()));
+        } catch (Throwable throwable) {
+            throw createSoapFault(throwable);
         } finally {
             statusBean.stop();
         }
         return rc;
     }
-
-    protected InvoiceDataService getInvoiceDataService() {
-        return invoiceDataService;
-    }
+    
 }

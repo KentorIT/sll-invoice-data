@@ -41,7 +41,12 @@ import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.RatingService;
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
-
+/**
+ * Implements invoice data service.
+ * 
+ * @author Peter
+ *
+ */
 @Service
 @Transactional
 public class InvoiceDataServiceImpl implements InvoiceDataService {
@@ -106,8 +111,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         
     }
 
-    //
-    static <T> T one(List<T> list) {
+    /**
+     * Returns one expected item only one from a list.
+     * 
+     * @param list the list.
+     * @return the only item.
+     * @throws IllegalStateException when the list conatins more than one item.
+     */
+    protected static <T> T one(List<T> list) {
         if (list.size() > 1) {
             throw new IllegalStateException(String.format("More than one object exists (%s)", list));
         }
@@ -244,10 +255,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         if (expected != actual) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state: " + actual + ", expected: " + expected); 
         }
+        
         validate(invoiceDataEntity);
 
         final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
-        invoiceDataRepository.flush();
 
         return saved.getReferenceId();
     }

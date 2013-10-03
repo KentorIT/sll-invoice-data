@@ -20,17 +20,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jmx.export.annotation.ManagedMetric;
-import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.jmx.export.annotation.ManagedOperation;
+import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.jmx.support.MetricType;
 import org.springframework.stereotype.Component;
+
+import se.sll.invoicedata.core.service.InvoiceDataService;
 
 @Component
 @ManagedResource(objectName = "se.sll.invoicedata:name=StatusBean", description="Status information")
 public class StatusBean {
 
+    private static final Logger log = LoggerFactory.getLogger(StatusBean.class);
+    
+    @Autowired
+    private InvoiceDataService invoiceDataService;
+    
     //
     private static ThreadLocal<Sample> samples = new ThreadLocal<Sample>() {
         @Override
@@ -45,7 +56,42 @@ public class StatusBean {
     //
     private static Concurrency concurrency = new Concurrency();
  
+    // checks database
+    private void checkDatabase() {
+        invoiceDataService.getAllUnprocessedBusinessEvents("-", "-");
+        log.info("health-check database: OK");
+    }
     
+    // checks rating
+    private void checkRating() {
+        log.info("health-check rating: OK");
+    }
+    
+    private void checkAlloc() {
+        final byte[] bytes = new byte[1024 * 1024];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte)0xff;
+        }
+        log.info("health-check memory alloc: OK");
+    }
+    
+    //
+    private void checkLog() {
+        final String msg = "health-check log: OK";
+        log.error(msg);
+        log.debug(msg);
+        log.trace(msg);
+        log.info(msg);
+    }
+    
+    @ManagedOperation(description="Performs health check, i.e. are connections, memory, logs working as expected")
+    public void healthCheck() {
+        checkDatabase();
+        checkRating();
+        checkAlloc();
+        checkLog();
+    }
+
 
     @ManagedMetric(category="utilization", displayName="Active (ongoing) requests", metricType=MetricType.COUNTER, unit="request")
     public long getActiveRequests() {
@@ -79,6 +125,16 @@ public class StatusBean {
     }
     
     //
+    public String getGUID() {
+        return samples.get().getGUID();
+    }
+    
+    //
+    public String getName() {
+        return samples.get().getName();
+    }
+    
+    //
     public void start(final String name) {
         samples.get().reset(name);
         concurrency.inc();
@@ -103,17 +159,23 @@ public class StatusBean {
      * Samples processing time for one transaction.
      */
     static class Sample {
-        private long t;
+        private long timestamp;
         private String name;
+        private String guid;
 
         //
         public Sample() {
         }
+        
+        public String getGUID() {
+            return guid;
+        }
 
         //
-        public void reset(final String name) {
-            this.t = System.currentTimeMillis();
+        protected void reset(final String name) {
+            this.timestamp = System.currentTimeMillis();
             this.name = name;
+            this.guid = UUID.randomUUID().toString();
         }
         
         //
@@ -123,7 +185,7 @@ public class StatusBean {
         
         //
         public long elapsed() {
-            final long time = System.currentTimeMillis() - t;
+            final long time = (System.currentTimeMillis() - timestamp);
             return (time < 0) ? 0 : time;
         }
     }
@@ -197,6 +259,5 @@ public class StatusBean {
             return activeRequests;
         }
         
-    }
-    
+    }    
 }

@@ -24,6 +24,12 @@ import se.riv.itintegration.monitoring.v1.ObjectFactory;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationResponseType;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationType;
 
+/**
+ * System check.
+ * 
+ * @author Peter
+ *
+ */
 public class PingForConfigurationProducer extends AbstractProducer implements PingForConfigurationResponderInterface {
     
     private static ThreadLocal<SimpleDateFormat> formatter = new ThreadLocal<SimpleDateFormat>() {
@@ -46,6 +52,7 @@ public class PingForConfigurationProducer extends AbstractProducer implements Pi
             public void run() {
                 response.setVersion("1.0");
                 response.setPingDateTime(formatter.get().format(new Date()));
+                getStatusBean().healthCheck();
             }
         });
         

@@ -25,8 +25,9 @@ import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRespon
 import riv.sll.invoicedata.createinvoicedataresponder._1.ObjectFactory;
 
 /**
+ * Creates invoice data.
+ * 
  * @author muqkha
- *
  */
 public class CreateInvoiceDataProducer extends AbstractProducer implements CreateInvoiceDataResponderInterface {
 	

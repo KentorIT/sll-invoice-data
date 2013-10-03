@@ -25,8 +25,10 @@ import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.getinvoicedataresponder._1.ObjectFactory;
 
 /**
- * @author muqkha
  * 
+ * Queries invoice data and pending business events.
+ * 
+ * @author muqkha
  */
 public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoiceDataResponderInterface {
 

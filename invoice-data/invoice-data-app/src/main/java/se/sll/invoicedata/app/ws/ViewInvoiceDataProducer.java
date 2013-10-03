@@ -24,19 +24,16 @@ import riv.sll.invoicedata.viewinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataRequest;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataResponse;
 
-
-
 /**
- * @author muqkha
  * 
+ * Returns all events for a specific invoice data object.
+ * 
+ * @author muqkha
  */
 public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInvoiceDataResponderInterface {
 
     static final ObjectFactory factory = new ObjectFactory();
 
-	/**
-	 * 
-	 */
 	@Override
 	public ViewInvoiceDataResponse viewInvoiceData(final String logicalAddress,
 			final ViewInvoiceDataRequest parameters) {		
