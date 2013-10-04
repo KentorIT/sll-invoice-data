@@ -40,7 +40,7 @@ public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoi
 
         final GetInvoiceDataResponse response = objectFactory.createGetInvoiceDataResponse();
 
-        response.setResultCode(invoke(new Runnable() {
+        response.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
                 //Fetching unprocessed events with price
