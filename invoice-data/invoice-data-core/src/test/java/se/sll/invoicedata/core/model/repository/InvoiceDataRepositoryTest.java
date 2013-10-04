@@ -82,6 +82,8 @@ public class InvoiceDataRepositoryTest extends TestSupport {
      }
     
     @Test
+    @Transactional
+    @Rollback(true)
     public void testAggregateTotalAmount_invoice_data() {
         final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
         

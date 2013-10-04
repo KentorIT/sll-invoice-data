@@ -28,6 +28,7 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
@@ -60,6 +61,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	}
 	
 	@Test
+	@Transactional
     @Rollback(true)
     public void testFind_BusinessEvent_By_Id() {
         
@@ -110,6 +112,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	}
 	
     @Test
+    @Transactional
     @Rollback(true)
 	public void testRegisterInvoiceData_From_Pending_And_Credit() {
         final String supplierId = "test-supplier-45";
@@ -131,6 +134,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	}
     
     @Test
+    @Transactional
     @Rollback(true)
     public void testGetAllUnprocessedBusinessEvents() {
         
@@ -147,6 +151,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
     }
 	
 	@Test
+	@Transactional
     @Rollback(true)
     public void testGetAllInvoicedData() {
 	    final String supplierId = "test-supplier-all";
@@ -162,6 +167,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
     }
 	
 	@Test
+	@Transactional
 	@Rollback(true)
 	public void testGetInvoiceData() {
         
