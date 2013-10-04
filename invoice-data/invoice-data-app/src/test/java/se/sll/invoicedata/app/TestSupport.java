@@ -23,13 +23,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
+import se.sll.invoicedata.core.service.impl.CoreUtil;
 
 /**
  * Testing base class.
  * 
  * @author Peter
  */
-public abstract class TestSupport extends AppUtil {
+public abstract class TestSupport extends CoreUtil {
 
 	private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	public static final String NAMESPACE_URI = "http://ws.app.invoicedata.sll.se/";
