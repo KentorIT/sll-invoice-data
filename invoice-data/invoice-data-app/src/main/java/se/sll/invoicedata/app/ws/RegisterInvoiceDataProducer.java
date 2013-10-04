@@ -28,13 +28,13 @@ import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataRe
  * @author Peter
  */
 public class RegisterInvoiceDataProducer extends AbstractProducer implements RegisterInvoiceDataResponderInterface {
-    static final ObjectFactory factory = new ObjectFactory();
+    static final ObjectFactory objectFactory = new ObjectFactory();
     
     @Override
     public RegisterInvoiceDataResponse registerInvoiceData(
             final String logicalAddress, final Event parameters) {
         
-        final RegisterInvoiceDataResponse response = factory.createRegisterInvoiceDataResponse();
+        final RegisterInvoiceDataResponse response = objectFactory.createRegisterInvoiceDataResponse();
 
         response.setResultCode(invoke(new Runnable() {
             @Override

@@ -65,8 +65,7 @@ public class BusinessEventRepositoryTest extends TestSupport {
         getBusinessEventRepository().save(e);
         getBusinessEventRepository().flush();
         
-        final List<BusinessEventEntity> list = getBusinessEventRepository().findByEventIdAndPendingIsTrueAndCreditIsNull("event-123");
-        final BusinessEventEntity f = list.get(0);
+        final BusinessEventEntity f = getBusinessEventRepository().findByEventIdAndPendingIsTrueAndCreditIsNull("event-123");
         assertNotNull(f);
         
         assertEquals(e.getEventId(), f.getEventId());

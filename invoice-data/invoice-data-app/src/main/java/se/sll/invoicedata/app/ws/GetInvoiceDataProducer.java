@@ -32,14 +32,13 @@ import riv.sll.invoicedata.getinvoicedataresponder._1.ObjectFactory;
  */
 public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoiceDataResponderInterface {
 
-    static final ObjectFactory factory = new ObjectFactory();
+    static final ObjectFactory objectFactory = new ObjectFactory();
 
     @Override
     public GetInvoiceDataResponse getInvoiceData(final String logicalAddress,
             final GetInvoiceDataRequest request) {
 
-        final GetInvoiceDataResponse response = factory
-                .createGetInvoiceDataResponse();
+        final GetInvoiceDataResponse response = objectFactory.createGetInvoiceDataResponse();
 
         response.setResultCode(invoke(new Runnable() {
             @Override

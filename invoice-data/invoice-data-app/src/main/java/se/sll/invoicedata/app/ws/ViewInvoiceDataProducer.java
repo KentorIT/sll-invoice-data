@@ -32,13 +32,13 @@ import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataResponse;
  */
 public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInvoiceDataResponderInterface {
 
-    static final ObjectFactory factory = new ObjectFactory();
+    static final ObjectFactory objectFactory = new ObjectFactory();
 
 	@Override
 	public ViewInvoiceDataResponse viewInvoiceData(final String logicalAddress,
 			final ViewInvoiceDataRequest parameters) {		
 		
-        final ViewInvoiceDataResponse viewIDataResponse = factory.createViewInvoiceDataResponse();
+        final ViewInvoiceDataResponse viewIDataResponse = objectFactory.createViewInvoiceDataResponse();
 
         viewIDataResponse.setResultCode(invoke(new Runnable() {
             @Override
@@ -46,6 +46,7 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
                 viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
             }
         }));
+        
         return viewIDataResponse;
 	}
 

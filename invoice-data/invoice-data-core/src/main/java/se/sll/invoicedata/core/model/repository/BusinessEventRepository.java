@@ -41,15 +41,25 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
     
   
     /**
-     * Returns events by an event id.
+     * Returns a pending, non-credit event by eventId. <p>
+     * 
+     * Please note: Maximum one (1) only event is expected to match the criteria.
      * 
      * @param eventId the event id.
-     * @return the event or null if none found.
+     * @return the event or an empty list when none matches the criteria.
      */
-    List<BusinessEventEntity> findByEventIdAndPendingIsTrueAndCreditIsNull(String eventId);
+    BusinessEventEntity findByEventIdAndPendingIsTrueAndCreditIsNull(String eventId);
 
-    
-    List<BusinessEventEntity> findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(String eventId);
+
+    /**
+     * Returns a non-pending, non-credit, non-credited event by eventId. <p>
+     *
+     * Please note: Maximum one (1) only event is expected to match the criteria.
+     *   
+     * @param eventId the event id.
+     * @return the event or an empty list when none matches the criteria.
+     */
+    BusinessEventEntity findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(String eventId);
 
     /**
      * Returns all pending events for a particular supplier.
@@ -61,10 +71,11 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
     List<BusinessEventEntity> findBySupplierIdAndEventIdInAndPendingIsTrue(String supplierId, List<String> eventIdList);
     
     /**
-     * Returns all pending events for a particular suppier and payee
-     * @param supplierId
-     * @param paymentResponsible
-     * @return
+     * Returns all pending events for a particular supplier and payment responsible.
+     * 
+     * @param supplierId the suppler id.
+     * @param paymentResponsible the payment responsible.
+     * @return the list of event, might be empty when no events matches the criteria.
      */
     List<BusinessEventEntity> findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(String supplierId, String paymentResponsible);
     

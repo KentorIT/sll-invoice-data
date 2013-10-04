@@ -33,7 +33,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * Transformation stuff moved to here.
+ * Transformation to and from JAXB Beans, Entities and related data types.
  * 
  * 
  * @author Peter
@@ -90,10 +90,13 @@ public class CoreUtil {
     }
 
     /**
-     * Copies properties/state from one class to another. <p>
+     * Copies properties/state from one object to another. <p>
      * 
-     * If public getter (from) and setters (to) exists are non-static and non-final fields in a specification 
-     * class copied, i.e. the names of the fields must be identical. Lists are ignored. <p>
+     * If public getter (from) and setters (to) exists and maps by name to a non-static and non-final 
+     * field of a given specification class then they are copied from a source to a target instance, 
+     * i.e. the actual names (getter,setter,field) of must be identical. <br>
+     *
+     * Fields of type {@link List} are ignored. <p>
      * 
      * The purpose of this method is primarily to transfer state between JAXB XML objects 
      * to and from JPA entities, and therefore are typical data type conversions carried out. 
