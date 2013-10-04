@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.app;
+package se.sll.invoicedata.core.service.impl;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,6 +28,9 @@ import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
+import se.sll.invoicedata.core.support.TestSupport;
+
+import static se.sll.invoicedata.core.service.impl.CoreUtil.*;
 
 /**
  * Unit tests AppUtil.
@@ -36,13 +39,12 @@ import se.sll.invoicedata.core.model.entity.ItemEntity;
  * @author Peter
  *
  */
-public class AppUtilTest extends TestSupport {
+public class CoreUtilTest extends TestSupport {
 
     @Test
     public void testAppUtil_copyProperties() {
-        Event e = createSampleEventData();
-        BusinessEventEntity be = new BusinessEventEntity();
-        copyProperties(be, e, Event.class);
+        BusinessEventEntity be = createSampleBusinessEventEntity();
+        Event e = copyProperties(new Event(), be, Event.class);
         
         final RegisteredEvent e2 =  copyProperties(new RegisteredEvent(), be, Event.class);        
 
@@ -59,19 +61,14 @@ public class AppUtilTest extends TestSupport {
 
     @Test
     public void testAppUtil_copyProperties2() {
-        Event e = createSampleEventData();
-        BusinessEventEntity be = new BusinessEventEntity();
-        copyProperties(be, e, Event.class);
-        
         copyProperties(new RegisteredEvent(), new String(), String.class);        
         copyProperties(new RegisteredEvent(), new String(), String.class);        
     }
 
     //@Test
     public void testSupport_copy_from_event_to_businessEntity() {
-        Event e = createSampleEventData();
-        BusinessEventEntity be = new BusinessEventEntity();
-        copyProperties(be, e, Event.class);
+        BusinessEventEntity be = createSampleBusinessEventEntity();
+        Event e = copyProperties(new Event(), be, Event.class);
         
         //TODO: asserts
         List<Item> item = e.getItemList();

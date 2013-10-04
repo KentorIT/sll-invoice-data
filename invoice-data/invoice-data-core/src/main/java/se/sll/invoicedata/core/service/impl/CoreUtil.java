@@ -127,16 +127,14 @@ public class CoreUtil {
             return methodCacheMap.get(key);
         }
 
+        Method method = null;       
         try {
-            Method m = (type == null) ? clazz.getMethod(name) : clazz.getMethod(name, type);
-            methodCacheMap.put(key, m);
-            return m;
-        } catch (NoSuchMethodException e) {
-            ;
-        }
-        // add null method, i.e. doesn't exists
-        methodCacheMap.put(key, null);
-        return null;
+            method = (type == null) ? clazz.getMethod(name) : clazz.getMethod(name, type);
+        } catch (NoSuchMethodException e) {}
+
+        methodCacheMap.put(key, method);
+        
+        return method;
     }
 
     //
