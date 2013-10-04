@@ -34,7 +34,7 @@ import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
 /**
- * Abstracts generic logging and error handling for WS Producers
+ * Abstracts generic logging and error handling for Web Service Producers.
  * 
  * @author Peter
  */
@@ -51,7 +51,7 @@ public abstract class AbstractProducer {
     private InvoiceDataService invoiceDataService;
 
     @Resource
-    private WebServiceContext wsctx;
+    private WebServiceContext webServiceContext;
     
     /**
      * Creates a soap fault.
@@ -63,8 +63,19 @@ public abstract class AbstractProducer {
         final String msg = createLogMessage(throwable.toString());
         log.error(msg, throwable);
         
+        final SoapFault soapFault = createSoapFault(msg);
+        
+        return soapFault;
+    }
+    
+    /**
+     * Creates a soap fault.
+     * 
+     * @param msg the message.
+     * @return the soap fault object.
+     */
+    protected SoapFault createSoapFault(final String msg) {        
         final SoapFault soapFault = new SoapFault(msg, SoapFault.FAULT_CODE_SERVER);
-
         return soapFault;
     }
     
@@ -95,7 +106,7 @@ public abstract class AbstractProducer {
      * @return the message context.
      */
     protected MessageContext getMessageContext() {
-        return wsctx.getMessageContext();
+        return webServiceContext.getMessageContext();
     }
     
     /**
@@ -122,12 +133,12 @@ public abstract class AbstractProducer {
     }
     
     /**
-     * Invokes a run method in an instrumented manner.
+     * Runs a runnable in an instrumented manner.
      * 
      * @param runnable the runnable to run.
      * @return the result code.
      */
-    protected ResultCode invoke(final Runnable runnable) {
+    protected ResultCode fulfill(final Runnable runnable) {
         final MessageContext messageContext = getMessageContext();
         final String path = (String)messageContext.get(MessageContext.PATH_INFO);
         statusBean.start(path);

@@ -40,7 +40,7 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
 
         final CreateInvoiceDataResponse createInvoiceDataResp = objectFactory.createCreateInvoiceDataResponse();
         
-        createInvoiceDataResp.setResultCode(invoke(new Runnable() {
+        createInvoiceDataResp.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
                 createInvoiceDataResp.setReferenceId(getInvoiceDataService().createInvoiceData(parameters));                

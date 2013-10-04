@@ -36,7 +36,7 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
         
         final RegisterInvoiceDataResponse response = objectFactory.createRegisterInvoiceDataResponse();
 
-        response.setResultCode(invoke(new Runnable() {
+        response.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
                 getInvoiceDataService().registerEvent(parameters);

@@ -40,7 +40,7 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
 		
         final ViewInvoiceDataResponse viewIDataResponse = objectFactory.createViewInvoiceDataResponse();
 
-        viewIDataResponse.setResultCode(invoke(new Runnable() {
+        viewIDataResponse.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
                 viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));

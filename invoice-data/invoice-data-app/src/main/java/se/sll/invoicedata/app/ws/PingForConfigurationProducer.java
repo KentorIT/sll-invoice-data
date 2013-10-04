@@ -19,6 +19,8 @@ package se.sll.invoicedata.app.ws;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
 import se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface;
 import se.riv.itintegration.monitoring.v1.ObjectFactory;
 import se.riv.itintegration.monitoring.v1.PingForConfigurationResponseType;
@@ -47,7 +49,7 @@ public class PingForConfigurationProducer extends AbstractProducer implements Pi
         
         final PingForConfigurationResponseType response = objectFactory.createPingForConfigurationResponseType();
         
-        invoke(new Runnable() {
+        final ResultCode rc = fulfill(new Runnable() {
             @Override
             public void run() {
                 response.setVersion("1.0");
@@ -55,6 +57,10 @@ public class PingForConfigurationProducer extends AbstractProducer implements Pi
                 getStatusBean().healthCheck();
             }
         });
+        
+        if (rc.getCode() == ResultCodeEnum.ERROR) {
+            throw createSoapFault(rc.getMessage());
+        }
         
         return response;
     }
