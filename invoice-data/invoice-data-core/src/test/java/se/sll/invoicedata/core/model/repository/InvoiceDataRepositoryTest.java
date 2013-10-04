@@ -50,10 +50,10 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getInvoiceDataRepository().save(e);
         getInvoiceDataRepository().flush();
         
-        final List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierId(e.getSupplierId());
+        final List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndPaymentResponsible(e.getSupplierId(), e.getPaymentResponsible());
         
         assertNotNull(l);
-        assertEquals(1, l.size());      
+        assertEquals(1, l.size());
     }
     
     
@@ -128,7 +128,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getInvoiceDataRepository().save(ie);
         getInvoiceDataRepository().flush();
         
-        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierId(ie.getSupplierId());
+        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndPaymentResponsible(ie.getSupplierId(), ie.getPaymentResponsible());
         
         assertEquals(1, l.size());
         

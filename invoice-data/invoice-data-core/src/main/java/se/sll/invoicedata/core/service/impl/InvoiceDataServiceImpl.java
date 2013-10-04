@@ -86,8 +86,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     protected void registerBusinessEvent(final BusinessEventEntity newEntity) {
         rate(validate(newEntity));
         
-        final BusinessEventEntity oldEntity = one(businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId()));
-        final BusinessEventEntity creditCandidate = one(businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId()));
+        final BusinessEventEntity oldEntity = businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId());
+        final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
 
         if (oldEntity != null) {
             delete(oldEntity);
@@ -110,22 +110,6 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
         
     }
-
-    /**
-     * Returns one expected item only one from a list.
-     * 
-     * @param list the list.
-     * @return the only item.
-     * @throws IllegalStateException when the list conatins more than one item.
-     */
-    protected static <T> T one(List<T> list) {
-        if (list.size() > 1) {
-            throw new IllegalStateException(String.format("More than one object exists (%s)", list));
-        }
-        return (list.size() == 0) ? null : list.get(0);
-    }
-    
-
 
     @Override
     public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
@@ -265,9 +249,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Override
 	public InvoiceData getInvoiceDataByReferenceId(String referenceId) {
-		long id = Long.parseLong(referenceId.substring(referenceId.lastIndexOf('.') + 1));
-		InvoiceDataEntity iDE = invoiceDataRepository.findById(id);
-		List<BusinessEventEntity> bEEList = iDE.getBusinessEventEntities();
+        
+		Long id = Long.valueOf(referenceId.substring(referenceId.lastIndexOf('.') + 1));
+		final InvoiceDataEntity iDE = invoiceDataRepository.findOne(id);
+		final List<BusinessEventEntity> bEEList = iDE.getBusinessEventEntities();
 		
 		InvoiceData iData = EntityBeanConverter.fromIDEntity(iDE);
 		for (BusinessEventEntity bEE : bEEList) {
