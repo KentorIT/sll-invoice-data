@@ -36,19 +36,17 @@ public abstract class TestSupport extends CoreUtil {
 	public static final String NAMESPACE_URI = "http://ws.app.invoicedata.sll.se/";
 
 	private enum SUPPLIER {
-		SUPPLIER_X("S_ID_X", "SUPPLIER_X"),
-		SUPPLIER_Y("S_ID_Y", "SUPPLIER_Y");
+		SUPPLIER_X("SUPPLIER_X"),
+		SUPPLIER_Y("SUPPLIER_Y");
 		
-		private String supplierId;
 		private String supplierName;
 		
-		SUPPLIER(String supplierId, String supplierName) {
-			this.supplierId = supplierId;
+		SUPPLIER(String supplierName) {
 			this.supplierName = supplierName;
 		}
 		
 		public String getId() {
-			return supplierId;
+			return genRandomAlphaNData(5);
 		}
 		
 		public String getName() {
@@ -85,11 +83,8 @@ public abstract class TestSupport extends CoreUtil {
 	public static Event createRandomEventData() {
 		Event event = new Event();
 		event.setEventId(genRandomAlphaNData(5));
-		event.setSupplierId(genRandomAlphaNData(7));
-//		event.setSupplierId(SUPPLIER.SUPPLIER_X.getId());
+		event.setSupplierId(SUPPLIER.SUPPLIER_X.getId());
 		event.setSupplierName(SUPPLIER.SUPPLIER_X.getName());
-		
-		
 
 		event.setAcknowledgedBy("sign:X");
 		event.setAcknowledgedTime(getCurrentDate());
@@ -104,30 +99,6 @@ public abstract class TestSupport extends CoreUtil {
 		item.setDescription("Test item(product)");
 		item.setItemId(ITEM.ITEM_1.getId());
 		item.setQty(ITEM.ITEM_1.getQty());
-
-		event.getItemList().add(item);
-
-		return event;
-	}
-
-	public static Event createSampleEventData() {
-		Event event = new Event();
-		event.setEventId("EID1234");
-		event.setAcknowledgedBy("sign:X");
-		event.setSupplierName("SNX");
-
-		event.setAcknowledgedTime(getCurrentDate());
-		event.setServiceCode("SCABCD");
-		event.setPaymentResponsible("HSF");
-		event.setHealthCareCommission("BVC");
-		event.setSupplierId("SID123");
-		event.setStartTime(getCurrentDate());
-		event.setEndTime(getCurrentDate());
-
-		Item item = new Item();
-		item.setDescription("Item is kind of a product");
-		item.setItemId("IT101");
-		item.setQty(new BigDecimal(2));
 
 		event.getItemList().add(item);
 
