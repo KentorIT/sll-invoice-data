@@ -165,7 +165,11 @@ public class InvoiceDataEntity {
     public BigDecimal getTotalAmount() {
         BigDecimal amount = BigDecimal.valueOf(0.0);
         for (final BusinessEventEntity businessEventEntity : businessEventEntities) {
-           amount = amount.add(businessEventEntity.getTotalAmount()); 
+            if (businessEventEntity.isCredit()) {
+                amount = amount.subtract(businessEventEntity.getTotalAmount());
+            } else {
+                amount = amount.add(businessEventEntity.getTotalAmount()); 
+            }
         }
         return amount;
     }
