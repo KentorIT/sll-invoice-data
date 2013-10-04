@@ -27,7 +27,10 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.RegisteredEvent;
@@ -50,10 +53,22 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 
 	private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 	
-	//@Test
+	private static ViewInvoiceDataResponderInterface viewIDRInterface;
+
+	@BeforeClass
+	public static void setUp() {
+		viewIDRInterface = getViewInvoiceDataService();
+	}
+
+	@AfterClass
+	public static void tearDown() {
+		viewIDRInterface = null;
+	}
+	
+	@Test
 	public void viewInvoiceData_Success() {
 		
-		Event event = createSampleEventData();
+		Event event = createRandomEventData();
 		RegisterInvoiceDataResponse regIDResp = RegisterInvoiceDataProducerTest.
 				getRegisterInvoiceDataService().registerInvoiceData(LOGICAL_ADDRESS, event);
 		
@@ -102,20 +117,15 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 	}
 	
 	
-	private ViewInvoiceDataResponderInterface getViewInvoiceDataService() {
-		ViewInvoiceDataResponderInterface iGetInvoiceDataResponder = null;
-		final String URL = "http://localhost:8080/invoice-data-app/ws/viewInvoiceData";
+	static ViewInvoiceDataResponderInterface getViewInvoiceDataService() {
 		
+		ViewInvoiceDataResponderInterface iGetInvoiceDataResponder = null;		
 		try {
-			URL wsdlURL = new URL(URL + "?wsdl");
-
-			String namespaceURI = "http://ws.app.invoicedata.sll.se/";
+			URL wsdlURL = new URL(getWSDLURL("viewInvoiceData"));
 			String serviceName = "ViewInvoiceDataProducerService";
-
-			QName serviceQN = new QName(namespaceURI, serviceName);
+			QName serviceQN = new QName(NAMESPACE_URI, serviceName);
 
 			Service service = Service.create(wsdlURL, serviceQN);
-
 			iGetInvoiceDataResponder = service
 					.getPort(ViewInvoiceDataResponderInterface.class);
 

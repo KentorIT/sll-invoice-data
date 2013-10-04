@@ -25,7 +25,9 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
@@ -40,131 +42,152 @@ import se.sll.invoicedata.app.TestSupport;
 public class RegisterInvoiceDataProducerTest extends TestSupport {
 
 	private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
-	
+
+	private static RegisterInvoiceDataResponderInterface regIDRInterface;
+
+	@BeforeClass
+	public static void setUp() {
+		regIDRInterface = getRegisterInvoiceDataService();
+	}
+
+	@AfterClass
+	public static void tearDown() {
+		regIDRInterface = null;
+	}
+
 	@Test
 	public void registerInvoiceData_normal_test_result_pass() {
 
-		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
-				.registerInvoiceData(LOGICAL_ADDRESS, createSampleEventData());
-		
+		RegisterInvoiceDataResponse response = regIDRInterface
+				.registerInvoiceData(LOGICAL_ADDRESS, createRandomEventData());
+
 		Assert.assertNotNull("Should not be null: OK|ERROR", response);
-		Assert.assertEquals("Result code should be OK in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.OK, response.getResultCode().getCode());	
+		Assert.assertEquals("Result code should be OK in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.OK,
+				response.getResultCode().getCode());
 
 	}
-	
+
 	@Test(expected = SOAPFaultException.class)
 	public void registerInvoiceData_without_Items_result_fail() {
-		
-		Event invoiceData = createSampleEventData();
+
+		Event invoiceData = createRandomEventData();
 		invoiceData.setItemList(null);
-		
-		getRegisterInvoiceDataService()
-				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+
+		regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
 	}
-	
+
 	@Test
 	public void registerInvoiceData_with_incorrect_qty_fail() {
-		
-		Event invoiceData = createSampleEventData();
+
+		Event invoiceData = createRandomEventData();
 		invoiceData.getItemList().get(0).setQty(new BigDecimal(-2));
-						
-		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
+
+		RegisterInvoiceDataResponse response = regIDRInterface
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-		
+
 		Assert.assertNotNull("Should not be null: OK|ERROR", response);
-		Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());	
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
 	}
-	
+
 	@Test
 	public void registerInvoiceData_with_incorrect_start_end_time_fail() {
-		
-		Event invoiceData = createSampleEventData();
+
+		Event invoiceData = createRandomEventData();
 		Calendar startTime = getCurrentDate().toGregorianCalendar();
 		startTime.add(Calendar.DAY_OF_MONTH, +1);
-		
+
 		invoiceData.setStartTime(toXMLGregorianCalendar(startTime.getTime()));
 		invoiceData.setEndTime(getCurrentDate());
-						
-		RegisterInvoiceDataResponse response = getRegisterInvoiceDataService()
+
+		RegisterInvoiceDataResponse response = regIDRInterface
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-		
+
 		Assert.assertNotNull("Should not be null: OK|ERROR", response);
-		Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());	
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
 	}
-	
+
 	@Test
-    public void registerInvoiceData_with_incorrect_data_result_fail() {
-        
-	    String emptyStr = new String("");
-        Event invoiceData = createSampleEventData();
-        invoiceData.setAcknowledgedBy(emptyStr);
-        
-        RegisterInvoiceDataResponderInterface registerInvoiceHandlar = getRegisterInvoiceDataService();
-        RegisterInvoiceDataResponse response = registerInvoiceHandlar
-                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-        
-        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
-        
-        invoiceData.setEventId(emptyStr);
-        response = registerInvoiceHandlar
-                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
-        
-        invoiceData.setHealthCareCommission(emptyStr);
-        response = registerInvoiceHandlar
-                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
-        
-        invoiceData.setPaymentResponsible(emptyStr);
-        response = registerInvoiceHandlar
-                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
-        
-        invoiceData.setServiceCode(emptyStr);
-        response = registerInvoiceHandlar
-                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
-        
-        invoiceData.setSupplierId(emptyStr);
-        response = registerInvoiceHandlar
-                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
-        
-        invoiceData.setSupplierName(emptyStr);
-        response = registerInvoiceHandlar
-                .registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
-        Assert.assertEquals("Result code should be ERROR in this case: " + response.getResultCode().getMessage(), ResultCodeEnum.ERROR, response.getResultCode().getCode());
-        
-    }
-	
+	public void registerInvoiceData_with_incorrect_data_result_fail() {
+
+		String emptyStr = new String("");
+		Event invoiceData = createRandomEventData();
+		invoiceData.setAcknowledgedBy(emptyStr);
+
+		RegisterInvoiceDataResponse response = regIDRInterface
+				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
+
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
+
+		invoiceData.setEventId(emptyStr);
+		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
+				invoiceData);
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
+
+		invoiceData.setHealthCareCommission(emptyStr);
+		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
+				invoiceData);
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
+
+		invoiceData.setPaymentResponsible(emptyStr);
+		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
+				invoiceData);
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
+
+		invoiceData.setServiceCode(emptyStr);
+		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
+				invoiceData);
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
+
+		invoiceData.setSupplierId(emptyStr);
+		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
+				invoiceData);
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
+
+		invoiceData.setSupplierName(emptyStr);
+		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
+				invoiceData);
+		Assert.assertEquals("Result code should be ERROR in this case: "
+				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				response.getResultCode().getCode());
+
+	}
+
 	@Test(expected = SOAPFaultException.class)
 	public void registerInvoiceData_with_empty_invoicedata_result_exception() {
-		
-		Event event = new Event();		
-		getRegisterInvoiceDataService()
-				.registerInvoiceData(LOGICAL_ADDRESS, event);		
+
+		Event event = new Event();
+		regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
 	}
-		
 
 	static RegisterInvoiceDataResponderInterface getRegisterInvoiceDataService() {
+
 		RegisterInvoiceDataResponderInterface iRegisterInvoiceDataResponder = null;
-
-		final String URL = "http://localhost:8080/invoice-data-app/ws/registerInvoiceData";
-		// Endpoint.publish(URL, new RegisterInvoiceDataProducer());
-
 		try {
-			URL wsdlURL = new URL(URL + "?wsdl");
-
-			String namespaceURI = "http://ws.app.invoicedata.sll.se/";
+			URL wsdlURL = new URL(getWSDLURL("registerInvoiceData"));
 			String serviceName = "RegisterInvoiceDataProducerService";
-
-			QName serviceQN = new QName(namespaceURI, serviceName);
-
-			Service service = Service.create(wsdlURL, serviceQN);
+			QName serviceQN = new QName(NAMESPACE_URI, serviceName);
 			
+			Service service = Service.create(wsdlURL, serviceQN);
 			iRegisterInvoiceDataResponder = service
 					.getPort(RegisterInvoiceDataResponderInterface.class);
-			
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

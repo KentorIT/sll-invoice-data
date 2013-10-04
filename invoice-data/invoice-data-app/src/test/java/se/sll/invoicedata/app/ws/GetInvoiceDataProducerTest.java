@@ -27,7 +27,9 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
@@ -50,10 +52,22 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 
 	private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 
+	private static GetInvoiceDataResponderInterface getIDRInterface;
+	
+	@BeforeClass
+	public static void setUp() {
+		getIDRInterface = getGetInvoiceDataService();
+	}
+	
+	@AfterClass
+	public static void tearDown() {
+		getIDRInterface = null;
+	}
+	
 	@Test
 	public void get_InvoiceData_Unprocessed_Events_Success() {
 
-		Event event = createSampleEventData();
+		Event event = createRandomEventData();
 		RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, event);
 
@@ -61,8 +75,8 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		request.setSupplierId(event.getSupplierId());
 		request.setPaymentResponsible(event.getPaymentResponsible());
 
-		GetInvoiceDataResponse response = getGetInvoiceDataService()
-				.getInvoiceData(LOGICAL_ADDRESS, request);
+		GetInvoiceDataResponse response = getIDRInterface.
+				getInvoiceData(LOGICAL_ADDRESS, request);
 
 		Assert.assertNotNull(response);
 		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
@@ -73,14 +87,15 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 
 	@Test
 	public void get_InvoiceData_Incomplete_Request_Data_Fail() {
-		Event event = createSampleEventData();
+		
+		Event event = createRandomEventData();
 		RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, event);
 
 		GetInvoiceDataRequest request = new GetInvoiceDataRequest();
 		request.setSupplierId(event.getSupplierId());
 
-		GetInvoiceDataResponse response = getGetInvoiceDataService()
+		GetInvoiceDataResponse response = getIDRInterface
 				.getInvoiceData(LOGICAL_ADDRESS, request);
 
 		Assert.assertNotNull(response);
@@ -89,14 +104,18 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 
 		request.setSupplierId("");
 		request.setPaymentResponsible(event.getPaymentResponsible());
-		response = getGetInvoiceDataService().getInvoiceData(LOGICAL_ADDRESS,
+		response = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS,
 				request);
+
+		Assert.assertNotNull(response);
+		Assert.assertEquals(ResultCodeEnum.ERROR, response.getResultCode()
+				.getCode());
 	}
 
 	@Test
 	public void get_InvoiceData_Normal_Case_Success() {
 
-		Event event = createSampleEventData();
+		Event event = createRandomEventData();
 		RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, event);
 
@@ -104,7 +123,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		request.setSupplierId(event.getSupplierId());
 		request.setPaymentResponsible(event.getPaymentResponsible());
 
-		GetInvoiceDataResponse response = getGetInvoiceDataService()
+		GetInvoiceDataResponse response = getIDRInterface
 				.getInvoiceData(LOGICAL_ADDRESS, request);
 
 		List<RegisteredEvent> regEventList = response.getRegisteredEventList();
@@ -127,28 +146,27 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
 				.getCode());
 
-		Assert.assertNotNull(response.getInvoiceDataList());
-		// FIXME: doesn't work when running multiple tests without cleaning the database
+		Assert.assertNotNull(response.getInvoiceDataList());		
 		Assert.assertEquals(1, response.getRegisteredEventList().size());
         Assert.assertEquals(0, response.getInvoiceDataList().size());	}
 
-	//@Test
+	@Test
 	public void get_InvoiceData_Some_Processed_Some_Unprocessed_Success() {
 
-		Event event = createSampleEventData();		
+		Event event = createRandomEventData();		
 		RegisterInvoiceDataResponderInterface registerIDRInterface = 
 				RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService();
 		
 		//Registering two events; same supplier id
 		registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
-		event.setEventId("EID4321");
+		event.setEventId(genRandomAlphaNData(5));
 		registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
 
 		GetInvoiceDataRequest getInvoiceReq = new GetInvoiceDataRequest();
 		getInvoiceReq.setSupplierId(event.getSupplierId());
 		getInvoiceReq.setPaymentResponsible(event.getPaymentResponsible());
 
-		GetInvoiceDataResponse getInvoiceResp = getGetInvoiceDataService()
+		GetInvoiceDataResponse getInvoiceResp = getIDRInterface
 				.getInvoiceData(LOGICAL_ADDRESS, getInvoiceReq);
 		
 		Assert.assertNotNull(getInvoiceResp);
@@ -177,30 +195,21 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 				.getCode());	
 		Assert.assertNotNull(createResp.getReferenceId());
 		
-		getInvoiceResp = getGetInvoiceDataService()
-				.getInvoiceData(LOGICAL_ADDRESS, getInvoiceReq);
+		getInvoiceResp = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, getInvoiceReq);
 		Assert.assertNotNull(getInvoiceResp);
 		//One invoiced data back in response
 		Assert.assertEquals(1, getInvoiceResp.getInvoiceDataList().size());
-		//Assert.assertEquals(1, getInvoiceResp.getInvoiceDataList().size());
+		Assert.assertEquals(1, getInvoiceResp.getRegisteredEventList().size());
 	}
 
-	public static GetInvoiceDataResponderInterface getGetInvoiceDataService() {
+	static GetInvoiceDataResponderInterface getGetInvoiceDataService() {
 		GetInvoiceDataResponderInterface iGetInvoiceDataResponder = null;
-
-		final String URL = "http://localhost:8080/invoice-data-app/ws/getInvoiceData";
-		// Endpoint.publish(URL, new RegisterInvoiceDataProducer());
-
 		try {
-			URL wsdlURL = new URL(URL + "?wsdl");
-
-			String namespaceURI = "http://ws.app.invoicedata.sll.se/";
+			URL wsdlURL = new URL(getWSDLURL("getInvoiceData"));			
 			String serviceName = "GetInvoiceDataProducerService";
-
-			QName serviceQN = new QName(namespaceURI, serviceName);
+			QName serviceQN = new QName(NAMESPACE_URI, serviceName);
 
 			Service service = Service.create(wsdlURL, serviceQN);
-
 			iGetInvoiceDataResponder = service
 					.getPort(GetInvoiceDataResponderInterface.class);
 
