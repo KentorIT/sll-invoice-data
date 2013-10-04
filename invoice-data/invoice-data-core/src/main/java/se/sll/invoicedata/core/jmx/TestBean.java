@@ -29,6 +29,14 @@ import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.impl.TestDataHelperService;
 
+/**
+ * JMX Bean with to expose test helper functions, i.e. create test data and clean-up database, .... <p>
+ * 
+ * Available when spring profile test has been activated.
+ * 
+ * @author Peter
+ *
+ */
 @Component
 @ManagedResource(objectName = "se.sll.invoicedata:name=TestBean", description="Test data utilities, only available when spring profile test has been activated")
 @Profile(value = "test")

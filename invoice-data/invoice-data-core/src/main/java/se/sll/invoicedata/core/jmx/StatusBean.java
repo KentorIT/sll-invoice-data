@@ -33,6 +33,14 @@ import org.springframework.stereotype.Component;
 
 import se.sll.invoicedata.core.service.InvoiceDataService;
 
+/**
+ * JMX Bean to keep track of application status. <p>
+ * 
+ * Exposes methods to perform health checks and connection instrumentation information.
+ * 
+ * @author Peter
+ *
+ */
 @Component
 @ManagedResource(objectName = "se.sll.invoicedata:name=StatusBean", description="Status information")
 public class StatusBean {
