@@ -34,6 +34,7 @@ public abstract class TestSupport extends CoreUtil {
 
 	private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	public static final String NAMESPACE_URI = "http://ws.app.invoicedata.sll.se/";
+	public static final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 
 	private enum SUPPLIER {
 		SUPPLIER_X("SUPPLIER_X"),

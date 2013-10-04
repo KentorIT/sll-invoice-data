@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -51,13 +52,14 @@ import se.sll.invoicedata.app.TestSupport;
  */
 public class ViewInvoiceDataProducerTest extends TestSupport {
 
-	private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
-	
 	private static ViewInvoiceDataResponderInterface viewIDRInterface;
+	private static String supplierId;
+	private static String referenceId;
 
 	@BeforeClass
 	public static void setUp() {
 		viewIDRInterface = getViewInvoiceDataService();
+		referenceId = testPrerequisiteStep_ViewInvoiceData();
 	}
 
 	@AfterClass
@@ -65,16 +67,29 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 		viewIDRInterface = null;
 	}
 	
-	@Test
-	public void viewInvoiceData_Success() {
+	/**
+	 * Steps:
+	 * 1. Register event -> Result should be OK
+	 * 2. GetInvoice -> Returns registered event list
+	 * 		The list should not be empty.
+	 * 3. Iterate the list and store RegisteredEventId
+	 * 4. Use RegisteredEventId list to request
+	 * 		CreateInvoice -> Returns a reference id for
+	 * 		the created InvoiceData
+	 */
+	private static String testPrerequisiteStep_ViewInvoiceData() {
 		
+		//1. Register event 
 		Event event = createRandomEventData();
+		supplierId = event.getSupplierId();
 		RegisterInvoiceDataResponse regIDResp = RegisterInvoiceDataProducerTest.
 				getRegisterInvoiceDataService().registerInvoiceData(LOGICAL_ADDRESS, event);
 		
+		// 1. Register event -> Result should be OK 
 		Assert.assertNotNull(regIDResp);
 		Assert.assertEquals(ResultCodeEnum.OK, regIDResp.getResultCode().getCode());
 		
+		//2. GetInvoice		 
 		GetInvoiceDataRequest getIDReq = new GetInvoiceDataRequest();
 		getIDReq.setSupplierId(event.getSupplierId());
 		getIDReq.setPaymentResponsible(event.getPaymentResponsible());
@@ -82,16 +97,19 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 		GetInvoiceDataResponse invoiceResp = GetInvoiceDataProducerTest.
 				getGetInvoiceDataService().getInvoiceData(LOGICAL_ADDRESS, getIDReq);
 		
+		//2. GetInvoice -> Returns registered event list
+		//		The list should not be empty.
 		Assert.assertNotNull(invoiceResp);
 		Assert.assertNotNull(invoiceResp.getRegisteredEventList());
 		
 		List<RegisteredEvent> regEventList = invoiceResp.getRegisteredEventList();
-
+		//3. Iterate the list and store RegisteredEventId
 		List<Long> eventRefList = new ArrayList<Long>();
 		for (RegisteredEvent regEvent : regEventList) {
 			eventRefList.add(regEvent.getId());
 		}
-
+		
+		// 4. Use RegisteredEventId list to request CeateInvoice
 		CreateInvoiceDataRequest invoiceDataRequest = new CreateInvoiceDataRequest();
 		invoiceDataRequest.setSupplierId(event.getSupplierId());
 		invoiceDataRequest.setPaymentResponsible(event.getPaymentResponsible());
@@ -101,21 +119,52 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 		CreateInvoiceDataResponse createIDResp = CreateInvoiceDataProducerTest.
 				getCreateInvoiceDataService().createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
 		
+		// 4. Use RegisteredEventId list to request
+		// 		CreateInvoice -> Returns a reference id for the created InvoiceData
 		Assert.assertNotNull(createIDResp.getReferenceId());
 		
-		ViewInvoiceDataRequest viewIDReq = new ViewInvoiceDataRequest();
-		viewIDReq.setReferenceId(createIDResp.getReferenceId());
+		return createIDResp.getReferenceId();
+	}
+	
+	/**
+	 * Steps:
+	 * 1-4 @See {@link #testPrerequisiteStep_ViewInvoiceData()} 
+	 * 5. Use the referenceId to fetch the InvoiceData;
+	 * 		ReferenceId fetches InvoiceData on demand. 
+	 */
+	@Test
+	public void testViewInvoiceData_1_Event_Result_Success() {
 		
-		ViewInvoiceDataResponse viewIDResp = getViewInvoiceDataService().viewInvoiceData(LOGICAL_ADDRESS, viewIDReq);
+		ViewInvoiceDataRequest viewIDReq = new ViewInvoiceDataRequest();
+		viewIDReq.setReferenceId(referenceId);
+		
+		// 5. Use the referenceId to fetch the InvoiceData;
+		// 		ReferenceId fetches InvoiceData on demand.
+		ViewInvoiceDataResponse viewIDResp = viewIDRInterface.viewInvoiceData(LOGICAL_ADDRESS, viewIDReq);
 		
 		Assert.assertNotNull(viewIDResp);
 		Assert.assertNotNull(viewIDResp.getInvoiceData());
 		Assert.assertNotNull(viewIDResp.getInvoiceData().getEventList());
 		Assert.assertEquals(ResultCodeEnum.OK, viewIDResp.getResultCode().getCode());
 		
-		Assert.assertEquals(event.getSupplierId(), viewIDResp.getInvoiceData().getSupplierId());
+		Assert.assertEquals(supplierId, viewIDResp.getInvoiceData().getSupplierId());
 	}
 	
+	@Test(expected = SOAPFaultException.class)
+	public void testViewInvoiceData_Incomplete_Request_Result_Fail() {
+		ViewInvoiceDataRequest viewIDReq = new ViewInvoiceDataRequest();
+		viewIDRInterface.viewInvoiceData(LOGICAL_ADDRESS, viewIDReq);		
+	}
+	
+	@Test
+	public void testViewInvoiceData_Empty_Request_Result_Fail() {
+		ViewInvoiceDataRequest viewIDReq = new ViewInvoiceDataRequest();
+		viewIDReq.setReferenceId("");
+		ViewInvoiceDataResponse viewIDResp = viewIDRInterface.viewInvoiceData(LOGICAL_ADDRESS, viewIDReq);
+		
+		Assert.assertNotNull(viewIDResp);
+		Assert.assertEquals(ResultCodeEnum.ERROR, viewIDResp.getResultCode().getCode());
+	}
 	
 	static ViewInvoiceDataResponderInterface getViewInvoiceDataService() {
 		
