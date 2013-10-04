@@ -50,6 +50,8 @@
 						<exclude>LICENSE.txt</exclude>
 						<exclude>NOTICE.txt</exclude>
 						<exclude>TD_MONITORING_1_0_0_R/**/*</exclude>
+						<exclude>payment-responsible-core/**/*</exclude>
+						<exclude>payment-responsible-schemas/kodserver_sample_data/**/*</exclude>						
 						<exclude>**/*.properties</exclude>
 						<exclude>**/*.css</exclude>
 						<exclude>**/*.xsd</exclude>
