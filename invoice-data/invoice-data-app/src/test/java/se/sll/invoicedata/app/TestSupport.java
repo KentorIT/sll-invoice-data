@@ -31,32 +31,118 @@ import riv.sll.invoicedata._1.Item;
  */
 public abstract class TestSupport extends AppUtil {
 
-    
-    public static Event createSampleEventData() {
-    	Event event = new Event();
-        event.setEventId("EID1234");
-        event.setAcknowledgedBy("sign:X");
-        event.setSupplierName("SNX");
-        
-        event.setAcknowledgedTime(getCurrentDate());
-        event.setServiceCode("SCABCD");
-        event.setPaymentResponsible("HSF");
-        event.setHealthCareCommission("BVC");
-        event.setSupplierId("SID123");
-        event.setStartTime(getCurrentDate());
-        event.setEndTime(getCurrentDate());
-               
-        Item item = new Item();
-        item.setDescription("Item is kind of a product");
-        item.setItemId("IT101");
-        item.setQty(new BigDecimal(2));
-        
-        event.getItemList().add(item);
-        
-        return event;
-    }
-    
-    public static XMLGregorianCalendar getCurrentDate() {
-        return toXMLGregorianCalendar(new Date());
-    }
+	private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	public static final String NAMESPACE_URI = "http://ws.app.invoicedata.sll.se/";
+
+	private enum SUPPLIER {
+		SUPPLIER_X("S_ID_X", "SUPPLIER_X"),
+		SUPPLIER_Y("S_ID_Y", "SUPPLIER_Y");
+		
+		private String supplierId;
+		private String supplierName;
+		
+		SUPPLIER(String supplierId, String supplierName) {
+			this.supplierId = supplierId;
+			this.supplierName = supplierName;
+		}
+		
+		public String getId() {
+			return supplierId;
+		}
+		
+		public String getName() {
+			return supplierName;
+		}
+	}
+	
+	private enum ITEM {
+		ITEM_1("ITEM_1", 2),
+		ITEM_2("ITEM_2", 1.5f);
+		
+		private String itemId;
+		private BigDecimal itemQty;
+		
+		ITEM(String itemId, float itemQty) {
+			this.itemId = itemId;
+			this.itemQty = new BigDecimal(itemQty);
+		}
+		
+		public String getId() {
+			return itemId;
+		}
+		
+		public BigDecimal getQty() {
+			return itemQty;
+		}
+		
+	}
+	
+	public static String getWSDLURL(String serviceName) {
+		return "http://localhost:8080/invoice-data-app/ws/" + serviceName + "?wsdl";
+	}
+	
+	public static Event createRandomEventData() {
+		Event event = new Event();
+		event.setEventId(genRandomAlphaNData(5));
+		event.setSupplierId(genRandomAlphaNData(7));
+//		event.setSupplierId(SUPPLIER.SUPPLIER_X.getId());
+		event.setSupplierName(SUPPLIER.SUPPLIER_X.getName());
+		
+		
+
+		event.setAcknowledgedBy("sign:X");
+		event.setAcknowledgedTime(getCurrentDate());
+		event.setServiceCode("SCABCD");
+		event.setPaymentResponsible("HSF");
+		event.setHealthCareCommission("BVC");
+		
+		event.setStartTime(getCurrentDate());
+		event.setEndTime(getCurrentDate());
+
+		Item item = new Item();
+		item.setDescription("Test item(product)");
+		item.setItemId(ITEM.ITEM_1.getId());
+		item.setQty(ITEM.ITEM_1.getQty());
+
+		event.getItemList().add(item);
+
+		return event;
+	}
+
+	public static Event createSampleEventData() {
+		Event event = new Event();
+		event.setEventId("EID1234");
+		event.setAcknowledgedBy("sign:X");
+		event.setSupplierName("SNX");
+
+		event.setAcknowledgedTime(getCurrentDate());
+		event.setServiceCode("SCABCD");
+		event.setPaymentResponsible("HSF");
+		event.setHealthCareCommission("BVC");
+		event.setSupplierId("SID123");
+		event.setStartTime(getCurrentDate());
+		event.setEndTime(getCurrentDate());
+
+		Item item = new Item();
+		item.setDescription("Item is kind of a product");
+		item.setItemId("IT101");
+		item.setQty(new BigDecimal(2));
+
+		event.getItemList().add(item);
+
+		return event;
+	}
+
+	public static XMLGregorianCalendar getCurrentDate() {
+		return toXMLGregorianCalendar(new Date());
+	}
+
+	public static String genRandomAlphaNData(int count) {
+		final StringBuilder builder = new StringBuilder();
+		while (count-- != 0) {
+			int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
+			builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+		}
+		return builder.toString();
+	}
 }
