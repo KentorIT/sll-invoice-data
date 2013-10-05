@@ -250,7 +250,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
 	public InvoiceData getInvoiceDataByReferenceId(String referenceId) {
         
-		Long id = Long.valueOf(referenceId.substring(referenceId.lastIndexOf('.') + 1));
+		Long id = Long.valueOf(validate(referenceId, "referenceId").substring(referenceId.lastIndexOf('.') + 1));
 		final InvoiceDataEntity iDE = invoiceDataRepository.findOne(id);
 		final List<BusinessEventEntity> bEEList = iDE.getBusinessEventEntities();
 		
