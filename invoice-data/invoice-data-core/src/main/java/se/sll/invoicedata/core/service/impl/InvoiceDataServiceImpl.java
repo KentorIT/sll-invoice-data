@@ -96,12 +96,12 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         save(newEntity);
 
         if (creditCandidate != null) {
-            final BusinessEventEntity creditEntity = copyProperties(new BusinessEventEntity(), creditCandidate, BusinessEventEntity.class);
+            final BusinessEventEntity creditEntity = copyProperties(creditCandidate, BusinessEventEntity.class);
             creditEntity.setCredit(true);
             creditEntity.setInvoiceData(null);
             creditCandidate.setCredited(true);
             for (final ItemEntity itemEntity : creditCandidate.getItemEntities()) {
-                final ItemEntity copy = copyProperties(new ItemEntity(), itemEntity, ItemEntity.class);
+                final ItemEntity copy = copyProperties(itemEntity, ItemEntity.class);
                 // set parent to null to ensure acceptance by the new
                 copy.setEvent(null);
                 creditEntity.addItemEntity(copy);
@@ -225,7 +225,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
     public String createInvoiceData(
             CreateInvoiceDataRequest createInvoiceDataRequest) {
-        final InvoiceDataEntity invoiceDataEntity = copyProperties(new InvoiceDataEntity(), createInvoiceDataRequest, CreateInvoiceDataRequest.class);
+        final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
         final Iterable<BusinessEventEntity> entities = businessEventRepository.findAll(createInvoiceDataRequest.getEventRefIdList());
         int actual = 0;
         for (BusinessEventEntity entity : entities) {

@@ -17,9 +17,8 @@
 package se.sll.invoicedata.core.service.impl;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 import org.junit.Test;
 
@@ -29,8 +28,6 @@ import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.support.TestSupport;
-
-import static se.sll.invoicedata.core.service.impl.CoreUtil.*;
 
 /**
  * Unit tests AppUtil.
@@ -44,10 +41,12 @@ public class CoreUtilTest extends TestSupport {
     @Test
     public void testAppUtil_copyProperties() {
         BusinessEventEntity be = createSampleBusinessEventEntity();
-        Event e = copyProperties(new Event(), be, Event.class);
+        be.addItemEntity(createSampleItemEntity());
         
-        final RegisteredEvent e2 =  copyProperties(new RegisteredEvent(), be, Event.class);        
-
+        Event e = copyProperties(be, Event.class);
+        
+        final RegisteredEvent e2 =  copyProperties(be, RegisteredEvent.class);     
+        
         assertEquals(e.getEventId(), e2.getEventId());
         assertEquals(e.getHealthCareCommission(), e2.getHealthCareCommission());
         assertEquals(e.getPaymentResponsible(), e2.getPaymentResponsible());
@@ -55,39 +54,35 @@ public class CoreUtilTest extends TestSupport {
         assertEquals(e.getSupplierId(), e2.getSupplierId());
         assertEquals(e.getSupplierName(), e2.getSupplierName());
         assertEquals(e.getStartTime(), e2.getStartTime());
-        assertEquals(e.getEndTime(), e2.getEndTime());
-        
+        assertEquals(e.getEndTime(), e2.getEndTime());        
     }
 
     @Test
     public void testAppUtil_copyProperties2() {
-        copyProperties(new RegisteredEvent(), new String(), String.class);        
-        copyProperties(new RegisteredEvent(), new String(), String.class);        
+        copyProperties(new String(), String.class);        
+        copyProperties(new String(), String.class);        
     }
 
-    //@Test
+    @Test
     public void testSupport_copy_from_event_to_businessEntity() {
         BusinessEventEntity be = createSampleBusinessEventEntity();
-        Event e = copyProperties(new Event(), be, Event.class);
+        be.addItemEntity(createSampleItemEntity());
         
-        //TODO: asserts
-        List<Item> item = e.getItemList();
-        List<ItemEntity> itemEntity = new ArrayList<ItemEntity>();
-        copyGenericLists(itemEntity, item, ItemEntity.class, Item.class);
+        final Event e = copyProperties(be, Event.class);
+        // TODO: asserts
         
-        //be.addItemEntity(itemEntity);
+        assertEquals(0, e.getItemList().size());
         
+        copyGenericLists(e.getItemList(), be.getItemEntities(), Item.class);
         
-//        RegisteredEvent e2 = new RegisteredEvent();
-//        copyFields(e2, be, RegisteredEvent.class);
-//        
-//        RegisteredEvent rEvent = new RegisteredEvent();
-//        AppUtil.copyFields(rEvent, be, RegisteredEvent.class);
-//        
-//        List<Item> itemList = new ArrayList<Item>();
-//        AppUtil.copyFields(itemList, be.getItemEntities(), Item.class);
-//        
-//        rEvent.setItemList(itemList);
+        assertEquals(1, e.getItemList().size());
         
+        final Item item = e.getItemList().get(0);
+        final ItemEntity entity = be.getItemEntities().get(0);
+        
+        assertEquals(entity.getItemId(), item.getItemId());
+        assertEquals(entity.getDescription(), item.getDescription());
+        assertEquals(entity.getPrice(), item.getPrice());
+        assertEquals(entity.getQty(), item.getQty());
     }
 }
