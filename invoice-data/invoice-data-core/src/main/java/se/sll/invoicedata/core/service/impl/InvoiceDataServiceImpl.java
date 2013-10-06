@@ -149,14 +149,19 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 
     /**
-     * Rates all items of a {@link BusinessEventEntity}
+     * Rates all items of a {@link BusinessEventEntity} <p>
+     * 
+     * If a price already exists then rating is considered as carried out by the 
+     * service consumer.
      * 
      * @param businessEventEntity the business event.
      * @return the rated business event, i.e. price has been set to all items.
      */
     protected BusinessEventEntity rate(BusinessEventEntity businessEventEntity) {
         for (ItemEntity itemEntity : validate(businessEventEntity).getItemEntities()) {
-            itemEntity.setPrice(ratingService.rate(itemEntity));
+            if (itemEntity.getPrice() == null) {
+                itemEntity.setPrice(ratingService.rate(itemEntity));
+            }
         }
         return businessEventEntity;
     }
