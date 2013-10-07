@@ -96,12 +96,12 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         save(newEntity);
 
         if (creditCandidate != null) {
-            final BusinessEventEntity creditEntity = copyProperties(new BusinessEventEntity(), creditCandidate, BusinessEventEntity.class);
+            final BusinessEventEntity creditEntity = copyProperties(creditCandidate, BusinessEventEntity.class);
             creditEntity.setCredit(true);
             creditEntity.setInvoiceData(null);
             creditCandidate.setCredited(true);
             for (final ItemEntity itemEntity : creditCandidate.getItemEntities()) {
-                final ItemEntity copy = copyProperties(new ItemEntity(), itemEntity, ItemEntity.class);
+                final ItemEntity copy = copyProperties(itemEntity, ItemEntity.class);
                 // set parent to null to ensure acceptance by the new
                 copy.setEvent(null);
                 creditEntity.addItemEntity(copy);
@@ -149,14 +149,19 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 
     /**
-     * Rates all items of a {@link BusinessEventEntity}
+     * Rates all items of a {@link BusinessEventEntity} <p>
+     * 
+     * If a price already exists then rating is considered as carried out by the 
+     * service consumer.
      * 
      * @param businessEventEntity the business event.
      * @return the rated business event, i.e. price has been set to all items.
      */
     protected BusinessEventEntity rate(BusinessEventEntity businessEventEntity) {
         for (ItemEntity itemEntity : validate(businessEventEntity).getItemEntities()) {
-            itemEntity.setPrice(ratingService.rate(itemEntity));
+            if (itemEntity.getPrice() == null) {
+                itemEntity.setPrice(ratingService.rate(itemEntity));
+            }
         }
         return businessEventEntity;
     }
@@ -225,7 +230,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
     public String createInvoiceData(
             CreateInvoiceDataRequest createInvoiceDataRequest) {
-        final InvoiceDataEntity invoiceDataEntity = copyProperties(new InvoiceDataEntity(), createInvoiceDataRequest, CreateInvoiceDataRequest.class);
+        final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
         final Iterable<BusinessEventEntity> entities = businessEventRepository.findAll(createInvoiceDataRequest.getEventRefIdList());
         int actual = 0;
         for (BusinessEventEntity entity : entities) {

@@ -30,12 +30,14 @@ import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 /**
  * @author muqkha
  * 
  */
-public class EntityBeanConverter extends CoreUtil {
+public class EntityBeanConverter {
 
 	/**
 	 * Maps XML JAXB object to an entity bean.
@@ -44,11 +46,9 @@ public class EntityBeanConverter extends CoreUtil {
 	 * @return the entity bean.
 	 */
 	static BusinessEventEntity toEntity(final Event event) {
-		final BusinessEventEntity entity = copyProperties(
-				new BusinessEventEntity(), event, Event.class);
+		final BusinessEventEntity entity = copyProperties(event, BusinessEventEntity.class);
 		for (final Item item : event.getItemList()) {
-			entity.addItemEntity(copyProperties(new ItemEntity(), item,
-					Item.class));
+			entity.addItemEntity(copyProperties(item, ItemEntity.class));
 		}
 
 		return entity;
@@ -61,9 +61,7 @@ public class EntityBeanConverter extends CoreUtil {
 	 * @return the entity bean.
 	 */
 	static InvoiceDataHeader fromEntity(final InvoiceDataEntity entity) {
-		InvoiceDataHeader iDHeader = new InvoiceDataHeader();
-		copyProperties(iDHeader, entity, InvoiceDataHeader.class);
-
+		final InvoiceDataHeader iDHeader = copyProperties(entity, InvoiceDataHeader.class);
 		return iDHeader;
 	}
 	
@@ -86,9 +84,9 @@ public class EntityBeanConverter extends CoreUtil {
 	 * @return
 	 */
 	static RegisteredEvent fromEntity(final BusinessEventEntity bEEntity) {
-		final RegisteredEvent rEvent = copyProperties(new RegisteredEvent(), bEEntity, RegisteredEvent.class);
+		final RegisteredEvent rEvent = copyProperties(bEEntity, RegisteredEvent.class);
 
-		copyGenericLists(rEvent.getItemList(), bEEntity.getItemEntities(), Item.class, Item.class);
+		copyGenericLists(rEvent.getItemList(), bEEntity.getItemEntities(), Item.class);
 
 		return rEvent;
 	}
@@ -114,8 +112,7 @@ public class EntityBeanConverter extends CoreUtil {
 	 * @return
 	 */
 	static InvoiceData fromIDEntity(final InvoiceDataEntity entity) {
-		InvoiceData iData = new InvoiceData();
-		copyProperties(iData, entity, InvoiceData.class);
+		InvoiceData iData = copyProperties(entity, InvoiceData.class);
 
 		return iData;
 	}

@@ -53,9 +53,9 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         final BusinessEventEntity e = createSampleBusinessEventEntity();
         e.addItemEntity(createSampleItemEntity());
         
-        final Event event = CoreUtil.copyProperties(new Event(), e, Event.class);
+        final Event event = CoreUtil.copyProperties(e, Event.class);
 
-        CoreUtil.copyGenericLists(event.getItemList(), e.getItemEntities(), Item.class, Item.class);
+        CoreUtil.copyGenericLists(event.getItemList(), e.getItemEntities(), Item.class);
         
         return event;
 	}

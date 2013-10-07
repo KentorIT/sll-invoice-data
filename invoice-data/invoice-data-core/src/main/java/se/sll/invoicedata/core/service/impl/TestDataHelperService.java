@@ -21,6 +21,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,15 @@ import se.sll.invoicedata.core.service.InvoiceDataService;
 @Service
 @Profile(value = "test")
 public class TestDataHelperService {
-    
+    private static final DatatypeFactory datatypeFactory;
+    static {
+        try {
+            datatypeFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException("Init Error!", e);
+        }
+    }
+
     @Autowired
     private InvoiceDataService invoiceDataService;
   
@@ -72,6 +82,17 @@ public class TestDataHelperService {
             n += generateEvents(cal);            
         }
         return n;        
+    }
+    
+    
+    /**
+     * Returns a {@link XMLGregorianCalendar} date and time representation.
+     * 
+     * @param cal the actual date and time represented as {@link GregorianCalendar}.
+     * @return the {@link XMLGregorianCalendar} representation.
+     */    
+    public static XMLGregorianCalendar toXMLGregorianCalendar(GregorianCalendar cal) {
+        return (cal == null) ? null : datatypeFactory.newXMLGregorianCalendar(cal);
     }
     
     //
@@ -143,7 +164,7 @@ public class TestDataHelperService {
         int m = random(60);
         cal.add(GregorianCalendar.HOUR_OF_DAY, h);
         cal.add(GregorianCalendar.MINUTE, m);
-        return CoreUtil.toXMGregorianCalendar(cal);    
+        return toXMLGregorianCalendar(cal);    
     }
     
     //
@@ -152,7 +173,7 @@ public class TestDataHelperService {
         int m = random(60);
         cal.set(GregorianCalendar.HOUR_OF_DAY, h);
         cal.set(GregorianCalendar.MINUTE, m);
-        return CoreUtil.toXMGregorianCalendar(cal);    
+        return toXMLGregorianCalendar(cal);    
     }
 
     public int getMonths() {

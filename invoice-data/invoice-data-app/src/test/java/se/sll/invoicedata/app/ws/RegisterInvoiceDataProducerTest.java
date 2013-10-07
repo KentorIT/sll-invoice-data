@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -35,6 +36,7 @@ import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
 import se.sll.invoicedata.app.TestSupport;
+import static se.sll.invoicedata.core.service.impl.TestDataHelperService.toXMLGregorianCalendar;
 
 /**
  * @author muqkha
@@ -99,7 +101,7 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 		Calendar startTime = getCurrentDate().toGregorianCalendar();
 		startTime.add(Calendar.DAY_OF_MONTH, +1);
 
-		invoiceData.setStartTime(toXMLGregorianCalendar(startTime.getTime()));
+		invoiceData.setStartTime(toXMLGregorianCalendar((GregorianCalendar)startTime));
 		invoiceData.setEndTime(getCurrentDate());
 
 		RegisterInvoiceDataResponse response = regIDRInterface
