@@ -16,7 +16,10 @@
 
 package se.sll.invoicedata.core.service.impl;
 
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +42,6 @@ import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.RatingService;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 /**
  * Implements invoice data service.
@@ -231,7 +233,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     public String createInvoiceData(
             CreateInvoiceDataRequest createInvoiceDataRequest) {
         final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
-        final Iterable<BusinessEventEntity> entities = businessEventRepository.findAll(createInvoiceDataRequest.getEventRefIdList());
+        final List<BusinessEventEntity> entities = new ArrayList<BusinessEventEntity>();
+        for (String acknowledgedId : createInvoiceDataRequest.getAcknowledgedId()) {
+        	entities.addAll(businessEventRepository.findByAcknowledgedId(acknowledgedId));
+        }
         int actual = 0;
         for (BusinessEventEntity entity : entities) {
             if (!entity.isPending()) {
@@ -240,7 +245,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             invoiceDataEntity.addBusinessEventEntity(entity);
             actual++;
         }
-        final int expected = createInvoiceDataRequest.getEventRefIdList().size();
+        final int expected = createInvoiceDataRequest.getAcknowledgedId().size();
         if (expected != actual) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state: " + actual + ", expected: " + expected); 
         }

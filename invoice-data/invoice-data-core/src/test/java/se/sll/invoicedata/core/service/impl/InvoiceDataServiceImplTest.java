@@ -103,7 +103,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(ie.getSupplierId(), ie.getPaymentResponsible());
         
         for (final RegisteredEvent e : l) {
-            ie.getEventRefIdList().add(e.getId());
+            ie.getAcknowledgedId().add(e.getAcknowledgedId());
         }
         
         invoiceDataService.createInvoiceData(ie);
@@ -122,7 +122,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         registerEvents(supplierId, Arrays.asList(new String[] { "event-1", "event-2", "event-3" }));
         final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(supplierId, paymentResponsible);
         // one credit event shall be created for each new
-        assertEquals(ie.getEventRefIdList().size()*2, l.size());
+        assertEquals(ie.getAcknowledgedId().size()*2, l.size());
         
         int credits = 0;
         for (final RegisteredEvent e : l) {
@@ -180,7 +180,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         createReq.setSupplierId(regEvtList.get(0).getSupplierId());
         createReq.setPaymentResponsible(regEvtList.get(0).getPaymentResponsible());
         createReq.setCreatedBy("test-auto");
-        createReq.getEventRefIdList().add(regEvtList.get(0).getId());
+        createReq.getAcknowledgedId().add(regEvtList.get(0).getAcknowledgedId());
         
         invoiceDataService.createInvoiceData(createReq);
         
