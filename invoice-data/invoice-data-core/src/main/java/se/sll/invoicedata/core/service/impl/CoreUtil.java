@@ -38,7 +38,7 @@ public class CoreUtil {
      * 
      * Maps by name to a non-static and non-final 
      * field of a given specification class then they are copied from a source to a target instance, 
-     * i.e. the actual names (getter,setter,field) of must be identical. <br>
+     * i.e. the actual names must be identical. <br>
      *
      * Fields of type {@link List} are ignored. <p>
      * 

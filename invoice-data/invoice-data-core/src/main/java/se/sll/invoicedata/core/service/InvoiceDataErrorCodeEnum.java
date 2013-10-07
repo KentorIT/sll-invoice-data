@@ -23,7 +23,8 @@ package se.sll.invoicedata.core.service;
  */
 public enum InvoiceDataErrorCodeEnum {
     TECHNICAL_ERROR("1001", "Encountered a technical error: %s"),
-    VALIDATION_ERROR("1002", "Invalid or missing data: %s");
+    VALIDATION_ERROR("1002", "Invalid or missing input data: %s"),
+    NOTFOUND_ERROR("1003", "No such %s found: %s");
     
     private final String code;
     private final String messageFormat;
