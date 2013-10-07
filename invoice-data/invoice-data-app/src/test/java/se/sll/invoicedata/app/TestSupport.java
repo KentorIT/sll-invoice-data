@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -90,7 +91,8 @@ public abstract class TestSupport extends CoreUtil {
 		event.setEventId(genRandomAlphaNData(5));
 		event.setSupplierId(SUPPLIER.SUPPLIER_X.getId());
 		event.setSupplierName(SUPPLIER.SUPPLIER_X.getName());
-
+		
+		event.setAcknowledgedId(UUID.randomUUID().toString());
 		event.setAcknowledgedBy("sign:X");
 		event.setAcknowledgedTime(getCurrentDate());
 		event.setServiceCode("SCABCD");

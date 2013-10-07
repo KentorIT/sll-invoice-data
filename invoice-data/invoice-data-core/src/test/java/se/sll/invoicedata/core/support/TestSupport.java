@@ -18,6 +18,7 @@ package se.sll.invoicedata.core.support;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.UUID;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,7 @@ public abstract class TestSupport {
     protected BusinessEventEntity createSampleBusinessEventEntity() {
     	BusinessEventEntity e = new BusinessEventEntity();
         e.setEventId("event-123");
+        e.setAcknowledgedId(UUID.randomUUID().toString());
         e.setAcknowledgedBy("Peter Larsson");
         e.setSupplierName("Dummy");
         e.setAcknowledgedTime(new Date());
