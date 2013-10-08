@@ -101,7 +101,7 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 		Calendar startTime = getCurrentDate().toGregorianCalendar();
 		startTime.add(Calendar.DAY_OF_MONTH, +1);
 
-		invoiceData.setStartTime(toXMLGregorianCalendar((GregorianCalendar)startTime));
+		invoiceData.setStartTime(toXMLGregorianCalendar(startTime.getTime()));
 		invoiceData.setEndTime(getCurrentDate());
 
 		RegisterInvoiceDataResponse response = regIDRInterface

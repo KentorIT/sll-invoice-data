@@ -17,9 +17,7 @@
 package se.sll.invoicedata.app;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -27,7 +25,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
 import se.sll.invoicedata.core.service.impl.CoreUtil;
-import static se.sll.invoicedata.core.service.impl.TestDataHelperService.toXMLGregorianCalendar;
 
 
 /**
@@ -113,7 +110,7 @@ public abstract class TestSupport extends CoreUtil {
 	}
 
 	public static XMLGregorianCalendar getCurrentDate() {
-		return toXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());
+		return toXMLGregorianCalendar(new Date());
 	}
 
 	public static String genRandomAlphaNData(int count) {

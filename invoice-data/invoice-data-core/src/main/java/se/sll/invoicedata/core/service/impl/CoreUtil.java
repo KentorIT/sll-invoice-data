@@ -16,7 +16,14 @@
 
 package se.sll.invoicedata.core.service.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
@@ -32,6 +39,14 @@ public class CoreUtil {
     // dozer mapper singleton instance
     private static Mapper mapper = new DozerBeanMapper();
     
+    private static final DatatypeFactory datatypeFactory;
+    static {
+        try {
+            datatypeFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException("Init Error!", e);
+        }
+    }
  
     /**
      * Copies properties/state from one object to another. <p>
@@ -68,5 +83,39 @@ public class CoreUtil {
             target.add(copyProperties(item, targetSpec));
         }
         return target;
+    }
+    
+    /**
+     * Returns a {@link Date} date and time representation.
+     * 
+     * @param cal the actual date and time.
+     * @return the {@link Date} representation.
+     */
+    public static Date toDate(XMLGregorianCalendar cal) {
+        return (cal == null) ? null : cal.toGregorianCalendar().getTime();
+    }
+    
+    /**
+     * Returns a {@link XMLGregorianCalendar} date and time representation.
+     * 
+     * @param date the actual date and time.
+     * @return the {@link XMLGregorianCalendar} representation.
+     */
+    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
+        if (date == null) {
+            return null;
+        }
+        final GregorianCalendar gCal = new GregorianCalendar();
+        gCal.setTime(date);
+        return datatypeFactory.newXMLGregorianCalendar(gCal);
+    }
+    
+    public static XMLGregorianCalendar getStartDate() {
+    	Calendar cal = Calendar.getInstance();
+    	cal.set( Calendar.YEAR, 1970 );
+    	cal.set( Calendar.MONTH, Calendar.JANUARY );
+    	cal.set( Calendar.DATE, 1 );
+    	
+    	return toXMLGregorianCalendar(cal.getTime());
     }
 }

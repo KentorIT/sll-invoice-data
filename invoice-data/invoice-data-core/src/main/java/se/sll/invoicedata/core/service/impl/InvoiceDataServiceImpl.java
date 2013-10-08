@@ -21,6 +21,7 @@ import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
@@ -275,6 +277,33 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 		}
 		
 		return invoiceData;
+	}
+
+	@Override
+	public List<InvoiceData> listAllInvoiceData(ListInvoiceDataRequest request) {
+		
+		if (request.getFromDate() != null && request.getToDate() == null) {
+			request.setToDate(CoreUtil.toXMLGregorianCalendar(new Date()));
+		} else if (request.getToDate() != null && request.getFromDate() == null) {
+			request.setFromDate(CoreUtil.getStartDate());
+		}
+		
+		List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.findBetweenDates(
+				request.getSupplierId(),
+				request.getPaymentResponsible(), 
+				CoreUtil.toDate(request.getFromDate()), 
+				CoreUtil.toDate(request.getToDate()));
+		
+		List<InvoiceData> invoiceDataList = new ArrayList<InvoiceData>();
+		for (InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
+			List<RegisteredEvent> eventList = EntityBeanConverter.fromBEntity(iDataEntity.getBusinessEventEntities());
+			
+			InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(iDataEntity);
+			invoiceData.getEventList().addAll(eventList);
+			invoiceDataList.add(invoiceData);
+			
+		}			
+		return invoiceDataList;
 	}
 
 }

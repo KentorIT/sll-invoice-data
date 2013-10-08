@@ -52,6 +52,14 @@
 		</jaxws:properties>
 	</jaxws:endpoint>
 
+	<jaxws:endpoint id="listInvoiceData"
+		implementor="se.sll.invoicedata.app.ws.ListInvoiceDataProducer"
+		address="/ws/listInvoiceData">
+		<jaxws:properties>
+			<entry key="schema-validation-enabled" value="true" />
+		</jaxws:properties>
+	</jaxws:endpoint>
+
 	<jaxws:endpoint id="pingForConfiguration"
 		implementor="se.sll.invoicedata.app.ws.PingForConfigurationProducer"
 		address="/ws/pingForConfiguration">

@@ -23,6 +23,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -36,6 +38,7 @@ import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.support.TestSupport;
@@ -191,6 +194,74 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         assertNotNull(iData);
         assertEquals(e.getPaymentResponsible(), iData.getPaymentResponsible());
         assertEquals(e.getSupplierId(), iData.getSupplierId());
+	}
+	
+	@Test
+	@Transactional
+	@Rollback(true) 
+	public void testListAllInvoiceData_With_Different_Alternatives() {
+		
+		final Event e = createSampleEvent();        
+        invoiceDataService.registerEvent(e);
+        
+        List<RegisteredEvent> regEvtList = invoiceDataService.getAllUnprocessedBusinessEvents(e.getSupplierId(), e.getPaymentResponsible());
+        
+        final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
+        createReq.setSupplierId(regEvtList.get(0).getSupplierId());
+        createReq.setPaymentResponsible(regEvtList.get(0).getPaymentResponsible());
+        createReq.setCreatedBy("test-auto");
+        createReq.getAcknowledgementIdList().add(regEvtList.get(0).getAcknowledgementId());
+        
+        invoiceDataService.createInvoiceData(createReq);
+        
+        //Request with only supplier id
+        ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setSupplierId(e.getSupplierId());
+        
+        List<InvoiceData> invoiceDataList = invoiceDataService.listAllInvoiceData(invoiceListRequest);
+        		
+        assertNotNull(invoiceDataList);
+        assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0).getPaymentResponsible());
+		
+        //Request with only payment responsible
+        invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setPaymentResponsible(e.getPaymentResponsible());
+        
+        invoiceDataList = invoiceDataService.listAllInvoiceData(invoiceListRequest);
+        		
+        assertNotNull(invoiceDataList);
+        assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
+        
+        //Request with both payment responsible and supplier id
+        invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setSupplierId(e.getSupplierId());
+        invoiceListRequest.setPaymentResponsible(e.getPaymentResponsible());
+        
+        invoiceDataList = invoiceDataService.listAllInvoiceData(invoiceListRequest);
+        		
+        assertNotNull(invoiceDataList);
+        assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
+        assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0).getPaymentResponsible());
+        
+        //Request with only from date; fromDate (setting year to 1 year back from current year)        
+        invoiceListRequest = new ListInvoiceDataRequest();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) - 1);
+        invoiceListRequest.setFromDate(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
+        
+        invoiceDataList = invoiceDataService.listAllInvoiceData(invoiceListRequest);
+        assertNotNull(invoiceDataList);
+        assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
+        assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0).getPaymentResponsible());
+        
+        //Request with only to date; toDate
+        invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setToDate(CoreUtil.toXMLGregorianCalendar(new Date()));
+        
+        invoiceDataList = invoiceDataService.listAllInvoiceData(invoiceListRequest);
+        assertNotNull(invoiceDataList);
+        assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
+        assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0).getPaymentResponsible());
 	}
 		
 }
