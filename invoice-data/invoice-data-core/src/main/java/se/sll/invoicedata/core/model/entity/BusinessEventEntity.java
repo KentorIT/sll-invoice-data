@@ -85,8 +85,8 @@ public class BusinessEventEntity {
     @Column(name="service_code", length=64, nullable=false, updatable=false)
     private String serviceCode;
     
-    @Column(name="acknowledged_id", length=64, nullable=false, updatable=false)
-    private String acknowledgedId;
+    @Column(name="acknowledgement_id", length=64, nullable=false, updatable=false)
+    private String acknowledgementId;
     
     @Column(name="acknowledged_by", length=64, nullable=false, updatable=false)
     private String acknowledgedBy;
@@ -190,14 +190,14 @@ public class BusinessEventEntity {
     }
 
 
-    public String getAcknowledgedId() {
-        return acknowledgedId;
+    public String getAcknowledgementId() {
+        return acknowledgementId;
     }
 
 
 
-    public void setAcknowledgedId(String acknowledgedId) {
-        this.acknowledgedId = acknowledgedId;
+    public void setAcknowledgementId(String acknowledgementId) {
+        this.acknowledgementId = acknowledgementId;
     }
     
     

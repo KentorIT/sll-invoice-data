@@ -234,8 +234,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             CreateInvoiceDataRequest createInvoiceDataRequest) {
         final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
         final List<BusinessEventEntity> entities = new ArrayList<BusinessEventEntity>();
-        for (String acknowledgedId : createInvoiceDataRequest.getAcknowledgedId()) {
-        	entities.addAll(businessEventRepository.findByAcknowledgedId(acknowledgedId));
+        for (String acknowledgementId : createInvoiceDataRequest.getAcknowledgementIdList()) {
+        	entities.addAll(businessEventRepository.findByAcknowledgementId(acknowledgementId));
         }
         int actual = 0;
         for (BusinessEventEntity entity : entities) {
@@ -245,7 +245,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             invoiceDataEntity.addBusinessEventEntity(entity);
             actual++;
         }
-        final int expected = createInvoiceDataRequest.getAcknowledgedId().size();
+        final int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
         if (expected != actual) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state: " + actual + ", expected: " + expected); 
         }

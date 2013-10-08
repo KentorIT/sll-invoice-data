@@ -92,7 +92,7 @@ public abstract class TestSupport extends CoreUtil {
 		event.setSupplierId(SUPPLIER.SUPPLIER_X.getId());
 		event.setSupplierName(SUPPLIER.SUPPLIER_X.getName());
 		
-		event.setAcknowledgedId(UUID.randomUUID().toString());
+		event.setAcknowledgementId(UUID.randomUUID().toString());
 		event.setAcknowledgedBy("sign:X");
 		event.setAcknowledgedTime(getCurrentDate());
 		event.setServiceCode("SCABCD");

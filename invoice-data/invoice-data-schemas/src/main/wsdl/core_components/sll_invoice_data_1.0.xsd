@@ -50,7 +50,7 @@
 			<xs:element name="serviceCode" type="xs:string"/>
 			<xs:element name="paymentResponsible" type="xs:string" />
 			<xs:element name="healthCareCommission" type="xs:string" />
-			<xs:element name="acknowledgedId" type="xs:string" />
+			<xs:element name="acknowledgementId" type="xs:string" />
 			<xs:element name="acknowledgedBy" type="xs:string"/>
 			<xs:element name="acknowledgedTime" type="xs:dateTime"/>
 			<xs:element name="startTime" type="xs:dateTime"/>

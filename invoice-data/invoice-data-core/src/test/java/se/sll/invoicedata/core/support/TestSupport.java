@@ -71,7 +71,7 @@ public abstract class TestSupport {
     protected BusinessEventEntity createSampleBusinessEventEntity() {
     	BusinessEventEntity e = new BusinessEventEntity();
         e.setEventId("event-123");
-        e.setAcknowledgedId(UUID.randomUUID().toString());
+        e.setAcknowledgementId(UUID.randomUUID().toString());
         e.setAcknowledgedBy("Peter Larsson");
         e.setSupplierName("Dummy");
         e.setAcknowledgedTime(new Date());

@@ -81,8 +81,8 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
     
     /**
      * 
-     * @param acknowledgedId
+     * @param acknowledgementId
      * @return
      */
-    List<BusinessEventEntity> findByAcknowledgedId(String acknowledgedId);
+    List<BusinessEventEntity> findByAcknowledgementId(String acknowledgementId);
 }

@@ -104,9 +104,9 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 		
 		List<RegisteredEvent> regEventList = invoiceResp.getRegisteredEventList();
 		//3. Iterate the list and store RegisteredEventId
-		List<String> eventRefList = new ArrayList<String>();
+		List<String> ackIdList = new ArrayList<String>();
 		for (RegisteredEvent regEvent : regEventList) {
-			eventRefList.add(regEvent.getAcknowledgedId());
+			ackIdList.add(regEvent.getAcknowledgementId());
 		}
 		
 		// 4. Use RegisteredEventId list to request CeateInvoice
@@ -114,7 +114,7 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 		invoiceDataRequest.setSupplierId(event.getSupplierId());
 		invoiceDataRequest.setPaymentResponsible(event.getPaymentResponsible());
 		invoiceDataRequest.setCreatedBy("test");
-		invoiceDataRequest.getAcknowledgedId().addAll(eventRefList);
+		invoiceDataRequest.getAcknowledgementIdList().addAll(ackIdList);
 
 		CreateInvoiceDataResponse createIDResp = CreateInvoiceDataProducerTest.
 				getCreateInvoiceDataService().createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
