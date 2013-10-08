@@ -16,14 +16,12 @@
 
 package se.sll.invoicedata.app.ws;
 
+import static se.sll.invoicedata.core.service.impl.TestDataHelperService.toXMLGregorianCalendar;
+
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.junit.AfterClass;
@@ -36,14 +34,12 @@ import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
 import se.sll.invoicedata.app.TestSupport;
-import static se.sll.invoicedata.core.service.impl.TestDataHelperService.toXMLGregorianCalendar;
 
 /**
  * @author muqkha
  */
 public class RegisterInvoiceDataProducerTest extends TestSupport {
 
-	private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 
 	private static RegisterInvoiceDataResponderInterface regIDRInterface;
 
@@ -178,23 +174,10 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 		regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
 	}
 
-	static RegisterInvoiceDataResponderInterface getRegisterInvoiceDataService() {
-
-		RegisterInvoiceDataResponderInterface iRegisterInvoiceDataResponder = null;
-		try {
-			URL wsdlURL = new URL(getWSDLURL("registerInvoiceData"));
-			String serviceName = "RegisterInvoiceDataProducerService";
-			QName serviceQN = new QName(NAMESPACE_URI, serviceName);
-			
-			Service service = Service.create(wsdlURL, serviceQN);
-			iRegisterInvoiceDataResponder = service
-					.getPort(RegisterInvoiceDataResponderInterface.class);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return iRegisterInvoiceDataResponder;
+	public static RegisterInvoiceDataResponderInterface getRegisterInvoiceDataService() {
+	    if (regIDRInterface == null) {
+	        regIDRInterface = createService(RegisterInvoiceDataResponderInterface.class);
+	    }
+	    return regIDRInterface;
 	}
 }

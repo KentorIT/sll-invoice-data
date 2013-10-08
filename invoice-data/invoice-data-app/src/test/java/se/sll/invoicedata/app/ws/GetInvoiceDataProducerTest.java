@@ -14,18 +14,10 @@
  *    limitations under the License.
  */
 
-/**
- * 
- */
 package se.sll.invoicedata.app.ws;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -49,8 +41,6 @@ import se.sll.invoicedata.app.TestSupport;
  * 
  */
 public class GetInvoiceDataProducerTest extends TestSupport {
-
-	private final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 
 	private static GetInvoiceDataResponderInterface getIDRInterface;
 	
@@ -202,23 +192,11 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		Assert.assertEquals(1, getInvoiceResp.getRegisteredEventList().size());
 	}
 
-	static GetInvoiceDataResponderInterface getGetInvoiceDataService() {
-		GetInvoiceDataResponderInterface iGetInvoiceDataResponder = null;
-		try {
-			URL wsdlURL = new URL(getWSDLURL("getInvoiceData"));			
-			String serviceName = "GetInvoiceDataProducerService";
-			QName serviceQN = new QName(NAMESPACE_URI, serviceName);
-
-			Service service = Service.create(wsdlURL, serviceQN);
-			iGetInvoiceDataResponder = service
-					.getPort(GetInvoiceDataResponderInterface.class);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return iGetInvoiceDataResponder;
+	public static GetInvoiceDataResponderInterface getGetInvoiceDataService() {
+	    if (getIDRInterface == null) {
+	        getIDRInterface = createService(GetInvoiceDataResponderInterface.class);
+	    }
+	    return getIDRInterface;
 	}
 
 }

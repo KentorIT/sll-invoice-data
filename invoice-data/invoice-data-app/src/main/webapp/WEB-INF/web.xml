@@ -48,7 +48,7 @@
   </listener>
  
   <servlet>
-    <servlet-name>CXFServletWs</servlet-name>
+    <servlet-name>CXFServlet</servlet-name>
     <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -72,7 +72,7 @@
   </filter-mapping>
   
   <servlet-mapping>
-    <servlet-name>CXFServletWs</servlet-name>
+    <servlet-name>CXFServlet</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 </web-app>

@@ -14,29 +14,23 @@
  *    limitations under the License.
  */
 
-package se.sll.invoicedata.core.service.impl;
+package se.sll.invoicedata.core.service;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-import org.springframework.stereotype.Service;
+import se.sll.invoicedata.core.service.dto.PriceList;
+import se.sll.invoicedata.core.service.dto.ServiceResponse;
 
-import se.sll.invoicedata.core.model.entity.ItemEntity;
-import se.sll.invoicedata.core.service.RatingService;
+public interface PriceListService {
 
-/**
- * Dummy rating.
- * 
- * 
- * @author Peter
- *
- */
-@Service
-public class ZeroRatingServiceImpl implements RatingService {
+    List<PriceList> getPriceLists();
 
-    @Override
-    public BigDecimal rate(ItemEntity itemEntity) {
-        double price = 700 + (Math.random() * 200.0);
-        return BigDecimal.valueOf(price);
-    }
+    List<ServiceResponse>  savePriceLists(List<PriceList> priceLists);
+
+    ServiceResponse deletePriceList(Long id);
+
+    ServiceResponse savePriceList(PriceList priceList);
+
+    PriceList getPriceList(Long id);
     
 }

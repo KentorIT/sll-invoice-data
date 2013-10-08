@@ -181,8 +181,8 @@ public class InvoiceDataEntity {
             return true;
         }
         final Long id = getId();
-        if (id != null && r instanceof BusinessEventEntity) {
-            return id.equals(((BusinessEventEntity)r).getEventId());
+        if (id != null && r instanceof InvoiceDataEntity) {
+            return id.equals(((InvoiceDataEntity)r).getId());
         }
         return false;
     }

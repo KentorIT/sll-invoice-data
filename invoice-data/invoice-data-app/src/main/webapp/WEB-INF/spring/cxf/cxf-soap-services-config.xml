@@ -9,11 +9,14 @@
 
 <beans default-autowire="byName"
 	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" 
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:cxf="http://cxf.apache.org/core"
 	xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
         http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
         http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
 
@@ -59,5 +62,14 @@
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
 	</jaxws:endpoint>
+
+	<!--  JAXRS -->
+	<jaxrs:server id="admin" address="/admin">
+		<jaxrs:serviceBeans>
+			<ref bean="priceListBean" />
+		</jaxrs:serviceBeans>
+	</jaxrs:server>
+
+	<bean id="priceListBean" class="se.sll.invoicedata.app.rs.PriceListProducer" />
 
 </beans>

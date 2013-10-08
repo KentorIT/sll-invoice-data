@@ -19,13 +19,9 @@
  */
 package se.sll.invoicedata.app.ws;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.junit.AfterClass;
@@ -166,23 +162,10 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 		Assert.assertEquals(ResultCodeEnum.ERROR, viewIDResp.getResultCode().getCode());
 	}
 	
-	static ViewInvoiceDataResponderInterface getViewInvoiceDataService() {
-		
-		ViewInvoiceDataResponderInterface iGetInvoiceDataResponder = null;		
-		try {
-			URL wsdlURL = new URL(getWSDLURL("viewInvoiceData"));
-			String serviceName = "ViewInvoiceDataProducerService";
-			QName serviceQN = new QName(NAMESPACE_URI, serviceName);
-
-			Service service = Service.create(wsdlURL, serviceQN);
-			iGetInvoiceDataResponder = service
-					.getPort(ViewInvoiceDataResponderInterface.class);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return iGetInvoiceDataResponder;
+	public static ViewInvoiceDataResponderInterface getViewInvoiceDataService() {
+	    if (viewIDRInterface == null) {
+	        viewIDRInterface = createService(ViewInvoiceDataResponderInterface.class);
+	    }
+		return viewIDRInterface;
 	}
 }

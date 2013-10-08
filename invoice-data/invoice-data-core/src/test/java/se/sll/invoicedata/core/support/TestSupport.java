@@ -17,6 +17,7 @@
 package se.sll.invoicedata.core.support;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.runner.RunWith;
@@ -28,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
+import se.sll.invoicedata.core.model.entity.PriceListEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 
@@ -92,4 +94,22 @@ public abstract class TestSupport {
     
         return e;
     }
+    
+    protected PriceListEntity createSamplePriceListEntity() {
+        final PriceListEntity priceListEntity = new PriceListEntity();
+        priceListEntity.setSupplierId("Tolk.001");
+        priceListEntity.setServiceCode("Språktolk");
+        priceListEntity.setValidFrom(today().getTime());
+        return priceListEntity;
+    }
+    
+    protected Calendar today() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0); //anything 0 - 23
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c;
+    }
+
 }

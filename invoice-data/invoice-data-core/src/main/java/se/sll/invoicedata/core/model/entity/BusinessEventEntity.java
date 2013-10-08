@@ -341,16 +341,16 @@ public class BusinessEventEntity {
         if (this == r) {
             return true;
         }
-        final String id = getEventId();
+        final Long id = getId();
         if (id != null && r instanceof BusinessEventEntity) {
-            return id.equals(((BusinessEventEntity)r).getEventId());
+            return id.equals(((BusinessEventEntity)r).getId());
         }
         return false;
     }
     
     @Override
     public int hashCode() {
-        final String id = getEventId();
+        final Long id = getId();
         return (id == null) ? super.hashCode() : id.hashCode();
     }
     

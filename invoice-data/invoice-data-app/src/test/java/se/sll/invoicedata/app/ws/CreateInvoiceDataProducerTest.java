@@ -19,45 +19,121 @@
  */
 package se.sll.invoicedata.app.ws;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
+import java.util.List;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.RegisteredEvent;
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedata._1.rivtabp21.CreateInvoiceDataResponderInterface;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
+import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
+import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
+import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
+import se.sll.invoicedata.app.TestSupport;
 
 /**
  * @author muqkha
  *
  */
-public class CreateInvoiceDataProducerTest {
-    
-    static CreateInvoiceDataResponderInterface getCreateInvoiceDataService() {
-        CreateInvoiceDataResponderInterface iCreateInvoiceDataResponder = null;
+public class CreateInvoiceDataProducerTest extends TestSupport {
 
-        final String URL = "http://localhost:8080/invoice-data-app/ws/createInvoiceData";
-        // Endpoint.publish(URL, new RegisterInvoiceDataProducer());
+    private static CreateInvoiceDataResponderInterface createInvoiceDataResponderInterface;
 
-        try {
-            URL wsdlURL = new URL(URL + "?wsdl");
-
-            String namespaceURI = "http://ws.app.invoicedata.sll.se/";
-            String serviceName = "CreateInvoiceDataProducerService";
-
-            QName serviceQN = new QName(namespaceURI, serviceName);
-
-            Service service = Service.create(wsdlURL, serviceQN);
-            
-            iCreateInvoiceDataResponder = service
-                    .getPort(CreateInvoiceDataResponderInterface.class);
-            
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return iCreateInvoiceDataResponder;
+    @BeforeClass
+    public static void setUp() {
+        createInvoiceDataResponderInterface = getCreateInvoiceDataService();
     }
+    
+    @AfterClass
+    public static void tearDown() {
+        createInvoiceDataResponderInterface = null;
+    }
+
+    //
+    void register(String supplierId, String paymentResp, int n) {
+        for (int i = 0; i < n; i++) {
+            Event event1 = createRandomEventData();
+            event1.setSupplierId(supplierId);
+            event1.setPaymentResponsible(paymentResp);
+            RegisterInvoiceDataResponderInterface reg = RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService();
+            RegisterInvoiceDataResponse resp = reg.registerInvoiceData(LOGICAL_ADDRESS, event1);
+            assertEquals(ResultCodeEnum.OK, resp.getResultCode().getCode());  
+        }
+    }
+
+    //
+    List<RegisteredEvent> events(String supplierId, String paymentResp) {
+        GetInvoiceDataResponderInterface get = GetInvoiceDataProducerTest.getGetInvoiceDataService();
+        GetInvoiceDataRequest req = new GetInvoiceDataRequest();
+        req.setPaymentResponsible(paymentResp);
+        req.setSupplierId(supplierId);
+        GetInvoiceDataResponse resp = get.getInvoiceData(LOGICAL_ADDRESS, req);
+        assertEquals(ResultCodeEnum.OK, resp.getResultCode().getCode());  
+        return resp.getRegisteredEventList();
+    }
+    
+    //
+    CreateInvoiceDataRequest request(String supplierId, String paymentResp) {
+        CreateInvoiceDataRequest req = new CreateInvoiceDataRequest();
+        req.setCreatedBy("test");
+        req.setPaymentResponsible(paymentResp);
+        req.setSupplierId(supplierId);
+        for (RegisteredEvent e : events(supplierId, "HSF")) {
+            req.getEventRefIdList().add(e.getId());
+        }
+        return req;
+    }
+    
+    
+    @Test
+    public void testCreate_success() {
+        final int n = 10;
+        String supplierId1 = genRandomAlphaNData(5);
+        register(supplierId1, "HSF", n);
+        
+        String supplierId2 = genRandomAlphaNData(5);
+        register(supplierId2, "HSF", n);
+        
+        CreateInvoiceDataRequest req = request(supplierId1, "HSF");
+        CreateInvoiceDataResponse resp = createInvoiceDataResponderInterface.createInvoiceData(LOGICAL_ADDRESS, req);
+        assertEquals(ResultCodeEnum.OK, resp.getResultCode().getCode());
+    }
+    
+    @Test
+    public void testCreate_fail() {
+        final int n = 10;
+        String supplierId1 = genRandomAlphaNData(5);
+        register(supplierId1, "HSF", n);
+        
+        CreateInvoiceDataRequest req = request(supplierId1, "HSF");
+        
+        // make one id invalid
+        req.getEventRefIdList().set(0, -1L);
+
+        CreateInvoiceDataResponse resp = createInvoiceDataResponderInterface.createInvoiceData(LOGICAL_ADDRESS, req);
+        assertEquals(ResultCodeEnum.ERROR, resp.getResultCode().getCode());
+        assertNotNull(resp.getResultCode().getMessage());
+        assertNull(resp.getReferenceId());
+    }
+
+
+    public static CreateInvoiceDataResponderInterface getCreateInvoiceDataService() {
+        if (createInvoiceDataResponderInterface == null) {
+            createInvoiceDataResponderInterface = createService(CreateInvoiceDataResponderInterface.class);
+        }
+        return createInvoiceDataResponderInterface;
+    }  
 
 }
