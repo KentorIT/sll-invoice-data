@@ -31,7 +31,6 @@ import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.RegisteredEvent;
-import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedata._1.rivtabp21.CreateInvoiceDataResponderInterface;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
@@ -91,7 +90,7 @@ public class CreateInvoiceDataProducerTest extends TestSupport {
         req.setPaymentResponsible(paymentResp);
         req.setSupplierId(supplierId);
         for (RegisteredEvent e : events(supplierId, "HSF")) {
-            req.getEventRefIdList().add(e.getId());
+            req.getAcknowledgementIdList().add(e.getAcknowledgementId());
         }
         return req;
     }
@@ -120,7 +119,7 @@ public class CreateInvoiceDataProducerTest extends TestSupport {
         CreateInvoiceDataRequest req = request(supplierId1, "HSF");
         
         // make one id invalid
-        req.getEventRefIdList().set(0, -1L);
+        req.getAcknowledgementIdList().set(0, "zero");
 
         CreateInvoiceDataResponse resp = createInvoiceDataResponderInterface.createInvoiceData(LOGICAL_ADDRESS, req);
         assertEquals(ResultCodeEnum.ERROR, resp.getResultCode().getCode());

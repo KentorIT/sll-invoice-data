@@ -18,6 +18,7 @@ package se.sll.invoicedata.app.ws;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -118,16 +119,16 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 
 		List<RegisteredEvent> regEventList = response.getRegisteredEventList();
 
-		List<Long> eventRefList = new ArrayList<Long>();
+		List<String> ackIdList = new ArrayList<String>();
 		for (RegisteredEvent regEvent : regEventList) {
-			eventRefList.add(regEvent.getId());
+			ackIdList.add(regEvent.getAcknowledgementId());
 		}
 
 		CreateInvoiceDataRequest invoiceDataRequest = new CreateInvoiceDataRequest();
 		invoiceDataRequest.setSupplierId(event.getSupplierId());
 		invoiceDataRequest.setPaymentResponsible(event.getPaymentResponsible());
 		invoiceDataRequest.setCreatedBy("test");
-		invoiceDataRequest.getEventRefIdList().addAll(eventRefList);
+		invoiceDataRequest.getAcknowledgementIdList().addAll(ackIdList);
 
 		CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
 				.createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
@@ -150,6 +151,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		//Registering two events; same supplier id
 		registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
 		event.setEventId(genRandomAlphaNData(5));
+		event.setAcknowledgementId(UUID.randomUUID().toString());
 		registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
 
 		GetInvoiceDataRequest getInvoiceReq = new GetInvoiceDataRequest();
@@ -164,9 +166,9 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		Assert.assertEquals(2, getInvoiceResp.getRegisteredEventList().size());
 		
 		List<RegisteredEvent> regEventList = getInvoiceResp.getRegisteredEventList();
-		List<Long> eventRefList = new ArrayList<Long>();
+		List<String> eventRefList = new ArrayList<String>();
 		for (RegisteredEvent regEvent : regEventList) {
-			eventRefList.add(regEvent.getId());
+			eventRefList.add(regEvent.getAcknowledgementId());
 		}
 		//Removing one item; generating only one invoice
 		eventRefList.remove(0);  
@@ -175,7 +177,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		invoiceDataRequest.setSupplierId(event.getSupplierId());
 		invoiceDataRequest.setPaymentResponsible(event.getPaymentResponsible());
 		invoiceDataRequest.setCreatedBy("test");
-		invoiceDataRequest.getEventRefIdList().addAll(eventRefList);
+		invoiceDataRequest.getAcknowledgementIdList().addAll(eventRefList);
 
 		CreateInvoiceDataResponderInterface createIDResp = CreateInvoiceDataProducerTest.getCreateInvoiceDataService();
 		CreateInvoiceDataResponse createResp = createIDResp.createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);

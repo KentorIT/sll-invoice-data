@@ -16,12 +16,10 @@
 
 package se.sll.invoicedata.app;
 
-import static se.sll.invoicedata.core.service.impl.TestDataHelperService.toXMLGregorianCalendar;
-
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
+import java.util.UUID;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
@@ -93,7 +91,8 @@ public abstract class TestSupport extends CoreUtil {
 		event.setEventId(genRandomAlphaNData(5));
 		event.setSupplierId(SUPPLIER.SUPPLIER_X.getId());
 		event.setSupplierName(SUPPLIER.SUPPLIER_X.getName());
-
+		
+		event.setAcknowledgementId(UUID.randomUUID().toString());
 		event.setAcknowledgedBy("sign:X");
 		event.setAcknowledgedTime(getCurrentDate());
 		event.setServiceCode("Språktolk");
@@ -123,7 +122,7 @@ public abstract class TestSupport extends CoreUtil {
 	}
 
 	public static XMLGregorianCalendar getCurrentDate() {
-		return toXMLGregorianCalendar((GregorianCalendar)Calendar.getInstance());
+		return toXMLGregorianCalendar(new Date());
 	}
 
 	public static String genRandomAlphaNData(int count) {

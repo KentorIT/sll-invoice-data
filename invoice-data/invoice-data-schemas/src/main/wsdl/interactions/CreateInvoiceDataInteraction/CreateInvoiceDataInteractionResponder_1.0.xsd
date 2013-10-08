@@ -20,23 +20,13 @@
 
 	<xs:element name='CreateInvoiceData' type="tns:CreateInvoiceDataRequest" />
 	<xs:element name='CreateInvoiceDataResponse' type='tns:CreateInvoiceDataResponse' />
-
-	<xs:complexType name='CreateInvoiceDataResponse'>
-		<xs:sequence>
-			<xs:element name='resultCode' type='core:ResultCode'
-				maxOccurs="1" minOccurs="1" />
-			<xs:element name="referenceId" type="xs:string" minOccurs="0" />
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
+	
 	<xs:complexType name="CreateInvoiceDataRequest">
 		<xs:sequence>
 			<xs:element name="supplierId" type="xs:string" />
 			<xs:element name="createdBy" type="xs:string" />
 			<xs:element name="paymentResponsible" type="xs:string" />			
-			<xs:element name="eventRefIdList" type="xs:long" minOccurs="1"
+			<xs:element name="acknowledgementIdList" type="xs:string" minOccurs="1"
 				maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>Internal existing id of an event, i.e. same reference as provided by the service GetInvocieDataInteraction
@@ -47,5 +37,17 @@
 				maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:complexType name='CreateInvoiceDataResponse'>
+		<xs:sequence>
+			<xs:element name='resultCode' type='core:ResultCode'
+				maxOccurs="1" minOccurs="1" />
+			<xs:element name="referenceId" type="xs:string" minOccurs="0" />
+			<xs:any namespace="##other" processContents="lax" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	
 
 </xs:schema>

@@ -16,9 +16,12 @@
 
 package se.sll.invoicedata.core.model.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
@@ -39,4 +42,15 @@ public interface InvoiceDataRepository  extends JpaRepository<InvoiceDataEntity,
      * @return the list of invoice data, might be empty when none matches the criteria.
      */
     List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsible(String supplierId, String paymentResponsible);
+    
+    @Query("FROM InvoiceDataEntity WHERE supplierId = :supplierId OR paymentResponsible = :paymentResponsible "
+    		+ "OR createdTime BETWEEN :fromDate AND :toDate")
+    List<InvoiceDataEntity> findBetweenDates(@Param("supplierId") String supplierId,
+    		@Param("paymentResponsible") String paymentResponsible, 
+    		@Param("fromDate") Date fromDate, 
+    		@Param("toDate") Date toDate);
+    
+    @Query("FROM InvoiceDataEntity WHERE supplierId = :supplierId")
+    List<InvoiceDataEntity> findBetweenDates(@Param("supplierId") String supplierId);
+    
 }

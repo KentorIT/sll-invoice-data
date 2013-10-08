@@ -23,6 +23,7 @@ import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 
 /**
  * Defines Invoice Data service API.
@@ -75,4 +76,6 @@ public interface InvoiceDataService {
      * @return
      */
     InvoiceData getInvoiceDataByReferenceId(String referenceId);
+    
+    List<InvoiceData> listAllInvoiceData(ListInvoiceDataRequest request);
 }
