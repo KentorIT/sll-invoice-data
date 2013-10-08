@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -150,7 +151,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		Assert.assertEquals(1, response.getRegisteredEventList().size());
         Assert.assertEquals(0, response.getInvoiceDataList().size());	}
 
-	//@Test
+	@Test
 	public void get_InvoiceData_Some_Processed_Some_Unprocessed_Success() {
 
 		Event event = createRandomEventData();		
@@ -160,6 +161,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		//Registering two events; same supplier id
 		registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
 		event.setEventId(genRandomAlphaNData(5));
+		event.setAcknowledgedId(UUID.randomUUID().toString());
 		registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
 
 		GetInvoiceDataRequest getInvoiceReq = new GetInvoiceDataRequest();
