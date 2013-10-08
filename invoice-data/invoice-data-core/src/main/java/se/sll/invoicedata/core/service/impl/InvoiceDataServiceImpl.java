@@ -234,12 +234,9 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
         final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
 
-        final List<BusinessEventEntity> entities = businessEventRepository.findByAcknowledgementIdIn(createInvoiceDataRequest.getAcknowledgementIdList());
+        final List<BusinessEventEntity> entities = businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
         int actual = 0;
         for (BusinessEventEntity entity : entities) {
-            if (!entity.isPending()) {
-                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("trying to assign a non-pending event " + entity.getEventId() + " to invoice data");
-            }
             invoiceDataEntity.addBusinessEventEntity(entity);
             actual++;
         }

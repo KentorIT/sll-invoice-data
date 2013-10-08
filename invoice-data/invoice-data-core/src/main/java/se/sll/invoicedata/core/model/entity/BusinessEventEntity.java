@@ -50,14 +50,17 @@ import org.hibernate.annotations.Table;
 @Table(appliesTo=BusinessEventEntity.TABLE_NAME,
 indexes={ @Index(name=BusinessEventEntity.INDEX_NAME_1, 
 columnNames={ BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ),
-@Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }) } )
+@Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }),
+@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.ACKNOWLEDGEMENT_ID }) })
 public class BusinessEventEntity {
     static final String TABLE_NAME = "invoice_data_event";
     static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";
     static final String INDEX_NAME_2 = "invoice_data_event_query_ix_2";
+    static final String INDEX_NAME_3 = "invoice_data_event_query_ix_3";
     static final String SUPPLIER_ID = "supplier_id";
     static final String PENDING = "pending";
     static final String EVENT_ID = "event_id";
+    static final String ACKNOWLEDGEMENT_ID = "acknowledgement_id";
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -85,7 +88,7 @@ public class BusinessEventEntity {
     @Column(name="service_code", length=64, nullable=false, updatable=false)
     private String serviceCode;
     
-    @Column(name="acknowledgement_id", length=64, nullable=false, updatable=false)
+    @Column(name=ACKNOWLEDGEMENT_ID, length=64, nullable=false, updatable=false)
     private String acknowledgementId;
     
     @Column(name="acknowledged_by", length=64, nullable=false, updatable=false)

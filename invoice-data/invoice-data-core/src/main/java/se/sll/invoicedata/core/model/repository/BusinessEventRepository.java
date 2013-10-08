@@ -84,5 +84,5 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * @param acknowledgementId the id.
      * @return the matching entity.
      */
-    List<BusinessEventEntity> findByAcknowledgementIdIn(List<String> acknowledgementId);
+    List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(List<String> acknowledgementId);
 }
