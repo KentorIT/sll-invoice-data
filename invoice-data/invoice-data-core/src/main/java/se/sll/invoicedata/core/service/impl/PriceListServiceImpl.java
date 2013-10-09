@@ -16,9 +16,14 @@
 
 package se.sll.invoicedata.core.service.impl;
 
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +32,16 @@ import se.sll.invoicedata.core.model.entity.PriceEntity;
 import se.sll.invoicedata.core.model.entity.PriceListEntity;
 import se.sll.invoicedata.core.model.repository.PriceListRepository;
 import se.sll.invoicedata.core.service.PriceListService;
-import se.sll.invoicedata.core.service.dto.PriceList;
 import se.sll.invoicedata.core.service.dto.Price;
+import se.sll.invoicedata.core.service.dto.PriceList;
 import se.sll.invoicedata.core.service.dto.ServiceResponse;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 @Service
 @Transactional
 public class PriceListServiceImpl implements PriceListService {
 
+    private static final Logger log = LoggerFactory.getLogger(PriceListService.class);
+    
     @Autowired
     private PriceListRepository priceListRepository;
 
@@ -61,38 +66,45 @@ public class PriceListServiceImpl implements PriceListService {
         return target;
     }
 
+    //
+    private PriceListEntity lookupPriceListEntity(final PriceList priceList) {
+        // Lookup by id or logical key
+        if (priceList.getId() != null) {
+            return priceListRepository.findOne(priceList.getId());
+        }
+        return priceListRepository.findBySupplierIdAndServiceCodeAndValidFrom(
+                priceList.getSupplierId(),
+                priceList.getServiceCode(),
+                priceList.getValidFrom());
+    }
+    
     @Override
     public ServiceResponse savePriceList(final PriceList priceList) {
 
         final ServiceResponse response = new ServiceResponse();
 
-        PriceListEntity priceListEntity;
+        final PriceListEntity oldPriceListEntity = lookupPriceListEntity(priceList);
 
-        // Lookup by id or logical key
-        if (priceList.getId() != null) {
-            priceListEntity = priceListRepository.findOne(priceList.getId());
-        } else {
-            priceListEntity = priceListRepository.findBySupplierIdAndServiceCodeAndValidFrom(
-                    priceList.getSupplierId(),
-                    priceList.getServiceCode(),
-                    priceList.getValidFrom());
-        }
-
-        if (priceListEntity == null) {
-            priceListEntity = copyProperties(priceList, PriceListEntity.class);
-            response.setMessage("created");
-        } else {
-            priceListEntity.clearPriceEntities();
+        log.debug("save pricelist new: {} old: {}", priceList, oldPriceListEntity);
+        
+        if (oldPriceListEntity != null) {
+            priceListRepository.delete(oldPriceListEntity.getId());
+            // XXX: flush is necessary in order to avoid duplicate key in index exceptions
+            priceListRepository.flush();
+            log.debug("delete old pricelist with id: {}", oldPriceListEntity.getId());
             response.setMessage("updated");
+        } else {
+            response.setMessage("created");            
         }
+        
+        final PriceListEntity newPriceListEntity = copyProperties(priceList, PriceListEntity.class);
         
         for (final Price price : priceList.getPrices()) {
-            final PriceEntity priceEntity = copyProperties(price, PriceEntity.class);
-            priceListEntity.addPriceEntity(priceEntity);
+            log.debug("price {}", price);
+            newPriceListEntity.addPriceEntity(copyProperties(price, PriceEntity.class));
         }
-        PriceListEntity saved = priceListRepository.save(priceListEntity);
-        
-        response.setId(saved.getId());
+                
+        response.setId(priceListRepository.save(newPriceListEntity).getId());
         
         return response;
     }
