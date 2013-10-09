@@ -9,7 +9,7 @@
 	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
-<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
+	<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'
 	xmlns:tns='urn:riv:sll:paymentresponsible:ListPaymentResponsibleDataResponder:1'
 	xmlns:core='urn:riv:sll:paymentresponsible:1' targetNamespace='urn:riv:sll:paymentresponsible:ListPaymentResponsibleDataResponder:1'
 	elementFormDefault='qualified' attributeFormDefault='unqualified'
@@ -17,6 +17,13 @@
 
 	<xs:import schemaLocation='../../core_components/sll_payment_responsible_1.0.xsd'
 		namespace='urn:riv:sll:paymentresponsible:1' />
+	<xs:import schemaLocation='../../kodserver/MEK.xsd' namespace='http://brainpool.se/mek/MEK.xsd' />
+	<xs:import schemaLocation='../../kodserver/SAMVERKS.xsd' namespace='urn:codeservice' />
+	<!-- 
+    <xs:import schemaLocation='../../kodserver/AVD.xsd' namespace='urn:codeservice' />    
+    <xs:import schemaLocation='../../kodserver/AVTAL.xsd' namespace='urn:codeservice' />    
+    <xs:import schemaLocation='../../kodserver/UPPDRAGSTYP.xsd' namespace='urn:codeservice' /> -->
+      
 	
 	<xs:element name='ListPaymentResponsibleData' type="core:ListPaymentResponsibleDataRequest" />
 	<xs:element name='ListPaymentResponsibleDataResponse' type="core:ListPaymentResponsibleDataResponse" />

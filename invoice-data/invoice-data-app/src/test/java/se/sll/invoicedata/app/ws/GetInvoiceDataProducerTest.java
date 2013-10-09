@@ -77,7 +77,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 	}
 
 	@Test
-	public void get_InvoiceData_Incomplete_Request_Data_Fail() {
+	public void get_InvoiceData_With_Alternatives() {
 		
 		Event event = createRandomEventData();
 		RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
@@ -90,7 +90,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 				.getInvoiceData(LOGICAL_ADDRESS, request);
 
 		Assert.assertNotNull(response);
-		Assert.assertEquals(ResultCodeEnum.ERROR, response.getResultCode()
+		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
 				.getCode());
 
 		request.setSupplierId("");
@@ -99,7 +99,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 				request);
 
 		Assert.assertNotNull(response);
-		Assert.assertEquals(ResultCodeEnum.ERROR, response.getResultCode()
+		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
 				.getCode());
 	}
 
@@ -112,7 +112,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 
 		GetInvoiceDataRequest request = new GetInvoiceDataRequest();
 		request.setSupplierId(event.getSupplierId());
-		request.setPaymentResponsible(event.getPaymentResponsible());
+		//request.setPaymentResponsible(event.getPaymentResponsible());
 
 		GetInvoiceDataResponse response = getIDRInterface
 				.getInvoiceData(LOGICAL_ADDRESS, request);
@@ -156,7 +156,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 
 		GetInvoiceDataRequest getInvoiceReq = new GetInvoiceDataRequest();
 		getInvoiceReq.setSupplierId(event.getSupplierId());
-		getInvoiceReq.setPaymentResponsible(event.getPaymentResponsible());
+		//getInvoiceReq.setPaymentResponsible(event.getPaymentResponsible());
 
 		GetInvoiceDataResponse getInvoiceResp = getIDRInterface
 				.getInvoiceData(LOGICAL_ADDRESS, getInvoiceReq);

@@ -45,11 +45,11 @@ public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoi
             public void run() {
                 //Fetching unprocessed events with price
                 response.getRegisteredEventList().addAll(getInvoiceDataService()
-                        .getAllUnprocessedBusinessEvents(request.getSupplierId(), request.getPaymentResponsible()));
+                        .getAllUnprocessedBusinessEvents(request));
 
                 //Fetching invoiced data            
                 response.getInvoiceDataList().addAll(getInvoiceDataService()
-                        .getAllInvoicedData(request.getSupplierId(), request.getPaymentResponsible()));               
+                        .getAllInvoicedData(request));               
             }
         }));
         

@@ -23,16 +23,16 @@
 	
 	<xs:complexType name="GetInvoiceDataRequest">
 		<xs:sequence>
-			<xs:element name="supplierId" type="xs:string" minOccurs="1"
+			<xs:element name="supplierId" type="xs:string" minOccurs="0"
 				maxOccurs="1" />
 			<xs:element name="paymentResponsible" type="xs:string"
-				minOccurs="0" maxOccurs="1" />
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"
-				maxOccurs="unbounded" />
+				minOccurs="0" maxOccurs="1" />			
 			<xs:element name="fromDate" type="xs:dateTime"
 				minOccurs="0" maxOccurs="1" />
 			<xs:element name="toDate" type="xs:dateTime"
 				minOccurs="0" maxOccurs="1" />
+			<xs:any namespace="##other" processContents="lax" minOccurs="0"
+				maxOccurs="unbounded" />	
 		</xs:sequence>
 	</xs:complexType>
 	

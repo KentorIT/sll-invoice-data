@@ -39,7 +39,6 @@ import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
 
 /**
  * Business event information.
@@ -47,11 +46,12 @@ import org.hibernate.annotations.Table;
  * @author Peter
  */
 @Entity(name=BusinessEventEntity.TABLE_NAME)
-@Table(appliesTo=BusinessEventEntity.TABLE_NAME,
-indexes={ @Index(name=BusinessEventEntity.INDEX_NAME_1, 
-columnNames={ BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ),
+@javax.persistence.Table(name = BusinessEventEntity.TABLE_NAME)
+@org.hibernate.annotations.Table(appliesTo=BusinessEventEntity.TABLE_NAME, indexes = { 
+@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ),
 @Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }),
 @Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.ACKNOWLEDGEMENT_ID }) })
+
 public class BusinessEventEntity {
     static final String TABLE_NAME = "invoice_data_event";
     static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
+import se.sll.invoicedata.core.service.impl.CoreUtil;
 import se.sll.invoicedata.core.support.TestSupport;
 
 /**
@@ -50,7 +52,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getInvoiceDataRepository().save(e);
         getInvoiceDataRepository().flush();
         
-        final List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndPaymentResponsible(e.getSupplierId(), e.getPaymentResponsible());
+        final List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySearchCriteria(e.getSupplierId(), e.getPaymentResponsible(), CoreUtil.toDate(CoreUtil.getStartDate()), new Date());
         
         assertNotNull(l);
         assertEquals(1, l.size());
@@ -130,7 +132,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getInvoiceDataRepository().save(ie);
         getInvoiceDataRepository().flush();
         
-        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndPaymentResponsible(ie.getSupplierId(), ie.getPaymentResponsible());
+        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySearchCriteria(be.getSupplierId(), be.getPaymentResponsible(), CoreUtil.toDate(CoreUtil.getStartDate()), new Date());
         
         assertEquals(1, l.size());
         

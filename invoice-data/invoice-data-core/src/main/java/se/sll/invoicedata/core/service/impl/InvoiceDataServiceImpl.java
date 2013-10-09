@@ -33,6 +33,7 @@ import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
@@ -116,10 +117,19 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Override
     public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
-            String supplierId, String paymentResponsible) {
-        List<BusinessEventEntity> bEEntityList = businessEventRepository.findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(
-                validate(supplierId, "supplierId"), 
-                validate(paymentResponsible, "paymentResponsible"));
+            GetInvoiceDataRequest request) {
+    	
+    	if (request.getFromDate() != null && request.getToDate() == null) {
+            request.setToDate(CoreUtil.toXMLGregorianCalendar(new Date()));
+        } else if (request.getToDate() != null && request.getFromDate() == null) {
+            request.setFromDate(CoreUtil.getStartDate());
+        }
+    	
+        List<BusinessEventEntity> bEEntityList = businessEventRepository.findByCriteria(
+                request.getSupplierId(),
+                request.getPaymentResponsible(),
+                CoreUtil.toDate(request.getFromDate()),
+                CoreUtil.toDate(request.getToDate()));
 
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
@@ -130,11 +140,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 
     @Override
-    public List<InvoiceDataHeader> getAllInvoicedData(String supplierId, String paymentResponsible) {
-        List<InvoiceDataEntity> iDEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsible(
-                validate(supplierId, "supplierId"), 
-                validate(paymentResponsible, "paymentResponsible"));
-        return EntityBeanConverter.fromIEntity(iDEntityList);
+    public List<InvoiceDataHeader> getAllInvoicedData(GetInvoiceDataRequest request) {
+        return listAllInvoiceData(CoreUtil.copyProperties(request, ListInvoiceDataRequest.class));
     }
 
     //
@@ -229,7 +236,6 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         return invoiceDataEntity;
     }
 
-
     @Override
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
         final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
@@ -273,7 +279,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 
     @Override
-    public List<InvoiceData> listAllInvoiceData(ListInvoiceDataRequest request) {
+    public List<InvoiceDataHeader> listAllInvoiceData(ListInvoiceDataRequest request) {
 
         if (request.getFromDate() != null && request.getToDate() == null) {
             request.setToDate(CoreUtil.toXMLGregorianCalendar(new Date()));
@@ -281,13 +287,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             request.setFromDate(CoreUtil.getStartDate());
         }
 
-        List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.findBetweenDates(
+        List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.findBySearchCriteria(
                 request.getSupplierId(),
                 request.getPaymentResponsible(),
                 CoreUtil.toDate(request.getFromDate()),
                 CoreUtil.toDate(request.getToDate()));
 
-        List<InvoiceData> invoiceDataList = new ArrayList<InvoiceData>(invoiceDataEntityList.size());
+        List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
         for (InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
             List<RegisteredEvent> eventList = EntityBeanConverter.fromBEntity(iDataEntity.getBusinessEventEntities());
 
