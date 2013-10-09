@@ -28,56 +28,73 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import se.sll.invoicedata.core.service.PriceListService;
 import se.sll.invoicedata.core.service.dto.PriceList;
 import se.sll.invoicedata.core.service.dto.ServiceResponse;
 
+/**
+ * Admin REST services to manage price lists.
+ * 
+ * @author Peter
+ *
+ */
 @Path("/")
-public class PriceListProducer {
-    @Autowired
-    private PriceListService priceListService;
-    
-    
+public interface PriceListProducer {  
+    /**
+     * Returns all price lists.
+     *  
+     * @return all price lists, or emoty if none exists.
+     */
     @GET
     @Produces("application/json")
     @Path("/pricelists")
-    public List<PriceList> getPriceLists() {
-        return priceListService.getPriceLists();
-    }
-    
+    List<PriceList> getPriceLists();
+
+    /**
+     * Updates a list/array of price lists.
+     * 
+     * @param priceLists the price lists to be updated.
+     * @return a service response on success.
+     */
     @POST
     @PUT
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/pricelists")
-    public List<ServiceResponse> putPriceLists(final List<PriceList> priceLists) {
-        return priceListService.savePriceLists(priceLists);
-    }
-    
+    List<ServiceResponse> putPriceLists(final List<PriceList> priceLists);
+
+    /**
+     * Deletes a price list.
+     * 
+     * @param id the internal id of the actual price list to delete.
+     * @return a service response on success.
+     */
     @DELETE
     @Path("/pricelists/{id}")
     @Produces("application/json")
-    public Response deletePriceList(@PathParam(value = "id") Long id) {
-        return Response.ok(priceListService.deletePriceList(id)).build();
-    }
+    public Response deletePriceList(@PathParam(value = "id") Long id);
 
+    /**
+     * Returns a single price list by an internal id.
+     * 
+     * @param id the id, previously returned by getter methods.
+     * @return a service response with the entity set to the actual price list on success, 
+     * or a response indicating not found when no such price list exists..
+     */
     @GET
     @Path("/pricelists/{id}")
     @Produces("application/json")
-    public Response getPriceList(@PathParam(value = "id") Long id) {
-        final PriceList priceList = priceListService.getPriceList(id);
-        return (priceList == null) ? Response.status(Response.Status.NOT_FOUND).build(): Response.ok(priceList).build();
-    }
-   
+    public Response getPriceList(@PathParam(value = "id") Long id);
+
+    /**
+     * Updates a single price list.
+     * 
+     * @param priceList the price list to update.
+     * @return a service response on success.
+     */
     @POST
     @PUT
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/pricelist")
-    public Response putPriceList(final PriceList priceList) {
-        return Response.ok(priceListService.savePriceList(priceList)).build();
-    }
-    
+    public Response putPriceList(final PriceList priceList);
 }

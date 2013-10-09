@@ -19,13 +19,8 @@
  */
 package se.sll.invoicedata.app.ws;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -53,12 +48,11 @@ public class ListInvoiceDataProducerTest extends TestSupport {
 
 	private static ListInvoiceDataResponderInterface listIDRInterface;
 	private static Event event;
-	private static String referenceId;
 
 	@BeforeClass
 	public static void setUp() {
 		listIDRInterface = getListInvoiceDataService();
-		referenceId = testPrerequisiteStep_ListInvoiceData();
+		testPrerequisiteStep_ListInvoiceData();
 	}
 
 	@AfterClass
@@ -144,22 +138,9 @@ public class ListInvoiceDataProducerTest extends TestSupport {
 	
 
 	static ListInvoiceDataResponderInterface getListInvoiceDataService() {
-		
-		ListInvoiceDataResponderInterface iListInvoiceDataResponder = null;		
-		try {
-			URL wsdlURL = new URL(getWSDLURL("listInvoiceData"));
-			String serviceName = "ListInvoiceDataProducerService";
-			QName serviceQN = new QName(NAMESPACE_URI, serviceName);
-
-			Service service = Service.create(wsdlURL, serviceQN);
-			iListInvoiceDataResponder = service
-					.getPort(ListInvoiceDataResponderInterface.class);
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (listIDRInterface == null) {
+		    listIDRInterface = createWebServiceConsumer(ListInvoiceDataResponderInterface.class);
 		}
-		return iListInvoiceDataResponder;
+		return listIDRInterface;
 	}
 }

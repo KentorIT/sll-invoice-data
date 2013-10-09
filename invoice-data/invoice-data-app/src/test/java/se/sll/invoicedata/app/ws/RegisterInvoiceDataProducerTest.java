@@ -173,7 +173,7 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 
 	public static RegisterInvoiceDataResponderInterface getRegisterInvoiceDataService() {
 	    if (regIDRInterface == null) {
-	        regIDRInterface = createService(RegisterInvoiceDataResponderInterface.class);
+	        regIDRInterface = createWebServiceConsumer(RegisterInvoiceDataResponderInterface.class);
 	    }
 	    return regIDRInterface;
 	}

@@ -160,6 +160,7 @@ public abstract class TestSupport extends CoreUtil {
         return name.substring(0, name.lastIndexOf("ResponderInterface"));
     }
 
+    
 
     /**
      * Use RIV-TA naming convention standard to create a service client.
@@ -167,7 +168,7 @@ public abstract class TestSupport extends CoreUtil {
      * @param type the Web Service interface class.
      * @return the actual service implementing the interface.
      */
-    public static <T> T createService(Class<T> type) {
+    public static <T> T createWebServiceConsumer(Class<T> type) {
         final String basename = basename(type);
         try {
             URL wsdlURL = new URL(getWSDLURL(initLow(basename)));

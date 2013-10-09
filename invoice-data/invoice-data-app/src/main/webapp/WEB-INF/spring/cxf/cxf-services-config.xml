@@ -78,6 +78,6 @@
 		</jaxrs:serviceBeans>
 	</jaxrs:server>
 
-	<bean id="priceListBean" class="se.sll.invoicedata.app.rs.PriceListProducer" />
+	<bean id="priceListBean" class="se.sll.invoicedata.app.rs.impl.PriceListProducerImpl" />
 
 </beans>

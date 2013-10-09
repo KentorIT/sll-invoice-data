@@ -42,7 +42,7 @@
   </logger>
 
   <logger name="org.apache.cxf">
-    <level value="info" />
+    <level value="trace" />
   </logger>
 
   <logger name="org.springframework.security">

@@ -164,7 +164,7 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 	
 	public static ViewInvoiceDataResponderInterface getViewInvoiceDataService() {
 	    if (viewIDRInterface == null) {
-	        viewIDRInterface = createService(ViewInvoiceDataResponderInterface.class);
+	        viewIDRInterface = createWebServiceConsumer(ViewInvoiceDataResponderInterface.class);
 	    }
 		return viewIDRInterface;
 	}

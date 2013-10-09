@@ -196,7 +196,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 
 	public static GetInvoiceDataResponderInterface getGetInvoiceDataService() {
 	    if (getIDRInterface == null) {
-	        getIDRInterface = createService(GetInvoiceDataResponderInterface.class);
+	        getIDRInterface = createWebServiceConsumer(GetInvoiceDataResponderInterface.class);
 	    }
 	    return getIDRInterface;
 	}

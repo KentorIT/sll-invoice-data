@@ -130,7 +130,7 @@ public class CreateInvoiceDataProducerTest extends TestSupport {
 
     public static CreateInvoiceDataResponderInterface getCreateInvoiceDataService() {
         if (createInvoiceDataResponderInterface == null) {
-            createInvoiceDataResponderInterface = createService(CreateInvoiceDataResponderInterface.class);
+            createInvoiceDataResponderInterface = createWebServiceConsumer(CreateInvoiceDataResponderInterface.class);
         }
         return createInvoiceDataResponderInterface;
     }  
