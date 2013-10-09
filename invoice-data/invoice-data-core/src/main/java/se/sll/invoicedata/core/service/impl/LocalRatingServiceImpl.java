@@ -30,7 +30,6 @@ import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.entity.PriceEntity;
 import se.sll.invoicedata.core.model.entity.PriceListEntity;
 import se.sll.invoicedata.core.model.repository.PriceListRepository;
-import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.RatingService;
 
 /**

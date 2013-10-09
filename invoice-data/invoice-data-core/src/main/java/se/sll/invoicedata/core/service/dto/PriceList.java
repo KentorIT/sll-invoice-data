@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
 public class PriceList {
@@ -85,5 +87,10 @@ public class PriceList {
     
     public void setPrices(List<Price> prices) {
         this.prices = prices;
+    }
+    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

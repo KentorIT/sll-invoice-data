@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType
 public class Price {
@@ -47,5 +49,10 @@ public class Price {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+    
+    @Override
+    public String toString() {
+       return ToStringBuilder.reflectionToString(this);
     }
 }

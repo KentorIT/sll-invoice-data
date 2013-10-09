@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.NaturalId;
 
 @Entity(name="invoice_data_pricelist_item")
 public class PriceEntity {
@@ -35,10 +36,12 @@ public class PriceEntity {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
+    @NaturalId
     @ManyToOne(optional=false)
     @JoinColumn(name="price_list_id", updatable=false)
     private PriceListEntity priceList;
     
+    @NaturalId
     @Column(name="item_id", length=64, nullable=false, updatable=false)
     private String itemId;
 

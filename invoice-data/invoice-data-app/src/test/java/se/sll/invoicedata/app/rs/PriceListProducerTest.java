@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.apache.cxf.jaxrs.client.ResponseReader;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import se.sll.invoicedata.core.service.dto.Price;
@@ -35,24 +36,39 @@ import se.sll.invoicedata.core.service.dto.PriceList;
 import se.sll.invoicedata.core.service.dto.ServiceResponse;
 
 
-
+/**
+ * Tests price-list admin REST API.
+ * 
+ * @author Peter
+ *
+ */
 public class PriceListProducerTest {
     
     static String LIST_ENDPOINT = "http://localhost:8080/invoice-data-app/admin";
     
-    private PriceListProducer priceListProducer;
+    private static PriceListProducer priceListProducer;
     
-    @Before
-    public void setUp() {
-        List<ResponseReader> readers = new ArrayList<ResponseReader>();
-        for (Class<?> c : new Class[] { ServiceResponse.class, PriceList.class }) {
-            ResponseReader reader = new ResponseReader();
-            reader.setEntityClass(c);
-            readers.add(reader);
+    /**
+     * Initialize REST client.
+     * 
+     */
+    @BeforeClass
+    public static void initalize() {
+        // register readers to deserialize response entities
+        final List<ResponseReader> readers = new ArrayList<ResponseReader>();
+        for (final Class<?> cls : new Class[] { ServiceResponse.class, PriceList.class }) {
+            readers.add(new ResponseReader(cls));
         }
-        
-        priceListProducer = JAXRSClientFactory.create(LIST_ENDPOINT, PriceListProducer.class, readers);  
-        // scratch
+        // create producer
+        priceListProducer = JAXRSClientFactory.create(LIST_ENDPOINT, PriceListProducer.class, readers);          
+    }
+    
+    /**
+     * Deletes all price lists before starting a test.
+     */
+    @Before
+    public void deleteAll() {
+        // deleteAll
         for (final PriceList priceList : priceListProducer.getPriceLists()) {
             priceListProducer.deletePriceList(priceList.getId());
         }
@@ -101,7 +117,8 @@ public class PriceListProducerTest {
         assertEquals(numPrices-1, priceList.getPrices().size());
     }
 
-    private PriceList createSamplePriceList(String supplierId) {
+    //
+    protected PriceList createSamplePriceList(String supplierId) {
         final PriceList priceList = new PriceList();
         priceList.setServiceCode("Språktolk");
         priceList.setSupplierId(supplierId);
@@ -109,7 +126,7 @@ public class PriceListProducerTest {
         
         for (int i = 0; i < 10; i++) {
             Price price = new Price();
-            price.setItemId("item.1");
+            price.setItemId("item." + i);
             price.setPrice(BigDecimal.valueOf(700.50+i));
             priceList.getPrices().add(price);
         }
