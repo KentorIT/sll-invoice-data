@@ -119,6 +119,8 @@ public class TestDataHelperService {
         for (int i = 0; i < n; i++) {
             Event e = new Event();
             e.setEventId(UUID.randomUUID().toString());
+            e.setHealthcareFacility("HSA_ID_001");
+            e.setRefContractId("CONTRACT_1");
             e.setAcknowledgedBy(rollingText(i, "per", "lena", "eva", "lisa", "hans", "greta", "unknwon"));
             e.setStartTime(setRandomTime(cal));
             e.setStartTime(addRandomTime(cal));

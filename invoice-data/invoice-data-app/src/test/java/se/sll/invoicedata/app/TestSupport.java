@@ -89,6 +89,8 @@ public abstract class TestSupport extends CoreUtil {
 	public static Event createRandomEventData() {
 		Event event = new Event();
 		event.setEventId(genRandomAlphaNData(5));
+		event.setHealthcareFacility(genRandomAlphaNData(10));
+		event.setRefContractId("CONTRACT_1");
 		event.setSupplierId(SUPPLIER.SUPPLIER_X.getId());
 		event.setSupplierName(SUPPLIER.SUPPLIER_X.getName());
 		

@@ -198,6 +198,9 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 
 		final Event e = createSampleEvent();
 		invoiceDataService.registerEvent(e);
+		e.setEventId("Event_2");
+		e.setAcknowledgementId("Ack_123");
+		invoiceDataService.registerEvent(e);
 		
 		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
 		getIDRequest.setSupplierId(e.getSupplierId());
@@ -221,7 +224,10 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
 		List<InvoiceDataHeader> iDH = invoiceDataService
 				.getAllInvoicedData(getIDRequest);
-
+		
+		assertNotNull(iDH);
+		assertEquals(1, iDH.size());
+		
 		InvoiceData iData = invoiceDataService.getInvoiceDataByReferenceId(iDH
 				.get(0).getReferenceId());
 

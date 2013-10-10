@@ -119,18 +119,29 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
             GetInvoiceDataRequest request) {
     	
-    	if (request.getFromDate() != null && request.getToDate() == null) {
-            request.setToDate(CoreUtil.toXMLGregorianCalendar(new Date()));
-        } else if (request.getToDate() != null && request.getFromDate() == null) {
-            request.setFromDate(CoreUtil.getStartDate());
+    	mandatory(request.getSupplierId(), "supplierId");
+    	
+    	if (request.getFromDate() == null) {
+    		request.setFromDate(CoreUtil.getStartDate());            
+        } 
+    	
+    	if (request.getToDate() == null) {
+        	request.setToDate(CoreUtil.getEndDate());
         }
     	
-        List<BusinessEventEntity> bEEntityList = businessEventRepository.findByCriteria(
-                request.getSupplierId(),
-                request.getPaymentResponsible(),
-                CoreUtil.toDate(request.getFromDate()),
-                CoreUtil.toDate(request.getToDate()));
-
+    	List<BusinessEventEntity> bEEntityList = new ArrayList<BusinessEventEntity>();
+    	
+    	if (request.getPaymentResponsible() != null) {
+    		bEEntityList = businessEventRepository.
+    				findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(
+    				request.getSupplierId(), request.getPaymentResponsible(), 
+    				CoreUtil.toDate(request.getFromDate()), CoreUtil.toDate(request.getToDate()));
+    	} else {
+    		bEEntityList = businessEventRepository.findBySupplierIdAndPendingIsTrueAndStartTimeBetween(
+    				request.getSupplierId(),
+    				CoreUtil.toDate(request.getFromDate()), CoreUtil.toDate(request.getToDate()));
+    	}
+    	
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
 
@@ -186,6 +197,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
         // mandatory fields according to schema
         mandatory(businessEventEntity.getEventId(), "event.eventId");
+        mandatory(businessEventEntity.getHealthcareFacility(), "event.healthcareFacility");
         mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
         mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
         mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");        

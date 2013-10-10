@@ -46,6 +46,8 @@
 					<xs:documentation>Supplier (of interpreters) identity.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="healthcareFacility" type="xs:string" />
+			<xs:element name="refContractId" type="xs:string" />
 			<xs:element name="supplierName" type="xs:string"/>
 			<xs:element name="serviceCode" type="xs:string"/>
 			<xs:element name="paymentResponsible" type="xs:string" />

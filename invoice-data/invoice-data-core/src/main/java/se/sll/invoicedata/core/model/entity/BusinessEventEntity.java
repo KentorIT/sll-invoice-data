@@ -79,6 +79,12 @@ public class BusinessEventEntity {
     @Column(name = "created_timestamp", nullable=false, updatable=false)
     private Date createdTimestamp;
     
+    @Column(name="HEALTHCARE_FACILITY", length=64, nullable=false, updatable=false)
+    private String healthcareFacility;
+    
+    @Column(name="refContract_Id", length=64, nullable=false, updatable=false)
+    private String refContractId;
+    
     @Column(name=SUPPLIER_ID, length=64, nullable=false, updatable=false)
     private String supplierId;
     
@@ -152,13 +158,27 @@ public class BusinessEventEntity {
         return eventId;
     }
 
-
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 
+    public String getHealthcareFacility() {
+		return healthcareFacility;
+	}
 
-    public Boolean getCredit() {
+	public void setHealthcareFacility(String healthcareFacility) {
+		this.healthcareFacility = healthcareFacility;
+	}
+
+	public String getRefContractId() {
+		return refContractId;
+	}
+
+	public void setRefContractId(String refContractId) {
+		this.refContractId = refContractId;
+	}
+
+	public Boolean getCredit() {
         return credit;
     }
 
