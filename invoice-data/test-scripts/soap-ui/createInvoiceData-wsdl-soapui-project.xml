@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="createInvoiceData?wsdl" soapui-version="4.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="CreateInvoiceDataProducerServiceSoapBinding" type="wsdl" bindingName="{http://ws.app.invoicedata.sll.se/}CreateInvoiceDataProducerServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/invoice-data-app/ws/createInvoiceData?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/invoice-data-app/ws/createInvoiceData?wsdl"><con:part><con:url>http://localhost:8080/invoice-data-app/ws/createInvoiceData?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="CreateInvoiceDataProducerService" targetNamespace="http://ws.app.invoicedata.sll.se/" xmlns:ns1="urn:riv:sll:invoicedata:CreateInvoiceData:1:rivtabp21" xmlns:ns4="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://ws.app.invoicedata.sll.se/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:import location="http://localhost:8080/invoice-data-app/ws/createInvoiceData?wsdl=CreateInvoiceDataResponderInterface.wsdl" namespace="urn:riv:sll:invoicedata:CreateInvoiceData:1:rivtabp21"></wsdl:import>
+  <wsdl:binding name="CreateInvoiceDataProducerServiceSoapBinding" type="ns1:CreateInvoiceDataResponderInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="CreateInvoiceData">
+      <soap:operation soapAction="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1:CreateInvoiceData" style="document"/>
+      <wsdl:input name="CreateInvoiceData">
+        <soap:header message="ns1:CreateInvoiceData" part="LogicalAddress" use="literal"></soap:header>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="CreateInvoiceDataResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CreateInvoiceDataProducerService">
+    <wsdl:port binding="tns:CreateInvoiceDataProducerServiceSoapBinding" name="CreateInvoiceDataProducerPort">
+      <soap:address location="http://localhost:8080/invoice-data-app/ws/createInvoiceData"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/invoice-data-app/ws/createInvoiceData?wsdl=CreateInvoiceDataResponderInterface.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="CreateInvoiceDataResponderInterface" targetNamespace="urn:riv:sll:invoicedata:CreateInvoiceData:1:rivtabp21" xmlns:ns1="urn:riv:sll:invoicedata:CreateInvoiceData:1:rivtabp21" xmlns:ns2="urn:riv:itintegration:registry:1" xmlns:ns3="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1" version="1.0" xmlns:ns1="urn:riv:sll:invoicedata:1" xmlns:tns="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="urn:riv:sll:invoicedata:1"/>
+      <xs:element name="CreateInvoiceData" type="tns:CreateInvoiceDataRequest"/>
+      <xs:element name="CreateInvoiceDataResponse" type="tns:CreateInvoiceDataResponse"/>
+      <xs:complexType name="CreateInvoiceDataRequest">
+        <xs:sequence>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="createdBy" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="eventRefIdList" type="xs:long"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="CreateInvoiceDataResponse">
+        <xs:sequence>
+          <xs:element name="resultCode" type="ns1:ResultCode"/>
+          <xs:element minOccurs="0" name="referenceId" type="xs:string"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:1" version="1.0" xmlns:tns="urn:riv:sll:invoicedata:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="ResultCode">
+        <xs:sequence>
+          <xs:element name="code" type="tns:ResultCodeEnum"/>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="InvoiceData">
+        <xs:complexContent>
+          <xs:extension base="tns:InvoiceDataHeader">
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="eventList" type="tns:RegisteredEvent"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="InvoiceDataHeader">
+        <xs:sequence>
+          <xs:element name="referenceId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="createdBy" type="xs:string"/>
+          <xs:element name="createdTime" type="xs:dateTime"/>
+          <xs:element name="totalAmount" type="xs:decimal"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RegisteredEvent">
+        <xs:complexContent>
+          <xs:extension base="tns:Event">
+            <xs:sequence>
+              <xs:element name="id" type="xs:long"/>
+              <xs:element name="credit" type="xs:boolean"/>
+              <xs:element name="totalAmount" type="xs:decimal"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="Event">
+        <xs:sequence>
+          <xs:element name="eventId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="supplierName" type="xs:string"/>
+          <xs:element name="serviceCode" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="healthCareCommission" type="xs:string"/>
+          <xs:element name="acknowledgedBy" type="xs:string"/>
+          <xs:element name="acknowledgedTime" type="xs:dateTime"/>
+          <xs:element name="startTime" type="xs:dateTime"/>
+          <xs:element name="endTime" type="xs:dateTime"/>
+          <xs:element maxOccurs="unbounded" name="itemList" type="tns:Item"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Item">
+        <xs:sequence>
+          <xs:element name="itemId" type="xs:string"/>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="qty" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="ResultCodeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OK"/>
+          <xs:enumeration value="ERROR"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:itintegration:registry:1" version="1.0" xmlns:tns="urn:riv:itintegration:registry:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="LogicalAddress" type="xs:string"/>
+      <xs:element name="ServiceContract" type="tns:ServiceContractType"/>
+      <xs:complexType name="ServiceContractType">
+        <xs:sequence>
+          <xs:element name="ServiceContractNamespace" type="xs:anyURI"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="CreateInvoiceData">
+    <wsdl:part element="ns2:LogicalAddress" name="LogicalAddress"></wsdl:part>
+    <wsdl:part element="ns3:CreateInvoiceData" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CreateInvoiceDataResponse">
+    <wsdl:part element="ns3:CreateInvoiceDataResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CreateInvoiceDataResponderInterface">
+    <wsdl:operation name="CreateInvoiceData">
+      <wsdl:input message="ns1:CreateInvoiceData" name="CreateInvoiceData"></wsdl:input>
+      <wsdl:output message="ns1:CreateInvoiceDataResponse" name="CreateInvoiceDataResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/invoice-data-app/ws/createInvoiceData</con:endpoint></con:endpoints><con:operation isOneWay="false" action="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1:CreateInvoiceData" name="CreateInvoiceData" bindingOperationName="CreateInvoiceData" type="Request-Response" outputName="CreateInvoiceDataResponse" inputName="CreateInvoiceData" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Tolk.001 HSF"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoice-data-app/ws/createInvoiceData</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:CreateInvoiceData>
+         <urn1:supplierId>Tolk.001</urn1:supplierId>
+         <urn1:createdBy>dmeo</urn1:createdBy>
+         <urn1:paymentResponsible>HSF</urn1:paymentResponsible>
+         <!--Zero or more repetitions:-->
+         <urn1:eventRefIdList>1</urn1:eventRefIdList>
+         <urn1:eventRefIdList>2</urn1:eventRefIdList>
+         <urn1:eventRefIdList>3</urn1:eventRefIdList>
+         <!--You may enter ANY elements at this point-->
+      </urn1:CreateInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1:CreateInvoiceData"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Tolk.001 HSF (With credit)"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoice-data-app/ws/createInvoiceData</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:CreateInvoiceData>
+         <urn1:supplierId>Tolk.001</urn1:supplierId>
+         <urn1:createdBy>credit</urn1:createdBy>
+         <urn1:paymentResponsible>HSF</urn1:paymentResponsible>
+         <!--Zero or more repetitions:-->
+         <urn1:eventRefIdList>5</urn1:eventRefIdList>
+         <urn1:eventRefIdList>6</urn1:eventRefIdList>
+          <!--You may enter ANY elements at this point-->
+      </urn1:CreateInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1:CreateInvoiceData"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>

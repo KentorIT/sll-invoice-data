@@ -85,7 +85,7 @@ public class PriceListServiceImpl implements PriceListService {
 
         final PriceListEntity oldPriceListEntity = lookupPriceListEntity(priceList);
 
-        log.debug("save pricelist new: {} old: {}", priceList, oldPriceListEntity);
+        log.debug("save pricelist new: {}, old: {}", priceList, oldPriceListEntity);
         
         if (oldPriceListEntity != null) {
             priceListRepository.delete(oldPriceListEntity.getId());

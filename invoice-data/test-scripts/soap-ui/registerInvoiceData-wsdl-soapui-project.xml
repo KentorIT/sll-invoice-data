@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="registerInvoiceData?wsdl" soapui-version="4.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="RegisterInvoiceDataProducerServiceSoapBinding" type="wsdl" bindingName="{http://ws.app.invoicedata.sll.se/}RegisterInvoiceDataProducerServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/invoice-data-app/ws/registerInvoiceData?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/invoice-data-app/ws/registerInvoiceData?wsdl"><con:part><con:url>http://localhost:8080/invoice-data-app/ws/registerInvoiceData?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="RegisterInvoiceDataProducerService" targetNamespace="http://ws.app.invoicedata.sll.se/" xmlns:ns1="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21" xmlns:ns4="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://ws.app.invoicedata.sll.se/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:import location="http://localhost:8080/invoice-data-app/ws/registerInvoiceData?wsdl=RegisterInvoiceDataResponderInterface.wsdl" namespace="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21"></wsdl:import>
+  <wsdl:binding name="RegisterInvoiceDataProducerServiceSoapBinding" type="ns1:RegisterInvoiceDataResponderInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="RegisterInvoiceData">
+      <soap:operation soapAction="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" style="document"/>
+      <wsdl:input name="RegisterInvoiceData">
+        <soap:header message="ns1:RegisterInvoiceData" part="LogicalAddress" use="literal"></soap:header>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="RegisterInvoiceDataResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RegisterInvoiceDataProducerService">
+    <wsdl:port binding="tns:RegisterInvoiceDataProducerServiceSoapBinding" name="RegisterInvoiceDataProducerPort">
+      <soap:address location="http://localhost:8080/invoice-data-app/ws/registerInvoiceData"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/invoice-data-app/ws/registerInvoiceData?wsdl=RegisterInvoiceDataResponderInterface.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="RegisterInvoiceDataResponderInterface" targetNamespace="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21" xmlns:ns1="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21" xmlns:ns2="urn:riv:itintegration:registry:1" xmlns:ns3="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" version="1.0" xmlns:ns1="urn:riv:sll:invoicedata:1" xmlns:tns="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="urn:riv:sll:invoicedata:1"/>
+      <xs:element name="RegisterInvoiceData" type="ns1:Event"/>
+      <xs:element name="RegisterInvoiceDataResponse" type="tns:RegisterInvoiceDataResponse"/>
+      <xs:complexType name="RegisterInvoiceDataResponse">
+        <xs:sequence>
+          <xs:element name="resultCode" type="ns1:ResultCode"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:1" version="1.0" xmlns:tns="urn:riv:sll:invoicedata:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="Event">
+        <xs:sequence>
+          <xs:element name="eventId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="supplierName" type="xs:string"/>
+          <xs:element name="serviceCode" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="healthCareCommission" type="xs:string"/>
+          <xs:element name="acknowledgedBy" type="xs:string"/>
+          <xs:element name="acknowledgedTime" type="xs:dateTime"/>
+          <xs:element name="startTime" type="xs:dateTime"/>
+          <xs:element name="endTime" type="xs:dateTime"/>
+          <xs:element maxOccurs="unbounded" name="itemList" type="tns:Item"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Item">
+        <xs:sequence>
+          <xs:element name="itemId" type="xs:string"/>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="qty" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="InvoiceData">
+        <xs:complexContent>
+          <xs:extension base="tns:InvoiceDataHeader">
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="eventList" type="tns:RegisteredEvent"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="InvoiceDataHeader">
+        <xs:sequence>
+          <xs:element name="referenceId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="createdBy" type="xs:string"/>
+          <xs:element name="createdTime" type="xs:dateTime"/>
+          <xs:element name="totalAmount" type="xs:decimal"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RegisteredEvent">
+        <xs:complexContent>
+          <xs:extension base="tns:Event">
+            <xs:sequence>
+              <xs:element name="id" type="xs:long"/>
+              <xs:element name="credit" type="xs:boolean"/>
+              <xs:element name="totalAmount" type="xs:decimal"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="ResultCode">
+        <xs:sequence>
+          <xs:element name="code" type="tns:ResultCodeEnum"/>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="ResultCodeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OK"/>
+          <xs:enumeration value="ERROR"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:itintegration:registry:1" version="1.0" xmlns:tns="urn:riv:itintegration:registry:1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="LogicalAddress" type="xs:string"/>
+      <xs:element name="ServiceContract" type="tns:ServiceContractType"/>
+      <xs:complexType name="ServiceContractType">
+        <xs:sequence>
+          <xs:element name="ServiceContractNamespace" type="xs:anyURI"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="RegisterInvoiceData">
+    <wsdl:part element="ns2:LogicalAddress" name="LogicalAddress"></wsdl:part>
+    <wsdl:part element="ns3:RegisterInvoiceData" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RegisterInvoiceDataResponse">
+    <wsdl:part element="ns3:RegisterInvoiceDataResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="RegisterInvoiceDataResponderInterface">
+    <wsdl:operation name="RegisterInvoiceData">
+      <wsdl:input message="ns1:RegisterInvoiceData" name="RegisterInvoiceData"></wsdl:input>
+      <wsdl:output message="ns1:RegisterInvoiceDataResponse" name="RegisterInvoiceDataResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/invoice-data-app/ws/registerInvoiceData</con:endpoint></con:endpoints><con:operation isOneWay="false" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" name="RegisterInvoiceData" bindingOperationName="RegisterInvoiceData" type="Request-Response" outputName="RegisterInvoiceDataResponse" inputName="RegisterInvoiceData" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Tolk.001 Event.1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoice-data-app/ws/registerInvoiceData</con:endpoint><con:request><![CDATA[<soapenv:Envelope 
+xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
+xmlns:urn="urn:riv:itintegration:registry:1" 
+xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" 
+xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>event.1</urn2:eventId>
+         <urn2:supplierId>Tolk.001</urn2:supplierId>
+         <urn2:supplierName>Tolkportalen AB</urn2:supplierName>
+         <urn2:serviceCode>Språktolk</urn2:serviceCode>
+         <urn2:paymentResponsible>HSF</urn2:paymentResponsible>
+         <urn2:healthCareCommission>BVC</urn2:healthCareCommission>
+         <urn2:acknowledgedBy>Tolvan</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>2013-10-01T15:01:00</urn2:acknowledgedTime>
+         <urn2:startTime>2013-10-01T10:00:00</urn2:startTime>
+         <urn2:endTime>2013-10-01T11:00:01</urn2:endTime>
+         <!--1 or more repetitions:-->
+         <urn2:itemList>
+            <urn2:itemId>item.1</urn2:itemId>
+            <urn2:description>Vardag</urn2:description>
+            <urn2:qty>1</urn2:qty>
+            <urn2:price>650</urn2:price>
+         </urn2:itemList>
+         <!--You may enter ANY elements at this point-->
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Tolk.001 Event.2"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoice-data-app/ws/registerInvoiceData</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+xmlns:urn="urn:riv:itintegration:registry:1"
+xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1"
+xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>event.2</urn2:eventId>
+         <urn2:supplierId>Tolk.001</urn2:supplierId>
+         <urn2:supplierName>Tolkportalen AB</urn2:supplierName>
+         <urn2:serviceCode>Språktolk</urn2:serviceCode>
+         <urn2:paymentResponsible>HSF</urn2:paymentResponsible>
+         <urn2:healthCareCommission>Öppenvård</urn2:healthCareCommission>
+         <urn2:acknowledgedBy>Stina</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>2013-10-02T17:59:00</urn2:acknowledgedTime>
+         <urn2:startTime>2013-10-02T16:15:00</urn2:startTime>
+         <urn2:endTime>2013-10-02T18:35:09</urn2:endTime>
+         <!--1 or more repetitions:-->
+         <urn2:itemList>
+            <urn2:itemId>item.1</urn2:itemId>
+            <urn2:description>Standard</urn2:description>
+            <urn2:qty>0.5</urn2:qty>
+            <urn2:price>650</urn2:price>
+         </urn2:itemList>
+         <urn2:itemList>
+            <urn2:itemId>item.2</urn2:itemId>
+            <urn2:description>Enkel övertid vardagar</urn2:description>
+            <urn2:qty>1</urn2:qty>
+            <urn2:price>850</urn2:price>
+         </urn2:itemList>
+         <!--You may enter ANY elements at this point-->
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Tolk 001 Event.3"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoice-data-app/ws/registerInvoiceData</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+xmlns:urn="urn:riv:itintegration:registry:1"
+xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1"
+xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>event.3</urn2:eventId>
+         <urn2:supplierId>Tolk.001</urn2:supplierId>
+         <urn2:supplierName>Tolkportalen AB</urn2:supplierName>
+         <urn2:serviceCode>Språktolk</urn2:serviceCode>
+         <urn2:paymentResponsible>HSF</urn2:paymentResponsible>
+         <urn2:healthCareCommission>Öppenvård</urn2:healthCareCommission>
+         <urn2:acknowledgedBy>Lena</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>2013-10-07T09:01:00</urn2:acknowledgedTime>
+         <urn2:startTime>2013-10-05T11:25:00</urn2:startTime>
+         <urn2:endTime>2013-10-05T11:50:00</urn2:endTime>
+         <!--1 or more repetitions:-->
+         <urn2:itemList>
+            <urn2:itemId>item.1</urn2:itemId>
+            <urn2:description>ST, Helg, Dag</urn2:description>
+            <urn2:qty>1</urn2:qty>
+            <urn2:price>950</urn2:price>
+         </urn2:itemList>
+         <!--You may enter ANY elements at this point-->
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Tolk.002 Event.4"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoice-data-app/ws/registerInvoiceData</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+xmlns:urn="urn:riv:itintegration:registry:1"
+xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1"
+xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>event.4</urn2:eventId>
+         <urn2:supplierId>Tolk.002</urn2:supplierId>
+         <urn2:supplierName>Tolk AB</urn2:supplierName>
+         <urn2:serviceCode>Språktolk</urn2:serviceCode>
+         <urn2:paymentResponsible>HSF</urn2:paymentResponsible>
+         <urn2:healthCareCommission>BVC</urn2:healthCareCommission>
+         <urn2:acknowledgedBy>Åttan</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>2013-10-01T11:00:00</urn2:acknowledgedTime>
+         <urn2:startTime>2013-10-01T08:00:00</urn2:startTime>
+         <urn2:endTime>2013-10-01T09:15:00</urn2:endTime>
+         <!--1 or more repetitions:-->
+         <urn2:itemList>
+            <urn2:itemId>item.1</urn2:itemId>
+            <urn2:description>Vardag</urn2:description>
+            <urn2:qty>1.5</urn2:qty>
+            <urn2:price>650</urn2:price>
+         </urn2:itemList>
+         <!--You may enter ANY elements at this point-->
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/><con:wsrmConfig version="1.2"/></con:call><con:call name="Tolk.001 Event 1 (Changed)"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoice-data-app/ws/registerInvoiceData</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+xmlns:urn="urn:riv:itintegration:registry:1"
+xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1"
+xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>event.1</urn2:eventId>
+         <urn2:supplierId>Tolk.001</urn2:supplierId>
+         <urn2:supplierName>Tolkportalen AB</urn2:supplierName>
+         <urn2:serviceCode>Språktolk</urn2:serviceCode>
+         <urn2:paymentResponsible>HSF</urn2:paymentResponsible>
+         <urn2:healthCareCommission>BVC</urn2:healthCareCommission>
+         <urn2:acknowledgedBy>Tolvan</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>2013-10-04T15:00:00</urn2:acknowledgedTime>
+         <urn2:startTime>2013-10-01T10:00:00</urn2:startTime>
+         <urn2:endTime>2013-10-01T11:15:00</urn2:endTime>
+         <!--1 or more repetitions:-->
+         <urn2:itemList>
+            <urn2:itemId>item.1</urn2:itemId>
+            <urn2:description>Vardag</urn2:description>
+            <urn2:qty>2</urn2:qty>
+            <urn2:price>650</urn2:price>
+         </urn2:itemList>
+         <!--You may enter ANY elements at this point-->
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>
+]]></con:request><con:credentials><con:authType>Global HTTP Settings</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/></con:soapui-project>
