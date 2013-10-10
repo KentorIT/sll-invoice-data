@@ -23,6 +23,7 @@ import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 
 /**
@@ -43,24 +44,23 @@ public interface InvoiceDataService {
 		
 	/**
 	 * Returns all unprocessed events for a particular supplier.
+	 * @param request TODO
 	 * 
-	 * @param supplierId
-	 *            the supplier id.
 	 * @return the result list, might be empty if no none events found.
 	 */
 	List<RegisteredEvent> getAllUnprocessedBusinessEvents(
-			String supplierId, String paymentResponsible);
+			GetInvoiceDataRequest request);
 
 
 	/**
-	 * Fetches all invoiced data for a particular supplier and payee
+	 * Fetches all invoiced data for a using criteria:
+	 * supplierId OR paymentResponsible OR date range 
 	 * 
 	 * @param supplierId
 	 * @param paymentResponsible
 	 * @return
 	 */
-	List<InvoiceDataHeader> getAllInvoicedData(String supplierId,
-			String paymentResponsible);
+	List<InvoiceDataHeader> getAllInvoicedData(GetInvoiceDataRequest request);
 
 	/**
 	 * Creates an invoice data object.
@@ -77,5 +77,10 @@ public interface InvoiceDataService {
      */
     InvoiceData getInvoiceDataByReferenceId(String referenceId);
     
-    List<InvoiceData> listAllInvoiceData(ListInvoiceDataRequest request);
+    /**
+     * 
+     * @param request
+     * @return
+     */
+    List<InvoiceDataHeader> listAllInvoiceData(ListInvoiceDataRequest request);
 }

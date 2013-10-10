@@ -84,7 +84,7 @@ public class ListInvoiceDataProducerTest extends TestSupport {
 		//2. GetInvoice		 
 		GetInvoiceDataRequest getIDReq = new GetInvoiceDataRequest();
 		getIDReq.setSupplierId(event.getSupplierId());
-		getIDReq.setPaymentResponsible(event.getPaymentResponsible());
+		//getIDReq.setPaymentResponsible(event.getPaymentResponsible());
 		
 		GetInvoiceDataResponse invoiceResp = GetInvoiceDataProducerTest.
 				getGetInvoiceDataService().getInvoiceData(LOGICAL_ADDRESS, getIDReq);

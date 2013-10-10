@@ -17,9 +17,12 @@
 package se.sll.invoicedata.core.model.repository;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
@@ -85,4 +88,24 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * @return the matching entity.
      */
     List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(List<String> acknowledgementId);
+    
+    /**
+     * Fetches BusinessEventEntity with matching supplierId OR payment responsible OR within date range!
+     * 
+     * No field is obligatory!
+     * Dates: fromDate date can be null so 1970 01 01 is taken as from date
+     * toDate can also be empty then the current date is taken
+     * @param supplierId
+     * @param paymentResponsible
+     * @param fromDate
+     * @param toDate
+     * @return
+     */
+    @Query("FROM invoice_data_event WHERE pending IS TRUE AND supplierId = :supplierId OR paymentResponsible = :paymentResponsible "
+    		+ "OR createdTimestamp BETWEEN :fromDate AND :toDate")
+    List<BusinessEventEntity> findByCriteria(@Param("supplierId") String supplierId,
+    		@Param("paymentResponsible") String paymentResponsible, 
+    		@Param("fromDate") Date fromDate, 
+    		@Param("toDate") Date toDate);
+    
 }

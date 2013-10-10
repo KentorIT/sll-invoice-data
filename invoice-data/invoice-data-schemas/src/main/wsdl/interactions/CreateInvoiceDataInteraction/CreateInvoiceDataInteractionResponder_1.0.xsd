@@ -26,11 +26,9 @@
 			<xs:element name="supplierId" type="xs:string" />
 			<xs:element name="createdBy" type="xs:string" />
 			<xs:element name="paymentResponsible" type="xs:string" />			
-			<xs:element name="acknowledgementIdList" type="xs:string" minOccurs="1"
-				maxOccurs="unbounded">
+			<xs:element name="acknowledgementIdList" type="xs:string" minOccurs="1" maxOccurs="unbounded">
 				<xs:annotation>
-					<xs:documentation>Internal existing id of an event, i.e. same reference as provided by the service GetInvocieDataInteraction
-					</xs:documentation>
+					<xs:documentation>Acknowledgement id is provided by the client (t.ex: Tolkportalen) </xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"

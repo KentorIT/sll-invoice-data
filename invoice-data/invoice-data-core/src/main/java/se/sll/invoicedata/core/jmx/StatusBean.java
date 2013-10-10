@@ -31,6 +31,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.jmx.support.MetricType;
 import org.springframework.stereotype.Component;
 
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 
 /**
@@ -66,7 +67,7 @@ public class StatusBean {
  
     // checks database
     private void checkDatabase() {
-        invoiceDataService.getAllUnprocessedBusinessEvents("-", "-");
+        invoiceDataService.getAllUnprocessedBusinessEvents(new GetInvoiceDataRequest());
         log.info("health-check database: OK");
     }
     
