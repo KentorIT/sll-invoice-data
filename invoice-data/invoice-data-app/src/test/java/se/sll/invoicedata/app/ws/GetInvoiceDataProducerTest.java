@@ -38,16 +38,21 @@ import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataR
 import se.sll.invoicedata.app.TestSupport;
 
 /**
+ * Obligatory parameters for fetching the invoice data is SUPPLIER_ID!
+ * 
+ * 
  * @author muqkha
  * 
  */
 public class GetInvoiceDataProducerTest extends TestSupport {
 
 	private static GetInvoiceDataResponderInterface getIDRInterface;
+	private static Event[] unprocessedInvoiceData;
 	
 	@BeforeClass
 	public static void setUp() {
 		getIDRInterface = getGetInvoiceDataService();
+		testPrerequisiteStep_GetInvoiceData();
 	}
 	
 	@AfterClass
@@ -55,61 +60,81 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		getIDRInterface = null;
 	}
 	
+	private static void testPrerequisiteStep_GetInvoiceData() {
+		unprocessedInvoiceData = createTestData();
+		for (Event event : unprocessedInvoiceData) {
+			RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
+				.registerInvoiceData(LOGICAL_ADDRESS, event);
+		}		
+	}
+	
+	/**
+	 * Fetches the registered event: 
+	 * 1. Event is registered
+	 * 2. Fetches data based on supplier id and payment responsible
+	 * 3. Must return code OK and the registered event list
+	 */
 	@Test
 	public void get_InvoiceData_Unprocessed_Events_Success() {
-
-		Event event = createRandomEventData();
-		RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
-				.registerInvoiceData(LOGICAL_ADDRESS, event);
-
+		//Fetches data based on supplier id and payment responsible
 		GetInvoiceDataRequest request = new GetInvoiceDataRequest();
-		request.setSupplierId(event.getSupplierId());
-		request.setPaymentResponsible(event.getPaymentResponsible());
+		request.setSupplierId(unprocessedInvoiceData[0].getSupplierId());
+		request.setPaymentResponsible(unprocessedInvoiceData[0].getPaymentResponsible());
 
-		GetInvoiceDataResponse response = getIDRInterface.
-				getInvoiceData(LOGICAL_ADDRESS, request);
-
+		GetInvoiceDataResponse response = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, request);
+		
+		//Must return code OK and the registered event list
 		Assert.assertNotNull(response);
-		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
-				.getCode());
-
-		Assert.assertNotNull(response.getRegisteredEventList());
+		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode().getCode());
+		Assert.assertFalse(response.getRegisteredEventList().isEmpty());
 	}
 
 	@Test
-	public void get_InvoiceData_With_Alternatives() {
-		
-		Event event = createRandomEventData();
-		RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
-				.registerInvoiceData(LOGICAL_ADDRESS, event);
-
+	public void get_InvoiceData_Based_On_Different_Request_Parameters() {				
+		//Fetch by only supplier id
 		GetInvoiceDataRequest request = new GetInvoiceDataRequest();
-		request.setSupplierId(event.getSupplierId());
+		request.setSupplierId(unprocessedInvoiceData[0].getSupplierId());
 
-		GetInvoiceDataResponse response = getIDRInterface
-				.getInvoiceData(LOGICAL_ADDRESS, request);
+		GetInvoiceDataResponse response = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, request);
 
 		Assert.assertNotNull(response);
-		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
-				.getCode());
-
+		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode().getCode());
+		
+		//Now request without any supplier id
 		request.setSupplierId("");
-		request.setPaymentResponsible(event.getPaymentResponsible());
-		response = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS,
-				request);
+		request.setPaymentResponsible(unprocessedInvoiceData[0].getPaymentResponsible());
+		response = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, request);
 
 		Assert.assertNotNull(response);
 		Assert.assertEquals(ResultCodeEnum.ERROR, response.getResultCode()
 				.getCode());
+		//Not a valid request without supplier id!
+	}
+	
+	/**
+	 * Same as fetching unprocessed events
+	 */
+	@Test
+	public void test_Get_InvoiceData_Before_CreateInvoiceData() {
+		get_InvoiceData_Unprocessed_Events_Success();				
 	}
 
+	/**
+	 * Steps:
+	 * 1.Register
+	 * 2. Get/Fetch registered event
+	 * 3. Create invoice
+	 * 4. Get/Fetch invoiced data 
+	 */
 	@Test
-	public void get_InvoiceData_Normal_Case_Success() {
-
+	public void get_InvoiceData_Before_And_After_CreateInvoiceData_Success() {
+		
+		//Registers an event
 		Event event = createRandomEventData();
 		RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService()
 				.registerInvoiceData(LOGICAL_ADDRESS, event);
 
+		//Fetches the registered event 
 		GetInvoiceDataRequest request = new GetInvoiceDataRequest();
 		request.setSupplierId(event.getSupplierId());
 		request.setPaymentResponsible(event.getPaymentResponsible());
@@ -118,36 +143,37 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 				.getInvoiceData(LOGICAL_ADDRESS, request);
 		
 		Assert.assertNotNull(response);
-		Assert.assertEquals(1, response.getRegisteredEventList().size());
+		Assert.assertTrue(response.getRegisteredEventList().size() >= 1);
 		
+		//Registered and fetched an invoice data; 
+		//Getting acknowledgement id from the registered event
 		List<RegisteredEvent> regEventList = response.getRegisteredEventList();
 
 		List<String> ackIdList = new ArrayList<String>();
 		for (RegisteredEvent regEvent : regEventList) {
 			ackIdList.add(regEvent.getAcknowledgementId());
 		}
-
+		
+		//Create the invoice
 		CreateInvoiceDataRequest invoiceDataRequest = new CreateInvoiceDataRequest();
 		invoiceDataRequest.setSupplierId(event.getSupplierId());
 		invoiceDataRequest.setPaymentResponsible(event.getPaymentResponsible());
-		invoiceDataRequest.setCreatedBy("test");
+		invoiceDataRequest.setCreatedBy(getClass().getName());
 		invoiceDataRequest.getAcknowledgementIdList().addAll(ackIdList);
 
 		CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
 				.createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
 		
-		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode()
-				.getCode());
-		
-		response = getIDRInterface
-				.getInvoiceData(LOGICAL_ADDRESS, request);
-		
+		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode().getCode());
+		//Fetch again the invoice data; previously registered event was checked
+		//Now invoice data list
+		response = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, request);		
 		Assert.assertNotNull(response.getInvoiceDataList());		
     }
 
 	@Test
-	public void get_InvoiceData_Some_Processed_Some_Unprocessed_Success() {
-
+	public void get_InvoiceData_Before_And_After_CreateInvoiceData_Multiple_Success() {
+		
 		Event event = createRandomEventData();		
 		RegisterInvoiceDataResponderInterface registerIDRInterface = 
 				RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService();
@@ -160,14 +186,14 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 
 		GetInvoiceDataRequest getInvoiceReq = new GetInvoiceDataRequest();
 		getInvoiceReq.setSupplierId(event.getSupplierId());
-		//getInvoiceReq.setPaymentResponsible(event.getPaymentResponsible());
+		getInvoiceReq.setPaymentResponsible(event.getPaymentResponsible());
 
 		GetInvoiceDataResponse getInvoiceResp = getIDRInterface
 				.getInvoiceData(LOGICAL_ADDRESS, getInvoiceReq);
 		
 		Assert.assertNotNull(getInvoiceResp);
 		//Two registered events back in response
-		Assert.assertEquals(2, getInvoiceResp.getRegisteredEventList().size());
+		Assert.assertTrue(getInvoiceResp.getRegisteredEventList().size() >= 2);
 		
 		List<RegisteredEvent> regEventList = getInvoiceResp.getRegisteredEventList();
 		List<String> eventRefList = new ArrayList<String>();
@@ -180,24 +206,25 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		CreateInvoiceDataRequest invoiceDataRequest = new CreateInvoiceDataRequest();
 		invoiceDataRequest.setSupplierId(event.getSupplierId());
 		invoiceDataRequest.setPaymentResponsible(event.getPaymentResponsible());
-		invoiceDataRequest.setCreatedBy("test");
+		invoiceDataRequest.setCreatedBy(getClass().getName());
 		invoiceDataRequest.getAcknowledgementIdList().addAll(eventRefList);
 
 		CreateInvoiceDataResponderInterface createIDResp = CreateInvoiceDataProducerTest.getCreateInvoiceDataService();
 		CreateInvoiceDataResponse createResp = createIDResp.createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
 
 		Assert.assertNotNull(createResp);
-		Assert.assertEquals(ResultCodeEnum.OK, getInvoiceResp.getResultCode()
-				.getCode());	
+		Assert.assertEquals(ResultCodeEnum.OK, getInvoiceResp.getResultCode().getCode());	
 		Assert.assertNotNull(createResp.getReferenceId());
 		
 		getInvoiceResp = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, getInvoiceReq);
 		Assert.assertNotNull(getInvoiceResp);
-		//One invoiced data back in response
+		//One invoiced data back in response and othe the registedEvent which is not invoiced!
 		Assert.assertNotNull(getInvoiceResp.getRegisteredEventList());
 		Assert.assertNotNull(getInvoiceResp.getInvoiceDataList());
 	}
-
+	
+	
+	
 	public static GetInvoiceDataResponderInterface getGetInvoiceDataService() {
 	    if (getIDRInterface == null) {
 	        getIDRInterface = createWebServiceConsumer(GetInvoiceDataResponderInterface.class);

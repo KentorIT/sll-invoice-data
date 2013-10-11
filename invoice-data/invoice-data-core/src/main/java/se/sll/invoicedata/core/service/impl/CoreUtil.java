@@ -121,7 +121,7 @@ public class CoreUtil {
     
     public static XMLGregorianCalendar getEndDate() {
     	Calendar cal = Calendar.getInstance();
-    	cal.set( Calendar.DATE, cal.get(Calendar.DATE) + 1);    	
+    	cal.set( Calendar.YEAR, cal.get(Calendar.YEAR) + 100);    	
     	return toXMLGregorianCalendar(cal.getTime());
     }
     

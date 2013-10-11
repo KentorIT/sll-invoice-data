@@ -123,7 +123,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     	
     	if (request.getFromDate() == null) {
     		request.setFromDate(CoreUtil.getStartDate());            
-        } 
+        }
     	
     	if (request.getToDate() == null) {
         	request.setToDate(CoreUtil.getEndDate());

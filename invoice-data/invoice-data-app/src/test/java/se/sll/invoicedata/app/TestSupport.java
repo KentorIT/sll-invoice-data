@@ -18,7 +18,9 @@ package se.sll.invoicedata.app;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -40,10 +42,10 @@ public abstract class TestSupport extends CoreUtil {
 	private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	public static final String NAMESPACE_URI = "http://ws.app.invoicedata.sll.se/";
 	public static final String LOGICAL_ADDRESS = "loc:TolkPortalen";
-
+	private static final String[] PAYMENT_RESPONSIBLE = {"HSF", "FSH", "SHF"};
+	
 	private enum SUPPLIER {
-		SUPPLIER_X("Tolk.001"),
-		SUPPLIER_Y("Tolk.002");
+		SUPPLIER("Tolk.001");
 		
 		private String supplierName;
 		
@@ -91,18 +93,18 @@ public abstract class TestSupport extends CoreUtil {
 		event.setEventId(genRandomAlphaNData(5));
 		event.setHealthcareFacility(genRandomAlphaNData(10));
 		event.setRefContractId("CONTRACT_1");
-		event.setSupplierId(SUPPLIER.SUPPLIER_X.getId());
-		event.setSupplierName(SUPPLIER.SUPPLIER_X.getName());
+		event.setSupplierId(SUPPLIER.SUPPLIER.getId());
+		event.setSupplierName(SUPPLIER.SUPPLIER.getName());
 		
 		event.setAcknowledgementId(UUID.randomUUID().toString());
 		event.setAcknowledgedBy("sign:X");
 		event.setAcknowledgedTime(getCurrentDate());
 		event.setServiceCode("Språktolk");
-		event.setPaymentResponsible("HSF");
+		event.setPaymentResponsible(getPayee());
 		event.setHealthCareCommission("BVC");
 		
-		event.setStartTime(getCurrentDate());
-		event.setEndTime(getCurrentDate());
+		event.setStartTime(getRandomStartTime());
+		event.setEndTime(getRandomEndTime(event.getStartTime()));
 
 		Item item = new Item();
 		item.setDescription("Test item(product)");
@@ -113,9 +115,59 @@ public abstract class TestSupport extends CoreUtil {
 		item.setPrice(randomPrice());
 
 		event.getItemList().add(item);
-
+		
+	
 		return event;
 	}
+	
+	private void print(Event event) {
+		System.out.println("AcknowledgementId: " + event.getAcknowledgementId() + ", Event id: " + 
+				event.getEventId() + ", supplierId: " + event.getSupplierId() + ", paymentResponsible: " + 
+				event.getPaymentResponsible() + ", startTime: " + CoreUtil.toDate(event.getStartTime()) + 
+				", endTime: " + CoreUtil.toDate(event.getEndTime()));		
+	}
+	
+	private static XMLGregorianCalendar getRandomStartTime() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DATE, cal.get(Calendar.DATE) + getRandomInt(0, 7));
+		cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + getRandomInt(0, 3));		
+		return toXMLGregorianCalendar(cal.getTime());		
+	}
+	
+	private static XMLGregorianCalendar getRandomEndTime(XMLGregorianCalendar startTime) {
+		Calendar cal = startTime.toGregorianCalendar();
+		cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) + getRandomInt(0, 5));
+		return toXMLGregorianCalendar(cal.getTime());
+	}
+	
+	/**
+	 * Creates test data to be used while testing
+	 * 
+	 * AcknowledgementId is the unique part of every event.
+	 * There can be events with same eventId, supplierId,
+	 * paymentResponsible
+	 * 
+	 * 
+	 */
+	protected static Event[] createTestData() {
+		//Acknowledgement id shall always be different for the 
+		//events being generated in reality and in test		
+		Event event1 = createRandomEventData();
+		Event event2 = CoreUtil.copyProperties(event1, Event.class);
+		CoreUtil.copyGenericLists(event2.getItemList(), event1.getItemList(), Item.class);
+		event2.setAcknowledgementId(UUID.randomUUID().toString());
+		
+		//When supplier differs eventually event_id differs
+		Event event3 = createRandomEventData();
+		//same payment responsible
+		event3.setPaymentResponsible(event1.getPaymentResponsible());
+		
+		//independent event!
+		Event event4 = createRandomEventData();
+		
+		return new Event[] { event1, event2, event3, event4 };				
+	}
+	
 	
 	static BigDecimal randomPrice() {
 	    int add = (Math.random() > 0.5d) ? 1 : -1;
@@ -134,6 +186,14 @@ public abstract class TestSupport extends CoreUtil {
 			builder.append(ALPHA_NUMERIC_STRING.charAt(character));
 		}
 		return builder.toString();
+	}
+	
+	private static int getRandomInt(int min, int max) {
+	    return new Random().nextInt((max - min) + 1) + min;
+	}
+	
+	private static String getPayee() {
+		return PAYMENT_RESPONSIBLE[getRandomInt(0,2)];
 	}
 	
 	  /**
