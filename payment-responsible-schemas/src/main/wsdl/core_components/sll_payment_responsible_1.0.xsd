@@ -39,6 +39,8 @@
 			<xs:element name="id" type="xs:string" />
 			<xs:element name="type" type="xs:string" />
 			<xs:element name="contract" type="tns:Contract" />
+			<xs:element name="paymentResponsibleList" type="tns:PaymentResponsible" 
+				minOccurs="1" maxOccurs="unbounded" />			
 		</xs:sequence>
 	</xs:complexType>
 
@@ -47,8 +49,7 @@
 			<xs:element name="id" type="xs:string" />
 			<xs:element name="name" type="xs:string" />
 			<xs:element name="address" type="xs:string" />
-			<xs:element name="healcareCommissionList" type="tns:HealthcareCommission" 
-				minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="contract" type="tns:Contract" />			
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -56,7 +57,7 @@
 		<xs:sequence>
 			<xs:element name="hsaId" type="xs:string" />
 			<xs:element name="healthcareServiceType" type="xs:string" />
-			<xs:element name="paymentResponsible" type="tns:PaymentResponsible" minOccurs="1" 
+			<xs:element name="healthcareCommission" type="tns:HealthcareCommission" minOccurs="1" 
 				maxOccurs="unbounded"/>			
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />

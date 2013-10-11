@@ -131,14 +131,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     	
     	List<BusinessEventEntity> bEEntityList = new ArrayList<BusinessEventEntity>();
     	
-    	if (request.getPaymentResponsible() != null) {
+    	if (CoreUtil.isEmpty(request.getPaymentResponsible())) {
+    		bEEntityList = businessEventRepository.findBySupplierIdAndPendingIsTrueAndStartTimeBetween(
+    				request.getSupplierId(),
+    				CoreUtil.toDate(request.getFromDate()), CoreUtil.toDate(request.getToDate()));    		
+    	} else {
     		bEEntityList = businessEventRepository.
     				findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(
     				request.getSupplierId(), request.getPaymentResponsible(), 
-    				CoreUtil.toDate(request.getFromDate()), CoreUtil.toDate(request.getToDate()));
-    	} else {
-    		bEEntityList = businessEventRepository.findBySupplierIdAndPendingIsTrueAndStartTimeBetween(
-    				request.getSupplierId(),
     				CoreUtil.toDate(request.getFromDate()), CoreUtil.toDate(request.getToDate()));
     	}
     	
