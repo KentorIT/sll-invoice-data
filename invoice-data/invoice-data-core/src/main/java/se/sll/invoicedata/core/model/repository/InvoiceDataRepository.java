@@ -20,8 +20,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
@@ -33,24 +31,47 @@ import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
  */
 public interface InvoiceDataRepository  extends JpaRepository<InvoiceDataEntity, Long> {
     
-	 
-    /**
-     * Fetches InvoiceData with matching supplierId OR payment responsible OR within date range!
-     * 
-     * No field is obligatory!
+	/**
+	 * Fetches InvoiceData with matching within date range!
      * Dates: fromDate date can be null so 1970 01 01 is taken as from date
-     * toDate can also be empty then the current date is taken
-     * @param supplierId
-     * @param paymentResponsible
-     * @param fromDate
-     * @param toDate
-     * @return
-     */
-    @Query("FROM InvoiceDataEntity WHERE supplierId = :supplierId OR paymentResponsible = :paymentResponsible "
-    		+ "OR createdTime BETWEEN :fromDate AND :toDate")
-    List<InvoiceDataEntity> findBySearchCriteria(@Param("supplierId") String supplierId,
-    		@Param("paymentResponsible") String paymentResponsible, 
-    		@Param("fromDate") Date fromDate, 
-    		@Param("toDate") Date toDate);
-    
+     * toDate can also be empty then the current date + 100 years is taken 
+	 * @param fromDate
+	 * @param toDate
+	 * @return
+	 */
+	List<InvoiceDataEntity> findByCreatedTimeBetween(Date fromDate, Date toDate);
+	
+	/**
+	 * Fetches InvoiceData with matching supplierId within date range!
+     * Dates: fromDate date can be null so 1970 01 01 is taken as from date
+     * toDate can also be empty then the current date + 100 years is taken
+	 * @param supplierId
+	 * @param fromDate
+	 * @param toDate
+	 * @return
+	 */
+	List<InvoiceDataEntity> findBySupplierIdAndCreatedTimeBetween(String supplierId, Date fromDate, Date toDate);
+	
+	/**
+	 * Fetches InvoiceData with matching paymentResponsible within date range!
+     * Dates: fromDate date can be null so 1970 01 01 is taken as from date
+     * toDate can also be empty then the current date + 100 years is taken
+	 * @param supplierId
+	 * @param fromDate
+	 * @param toDate
+	 * @return
+	 */
+	List<InvoiceDataEntity> findByPaymentResponsibleAndCreatedTimeBetween(String paymentResponsible, Date fromDate, Date toDate);
+
+	/**
+	 * Fetches InvoiceData with matching supplierId And payment responsible within date range!
+     * Dates: fromDate date can be null so 1970 01 01 is taken as from date
+     * toDate can also be empty then the current date + 100 years is taken     * 
+	 * @param supplierId
+	 * @param fromDate
+	 * @param toDate
+	 * @return
+	 */
+	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(String supplierId, String paymentResponsible, Date fromDate, Date toDate);
+	
 }

@@ -19,7 +19,12 @@
  */
 package se.sll.invoicedata.app.ws;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -28,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
@@ -39,6 +45,7 @@ import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataResponse;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
 import se.sll.invoicedata.app.TestSupport;
+import se.sll.invoicedata.core.service.impl.CoreUtil;
 
 /**
  * @author muqkha
@@ -119,7 +126,7 @@ public class ListInvoiceDataProducerTest extends TestSupport {
 	}
 	
 	@Test
-	public void testListInvoiceData_With_SupplierId_Result_Success() {
+	public void testListInvoiceData_With_All_InParams_Result_Success() {
 		ListInvoiceDataRequest request = new ListInvoiceDataRequest();
 		request.setSupplierId(event.getSupplierId());
 		request.setFromDate(getCurrentDate());
@@ -136,6 +143,62 @@ public class ListInvoiceDataProducerTest extends TestSupport {
 		
 	}
 	
+	@Test
+	public void testListAllInvoiceData_With_Different_Alternatives() {
+
+		// Request with only supplier id
+		ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+		invoiceListRequest.setSupplierId(event.getSupplierId());
+
+		ListInvoiceDataResponse invoiceDataResponse = listIDRInterface.listInvoiceData(LOGICAL_ADDRESS, invoiceListRequest);
+
+		assertNotNull(invoiceDataResponse);
+		assertEquals(event.getPaymentResponsible(), invoiceDataResponse.getInvoiceDataList().get(0).getPaymentResponsible());
+
+		// Request with only payment responsible
+		invoiceListRequest = new ListInvoiceDataRequest();
+		invoiceListRequest.setPaymentResponsible(event.getPaymentResponsible());
+
+		invoiceDataResponse = listIDRInterface.listInvoiceData(LOGICAL_ADDRESS, invoiceListRequest);
+
+		assertNotNull(invoiceDataResponse);
+		assertEquals(event.getPaymentResponsible(), invoiceDataResponse.getInvoiceDataList().get(0).getPaymentResponsible());
+
+		// Request with both payment responsible and supplier id
+		invoiceListRequest = new ListInvoiceDataRequest();
+		invoiceListRequest.setSupplierId(event.getSupplierId());
+		invoiceListRequest.setPaymentResponsible(event.getPaymentResponsible());
+
+		invoiceDataResponse = listIDRInterface.listInvoiceData(LOGICAL_ADDRESS, invoiceListRequest);
+
+		assertNotNull(invoiceDataResponse);
+		assertEquals(event.getSupplierId(), invoiceDataResponse.getInvoiceDataList().get(0).getSupplierId());
+		assertEquals(event.getPaymentResponsible(), invoiceDataResponse.getInvoiceDataList().get(0).getPaymentResponsible());
+
+		// Request with only from date; fromDate (setting year to 1 year back
+		// from current year)
+		invoiceListRequest = new ListInvoiceDataRequest();
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) - 1);
+		invoiceListRequest.setFromDate(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
+		invoiceListRequest.setSupplierId(event.getSupplierId());
+
+		invoiceDataResponse = listIDRInterface.listInvoiceData(LOGICAL_ADDRESS, invoiceListRequest);
+		
+		assertNotNull(invoiceDataResponse);
+		assertEquals(event.getSupplierId(), invoiceDataResponse.getInvoiceDataList().get(0).getSupplierId());
+
+		// Request with only to date; toDate
+		invoiceListRequest = new ListInvoiceDataRequest();
+		invoiceListRequest.setPaymentResponsible(event.getPaymentResponsible());
+		invoiceListRequest.setToDate(CoreUtil
+				.toXMLGregorianCalendar(new Date()));
+
+		invoiceDataResponse = listIDRInterface.listInvoiceData(LOGICAL_ADDRESS, invoiceListRequest);
+		
+		assertNotNull(invoiceDataResponse);
+		assertEquals(event.getPaymentResponsible(), invoiceDataResponse.getInvoiceDataList().get(0).getPaymentResponsible());
+	}
 
 	static ListInvoiceDataResponderInterface getListInvoiceDataService() {
 		if (listIDRInterface == null) {

@@ -125,4 +125,8 @@ public class CoreUtil {
     	return toXMLGregorianCalendar(cal.getTime());
     }
     
+    public static boolean isEmpty(String data) {
+    	return data == null || data.isEmpty();  
+    }
+    
 }

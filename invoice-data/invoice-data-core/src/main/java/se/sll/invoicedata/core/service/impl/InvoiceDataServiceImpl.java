@@ -16,10 +16,11 @@
 
 package se.sll.invoicedata.core.service.impl;
 
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -43,7 +44,6 @@ import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.RatingService;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 /**
  * Implements invoice data service.
@@ -292,20 +292,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Override
     public List<InvoiceDataHeader> listAllInvoiceData(ListInvoiceDataRequest request) {
-
-        if (request.getFromDate() != null && request.getToDate() == null) {
-            request.setToDate(CoreUtil.toXMLGregorianCalendar(new Date()));
-        } else if (request.getToDate() != null && request.getFromDate() == null) {
-            request.setFromDate(CoreUtil.getStartDate());
-        }
-
-        List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.findBySearchCriteria(
-                request.getSupplierId(),
-                request.getPaymentResponsible(),
-                CoreUtil.toDate(request.getFromDate()),
-                CoreUtil.toDate(request.getToDate()));
-
-        List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
+    	
+    	if (CoreUtil.isEmpty(request.getSupplierId()) && CoreUtil.isEmpty(request.getPaymentResponsible())) {
+    		throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("supplierId or paymentResponsible");
+    	}
+    	
+    	List<InvoiceDataEntity> invoiceDataEntityList = findByCriteria(request);    	
+    	List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
+    	
         for (InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
             List<RegisteredEvent> eventList = EntityBeanConverter.fromBEntity(iDataEntity.getBusinessEventEntities());
 
@@ -315,5 +309,43 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
         }
         return invoiceDataList;
+    }
+    
+    /**
+     * Finds by criteria: supplierId, paymentResponsible or date range
+     * Date: fromDate - if null then 1970 01 01
+     * toDate: - if null then current year + 100 years
+     * @param request
+     * @return
+     */
+    private List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
+    	
+    	if (request.getFromDate() == null) {
+    		request.setFromDate(CoreUtil.getStartDate());            
+        }
+    	
+    	if (request.getToDate() == null) {
+        	request.setToDate(CoreUtil.getEndDate());
+        }
+    	
+    	List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
+    	if (request.getSupplierId() != null && request.getPaymentResponsible() != null) {
+    		invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(
+    				request.getSupplierId(),
+                    request.getPaymentResponsible(),
+                    CoreUtil.toDate(request.getFromDate()),
+                    CoreUtil.toDate(request.getToDate()));
+    	} else  if (request.getSupplierId() != null) {
+    		invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndCreatedTimeBetween(
+    				request.getSupplierId(),
+                    CoreUtil.toDate(request.getFromDate()),
+                    CoreUtil.toDate(request.getToDate()));
+    	} else if (request.getPaymentResponsible() != null) {
+    		invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndCreatedTimeBetween(
+    				request.getPaymentResponsible(),
+                    CoreUtil.toDate(request.getFromDate()),
+                    CoreUtil.toDate(request.getToDate()));
+    	}
+    	return invoiceDataEntityList;
     }
 }

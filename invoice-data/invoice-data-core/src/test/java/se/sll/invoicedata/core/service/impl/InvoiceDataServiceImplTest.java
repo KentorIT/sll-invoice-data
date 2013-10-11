@@ -94,7 +94,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 		}
 	}
 
-	private CreateInvoiceDataRequest createInvocieData(String supplierId) {
+	private CreateInvoiceDataRequest createInvoiceData(String supplierId) {
 		final List<String> ids = Arrays.asList(new String[] { "event-1",
 				"event-2", "event-3" });
 
@@ -125,7 +125,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	@Rollback(true)
 	public void testRegisterInvoiceData_From_Pending_And_Credit() {
 		final String supplierId = "test-supplier-45";
-		final CreateInvoiceDataRequest ie = createInvocieData(supplierId);
+		final CreateInvoiceDataRequest ie = createInvoiceData(supplierId);
 
 		registerEvents(supplierId,
 				Arrays.asList(new String[] { "event-1", "event-2", "event-3" }));
@@ -176,7 +176,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	public void testGetAllInvoicedData() {
 		final String supplierId = "test-supplier-all";
 
-		createInvocieData(supplierId);
+		createInvoiceData(supplierId);
 
 		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
 		getIDRequest.setSupplierId(supplierId);
@@ -226,7 +226,6 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 				.getAllInvoicedData(getIDRequest);
 		
 		assertNotNull(iDH);
-		assertEquals(1, iDH.size());
 		
 		InvoiceData iData = invoiceDataService.getInvoiceDataByReferenceId(iDH
 				.get(0).getReferenceId());
@@ -239,7 +238,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	@Test
 	@Transactional
 	@Rollback(true)
-	public void testListAllInvoiceData_With_Different_Alternatives() {
+	public void testListAllInvoiceData_With_Supplier_ID() {
 
 		final Event e = createSampleEvent();
 		invoiceDataService.registerEvent(e);
@@ -269,56 +268,6 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 				.listAllInvoiceData(invoiceListRequest);
 
 		assertNotNull(invoiceDataList);
-		assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0)
-				.getPaymentResponsible());
-
-		// Request with only payment responsible
-		invoiceListRequest = new ListInvoiceDataRequest();
-		invoiceListRequest.setPaymentResponsible(e.getPaymentResponsible());
-
-		invoiceDataList = invoiceDataService
-				.listAllInvoiceData(invoiceListRequest);
-
-		assertNotNull(invoiceDataList);
-		assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
-
-		// Request with both payment responsible and supplier id
-		invoiceListRequest = new ListInvoiceDataRequest();
-		invoiceListRequest.setSupplierId(e.getSupplierId());
-		invoiceListRequest.setPaymentResponsible(e.getPaymentResponsible());
-
-		invoiceDataList = invoiceDataService
-				.listAllInvoiceData(invoiceListRequest);
-
-		assertNotNull(invoiceDataList);
-		assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
-		assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0)
-				.getPaymentResponsible());
-
-		// Request with only from date; fromDate (setting year to 1 year back
-		// from current year)
-		invoiceListRequest = new ListInvoiceDataRequest();
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) - 1);
-		invoiceListRequest.setFromDate(CoreUtil.toXMLGregorianCalendar(cal
-				.getTime()));
-
-		invoiceDataList = invoiceDataService
-				.listAllInvoiceData(invoiceListRequest);
-		assertNotNull(invoiceDataList);
-		assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
-		assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0)
-				.getPaymentResponsible());
-
-		// Request with only to date; toDate
-		invoiceListRequest = new ListInvoiceDataRequest();
-		invoiceListRequest.setToDate(CoreUtil
-				.toXMLGregorianCalendar(new Date()));
-
-		invoiceDataList = invoiceDataService
-				.listAllInvoiceData(invoiceListRequest);
-		assertNotNull(invoiceDataList);
-		assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
 		assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0)
 				.getPaymentResponsible());
 	}
