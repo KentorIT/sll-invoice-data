@@ -7,31 +7,6 @@ xmlns:annox="http://annox.dev.java.net"
 version="2.0">
 
   <!--jaxb:bindings schemaLocation="../wsdl/core_components/sll_payment_responsible_1.0.xsd" node="/xs:schema">
-
-    <jaxb:bindings node="//xs:complexType[@name='FormTemplateType']">
-      <annox:annotate target="class">
-        <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="formTemplate"/>
-      </annox:annotate>
-    </jaxb:bindings>
-    
-    <jaxb:bindings node="//xs:complexType[@name='FormTemplateInfoType']">
-      <annox:annotate target="class">
-        <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="formTemplateInfo"/>
-      </annox:annotate>
-    </jaxb:bindings>
-    
-    <jaxb:bindings node="//xs:complexType[@name='FormsType']">
-      <annox:annotate target="class">
-        <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="FormType"/>
-      </annox:annotate>
-    </jaxb:bindings>
-    
-    <jaxb:bindings node="//xs:complexType[@name='FormType']">
-      <annox:annotate target="class">
-        <annox:annotate annox:class="javax.xml.bind.annotation.XmlRootElement" name="FormType"/>
-      </annox:annotate>
-    </jaxb:bindings>
-    
   </jaxb:bindings-->
   
 </jaxb:bindings>
