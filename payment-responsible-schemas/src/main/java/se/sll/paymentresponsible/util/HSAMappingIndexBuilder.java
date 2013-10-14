@@ -157,8 +157,7 @@ public class HSAMappingIndexBuilder {
                         avd.setName(codeServiceEntry.getAttribute(SHORTNAME));
                         avd.setValidFrom(codeServiceEntry.getValidFrom());
                         avd.setValidTo(codeServiceEntry.getValidTo());
-                        final List<String> sl = codeServiceEntry.getCodes(SAMVERKS);
-                        for (final String id : sl) {
+                        for (final String id : codes) {
                             final Commission samverks = samverksIndex.get(id);
                             if (samverks != null) {
                                 avd.getCommissions().add(samverks);
