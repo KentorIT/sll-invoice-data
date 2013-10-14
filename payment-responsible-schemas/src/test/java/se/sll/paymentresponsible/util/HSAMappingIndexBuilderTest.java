@@ -18,8 +18,7 @@ public class HSAMappingIndexBuilderTest {
         .withMekFile("kodserver_sample_data/MEK.xml");
         
         final Map<String, List<HSAMapping>> index = builder.build();
-
+      
         assertTrue(index.size() > 1000);
     }
-
 }

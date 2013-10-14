@@ -39,7 +39,7 @@ public class CodeServiceXMLParser {
     private Set<String> extractFilter = new HashSet<String>();
     private Map<String, QName> names = new HashMap<String, QName>();
     private CodeServiceEntryCallback codeServiceEntryCallback;
-    
+
     public static interface CodeServiceEntryCallback {
         void onCodeServiceEntry(CodeServiceEntry codeServiceEntry);
     }
@@ -156,11 +156,12 @@ public class CodeServiceXMLParser {
             switch (e.getEventType()) {
             case XMLEvent.CHARACTERS:
                 codeServiceEntry.setAttribute(name, e.asCharacters().getData());
-                return;
-            case XMLEvent.COMMENT:
-                continue;
-            default:
-                return;
+                break;
+            case XMLEvent.END_ELEMENT:
+                if (same(e.asEndElement(), ATTRIBUTE)) {
+                    return;
+                }
+                break;
             }
         }
     }
@@ -182,7 +183,10 @@ public class CodeServiceXMLParser {
             case XMLEvent.END_ELEMENT:
                 if (same(e.asEndElement(), CODEDVALUE)) {
                     return;
+                } else if (same(e.asEndElement(), ATTRIBUTE)) {
+                    return;
                 }
+                break;
             }
         }
     }
