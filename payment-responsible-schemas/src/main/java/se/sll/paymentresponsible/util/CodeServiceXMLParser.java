@@ -16,8 +16,9 @@
 
 package se.sll.paymentresponsible.util;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -92,7 +93,7 @@ public class CodeServiceXMLParser {
 
     public CodeServiceXMLParser(String file, CodeServiceEntryCallback codeServiceEntryCallback) {
         try {
-            this.reader = factory.createXMLEventReader(new FileReader(file));
+        	this.reader = factory.createXMLEventReader(new FileInputStream(file), "UTF-8");
         } catch (FileNotFoundException | XMLStreamException e) {
             throw new IllegalArgumentException(e);
         }
