@@ -1,9 +1,7 @@
 package se.sll.paymentresponsible.util;
 
-import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
