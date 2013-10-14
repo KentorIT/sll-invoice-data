@@ -13,7 +13,20 @@ import org.slf4j.LoggerFactory;
 import static se.sll.paymentresponsible.util.CodeServiceXMLParser.CodeServiceEntryCallback;
 import static se.sll.paymentresponsible.util.SimpleXMLElementParser.ElementMatcherCallback;
 
+/**
+ * Builds HSA Mapping index.
+ * 
+ * @author Peter
+ *
+ */
 public class HSAMappingIndexBuilder {
+    // attribute and element names.
+    private static final String ABBREVIATION = "abbreviation";
+    private static final String UPPDRAGSTYP = "UPPDRAGSTYP";
+    private static final String NO_COMMISSION_ID = "0000";
+    private static final String SAMVERKS = "SAMVERKS";
+    private static final String SHORTNAME = "shortname";
+
     private static final Logger log = LoggerFactory.getLogger(HSAMappingIndexBuilder.class);
 
     private String mekFile;
@@ -54,15 +67,15 @@ public class HSAMappingIndexBuilder {
 
         log.info("build commissionIndex from: {}", commissionFile);
         final HashMap<String, Commission> commissionIndex = createCommissionIndex(commissionTypeIndex);
-        log.info("commissionIndex: {}", commissionIndex.size());
+        log.info("commissionIndex size: {}", commissionIndex.size());
         
         log.info("build facilityIndex from: {}", facilityFIle);
         final HashMap<String, Facility> facilityIndex = createFacilityIndex(commissionIndex);
-        log.info("facilityIndex: {}", facilityIndex.size());
+        log.info("facilityIndex size: {}", facilityIndex.size());
 
-        log.info("build hsaMapingIndex from: {}", mekFile);
+        log.info("build hsaMappingIndex from: {}", mekFile);
         final Map<String, List<HSAMapping>> hsaIndex = createHSAIndex(facilityIndex);
-        log.info("hsaMapingIndex: {}", hsaIndex.size());
+        log.info("hsaMappingIndex size: {}", hsaIndex.size());
 
         return hsaIndex;
     }
@@ -123,27 +136,27 @@ public class HSAMappingIndexBuilder {
         return map;
     }
 
-
+    //
     protected HashMap<String, Facility> createFacilityIndex(final HashMap<String, Commission> samverksIndex) {
         final HashMap<String, Facility> index = new HashMap<String, Facility>();
 
         CodeServiceXMLParser parser = new CodeServiceXMLParser(this.facilityFIle, new CodeServiceEntryCallback() {
             @Override
             public void onCodeServiceEntry(CodeServiceEntry codeServiceEntry) {
-                final List<String> codes = codeServiceEntry.getCodes("SAMVERKS");
+                final List<String> codes = codeServiceEntry.getCodes(SAMVERKS);
                 if (codes != null) {
                     // filter out non-existing SAMVERKS associations 
-                    if (codes.size() == 1 && "0000".equals(codes.get(0))) {
+                    if (codes.size() == 1 && NO_COMMISSION_ID.equals(codes.get(0))) {
                         return;
                     }
                     final Facility prev = index.get(codeServiceEntry.getId());
                     if (prev == null || prev.getValidTo().before(codeServiceEntry.getValidTo())) {
                         final Facility avd = new Facility();
                         avd.setId(codeServiceEntry.getId());
-                        avd.setName(codeServiceEntry.getAttribute("shortname"));
+                        avd.setName(codeServiceEntry.getAttribute(SHORTNAME));
                         avd.setValidFrom(codeServiceEntry.getValidFrom());
                         avd.setValidTo(codeServiceEntry.getValidTo());
-                        final List<String> sl = codeServiceEntry.getCodes("SAMVERKS");
+                        final List<String> sl = codeServiceEntry.getCodes(SAMVERKS);
                         for (final String id : sl) {
                             final Commission samverks = samverksIndex.get(id);
                             if (samverks != null) {
@@ -156,14 +169,15 @@ public class HSAMappingIndexBuilder {
             }
         });
 
-        parser.extractAttribute("shortname");
-        parser.extractCode("SAMVERKS");
+        parser.extractAttribute(SHORTNAME);
+        parser.extractCode(SAMVERKS);
 
         parser.parse();
 
         return index;
     }
 
+    //
     protected HashMap<String, Commission> createCommissionIndex(final HashMap<String, CommissionType> uppdragstypIndex) {
         final HashMap<String, Commission> index = new HashMap<String, Commission>();
 
@@ -173,14 +187,14 @@ public class HSAMappingIndexBuilder {
                 final Commission prev = index.get(codeServiceEntry.getId());
                 if (prev == null || prev.getValidTo().before(codeServiceEntry.getValidTo())) {
                     CommissionType uppdragstyp = null;
-                    List<String> ul = codeServiceEntry.getCodes("UPPDRAGSTYP");
+                    List<String> ul = codeServiceEntry.getCodes(UPPDRAGSTYP);
                     if (ul != null && ul.size() == 1) {
                         uppdragstyp = uppdragstypIndex.get(ul.get(0));
                     }
                     if (uppdragstyp != null) {
                         final Commission samverks = new Commission();
                         samverks.setId(codeServiceEntry.getId());
-                        samverks.setName(codeServiceEntry.getAttribute("abbreviation"));
+                        samverks.setName(codeServiceEntry.getAttribute(ABBREVIATION));
                         samverks.setCommissionType(uppdragstyp);
                         samverks.setValidFrom(codeServiceEntry.getValidFrom());
                         samverks.setValidTo(codeServiceEntry.getValidTo());
@@ -190,8 +204,8 @@ public class HSAMappingIndexBuilder {
             }
         });
 
-        parser.extractAttribute("abbreviation");
-        parser.extractCode("UPPDRAGSTYP");
+        parser.extractAttribute(ABBREVIATION);
+        parser.extractCode(UPPDRAGSTYP);
 
         parser.parse();
 
@@ -199,6 +213,7 @@ public class HSAMappingIndexBuilder {
         return index;
     }
 
+    //
     protected HashMap<String, CommissionType> createCommissionTypeIndex() {
         final HashMap<String, CommissionType> index = new HashMap<String, CommissionType>();
 
@@ -209,7 +224,7 @@ public class HSAMappingIndexBuilder {
                 if (prev == null || prev.getValidTo().before(codeServiceEntry.getValidTo())) {
                     final CommissionType uppdragstyp = new CommissionType();
                     uppdragstyp.setId(codeServiceEntry.getId());
-                    uppdragstyp.setName(codeServiceEntry.getAttribute("shortname"));
+                    uppdragstyp.setName(codeServiceEntry.getAttribute(SHORTNAME));
                     uppdragstyp.setValidFrom(codeServiceEntry.getValidFrom());
                     uppdragstyp.setValidTo(uppdragstyp.getValidTo());
                     index.put(codeServiceEntry.getId(), uppdragstyp);
@@ -217,7 +232,7 @@ public class HSAMappingIndexBuilder {
             }
         });
 
-        parser.extractAttribute("shortname");
+        parser.extractAttribute(SHORTNAME);
 
         parser.parse();
 
