@@ -272,9 +272,9 @@ public class HSAMappingIndexBuilder {
         });
 
         parser.extractAttribute(SHORTNAME);
+        parser.setNewerThan(newerThan);
 
         parser.parse();
-        parser.setNewerThan(newerThan);
         
         return index;
     }    
