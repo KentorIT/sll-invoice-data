@@ -33,37 +33,73 @@ public class HSAMappingIndexBuilder {
     private String facilityFIle;
     private String commissionFile;
     private String commissionTypeFile;
-    private Date maxAge = new Date(Long.MIN_VALUE);
+    private Date newerThan = CodeServiceXMLParser.ONE_YEAR_BACK;
     
+    /**
+     * Input file for mapping (MEK) data (mandatory).
+     * 
+     * @param mekFile the input XML file name.
+     * @return the builder.
+     */
     public HSAMappingIndexBuilder withMekFile(String mekFile) {
         this.mekFile = mekFile;
         return this;
     }
 
-    public HSAMappingIndexBuilder withFacilityFile(String facilityFIle) {
-        this.facilityFIle = facilityFIle;
+    /**
+     * Input file for facility (AVD) data (mandatory).
+     * 
+     * @param facilityFile the input XML file name.
+     * @return the builder.
+     */
+    public HSAMappingIndexBuilder withFacilityFile(String facilityFile) {
+        this.facilityFIle = facilityFile;
         return this;
     }
 
+    /**
+     * Input file for commission (SAMVERKS) mapping data (mandatory).
+     * 
+     * @param commissionFile the input XML file name.
+     * @return the builder.
+     */
     public HSAMappingIndexBuilder withCommissionFile(String commissionFile) {
         this.commissionFile = commissionFile;
         return this;
     }
     
+    /**
+     * Input file for commission type (UPPDRAGSTYP) data (mandatory).
+     * 
+     * @param commissionTypeFile the input XML file name.
+     * @return the builder.
+     */
     public HSAMappingIndexBuilder withCommissionTypeFile(String commissionTypeFile) {
         this.commissionTypeFile = commissionTypeFile;
         return this;
     }
     
-    public HSAMappingIndexBuilder maxItemAge(Date maxAge) {
-        this.maxAge = maxAge;
+    /**
+     * Indicates how to filter out old data items, default setting is to keep one year old data, i.e.
+     * expiration date is less than one year back in time.
+     * 
+     * @param newerThan the date that data must be newer than, itherwise it's ignored.
+     * @return the builder.
+     */
+    public HSAMappingIndexBuilder newerThan(Date newerThan) {
+        this.newerThan = newerThan;
         return this;
     }
     
-    Map<String, List<HSAMapping>> build() {
+    /**
+     * Builds the index.
+     * 
+     * @return a map with HSA ID as keys and {@link HSAMapping} as value objects.
+     */
+    public Map<String, List<HSAMapping>> build() {
         log.info("build commissionTypeIndex from: {}", commissionTypeFile);
         final HashMap<String, CommissionType> commissionTypeIndex = createCommissionTypeIndex();
-        log.info("commissionTypeIndex: {}", commissionTypeIndex.size());
+        log.info("commissionTypeIndex size: {}", commissionTypeIndex.size());
 
         log.info("build commissionIndex from: {}", commissionFile);
         final HashMap<String, Commission> commissionIndex = createCommissionIndex(commissionTypeIndex);
@@ -80,6 +116,7 @@ public class HSAMappingIndexBuilder {
         return hsaIndex;
     }
     
+    //
     protected Map<String, List<HSAMapping>> createHSAIndex(final HashMap<String, Facility> avdIndex) {
         SimpleXMLElementParser elementParser = new SimpleXMLElementParser(this.mekFile);
         final Map<String, List<HSAMapping>> map = new HashMap<String, List<HSAMapping>>();
@@ -113,7 +150,7 @@ public class HSAMappingIndexBuilder {
 
             @Override
             public void end() {
-                if (mapping.isValid() && mapping.getFacility() != null) {
+                if (mapping.isNewerThan(newerThan) && mapping.getFacility() != null) {
                     List<HSAMapping> list = map.get(mapping.getId());
                     if (list == null) {
                         list = new ArrayList<HSAMapping>();
@@ -171,7 +208,8 @@ public class HSAMappingIndexBuilder {
 
         parser.extractAttribute(SHORTNAME);
         parser.extractCode(SAMVERKS);
-
+        parser.setNewerThan(newerThan);
+        
         parser.parse();
 
         return index;
@@ -206,7 +244,8 @@ public class HSAMappingIndexBuilder {
 
         parser.extractAttribute(ABBREVIATION);
         parser.extractCode(UPPDRAGSTYP);
-
+        parser.setNewerThan(newerThan);
+        
         parser.parse();
 
 
@@ -235,7 +274,8 @@ public class HSAMappingIndexBuilder {
         parser.extractAttribute(SHORTNAME);
 
         parser.parse();
-
+        parser.setNewerThan(newerThan);
+        
         return index;
     }    
 }

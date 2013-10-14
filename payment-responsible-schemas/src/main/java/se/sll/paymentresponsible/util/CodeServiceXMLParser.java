@@ -2,6 +2,8 @@ package se.sll.paymentresponsible.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,6 +24,19 @@ import javax.xml.stream.events.XMLEvent;
  *
  */
 public class CodeServiceXMLParser {
+
+    static final Date ONE_YEAR_BACK;
+    static { 
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        ONE_YEAR_BACK = cal.getTime();
+    }
+
+
     private static final String CODE_PREFIX = "c:";
     private static final String ATTR_PREFIX = "a:";
     private static final String CODE = "code";
@@ -39,6 +54,7 @@ public class CodeServiceXMLParser {
     private Set<String> extractFilter = new HashSet<String>();
     private Map<String, QName> names = new HashMap<String, QName>();
     private CodeServiceEntryCallback codeServiceEntryCallback;
+    private Date newerThan = ONE_YEAR_BACK;
 
     public static interface CodeServiceEntryCallback {
         void onCodeServiceEntry(CodeServiceEntry codeServiceEntry);
@@ -52,6 +68,14 @@ public class CodeServiceXMLParser {
             throw new IllegalArgumentException(e);
         }
         this.codeServiceEntryCallback = codeServiceEntryCallback;
+    }
+
+    public Date getNewerThan() {
+        return newerThan;
+    }
+
+    public void setNewerThan(Date maxAge) {
+        this.newerThan = maxAge;
     }
 
     //
@@ -112,7 +136,7 @@ public class CodeServiceXMLParser {
                     final CodeServiceEntry codeServiceEntry = processCodeServiceEntry(e.asStartElement());
                     codeServiceEntry.setValidFrom(AbstractTermItem.toDate(attribute(e.asStartElement(), "begindate")));
                     codeServiceEntry.setValidTo(AbstractTermItem.toDate(attribute(e.asStartElement(), "expirationdate")));
-                    if (codeServiceEntry.isValid()) {
+                    if (codeServiceEntry.isNewerThan(newerThan)) {
                         codeServiceEntryCallback.onCodeServiceEntry(codeServiceEntry);
                     }
                 }
