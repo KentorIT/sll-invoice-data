@@ -29,17 +29,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *
  */
 public class AbstractTermItem implements Comparable<AbstractTermItem> {
-    private static final Date MAX_AGE;
-    static { 
-        final Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.YEAR, -1);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        MAX_AGE = cal.getTime();
-    }
-
     static Date MAX_DATE = new Date(Long.MAX_VALUE);
     static Date MIN_DATE = new Date(0L);
 
@@ -89,12 +78,20 @@ public class AbstractTermItem implements Comparable<AbstractTermItem> {
         this.validTo = (validTo == null) ? MAX_DATE : validTo;
     }
     
-    public boolean isValid() {
-        return getValidTo().after(MAX_AGE);
+    
+    public boolean isNewerThan(AbstractTermItem anotherItem) {
+        if (anotherItem == null) {
+            return true;
+        }        
+        return isNewerThan(anotherItem.getValidTo());
     }
     
-    static Date toDate(String text) {
-        final XMLGregorianCalendar cal = datatypeFactory.newXMLGregorianCalendar(text);
+    public boolean isNewerThan(Date date) {
+        return getValidTo().after(date);
+    }
+    
+    static Date toDate(String xmlDateTime) {
+        final XMLGregorianCalendar cal = datatypeFactory.newXMLGregorianCalendar(xmlDateTime);
         return cal.toGregorianCalendar().getTime();    
     }
 

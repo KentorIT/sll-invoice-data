@@ -18,6 +18,8 @@ package se.sll.paymentresponsible.util;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,11 +35,29 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 /**
+ * Parses codeserver XML input based on the streaming parser (StAX) <p>
+ * 
+ * All attribute elements and code elements of interest are registered by names.
+ * 
+ * @see CodeServiceXMLParser.CodeServiceEntryCallback
  * 
  * @author Peter
  *
  */
 public class CodeServiceXMLParser {
+
+    static final Date ONE_YEAR_BACK;
+    static { 
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        ONE_YEAR_BACK = cal.getTime();
+    }
+
+
     private static final String CODE_PREFIX = "c:";
     private static final String ATTR_PREFIX = "a:";
     private static final String CODE = "code";
@@ -55,8 +75,17 @@ public class CodeServiceXMLParser {
     private Set<String> extractFilter = new HashSet<String>();
     private Map<String, QName> names = new HashMap<String, QName>();
     private CodeServiceEntryCallback codeServiceEntryCallback;
+    private Date newerThan = ONE_YEAR_BACK;
 
+    /**
+     * Parsing callback interface
+     */
     public static interface CodeServiceEntryCallback {
+        /**
+         * Called when a valid code service entry has been processed.
+         * 
+         * @param codeServiceEntry the entry item.
+         */
         void onCodeServiceEntry(CodeServiceEntry codeServiceEntry);
     }
 
@@ -70,17 +99,47 @@ public class CodeServiceXMLParser {
         this.codeServiceEntryCallback = codeServiceEntryCallback;
     }
 
-    //
+    /**
+     * Returns the date that items must be newer than in order to be processed.
+     * 
+     * @return the date.
+     */
+    public Date getNewerThan() {
+        return newerThan;
+    }
+
+    /**
+     * Sets the date that items must be newer than in order to be processed and sent to callback method.
+     *
+     * @param newerThan the actual date.
+     */
+    public void setNewerThan(Date newerThan) {
+        this.newerThan = newerThan;
+    }
+
+    /**
+     * Indicate extraction of attribute.
+     * 
+     * @param attribute the attribute name (corresponds to type in XML)
+     */
     public void extractAttribute(final String attribute) {
         extractFilter.add(ATTR_PREFIX + attribute);
     }
 
-    //
-    public void extractCode(final String code) {
-        extractFilter.add(CODE_PREFIX + code);
+    /**
+     * Indicates extraction of a code system. <p>
+     * 
+     * A code always is a sub-element (codevalue) of an attribute of type "externallink".
+     * 
+     * @param codeSystem the code name to extract (corresponds to codesystem in XML)
+     */
+    public void extractCodeSystem(final String codeSystem) {
+        extractFilter.add(CODE_PREFIX + codeSystem);
     }
 
-    //
+    /**
+     * Runs the parser.
+     */
     public void parse() {
         if (extractFilter.size() == 0) {
             throw new IllegalArgumentException("No attributes, nor code values have been defined");
@@ -89,6 +148,12 @@ public class CodeServiceXMLParser {
             parse0();
         } catch (FileNotFoundException | XMLStreamException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                reader.close();
+            } catch (XMLStreamException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -119,23 +184,25 @@ public class CodeServiceXMLParser {
         return (attr == null) ? null : attr.getValue();
     }
 
+    //
     private void parse0() throws FileNotFoundException, XMLStreamException {
         while (reader.hasNext()) {
             final XMLEvent e = reader.nextEvent();
             switch (e.getEventType()) {
             case XMLEvent.START_ELEMENT:
                 if (same(e.asStartElement(), TERMITEMENTRY)) {
-                    final CodeServiceEntry codeServiceEntry = processCodeServiceEntry(e.asStartElement());
-                    codeServiceEntry.setValidFrom(AbstractTermItem.toDate(attribute(e.asStartElement(), "begindate")));
-                    codeServiceEntry.setValidTo(AbstractTermItem.toDate(attribute(e.asStartElement(), "expirationdate")));
-                    if (codeServiceEntry.isValid()) {
+                    final Date expirationDate = AbstractTermItem.toDate(attribute(e.asStartElement(), "expirationdate"));
+                    // avoid unnecessary processing, and check time before creating item
+                    if (expirationDate.after(newerThan)) {
+                        final CodeServiceEntry codeServiceEntry = processCodeServiceEntry(e.asStartElement());
+                        codeServiceEntry.setValidFrom(AbstractTermItem.toDate(attribute(e.asStartElement(), "begindate")));
+                        codeServiceEntry.setValidTo(expirationDate);
                         codeServiceEntryCallback.onCodeServiceEntry(codeServiceEntry);
                     }
                 }
                 break;
             }
         }
-        reader.close();
     }
 
 
