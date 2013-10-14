@@ -1,7 +1,9 @@
 package se.sll.paymentresponsible.util;
 
+import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,6 +134,12 @@ public class CodeServiceXMLParser {
             parse0();
         } catch (FileNotFoundException | XMLStreamException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                reader.close();
+            } catch (XMLStreamException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -181,7 +189,6 @@ public class CodeServiceXMLParser {
                 break;
             }
         }
-        reader.close();
     }
 
 
