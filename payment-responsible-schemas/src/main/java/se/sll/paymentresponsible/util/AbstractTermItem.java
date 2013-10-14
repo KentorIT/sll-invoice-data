@@ -77,8 +77,15 @@ public class AbstractTermItem implements Comparable<AbstractTermItem> {
         return getValidTo().after(MAX_AGE);
     }
     
-    static Date toDate(String text) {
-        final XMLGregorianCalendar cal = datatypeFactory.newXMLGregorianCalendar(text);
+    public boolean isNewerThan(AbstractTermItem anotherItem) {
+        if (anotherItem == null) {
+            return true;
+        }        
+        return getValidTo().after(anotherItem.getValidTo());
+    }
+    
+    static Date toDate(String xmlDateTime) {
+        final XMLGregorianCalendar cal = datatypeFactory.newXMLGregorianCalendar(xmlDateTime);
         return cal.toGregorianCalendar().getTime();    
     }
 

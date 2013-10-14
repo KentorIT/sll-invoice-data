@@ -135,6 +135,7 @@ public class HSAMappingIndexBuilder {
 
         return map;
     }
+    
 
     //
     protected HashMap<String, Facility> createFacilityIndex(final HashMap<String, Commission> samverksIndex) {
@@ -150,7 +151,7 @@ public class HSAMappingIndexBuilder {
                         return;
                     }
                     final Facility prev = index.get(codeServiceEntry.getId());
-                    if (prev == null || prev.getValidTo().before(codeServiceEntry.getValidTo())) {
+                    if (codeServiceEntry.isNewerThan(prev)) {
                         final Facility avd = new Facility();
                         avd.setId(codeServiceEntry.getId());
                         avd.setName(codeServiceEntry.getAttribute(SHORTNAME));
@@ -185,7 +186,7 @@ public class HSAMappingIndexBuilder {
             @Override
             public void onCodeServiceEntry(CodeServiceEntry codeServiceEntry) {
                 final Commission prev = index.get(codeServiceEntry.getId());
-                if (prev == null || prev.getValidTo().before(codeServiceEntry.getValidTo())) {
+                if (codeServiceEntry.isNewerThan(prev)) {
                     CommissionType uppdragstyp = null;
                     List<String> ul = codeServiceEntry.getCodes(UPPDRAGSTYP);
                     if (ul != null && ul.size() == 1) {
@@ -221,7 +222,7 @@ public class HSAMappingIndexBuilder {
             @Override
             public void onCodeServiceEntry(CodeServiceEntry codeServiceEntry) {
                 final CommissionType prev = index.get(codeServiceEntry.getId());
-                if (prev == null || prev.getValidTo().before(codeServiceEntry.getValidTo())) {
+                if (codeServiceEntry.isNewerThan(prev)) {
                     final CommissionType uppdragstyp = new CommissionType();
                     uppdragstyp.setId(codeServiceEntry.getId());
                     uppdragstyp.setName(codeServiceEntry.getAttribute(SHORTNAME));
