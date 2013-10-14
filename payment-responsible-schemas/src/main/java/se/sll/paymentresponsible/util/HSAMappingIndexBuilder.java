@@ -7,11 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static se.sll.paymentresponsible.util.CodeServiceXMLParser.CodeServiceEntryCallback;
 import static se.sll.paymentresponsible.util.SimpleXMLElementParser.ElementMatcherCallback;
 
 public class HSAMappingIndexBuilder {
-    
+    private static final Logger log = LoggerFactory.getLogger(HSAMappingIndexBuilder.class);
+
     private String mekFile;
     private String facilityFIle;
     private String commissionFile;
@@ -44,17 +48,21 @@ public class HSAMappingIndexBuilder {
     }
     
     Map<String, List<HSAMapping>> build() {
+        log.info("build commissionTypeIndex from: {}", commissionTypeFile);
         final HashMap<String, CommissionType> commissionTypeIndex = createCommissionTypeIndex();
-        System.err.println("uppdragstyp entries: " + commissionTypeIndex.size());        
+        log.info("commissionTypeIndex: {}", commissionTypeIndex.size());
 
+        log.info("build commissionIndex from: {}", commissionFile);
         final HashMap<String, Commission> commissionIndex = createCommissionIndex(commissionTypeIndex);
-        System.err.println("samverks entries: " + commissionIndex.size());
-
+        log.info("commissionIndex: {}", commissionIndex.size());
+        
+        log.info("build facilityIndex from: {}", facilityFIle);
         final HashMap<String, Facility> facilityIndex = createFacilityIndex(commissionIndex);
-        System.err.println("avd entries: " + facilityIndex.size());
+        log.info("facilityIndex: {}", facilityIndex.size());
 
+        log.info("build hsaMapingIndex from: {}", mekFile);
         final Map<String, List<HSAMapping>> hsaIndex = createHSAIndex(facilityIndex);
-        System.err.println("HSA entries: " + hsaIndex.size());
+        log.info("hsaMapingIndex: {}", hsaIndex.size());
 
         return hsaIndex;
     }
