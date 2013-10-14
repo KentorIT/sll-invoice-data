@@ -83,7 +83,7 @@ public class HSAMappingIndexBuilder {
      * Indicates how to filter out old data items, default setting is to keep one year old data, i.e.
      * expiration date is less than one year back in time.
      * 
-     * @param newerThan the date that data must be newer than, itherwise it's ignored.
+     * @param newerThan the date that data must be newer than to be stored in index, otherwise it's ignored.
      * @return the builder.
      */
     public HSAMappingIndexBuilder newerThan(Date newerThan) {
@@ -140,10 +140,10 @@ public class HSAMappingIndexBuilder {
                     mapping.setId(data);
                     break;
                 case 3:
-                    mapping.setValidFrom(HSAMapping.toDate(data));
+                    mapping.setValidFrom(AbstractTermItem.toDate(data));
                     break;
                 case 4:
-                    mapping.setValidTo(HSAMapping.toDate(data));
+                    mapping.setValidTo(AbstractTermItem.toDate(data));
                     break;
                 }
             }
@@ -207,7 +207,7 @@ public class HSAMappingIndexBuilder {
         });
 
         parser.extractAttribute(SHORTNAME);
-        parser.extractCode(SAMVERKS);
+        parser.extractCodeSystem(SAMVERKS);
         parser.setNewerThan(newerThan);
         
         parser.parse();
@@ -243,7 +243,7 @@ public class HSAMappingIndexBuilder {
         });
 
         parser.extractAttribute(ABBREVIATION);
-        parser.extractCode(UPPDRAGSTYP);
+        parser.extractCodeSystem(UPPDRAGSTYP);
         parser.setNewerThan(newerThan);
         
         parser.parse();

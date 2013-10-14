@@ -10,12 +10,53 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 
+/**
+ * Parses simple XML element data, like the structure below. <p>
+ * <pre>
+ * &lt;enclosing-element&gt;
+ *  &lt;element-a&gt;some-data&lt;/element-a&gt;
+ *  &lt;element-b&gt;some-data&lt;/element-b&gt;
+ *  &lt;element-n&gt;some-data&lt;/element-n&gt;
+ * &lt;/enclosing-element>
+ * </pre>
+ * 
+ * The enclosing element name, and all elements of interest are registered. <p>
+ * 
+ * The parser invokes a callback method when a section enclosed by the given element begins and then 
+ * for each matching element (with data), and finally 
+ * when the enclosing element ends.
+ * 
+ * @see SimpleXMLElementParser.ElementMatcherCallback
+ * 
+ * @author Peter
+ *
+ */
 public class SimpleXMLElementParser {
     private String file;
 
+    /**
+     * Callback interface when matching registered elements.
+     * 
+     * @author Peter
+     *
+     */
     public static interface ElementMatcherCallback {
+        /**
+         * Called when section with enclosed element begins.
+         */
         void begin();
+        
+        /**
+         * Registered element has been matched.
+         * 
+         * @param code the registered code.
+         * @param data
+         */
         void match(int code, String data);
+        
+        /**
+         * Called when section with enclosed element ends.
+         */
         void end();
     }
 
