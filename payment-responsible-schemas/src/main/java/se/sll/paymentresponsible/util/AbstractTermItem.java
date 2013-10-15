@@ -1,6 +1,5 @@
 package se.sll.paymentresponsible.util;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.xml.datatype.DatatypeConfigurationException;
