@@ -18,22 +18,19 @@
 
 
 	<beans profile="test">
-		<context:property-placeholder location="classpath:/application.properties"
-			ignore-unresolvable="true" />
-	</beans>
-
-	<beans profile="db-embedded">
-		<context:property-placeholder location="classpath:/db-embedded.properties"
+		<context:property-placeholder location="classpath:/application-dev.properties"
 			ignore-unresolvable="true" />
 
 		<bean id="org.h2.tools.Server-WebServer" class="org.h2.tools.Server"
 			factory-method="createWebServer" init-method="start" destroy-method="shutdown">
-			<constructor-arg value="-web,-webAllowOthers,-webPort,8082" />
+			<constructor-arg value="-web,-webAllowOthers,-webPort,${embedded-db.port}" />
 		</bean>
 	</beans>
 
-
-	<beans profile="prod">
+	<beans profile="prod" >
+		<context:property-placeholder location="file:///${user.home}/sll-invoice-data/application-prod.properties"
+			ignore-unresolvable="true" />
+			
 		<bean id="jpaProperties"
 			class="org.springframework.beans.factory.config.MapFactoryBean">
 			<property name="sourceMap">
@@ -41,6 +38,7 @@
 					<entry key="hibernate.dialect" value="${database.dialect}" />
 					<entry key="hibernate.connection.pool_size" value="10" />
 					<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
+					<entry key="hibernate.hbm2ddl.auto" value="${database.updateStrategy}" />
 				</map>
 			</property>
 		</bean>
