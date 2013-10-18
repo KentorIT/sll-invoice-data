@@ -129,16 +129,16 @@ GO
 
 USE [sll-invoice-data]
 GO
-/****** Object:  Table [invoicedata].[invoice_data_pricelist]    Script Date: 10/17/2013 10:07:43 ******/
+/****** Object:  Table [dbo].[invoice_data_pricelist]    Script Date: 10/17/2013 10:07:43 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[invoicedata].[invoice_data_pricelist]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_pricelist]') AND type in (N'U'))
 BEGIN
-CREATE TABLE [invoicedata].[invoice_data_pricelist](
+CREATE TABLE [dbo].[invoice_data_pricelist](
 	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
 	[service_code] [varchar](64) NOT NULL,
 	[supplier_id] [varchar](64) NOT NULL,
@@ -164,16 +164,16 @@ END
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [invoicedata].[invoice_data]    Script Date: 10/17/2013 10:07:43 ******/
+/****** Object:  Table [dbo].[invoice_data]    Script Date: 10/17/2013 10:07:43 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[invoicedata].[invoice_data]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data]') AND type in (N'U'))
 BEGIN
-CREATE TABLE [invoicedata].[invoice_data](
+CREATE TABLE [dbo].[invoice_data](
 	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
 	[created_by] [varchar](64) NOT NULL,
 	[created_timestamp] [datetime] NOT NULL,
@@ -188,16 +188,16 @@ END
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [invoicedata].[invoice_data_event]    Script Date: 10/17/2013 10:07:43 ******/
+/****** Object:  Table [dbo].[invoice_data_event]    Script Date: 10/17/2013 10:07:43 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event]') AND type in (N'U'))
 BEGIN
-CREATE TABLE [invoicedata].[invoice_data_event](
+CREATE TABLE [dbo].[invoice_data_event](
 	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
 	[acknowledged_by] [varchar](64) NOT NULL,
 	[acknowledged_time] [datetime] NOT NULL,
@@ -226,35 +226,35 @@ END
 GO
 SET ANSI_PADDING OFF
 GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_1')
-CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_1] ON [invoicedata].[invoice_data_event] 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_1')
+CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_1] ON [dbo].[invoice_data_event] 
 (
 	[supplier_id] ASC,
 	[pending] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_2')
-CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_2] ON [invoicedata].[invoice_data_event] 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_2')
+CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_2] ON [dbo].[invoice_data_event] 
 (
 	[event_id] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_3')
-CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_3] ON [invoicedata].[invoice_data_event] 
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_3')
+CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_3] ON [dbo].[invoice_data_event] 
 (
 	[acknowledgement_id] ASC
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 GO
-/****** Object:  Table [invoicedata].[invoice_data_pricelist_item]    Script Date: 10/17/2013 10:07:43 ******/
+/****** Object:  Table [dbo].[invoice_data_pricelist_item]    Script Date: 10/17/2013 10:07:43 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[invoicedata].[invoice_data_pricelist_item]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_pricelist_item]') AND type in (N'U'))
 BEGIN
-CREATE TABLE [invoicedata].[invoice_data_pricelist_item](
+CREATE TABLE [dbo].[invoice_data_pricelist_item](
 	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
 	[item_id] [varchar](64) NOT NULL,
 	[price] [numeric](8, 2) NOT NULL,
@@ -278,16 +278,16 @@ END
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  Table [invoicedata].[invoice_data_event_item]    Script Date: 10/17/2013 10:07:43 ******/
+/****** Object:  Table [dbo].[invoice_data_event_item]    Script Date: 10/17/2013 10:07:43 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event_item]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event_item]') AND type in (N'U'))
 BEGIN
-CREATE TABLE [invoicedata].[invoice_data_event_item](
+CREATE TABLE [dbo].[invoice_data_event_item](
 	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
 	[description] [varchar](256) NOT NULL,
 	[item_id] [varchar](64) NOT NULL,
@@ -304,26 +304,26 @@ GO
 SET ANSI_PADDING OFF
 GO
 /****** Object:  ForeignKey [FKC29022178FF8CD73]    Script Date: 10/17/2013 10:07:43 ******/
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[invoicedata].[FKC29022178FF8CD73]') AND parent_object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event]'))
-ALTER TABLE [invoicedata].[invoice_data_event]  WITH CHECK ADD  CONSTRAINT [FKC29022178FF8CD73] FOREIGN KEY([invoice_data_id])
-REFERENCES [invoicedata].[invoice_data] ([id])
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKC29022178FF8CD73]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_event]'))
+ALTER TABLE [dbo].[invoice_data_event]  WITH CHECK ADD  CONSTRAINT [FKC29022178FF8CD73] FOREIGN KEY([invoice_data_id])
+REFERENCES [dbo].[invoice_data] ([id])
 GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[invoicedata].[FKC29022178FF8CD73]') AND parent_object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event]'))
-ALTER TABLE [invoicedata].[invoice_data_event] CHECK CONSTRAINT [FKC29022178FF8CD73]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKC29022178FF8CD73]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_event]'))
+ALTER TABLE [dbo].[invoice_data_event] CHECK CONSTRAINT [FKC29022178FF8CD73]
 GO
 /****** Object:  ForeignKey [FK88E0C83BB8B18D8]    Script Date: 10/17/2013 10:07:43 ******/
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[invoicedata].[FK88E0C83BB8B18D8]') AND parent_object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event_item]'))
-ALTER TABLE [invoicedata].[invoice_data_event_item]  WITH CHECK ADD  CONSTRAINT [FK88E0C83BB8B18D8] FOREIGN KEY([event_id])
-REFERENCES [invoicedata].[invoice_data_event] ([id])
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK88E0C83BB8B18D8]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_event_item]'))
+ALTER TABLE [dbo].[invoice_data_event_item]  WITH CHECK ADD  CONSTRAINT [FK88E0C83BB8B18D8] FOREIGN KEY([event_id])
+REFERENCES [dbo].[invoice_data_event] ([id])
 GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[invoicedata].[FK88E0C83BB8B18D8]') AND parent_object_id = OBJECT_ID(N'[invoicedata].[invoice_data_event_item]'))
-ALTER TABLE [invoicedata].[invoice_data_event_item] CHECK CONSTRAINT [FK88E0C83BB8B18D8]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK88E0C83BB8B18D8]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_event_item]'))
+ALTER TABLE [dbo].[invoice_data_event_item] CHECK CONSTRAINT [FK88E0C83BB8B18D8]
 GO
 /****** Object:  ForeignKey [FKED35540EC367E1EB]    Script Date: 10/17/2013 10:07:43 ******/
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[invoicedata].[FKED35540EC367E1EB]') AND parent_object_id = OBJECT_ID(N'[invoicedata].[invoice_data_pricelist_item]'))
-ALTER TABLE [invoicedata].[invoice_data_pricelist_item]  WITH CHECK ADD  CONSTRAINT [FKED35540EC367E1EB] FOREIGN KEY([price_list_id])
-REFERENCES [invoicedata].[invoice_data_pricelist] ([id])
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKED35540EC367E1EB]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_pricelist_item]'))
+ALTER TABLE [dbo].[invoice_data_pricelist_item]  WITH CHECK ADD  CONSTRAINT [FKED35540EC367E1EB] FOREIGN KEY([price_list_id])
+REFERENCES [dbo].[invoice_data_pricelist] ([id])
 GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[invoicedata].[FKED35540EC367E1EB]') AND parent_object_id = OBJECT_ID(N'[invoicedata].[invoice_data_pricelist_item]'))
-ALTER TABLE [invoicedata].[invoice_data_pricelist_item] CHECK CONSTRAINT [FKED35540EC367E1EB]
+IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKED35540EC367E1EB]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_pricelist_item]'))
+ALTER TABLE [dbo].[invoice_data_pricelist_item] CHECK CONSTRAINT [FKED35540EC367E1EB]
 GO

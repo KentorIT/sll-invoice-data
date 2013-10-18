@@ -23,7 +23,7 @@
 				<version>2.1</version>
 				<configuration>
 					<systemProperties>
-						<spring.profiles.active>test,db-embedded</spring.profiles.active>
+						<spring.profiles.active>test</spring.profiles.active>
 					</systemProperties>
 				</configuration>
 
