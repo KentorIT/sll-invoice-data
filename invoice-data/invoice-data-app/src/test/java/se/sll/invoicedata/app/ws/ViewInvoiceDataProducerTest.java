@@ -140,7 +140,7 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 		
 		Assert.assertNotNull(viewIDResp);
 		Assert.assertNotNull(viewIDResp.getInvoiceData());
-		Assert.assertNotNull(viewIDResp.getInvoiceData().getEventList());
+		Assert.assertNotNull(viewIDResp.getInvoiceData().getRegisteredEventList());
 		Assert.assertEquals(ResultCodeEnum.OK, viewIDResp.getResultCode().getCode());
 		
 		Assert.assertEquals(supplierId, viewIDResp.getInvoiceData().getSupplierId());

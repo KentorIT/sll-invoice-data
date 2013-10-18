@@ -43,7 +43,7 @@ import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath:/invoice-data-service.xml")
-@ActiveProfiles(profiles={"db-embedded","test"}, inheritProfiles=true)
+@ActiveProfiles(profiles={"test"}, inheritProfiles=true)
 public abstract class TestSupport {
 
     @Autowired

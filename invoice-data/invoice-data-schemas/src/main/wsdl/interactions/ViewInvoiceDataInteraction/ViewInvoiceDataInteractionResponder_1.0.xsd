@@ -34,7 +34,7 @@
 		<xs:sequence>
 			<xs:element name='resultCode' type='core:ResultCode'
 				maxOccurs="1" minOccurs="1" />
-			<xs:element name="invoiceData" type="core:InvoiceData" minOccurs="0" />
+			<xs:element name="invoiceData" type="core:InvoiceData" minOccurs="0" maxOccurs="1" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>

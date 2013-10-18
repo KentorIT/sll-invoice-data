@@ -284,7 +284,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         final InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(invoiceDataEntity);
 
         for (final BusinessEventEntity businessEventEntity : invoiceDataEntity.getBusinessEventEntities()) {
-            invoiceData.getEventList().add(EntityBeanConverter.fromEntity(businessEventEntity));
+            invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromEntity(businessEventEntity));
         }
 
         return invoiceData;
@@ -304,7 +304,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             List<RegisteredEvent> eventList = EntityBeanConverter.fromBEntity(iDataEntity.getBusinessEventEntities());
 
             InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(iDataEntity);
-            invoiceData.getEventList().addAll(eventList);
+            invoiceData.getRegisteredEventList().addAll(eventList);
             invoiceDataList.add(invoiceData);
 
         }

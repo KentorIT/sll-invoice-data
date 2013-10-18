@@ -57,7 +57,7 @@
 			<xs:element name="acknowledgedTime" type="xs:dateTime"/>
 			<xs:element name="startTime" type="xs:dateTime"/>
 			<xs:element name="endTime" type="xs:dateTime"/>
-			<xs:element name="itemList" type="tns:Item" maxOccurs="unbounded"/>
+			<xs:element name="itemList" type="tns:Item" minOccurs="1" maxOccurs="unbounded"/>
 			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
@@ -78,8 +78,8 @@
 		<xs:complexContent>
 			<xs:extension base="tns:InvoiceDataHeader">
 				<xs:sequence>
-					<xs:element name='eventList' type='tns:RegisteredEvent'
-						maxOccurs="unbounded" />
+					<xs:element name='registeredEventList' type='tns:RegisteredEvent'
+						minOccurs="1" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
