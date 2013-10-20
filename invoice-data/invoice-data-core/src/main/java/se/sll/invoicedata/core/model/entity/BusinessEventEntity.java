@@ -79,10 +79,10 @@ public class BusinessEventEntity {
     @Column(name = "created_timestamp", nullable=false, updatable=false)
     private Date createdTimestamp;
     
-    @Column(name="HEALTHCARE_FACILITY", length=64, nullable=false, updatable=false)
+    @Column(name="healthcare_facility", length=64, nullable=false, updatable=false)
     private String healthcareFacility;
     
-    @Column(name="refContract_Id", length=64, nullable=false, updatable=false)
+    @Column(name="ref_contract_id", length=64, nullable=false, updatable=false)
     private String refContractId;
     
     @Column(name=SUPPLIER_ID, length=64, nullable=false, updatable=false)
