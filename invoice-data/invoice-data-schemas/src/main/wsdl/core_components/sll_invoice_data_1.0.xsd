@@ -94,7 +94,6 @@
 			<xs:element name="createdBy" type="xs:string"/>			
 			<xs:element name="createdTime" type="xs:dateTime"/>
 			<xs:element name="totalAmount" type="xs:decimal"/>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 
