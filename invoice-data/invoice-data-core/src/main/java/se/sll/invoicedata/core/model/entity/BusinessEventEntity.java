@@ -16,6 +16,7 @@
 
 package se.sll.invoicedata.core.model.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
@@ -52,7 +53,7 @@ import org.hibernate.annotations.Index;
 @Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }),
 @Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.ACKNOWLEDGEMENT_ID }) })
 
-public class BusinessEventEntity {
+public class BusinessEventEntity implements Comparable<BusinessEventEntity>, Serializable {
     static final String TABLE_NAME = "invoice_data_event";
     static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";
     static final String INDEX_NAME_2 = "invoice_data_event_query_ix_2";
@@ -394,5 +395,10 @@ public class BusinessEventEntity {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+    
+    @Override
+    public int compareTo(BusinessEventEntity other) {
+        return this.getStartTime().compareTo(other.getStartTime());
     }
 }

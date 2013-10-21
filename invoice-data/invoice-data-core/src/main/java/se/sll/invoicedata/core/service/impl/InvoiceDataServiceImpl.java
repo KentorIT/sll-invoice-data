@@ -21,6 +21,7 @@ import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.Range;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
@@ -141,7 +143,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     				request.getSupplierId(), request.getPaymentResponsible(), 
     				CoreUtil.toDate(request.getFromDate()), CoreUtil.toDate(request.getToDate()));
     	}
-    	
+    	Collections.sort(bEEntityList);
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
 
@@ -247,6 +249,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
         return invoiceDataEntity;
     }
+    
+    private BusinessEventEntity validate(BusinessEventEntity entity, CreateInvoiceDataRequest createInvoiceDataRequest) {
+    	if (!entity.getSupplierId().equalsIgnoreCase(createInvoiceDataRequest.getSupplierId())) {
+    		throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same supplier: " + createInvoiceDataRequest.getSupplierId());
+    	} else if (!entity.getPaymentResponsible().equalsIgnoreCase(createInvoiceDataRequest.getPaymentResponsible())) {
+    		throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same paymentResponsible: " + createInvoiceDataRequest.getPaymentResponsible());
+    	}
+    	
+    	return entity;
+    }
 
     @Override
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
@@ -254,15 +266,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
         final List<BusinessEventEntity> entities = businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
         int actual = 0;
-        for (BusinessEventEntity entity : entities) {
-            invoiceDataEntity.addBusinessEventEntity(entity);
+        for (BusinessEventEntity entity : entities) {        	
+            invoiceDataEntity.addBusinessEventEntity(validate(entity, createInvoiceDataRequest));
             actual++;
         }
         final int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
         if (expected != actual) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state: " + actual + ", expected: " + expected); 
         }
-
+        
         validate(invoiceDataEntity);
 
         final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
@@ -282,11 +294,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
 
         final InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(invoiceDataEntity);
-
-        for (final BusinessEventEntity businessEventEntity : invoiceDataEntity.getBusinessEventEntities()) {
+        final List<BusinessEventEntity> bEEList = invoiceDataEntity.getBusinessEventEntities();
+        for (final BusinessEventEntity businessEventEntity : bEEList) {
             invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromEntity(businessEventEntity));
         }
-
+        
+        Range range = new Range();
+        range.setStartDate(CoreUtil.toXMLGregorianCalendar(bEEList.get(0).getStartTime()));
+        range.setEndDate(CoreUtil.toXMLGregorianCalendar(bEEList.get(bEEList.size() - 1).getEndTime()));
+        invoiceData.setRange(range);
+        
         return invoiceData;
     }
 
@@ -305,6 +322,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
             InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(iDataEntity);
             invoiceData.getRegisteredEventList().addAll(eventList);
+            Range range = new Range();
+            range.setStartDate(eventList.get(0).getStartTime());
+            range.setEndDate(eventList.get(eventList.size() - 1).getEndTime());
+            invoiceData.setRange(range);
             invoiceDataList.add(invoiceData);
 
         }
