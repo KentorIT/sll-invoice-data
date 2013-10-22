@@ -15,9 +15,10 @@
 	</modules>
 
 	<scm>
-	  <connection>scm:git:</connection>
-	  <url>scm:git:</url>
-	  <developerConnection>scm:git:</developerConnection>
+          <connection>scm:git:https://code.google.com/p/sll-invoice-data/</connection>
+          <developerConnection>scm:git:https://code.google.com/p/sll-invoice-data/</developerConnection>
+          <url>https://code.google.com/p/sll-invoice-data/</url>
+	  <tag>HEAD</tag>
 	</scm>
 
 	<properties>
