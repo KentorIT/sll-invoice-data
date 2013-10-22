@@ -69,6 +69,9 @@
 						<exclude>**/*.js</exclude>
 						<exclude>**/*.jsp</exclude>
 						<exclude>**/.idea/</exclude>
+						<exclude>**/.doc*/</exclude>
+						<exclude>**/.gitignore/</exclude>
+						<exclude>**/*-workspace.xml/</exclude>
 						<exclude>**/*-soapui-project.xml</exclude>
 					</excludes>
 				</configuration>

@@ -11,40 +11,21 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 
 	<beans profile="test">
-		<context:property-placeholder location="classpath:/application-dev.properties"
-			ignore-unresolvable="true" />
+		<context:property-placeholder location="classpath:/application-dev.properties,file:${user.home}/.invoice-data-dev-config.properties"
+			ignore-unresolvable="true" ignore-resource-not-found="true"/>
 
 		<bean id="org.h2.tools.Server-WebServer" class="org.h2.tools.Server"
 			factory-method="createWebServer" init-method="start" destroy-method="shutdown">
 			<constructor-arg value="-web,-webAllowOthers,-webPort,${embedded-db.port}" />
 		</bean>
-	</beans>
 
-	<beans profile="prod" >
-		<context:property-placeholder location="file:///${user.home}/sll-invoice-data/application-prod.properties"
-			ignore-unresolvable="true" />
-			
-		<bean id="jpaProperties"
-			class="org.springframework.beans.factory.config.MapFactoryBean">
-			<property name="sourceMap">
-				<map>
-					<entry key="hibernate.dialect" value="${database.dialect}" />
-					<entry key="hibernate.connection.pool_size" value="10" />
-					<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
-					<entry key="hibernate.hbm2ddl.auto" value="${database.updateStrategy}" />
-				</map>
-			</property>
-		</bean>
-	</beans>
-
-	<beans profile="test">
 		<bean id="jpaProperties"
 			class="org.springframework.beans.factory.config.MapFactoryBean">
 			<property name="sourceMap">
@@ -53,6 +34,25 @@
 					<entry key="hibernate.show_sql" value="${database.show-sql}" />
 					<entry key="hibernate.format_sql" value="${database.format-sql}" />
 					<entry key="hibernate.connection.pool_size" value="1" />
+					<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
+					<entry key="hibernate.hbm2ddl.auto" value="${database.updateStrategy}" />
+				</map>
+			</property>
+		</bean>
+
+	</beans>
+
+	<beans profile="prod">
+		<context:property-placeholder
+			location="file:///${user.home}/sll-invoice-data/application-prod.properties"
+			ignore-unresolvable="true" />
+
+		<bean id="jpaProperties"
+			class="org.springframework.beans.factory.config.MapFactoryBean">
+			<property name="sourceMap">
+				<map>
+					<entry key="hibernate.dialect" value="${database.dialect}" />
+					<entry key="hibernate.connection.pool_size" value="10" />
 					<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
 					<entry key="hibernate.hbm2ddl.auto" value="${database.updateStrategy}" />
 				</map>
@@ -68,6 +68,7 @@
 		<tx:annotation-driven />
 		<tx:advice id="txAdvice" transaction-manager="transactionManager" />
 	</beans>
+
 
 	<beans>
 		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
@@ -105,9 +106,8 @@
 			</property>
 		</bean>
 
-		<!-- JMX stuff
-		
-		this bean must not be lazily initialized if the exporting is to happen -->
+		<!-- JMX stuff this bean must not be lazily initialized if the exporting 
+			is to happen -->
 		<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter"
 			lazy-init="false">
 			<property name="assembler" ref="assembler" />
@@ -129,7 +129,7 @@
 			class="org.springframework.jmx.export.naming.MetadataNamingStrategy">
 			<property name="attributeSource" ref="jmxAttributeSource" />
 		</bean>
-		
+
 	</beans>
 
 </beans>
