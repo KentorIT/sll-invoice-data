@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2013 SLL, <http://sll.se>
+    Copyright (c) 2013 SLL. <http://sll.se>
 
     This file is part of Invoice-Data.
 
-        Invoice Data is free software: you can redistribute it and/or modify
+        Invoice-Data is free software: you can redistribute it and/or modify
         it under the terms of the GNU Lesser General Public License as published by
         the Free Software Foundation, either version 3 of the License, or
         (at your option) any later version.
@@ -19,6 +19,7 @@
         along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 
 -->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"

@@ -1,9 +1,9 @@
 --
--- Copyright (c) 2013 SLL, <http://sll.se>
+-- Copyright (c) 2013 SLL. <http://sll.se>
 --
 -- This file is part of Invoice-Data.
 --
---     Invoice Data is free software: you can redistribute it and/or modify
+--     Invoice-Data is free software: you can redistribute it and/or modify
 --     it under the terms of the GNU Lesser General Public License as published by
 --     the Free Software Foundation, either version 3 of the License, or
 --     (at your option) any later version.
