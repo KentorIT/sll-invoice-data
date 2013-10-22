@@ -62,6 +62,7 @@
 						<exclude>lgpl-header.txt</exclude>
 						<exclude>TD_MONITORING_1_0_0_R/**/*</exclude>					
 						<exclude>**/*.properties</exclude>
+						<exclude>**/*.json</exclude>
 						<exclude>**/*.css</exclude>
 						<exclude>**/*.xsd</exclude>
 						<exclude>**/*.wsdl</exclude>
