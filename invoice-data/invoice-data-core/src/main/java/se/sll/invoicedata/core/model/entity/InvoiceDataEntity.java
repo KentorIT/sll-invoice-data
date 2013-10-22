@@ -146,6 +146,7 @@ public class InvoiceDataEntity {
     }
 
     public List<BusinessEventEntity> getBusinessEventEntities() {
+        Collections.sort(businessEventEntities);
         return Collections.unmodifiableList(businessEventEntities);
     }
 
