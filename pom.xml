@@ -53,7 +53,7 @@
 				<artifactId>maven-license-plugin</artifactId>
 				<version>${license.plugin.version}</version>
 				<configuration>
-					<header>http://sll-invoice-data.googlecode.com/git/LICENSE.txt</header>
+					<header>http://sll-invoice-data.googlecode.com/git/lgpl-header.txt</header>
 					<excludes>
 						<exclude>target/**</exclude>
 						<exclude>schemas/**</exclude>
