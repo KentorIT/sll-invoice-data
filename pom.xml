@@ -59,6 +59,7 @@
 						<exclude>schemas/**</exclude>
 						<exclude>LICENSE.txt</exclude>
 						<exclude>NOTICE.txt</exclude>
+						<exclude>lgpl-header.txt</exclude>
 						<exclude>TD_MONITORING_1_0_0_R/**/*</exclude>					
 						<exclude>**/*.properties</exclude>
 						<exclude>**/*.css</exclude>
