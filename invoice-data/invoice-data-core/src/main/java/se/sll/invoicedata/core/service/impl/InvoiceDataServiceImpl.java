@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -122,26 +123,20 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             GetInvoiceDataRequest request) {
     	
     	mandatory(request.getSupplierId(), "supplierId");
-    	
-    	if (request.getFromDate() == null) {
-    		request.setFromDate(CoreUtil.getStartDate());            
-        }
-    	
-    	if (request.getToDate() == null) {
-        	request.setToDate(CoreUtil.getEndDate());
-        }
-    	
+
     	List<BusinessEventEntity> bEEntityList = new ArrayList<BusinessEventEntity>();
+    	
+    	final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
+    	final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
     	
     	if (CoreUtil.isEmpty(request.getPaymentResponsible())) {
     		bEEntityList = businessEventRepository.findBySupplierIdAndPendingIsTrueAndStartTimeBetween(
-    				request.getSupplierId(),
-    				CoreUtil.toDate(request.getFromDate()), CoreUtil.toDate(request.getToDate()));    		
+    				request.getSupplierId(), dateFrom, dateTo);
     	} else {
     		bEEntityList = businessEventRepository.
     				findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(
-    				request.getSupplierId(), request.getPaymentResponsible(), 
-    				CoreUtil.toDate(request.getFromDate()), CoreUtil.toDate(request.getToDate()));
+    				request.getSupplierId(), request.getPaymentResponsible(),
+    				dateFrom, dateTo);
     	}
     	Collections.sort(bEEntityList);
         return EntityBeanConverter.fromBEntity(bEEntityList);
@@ -341,31 +336,24 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      */
     private List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
     	
-    	if (request.getFromDate() == null) {
-    		request.setFromDate(CoreUtil.getStartDate());            
-        }
-    	
-    	if (request.getToDate() == null) {
-        	request.setToDate(CoreUtil.getEndDate());
-        }
-    	
+        final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
+        final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
+
     	List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
+    	
     	if (request.getSupplierId() != null && request.getPaymentResponsible() != null) {
     		invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(
     				request.getSupplierId(),
                     request.getPaymentResponsible(),
-                    CoreUtil.toDate(request.getFromDate()),
-                    CoreUtil.toDate(request.getToDate()));
+                    dateFrom, dateTo);
     	} else  if (request.getSupplierId() != null) {
     		invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndCreatedTimeBetween(
     				request.getSupplierId(),
-                    CoreUtil.toDate(request.getFromDate()),
-                    CoreUtil.toDate(request.getToDate()));
+                    dateFrom, dateTo);
     	} else if (request.getPaymentResponsible() != null) {
     		invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndCreatedTimeBetween(
     				request.getPaymentResponsible(),
-                    CoreUtil.toDate(request.getFromDate()),
-                    CoreUtil.toDate(request.getToDate()));
+                    dateFrom, dateTo);
     	}
     	return invoiceDataEntityList;
     }

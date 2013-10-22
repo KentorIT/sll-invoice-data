@@ -82,22 +82,33 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
     List<BusinessEventEntity> findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(String supplierId, String paymentResponsible);
     
     /**
-     * Returns entities matching an acknowledgment id.
-     * @param acknowledgementId the id.
-     * @return the matching entity.
+     * Returns entities matching a list of acknowledgment identities.
+     * 
+     * @param acknowledgementId the list of acknowledgment identities.
+     * @return the list of matching events, might be empty when none matches the acknowledgementId.
      */
     List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(List<String> acknowledgementId);
     
-    
+    /**
+     * Returns entities for a supplier and where start time is within a period of time.
+     * 
+     * @param supplierId the supplier id.
+     * @param startTime the period start time.
+     * @param endTime the period end time.
+     * 
+     * @return the list of matching events, might be empty when none matches the criteria.
+     */
     List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndStartTimeBetween(String supplierId, Date startTime, Date endTime);
     
     /**
+     * Returns entities for a supplier and payment responsible, and where start time is within a period of time.
      * 
-     * @param supplierId
-     * @param paymentResponsible
-     * @param startTime
-     * @param endTime
-     * @return
+     * @param supplierId the supplier id.
+     * @param paymentResponsible the payment responsible.
+     * @param startTime the period start time.
+     * @param endTime the period end time.
+     * 
+     * @return the list of matching events, might be empty when none matches the criteria.
      */
     List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(String supplierId, String paymentResponsible, Date startTime, Date endTime);
     

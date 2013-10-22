@@ -16,7 +16,6 @@
 
 package se.sll.invoicedata.core.service.impl;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -47,6 +46,11 @@ public class CoreUtil {
             throw new RuntimeException("Init Error!", e);
         }
     }
+    /** Minimum date value. */
+    public static Date MIN_DATE = new Date(0L);
+    
+    /** Maximum date value. */
+    public static Date MAX_DATE = new Date(Long.MAX_VALUE);
  
     /**
      * Copies properties/state from one object to another. <p>
@@ -92,8 +96,21 @@ public class CoreUtil {
      * @return the {@link Date} representation.
      */
     public static Date toDate(XMLGregorianCalendar cal) {
-        return (cal == null) ? null : cal.toGregorianCalendar().getTime();
+        return toDate(cal, null);
     }
+    
+
+    /**
+     * Returns a {@link Date} date and time representation.
+     * 
+     * @param cal the actual date and time.
+     * @param defaultValue the default value if cal is null.
+     * @return the {@link Date} representation.
+     */
+    public static Date toDate(XMLGregorianCalendar cal, Date defaultValue) {
+        return (cal == null) ? defaultValue : cal.toGregorianCalendar().getTime();
+    }
+
     
     /**
      * Returns a {@link XMLGregorianCalendar} date and time representation.
@@ -102,31 +119,34 @@ public class CoreUtil {
      * @return the {@link XMLGregorianCalendar} representation.
      */
     public static XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
+        return toXMLGregorianCalendar(date, null);
+    }
+
+    /**
+     * Returns a {@link XMLGregorianCalendar} date and time representation.
+     * 
+     * @param date the actual date and time.
+     * @param defaultValue the default value if date is null.
+     * 
+     * @return the {@link XMLGregorianCalendar} representation.
+     */
+    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date, XMLGregorianCalendar defaultValue) {
         if (date == null) {
-            return null;
+            return defaultValue;
         }
         final GregorianCalendar gCal = new GregorianCalendar();
         gCal.setTime(date);
         return datatypeFactory.newXMLGregorianCalendar(gCal);
     }
-    
-    public static XMLGregorianCalendar getStartDate() {
-    	Calendar cal = Calendar.getInstance();
-    	cal.set( Calendar.YEAR, 1970 );
-    	cal.set( Calendar.MONTH, Calendar.JANUARY );
-    	cal.set( Calendar.DATE, 1 );
-    	
-    	return toXMLGregorianCalendar(cal.getTime());
-    }
-    
-    public static XMLGregorianCalendar getEndDate() {
-    	Calendar cal = Calendar.getInstance();
-    	cal.set( Calendar.YEAR, cal.get(Calendar.YEAR) + 100);    	
-    	return toXMLGregorianCalendar(cal.getTime());
-    }
-    
+      
+    /**
+     * Returns is the string is empty, i.e. null or an empty (zero length) string.
+     * 
+     * @param data the string.
+     * @return true if empty, otherwise false.
+     */
     public static boolean isEmpty(String data) {
-    	return data == null || data.isEmpty();  
+    	return (data == null) || data.isEmpty();  
     }
     
 }
