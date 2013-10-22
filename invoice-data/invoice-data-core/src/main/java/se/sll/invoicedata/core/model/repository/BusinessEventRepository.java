@@ -1,17 +1,20 @@
 /**
- *  Copyright (c) 2013 SLL <http://sll.se/>
+ * Copyright (c) 2013 SLL, <http://sll.se>
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * This file is part of Invoice-Data.
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     Invoice Data is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ *     Invoice-Data is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
  */
 
 package se.sll.invoicedata.core.model.repository;
@@ -82,22 +85,33 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
     List<BusinessEventEntity> findBySupplierIdAndPaymentResponsibleAndPendingIsTrue(String supplierId, String paymentResponsible);
     
     /**
-     * Returns entities matching an acknowledgment id.
-     * @param acknowledgementId the id.
-     * @return the matching entity.
+     * Returns entities matching a list of acknowledgment identities.
+     * 
+     * @param acknowledgementId the list of acknowledgment identities.
+     * @return the list of matching events, might be empty when none matches the acknowledgementId.
      */
     List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(List<String> acknowledgementId);
     
-    
+    /**
+     * Returns entities for a supplier and where start time is within a period of time.
+     * 
+     * @param supplierId the supplier id.
+     * @param startTime the period start time.
+     * @param endTime the period end time.
+     * 
+     * @return the list of matching events, might be empty when none matches the criteria.
+     */
     List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndStartTimeBetween(String supplierId, Date startTime, Date endTime);
     
     /**
+     * Returns entities for a supplier and payment responsible, and where start time is within a period of time.
      * 
-     * @param supplierId
-     * @param paymentResponsible
-     * @param startTime
-     * @param endTime
-     * @return
+     * @param supplierId the supplier id.
+     * @param paymentResponsible the payment responsible.
+     * @param startTime the period start time.
+     * @param endTime the period end time.
+     * 
+     * @return the list of matching events, might be empty when none matches the criteria.
      */
     List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(String supplierId, String paymentResponsible, Date startTime, Date endTime);
     

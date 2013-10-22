@@ -1,6 +1,6 @@
 Copyright (c) 2013 SLL <http://sll.se/>
 
-This application includes the following software:
+The application (Invoice-Data) includes the following open source software:
 
 Springsource, Spring Framework 3.1
 Licensed under Apache Software License 2.0
@@ -10,9 +10,9 @@ Apache Software Foundation, Apache CXF 2.5
 Licensed under Apache Software License 2.0
 http://www.apache.org/
 
-FasterXML, Jackson Core, Mapper 1.9
-Licensed under Apache Software License 2.0
-http://jackson.codehaus.org/
+Hibernate, Jackson Core, Mapper 1.9
+Licensed under GNU Lesser General Public License
+http://hibernate.org/
 
 Apache Software Foundation, Log for Java 1.6
 Licensed under Apache Software License 2.0
@@ -22,17 +22,18 @@ Apache Foundation, Commons Project 2.5
 Licensed under Apache Software License 2.0
 http://commons.apache.org/
 
+Apache Foundation, Commons DBCP 1.4 
+Licensed under Apache Software License 2.0
+http://commons.apache.org/
+
+The jDTS Project 1.2
+Licensed under GNU Lesser General Public License
+http://jtds.sourceforge.net/
+
 AOP Alliance, AOP 1.0
 Licensed as Public Domain
 http://aopalliance.sourceforge.net/
 
-
-
-
-
-
-
-
-
-
-
+CeHis RIV-TA, itintegration:monitoring 1.0
+Licensed under Apache Software License 2.0
+http://commons.apache.org/

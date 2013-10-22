@@ -36,7 +36,6 @@
 		<cxf-codegen.version>2.7.7</cxf-codegen.version>
 		<cobertura.version>2.5.2</cobertura.version>
 		<mockito.version>1.9.5</mockito.version>
-		<jodatime.version>2.1</jodatime.version>
 	</properties>
 	<build>
 		<plugins>
@@ -54,7 +53,7 @@
 				<artifactId>maven-license-plugin</artifactId>
 				<version>${license.plugin.version}</version>
 				<configuration>
-					<header>http://sll-invoice-data.googlecode.com/git/LICENSE.txt</header>
+					<header>http://sll-invoice-data.googlecode.com/git/lgpl-header.txt</header>
 					<excludes>
 						<exclude>target/**</exclude>
 						<exclude>schemas/**</exclude>
@@ -69,6 +68,9 @@
 						<exclude>**/*.js</exclude>
 						<exclude>**/*.jsp</exclude>
 						<exclude>**/.idea/</exclude>
+						<exclude>**/.doc*/</exclude>
+						<exclude>**/.gitignore/</exclude>
+						<exclude>**/*-workspace.xml/</exclude>
 						<exclude>**/*-soapui-project.xml</exclude>
 					</excludes>
 				</configuration>
