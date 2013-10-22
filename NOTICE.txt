@@ -6,6 +6,10 @@ Springsource, Spring Framework 3.1
 Licensed under Apache Software License 2.0
 http://www.springsource.org/
 
+Springsource, Spring Data 1.4
+Licensed under Apache Software License 2.0
+http://www.springsource.org/spring-data/
+
 Apache Software Foundation, Apache CXF 2.5
 Licensed under Apache Software License 2.0
 http://www.apache.org/
@@ -37,3 +41,23 @@ http://aopalliance.sourceforge.net/
 CeHis RIV-TA, itintegration:monitoring 1.0
 Licensed under Apache Software License 2.0
 http://commons.apache.org/
+
+Simple Logging Facade for Java, SLF4J 1.6
+Licensed under MIT license
+http://www.slf4j.org/
+
+Code generation Library, CGLIB 2.2
+Licensed under Apache Software License 2.0
+http://cglib.sourceforge.net/
+
+Annox Code, Annox 0.5
+Licensed under BSD-style License.
+http://static.highsource.org/annox
+
+JAXB2 Basics, JAXB2 0.6
+Licensed under BSD-style License.
+http://static.highsource.org/jaxb2-basics/
+
+
+
+
