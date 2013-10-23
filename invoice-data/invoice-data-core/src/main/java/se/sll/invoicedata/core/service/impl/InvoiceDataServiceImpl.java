@@ -251,6 +251,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         return invoiceDataEntity;
     }
 
+    //
     private BusinessEventEntity validate(BusinessEventEntity entity, CreateInvoiceDataRequest createInvoiceDataRequest) {
         if (!entity.getSupplierId().equalsIgnoreCase(createInvoiceDataRequest.getSupplierId())) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same supplier: " + createInvoiceDataRequest.getSupplierId());
@@ -261,30 +262,57 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         return entity;
     }
 
+    //
+    private List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(final List<String> list) {
+        statusBean.start("InvoiceDataService.findByAcknowledgementIdInAndPendingIsTrue(List<String>");
+        try {
+            return businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(list);
+        } finally {
+            statusBean.stop();
+        }
+    }
+
+    //
+    private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
+        statusBean.start("InvoiceDataService.save(InvoiceDataEntity)");
+        try {
+            final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
+            invoiceDataRepository.flush();
+            return saved;
+        } finally {
+            statusBean.stop();  
+        }
+    }
+
     @Override
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
 
         TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
                 + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
-        
-        final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
 
-        final List<BusinessEventEntity> entities = businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
-        int actual = 0;
-        for (final BusinessEventEntity entity : entities) {        	
-            invoiceDataEntity.addBusinessEventEntity(validate(entity, createInvoiceDataRequest));
-            actual++;
+        statusBean.start("InvoiceDataService.createInvoiceData(CreateInvoiceDataRequest)");
+
+        try {
+            final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
+            final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
+
+            int actual = 0;
+            for (final BusinessEventEntity entity : entities) {        	
+                invoiceDataEntity.addBusinessEventEntity(validate(entity, createInvoiceDataRequest));
+                actual++;
+            }
+            final int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
+            if (expected != actual) {
+                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state! entities available: " + actual + ", request contains: " + expected); 
+            }
+            validate(invoiceDataEntity);
+
+            final InvoiceDataEntity saved  = save(invoiceDataEntity);
+
+            return saved.getReferenceId();
+        } finally {
+            statusBean.stop();
         }
-        final int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
-        if (expected != actual) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state! entities available: " + actual + ", request contains: " + expected); 
-        }
-
-        validate(invoiceDataEntity);
-
-        final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
-
-        return saved.getReferenceId();
     }
 
     @Override
@@ -322,21 +350,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("supplierId or paymentResponsible");
         }
 
-        statusBean.start("InvoiceDataService.listAllInvoiceData");
+        statusBean.start("InvoiceDataService.listAllInvoiceData(ListInvoiceDataRequest)");
 
         try {
             final List<InvoiceDataEntity>  invoiceDataEntityList = findByCriteria(request);   
             final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
 
             for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
-                // FIXME: copyProperties seems to trigger lazy fetch of buisness entities
-                final InvoiceDataHeader invoiceDataHeader = new InvoiceDataHeader();
-                invoiceDataHeader.setCreatedBy(iDataEntity.getCreatedBy());
-                invoiceDataHeader.setCreatedTime(CoreUtil.toXMLGregorianCalendar(iDataEntity.getCreatedTime()));
-                invoiceDataHeader.setPaymentResponsible(iDataEntity.getPaymentResponsible());
-                invoiceDataHeader.setReferenceId(iDataEntity.getReferenceId());
-                invoiceDataHeader.setSupplierId(iDataEntity.getSupplierId());
-                invoiceDataHeader.setTotalAmount(iDataEntity.getTotalAmount());
+                final InvoiceDataHeader invoiceDataHeader = CoreUtil.copyProperties(iDataEntity, InvoiceDataHeader.class);
                 final Range range = new Range();
                 range.setStartDate(CoreUtil.toXMLGregorianCalendar(iDataEntity.getStartDate()));
                 range.setEndDate(CoreUtil.toXMLGregorianCalendar(iDataEntity.getEndDate()));
@@ -360,7 +381,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      */
     private List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
 
-        statusBean.start("InvoiceDataService.findByCriteria");
+        statusBean.start("InvoiceDataService.findByCriteria(ListInvoiceDataRequest)");
         try {
             final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
             final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);

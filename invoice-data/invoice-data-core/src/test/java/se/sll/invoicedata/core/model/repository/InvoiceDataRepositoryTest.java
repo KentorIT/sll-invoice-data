@@ -45,7 +45,6 @@ import se.sll.invoicedata.core.support.TestSupport;
 public class InvoiceDataRepositoryTest extends TestSupport {
 
     
-    
     @Test
     @Transactional
     @Rollback(true)
@@ -111,7 +110,9 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         be3.setSupplierId(ie.getSupplierId());
         assertTrue(ie.addBusinessEventEntity(be3));
         
-        assertEquals(2100, ie.getTotalAmount().intValue());
+        InvoiceDataEntity saved = getInvoiceDataRepository().save(ie);
+        
+        assertEquals(2100, saved.getTotalAmount().intValue());
     }
     
     @Test

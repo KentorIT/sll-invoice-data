@@ -159,6 +159,9 @@ public abstract class AbstractProducer {
         } finally {
             statusBean.stop();
         }
+        
+        log.debug("stats: {}", statusBean.getPerformanceMetrics());
+        
         return rc;
     }
     

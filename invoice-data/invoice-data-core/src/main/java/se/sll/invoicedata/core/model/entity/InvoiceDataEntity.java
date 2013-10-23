@@ -57,14 +57,14 @@ public class InvoiceDataEntity {
 
     @Column(name="payment_responsible", length=64, nullable=false, updatable=false)
     private String paymentResponsible;
-    
+
     @Column(name="created_by", length=64, nullable=false, updatable=false)
     private String createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_timestamp", nullable=false, updatable=false)
     private Date createdTime;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date", nullable=false, updatable=false)
     private Date startDate;
@@ -73,6 +73,8 @@ public class InvoiceDataEntity {
     @Column(name = "end_date", nullable=false, updatable=false)
     private Date endDate;
 
+    @Column(name="total_amount", precision=8, scale=2, updatable=false)
+    private BigDecimal totalAmount;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
     private List<BusinessEventEntity> businessEventEntities = new LinkedList<BusinessEventEntity>();
@@ -81,19 +83,23 @@ public class InvoiceDataEntity {
     @PrePersist
     void onPrePerist() {
         setCreatedTime(new Date());
-        calcDateRange();
+        calcDerivedValues();
     }
-    
-    
-    void calcDateRange() {
-        
+
+
+    /**
+     * Calculates derived property values, and stores them into database.
+     */
+    void calcDerivedValues() {
+
         if (businessEventEntities.size() == 0) {
             return;
         }
-        
+
         Date start = new Date(Long.MAX_VALUE);
         Date end = new Date(0L);
-        
+        BigDecimal amount = BigDecimal.valueOf(0.0);
+
         for (final BusinessEventEntity e : businessEventEntities) {
             if (e.getStartTime().before(start)) {
                 start = e.getStartTime();
@@ -101,9 +107,16 @@ public class InvoiceDataEntity {
             if (e.getEndTime().after(end)) {
                 end = e.getEndTime();
             }
+            if (e.isCredit()) {
+                amount = amount.subtract(e.getTotalAmount());
+            } else {
+                amount = amount.add(e.getTotalAmount()); 
+            }
         }
+        
         setStartDate(start);
         setEndDate(end);
+        setTotalAmount(amount);
     }
 
     public Long getId() {
@@ -137,20 +150,20 @@ public class InvoiceDataEntity {
     public void setPaymentResponsible(String paymentResponsible) {
         this.paymentResponsible = paymentResponsible;
     }
-    
+
     public Date getCreatedTime() {
         return createdTime;
     }
-    
+
     public Date getStartDate() {
         return startDate;
     }
-    
+
     protected void setStartDate(final Date startDate) {
         this.startDate = startDate;
     }
-   
-    
+
+
     public Date getEndDate() {
         return endDate;
     }
@@ -163,22 +176,22 @@ public class InvoiceDataEntity {
         this.createdTime = createdTime;
     }
 
-//    /** XXX: Not needed.
-//     * Returns if a business entity has been removed from this invoice data. <p>
-//     * 
-//     * In order to be removed the business event entity must have been previously added to this
-//     * invoice data object.
-//     * 
-//     * @param businessEventEntity the entity to add.
-//     * @return true if removed, otherwise false.
-//     */
-//    public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
-//        if (this.equals(businessEventEntity.getInvoiceData())) {
-//            businessEventEntity.setInvoiceData(null);
-//            return businessEventEntities.remove(businessEventEntity);
-//        }
-//        return false;
-//    }
+    //    /** XXX: Not needed.
+    //     * Returns if a business entity has been removed from this invoice data. <p>
+    //     * 
+    //     * In order to be removed the business event entity must have been previously added to this
+    //     * invoice data object.
+    //     * 
+    //     * @param businessEventEntity the entity to add.
+    //     * @return true if removed, otherwise false.
+    //     */
+    //    public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
+    //        if (this.equals(businessEventEntity.getInvoiceData())) {
+    //            businessEventEntity.setInvoiceData(null);
+    //            return businessEventEntities.remove(businessEventEntity);
+    //        }
+    //        return false;
+    //    }
 
     /**
      * Returns if a business entity has been added/assign to this invoice data. <p>
@@ -209,24 +222,20 @@ public class InvoiceDataEntity {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
-    
+
     /**
      * Returns the total amount for all events.
      * 
      * @return the total amount for all events.
      */
     public BigDecimal getTotalAmount() {
-        BigDecimal amount = BigDecimal.valueOf(0.0);
-        for (final BusinessEventEntity businessEventEntity : businessEventEntities) {
-            if (businessEventEntity.isCredit()) {
-                amount = amount.subtract(businessEventEntity.getTotalAmount());
-            } else {
-                amount = amount.add(businessEventEntity.getTotalAmount()); 
-            }
-        }
-        return amount;
+        return totalAmount;
     }
 
+    //
+    protected void setTotalAmount(final BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 
     @Override
     public boolean equals(Object r) {
@@ -245,7 +254,7 @@ public class InvoiceDataEntity {
         final Long id = getId();
         return (id == null) ? super.hashCode() : id.hashCode();
     }
-    
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
