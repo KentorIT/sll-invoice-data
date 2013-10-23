@@ -42,6 +42,7 @@ import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
+import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
@@ -71,6 +72,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Autowired
     private RatingService ratingService;
+
+    @Autowired
+    private StatusBean statusBean;
+
 
     //
     private InvoiceDataServiceImpl save(BusinessEventEntity... entities) {
@@ -124,24 +129,24 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
     public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
             GetInvoiceDataRequest request) {
-    	
-    	mandatory(request.getSupplierId(), "supplierId");
 
-    	List<BusinessEventEntity> bEEntityList = new ArrayList<BusinessEventEntity>();
-    	
-    	final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
-    	final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
-    	
-    	if (CoreUtil.isEmpty(request.getPaymentResponsible())) {
-    		bEEntityList = businessEventRepository.findBySupplierIdAndPendingIsTrueAndStartTimeBetween(
-    				request.getSupplierId(), dateFrom, dateTo);
-    	} else {
-    		bEEntityList = businessEventRepository.
-    				findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(
-    				request.getSupplierId(), request.getPaymentResponsible(),
-    				dateFrom, dateTo);
-    	}
-    	Collections.sort(bEEntityList);
+        mandatory(request.getSupplierId(), "supplierId");
+
+        List<BusinessEventEntity> bEEntityList = new ArrayList<BusinessEventEntity>();
+
+        final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
+        final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
+
+        if (CoreUtil.isEmpty(request.getPaymentResponsible())) {
+            bEEntityList = businessEventRepository.findBySupplierIdAndPendingIsTrueAndStartTimeBetween(
+                    request.getSupplierId(), dateFrom, dateTo);
+        } else {
+            bEEntityList = businessEventRepository.
+                    findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(
+                            request.getSupplierId(), request.getPaymentResponsible(),
+                            dateFrom, dateTo);
+        }
+        Collections.sort(bEEntityList);
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
 
@@ -247,15 +252,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
         return invoiceDataEntity;
     }
-    
+
     private BusinessEventEntity validate(BusinessEventEntity entity, CreateInvoiceDataRequest createInvoiceDataRequest) {
-    	if (!entity.getSupplierId().equalsIgnoreCase(createInvoiceDataRequest.getSupplierId())) {
-    		throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same supplier: " + createInvoiceDataRequest.getSupplierId());
-    	} else if (!entity.getPaymentResponsible().equalsIgnoreCase(createInvoiceDataRequest.getPaymentResponsible())) {
-    		throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same paymentResponsible: " + createInvoiceDataRequest.getPaymentResponsible());
-    	}
-    	
-    	return entity;
+        if (!entity.getSupplierId().equalsIgnoreCase(createInvoiceDataRequest.getSupplierId())) {
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same supplier: " + createInvoiceDataRequest.getSupplierId());
+        } else if (!entity.getPaymentResponsible().equalsIgnoreCase(createInvoiceDataRequest.getPaymentResponsible())) {
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same paymentResponsible: " + createInvoiceDataRequest.getPaymentResponsible());
+        }
+
+        return entity;
     }
 
     @Override
@@ -272,7 +277,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         if (expected != actual) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state: " + actual + ", expected: " + expected); 
         }
-        
+
         validate(invoiceDataEntity);
 
         final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
@@ -296,40 +301,47 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         for (final BusinessEventEntity businessEventEntity : bEEList) {
             invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromEntity(businessEventEntity));
         }
-        
+
         Range range = new Range();
         range.setStartDate(CoreUtil.toXMLGregorianCalendar(bEEList.get(0).getStartTime()));
         range.setEndDate(CoreUtil.toXMLGregorianCalendar(bEEList.get(bEEList.size() - 1).getEndTime()));
         invoiceData.setRange(range);
-        
+
         return invoiceData;
     }
 
     @Override
     public List<InvoiceDataHeader> listAllInvoiceData(ListInvoiceDataRequest request) {
-    	
-    	if (CoreUtil.isEmpty(request.getSupplierId()) && CoreUtil.isEmpty(request.getPaymentResponsible())) {
-    		throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("supplierId or paymentResponsible");
-    	}
-    	
-    	List<InvoiceDataEntity> invoiceDataEntityList = findByCriteria(request);    	
-    	List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
-    	
-        for (InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
-            List<RegisteredEvent> eventList = EntityBeanConverter.fromBEntity(iDataEntity.getBusinessEventEntities());
-
-            InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(iDataEntity);
-            invoiceData.getRegisteredEventList().addAll(eventList);
-            Range range = new Range();
-            range.setStartDate(eventList.get(0).getStartTime());
-            range.setEndDate(eventList.get(eventList.size() - 1).getEndTime());
-            invoiceData.setRange(range);
-            invoiceDataList.add(invoiceData);
-
+        if (CoreUtil.isEmpty(request.getSupplierId()) && CoreUtil.isEmpty(request.getPaymentResponsible())) {
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("supplierId or paymentResponsible");
         }
-        return invoiceDataList;
+
+
+        statusBean.start("InoviceDataService/listAllInvoiceData");
+
+        try {
+            List<InvoiceDataEntity>  invoiceDataEntityList = findByCriteria(request);   
+            List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
+
+            for (InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
+                List<RegisteredEvent> eventList = EntityBeanConverter.fromBEntity(iDataEntity.getBusinessEventEntities());
+
+                InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(iDataEntity);
+                invoiceData.getRegisteredEventList().addAll(eventList);
+                Range range = new Range();
+                range.setStartDate(eventList.get(0).getStartTime());
+                range.setEndDate(eventList.get(eventList.size() - 1).getEndTime());
+                invoiceData.setRange(range);
+                invoiceDataList.add(invoiceData);
+            }
+            
+            return invoiceDataList;
+            
+        } finally {
+            statusBean.stop();
+        }
     }
-    
+
     /**
      * Finds by criteria: supplierId, paymentResponsible or date range
      * Date: fromDate - if null then 1970 01 01
@@ -338,26 +350,31 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      * @return
      */
     private List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
-    	
-        final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
-        final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
 
-    	List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
-    	
-    	if (request.getSupplierId() != null && request.getPaymentResponsible() != null) {
-    		invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(
-    				request.getSupplierId(),
-                    request.getPaymentResponsible(),
-                    dateFrom, dateTo);
-    	} else  if (request.getSupplierId() != null) {
-    		invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndCreatedTimeBetween(
-    				request.getSupplierId(),
-                    dateFrom, dateTo);
-    	} else if (request.getPaymentResponsible() != null) {
-    		invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndCreatedTimeBetween(
-    				request.getPaymentResponsible(),
-                    dateFrom, dateTo);
-    	}
-    	return invoiceDataEntityList;
+        statusBean.start("InvoiceDataService/findByCriteria");
+        try {
+            final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
+            final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
+
+            List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
+
+            if (request.getSupplierId() != null && request.getPaymentResponsible() != null) {
+                invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(
+                        request.getSupplierId(),
+                        request.getPaymentResponsible(),
+                        dateFrom, dateTo);
+            } else  if (request.getSupplierId() != null) {
+                invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndCreatedTimeBetween(
+                        request.getSupplierId(),
+                        dateFrom, dateTo);
+            } else if (request.getPaymentResponsible() != null) {
+                invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndCreatedTimeBetween(
+                        request.getPaymentResponsible(),
+                        dateFrom, dateTo);
+            }
+            return invoiceDataEntityList;
+        } finally {
+            statusBean.stop();
+        }
     }
 }

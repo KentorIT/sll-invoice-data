@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Stack;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -50,35 +51,35 @@ import se.sll.invoicedata.core.service.InvoiceDataService;
 public class StatusBean {
 
     private static final Logger log = LoggerFactory.getLogger(StatusBean.class);
-    
+
     @Autowired
     private InvoiceDataService invoiceDataService;
-    
+
     //
-    private static ThreadLocal<Sample> samples = new ThreadLocal<Sample>() {
+    private static ThreadLocal<Stack<Sample>> samples = new ThreadLocal<Stack<Sample>>() {
         @Override
-        public Sample initialValue() {
-            return new Sample();
+        public Stack<Sample> initialValue() {
+            return new Stack<Sample>();
         }
     };
-    
+
     //
     private static Map<String, Timer> timerMap = new HashMap<String, Timer>();
-    
+
     //
     private static Concurrency concurrency = new Concurrency();
- 
+
     // checks database
     private void checkDatabase() {
         invoiceDataService.getAllUnprocessedBusinessEvents(new GetInvoiceDataRequest());
         log.info("health-check database: OK");
     }
-    
+
     // checks rating
     private void checkRating() {
         log.info("health-check rating: OK");
     }
-    
+
     private void checkAlloc() {
         final byte[] bytes = new byte[1024 * 1024];
         for (int i = 0; i < bytes.length; i++) {
@@ -86,7 +87,7 @@ public class StatusBean {
         }
         log.info("health-check memory alloc: OK");
     }
-    
+
     //
     private void checkLog() {
         final String msg = "health-check log: OK";
@@ -95,7 +96,7 @@ public class StatusBean {
         log.trace(msg);
         log.info(msg);
     }
-    
+
     @ManagedOperation(description="Performs health check, i.e. are connections, memory, logs working as expected")
     public void healthCheck() {
         checkDatabase();
@@ -135,26 +136,28 @@ public class StatusBean {
         final Set<String> set = timerMap.keySet();
         return set.toArray(new String[set.size()]);
     }
-    
+
     //
     public String getGUID() {
-        return samples.get().getGUID();
+        return samples.get().peek().getName();
     }
-    
+
     //
     public String getName() {
-        return samples.get().getName();
+        return samples.get().peek().getName();
     }
-    
+
     //
-    public void start(final String name) {
-        samples.get().reset(name);
-        concurrency.inc();
+    public void start(final String path) {
+        if (samples.get().size() == 0) {
+            concurrency.inc();
+        }
+        samples.get().push(new Sample(path));
     }
 
     //
     public void stop() {
-        final Sample sample = samples.get();
+        final Sample sample = samples.get().pop();
         final String name = sample.getName();
         final long elapsed = sample.elapsed();
         Timer timer = timerMap.get(name);
@@ -163,10 +166,12 @@ public class StatusBean {
             timerMap.put(name, timer);
         }
         timer.add(elapsed);
-        concurrency.dec();
+        if (samples.get().size() == 0) {
+            concurrency.dec();
+        }
     }
-    
-    
+
+
     /**
      * Samples processing time for one transaction.
      */
@@ -176,25 +181,21 @@ public class StatusBean {
         private String guid;
 
         //
-        public Sample() {
+        public Sample(final String name) {
+            this.timestamp = System.currentTimeMillis();
+            this.name = name;
+            this.guid = UUID.randomUUID().toString();
         }
-        
+
         public String getGUID() {
             return guid;
         }
 
         //
-        protected void reset(final String name) {
-            this.timestamp = System.currentTimeMillis();
-            this.name = name;
-            this.guid = UUID.randomUUID().toString();
-        }
-        
-        //
         public String getName() {
             return name;
         }
-        
+
         //
         public long elapsed() {
             final long time = (System.currentTimeMillis() - timestamp);
@@ -231,24 +232,24 @@ public class StatusBean {
 
 
         public long min() {
-            return min == Long.MAX_VALUE ? 0 : min;
+            return (min == Long.MAX_VALUE) ? 0 : min;
         }
 
         //
         public long max() {
-            return max == Long.MIN_VALUE ? 0 : max;
+            return (max == Long.MIN_VALUE) ? 0 : max;
         }
 
         //
         public long avg() {
             return (n == 0) ? 0 : (sum / n);
         }
-        
+
         //
         public long n() {
             return n;
         }
-        
+
         @Override
         public String toString() {
             return String.format("{ n: %d, min: %d, max: %d, avg: %d }", n(), min(), max(), avg()); 
@@ -258,18 +259,18 @@ public class StatusBean {
     //
     static class Concurrency {
         private long activeRequests;
-        
+
         public synchronized void inc() {
             activeRequests++;
         }
-        
+
         public synchronized void dec() {
             activeRequests--;
         }
-        
+
         public synchronized long getActiveRequests() {
             return activeRequests;
         }
-        
+
     }    
 }
