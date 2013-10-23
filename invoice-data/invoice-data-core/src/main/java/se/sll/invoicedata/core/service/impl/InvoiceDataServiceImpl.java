@@ -24,7 +24,6 @@ import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -63,7 +62,7 @@ import se.sll.invoicedata.core.service.RatingService;
 public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceDataService.class);
-    private static final Logger TRANS_LOG = LoggerFactory.getLogger("TRANS-LOG");
+    private static final Logger TX_LOG = LoggerFactory.getLogger("TX-API");
 
     @Autowired
     private BusinessEventRepository businessEventRepository;
@@ -106,15 +105,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
 
         if (oldEntity != null) {
-            TRANS_LOG.info("Deleting previous event(id:" + oldEntity.getEventId() + "), acknowledgementId: " + oldEntity.getAcknowledgementId() 
+            TX_LOG.info("Deleting previous event(id:" + oldEntity.getEventId() + "), acknowledgementId: " + oldEntity.getAcknowledgementId() 
                     + " to register the updated event with acknowledgementId:" + newEntity.getAcknowledgementId());
             delete(oldEntity);
         }
-        TRANS_LOG.info("Registered an event(id:" + newEntity.getEventId() + "), acknowledgementId:" + newEntity.getAcknowledgementId());
+        TX_LOG.info("Registered an event(id:" + newEntity.getEventId() + "), acknowledgementId:" + newEntity.getAcknowledgementId());
         save(newEntity);
 
         if (creditCandidate != null) {
-            TRANS_LOG.info("Event already exists! A credit/debit will be triggered on the invoiced data");
+            TX_LOG.info("Event already exists! A credit/debit will be triggered on the invoiced data");
             final BusinessEventEntity creditEntity = copyProperties(creditCandidate, BusinessEventEntity.class);
             creditEntity.setCredit(true);
             creditEntity.setInvoiceData(null);
@@ -265,13 +264,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
 
-        TRANS_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
+        TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
                 + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
+        
         final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
 
         final List<BusinessEventEntity> entities = businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
         int actual = 0;
-        for (BusinessEventEntity entity : entities) {        	
+        for (final BusinessEventEntity entity : entities) {        	
             invoiceDataEntity.addBusinessEventEntity(validate(entity, createInvoiceDataRequest));
             actual++;
         }
@@ -322,19 +322,17 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("supplierId or paymentResponsible");
         }
 
-
-        statusBean.start("InoviceDataService.listAllInvoiceData");
+        statusBean.start("InvoiceDataService.listAllInvoiceData");
 
         try {
-            List<InvoiceDataEntity>  invoiceDataEntityList = findByCriteria(request);   
-            List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
+            final List<InvoiceDataEntity>  invoiceDataEntityList = findByCriteria(request);   
+            final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
 
-            for (InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
-                List<RegisteredEvent> eventList = EntityBeanConverter.fromBEntity(iDataEntity.getBusinessEventEntities());
-                InvoiceDataHeader invoiceDataHeader = copyProperties(iDataEntity, InvoiceDataHeader.class);
-                Range range = new Range();
-                range.setStartDate(eventList.get(0).getStartTime());
-                range.setEndDate(eventList.get(eventList.size() - 1).getEndTime());
+            for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
+                final InvoiceDataHeader invoiceDataHeader = copyProperties(iDataEntity, InvoiceDataHeader.class);
+                final Range range = new Range();
+                range.setStartDate(CoreUtil.toXMLGregorianCalendar(iDataEntity.getStartDate()));
+                range.setEndDate(CoreUtil.toXMLGregorianCalendar(iDataEntity.getEndDate()));
                 invoiceDataHeader.setRange(range);
                 invoiceDataList.add(invoiceDataHeader);
             }

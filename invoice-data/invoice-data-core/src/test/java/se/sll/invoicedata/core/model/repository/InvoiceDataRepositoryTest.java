@@ -51,6 +51,9 @@ public class InvoiceDataRepositoryTest extends TestSupport {
     @Rollback(true)
     public void testInsertFind_InvocieDataEntity() {
         final InvoiceDataEntity e = createSampleInvoiceDataEntity();
+        final BusinessEventEntity b = createSampleBusinessEventEntity();
+        b.setSupplierId(e.getSupplierId());
+        assertTrue(e.addBusinessEventEntity(b));
         
         getInvoiceDataRepository().save(e);
         getInvoiceDataRepository().flush();
@@ -59,6 +62,8 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         
         assertNotNull(l);
         assertEquals(1, l.size());
+        assertEquals(l.get(0).getStartDate(), b.getStartTime());
+        assertEquals(l.get(0).getEndDate(), b.getEndTime());
     }
     
     
@@ -77,7 +82,9 @@ public class InvoiceDataRepositoryTest extends TestSupport {
     @Rollback(true)
     public void testGetReferenceId_success() {
         final InvoiceDataEntity e = createSampleInvoiceDataEntity();
-        
+        final BusinessEventEntity b = createSampleBusinessEventEntity();
+        b.setSupplierId(e.getSupplierId());
+        assertTrue(e.addBusinessEventEntity(b));
         final InvoiceDataEntity saved = getInvoiceDataRepository().save(e);
         getInvoiceDataRepository().flush();
         

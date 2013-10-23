@@ -64,6 +64,15 @@ public class InvoiceDataEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_timestamp", nullable=false, updatable=false)
     private Date createdTime;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "start_date", nullable=false, updatable=false)
+    private Date startDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "end_date", nullable=false, updatable=false)
+    private Date endDate;
+
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
     private List<BusinessEventEntity> businessEventEntities = new LinkedList<BusinessEventEntity>();
@@ -72,6 +81,29 @@ public class InvoiceDataEntity {
     @PrePersist
     void onPrePerist() {
         setCreatedTime(new Date());
+        calcDateRange();
+    }
+    
+    
+    void calcDateRange() {
+        
+        if (businessEventEntities.size() == 0) {
+            return;
+        }
+        
+        Date start = new Date(Long.MAX_VALUE);
+        Date end = new Date(0L);
+        
+        for (final BusinessEventEntity e : businessEventEntities) {
+            if (e.getStartTime().before(start)) {
+                start = e.getStartTime();
+            }
+            if (e.getEndTime().after(end)) {
+                end = e.getEndTime();
+            }
+        }
+        setStartDate(start);
+        setEndDate(end);
     }
 
     public Long getId() {
@@ -109,27 +141,44 @@ public class InvoiceDataEntity {
     public Date getCreatedTime() {
         return createdTime;
     }
+    
+    public Date getStartDate() {
+        return startDate;
+    }
+    
+    protected void setStartDate(final Date startDate) {
+        this.startDate = startDate;
+    }
+   
+    
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    protected void setEndDate(final Date endDate) {
+        this.endDate = endDate;
+    }
 
     protected void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
 
-    /**
-     * Returns if a business entity has been removed from this invoice data. <p>
-     * 
-     * In order to be removed the business event entity must have been previously added to this
-     * invoice data object.
-     * 
-     * @param businessEventEntity the entity to add.
-     * @return true if removed, otherwise false.
-     */
-    public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
-        if (this.equals(businessEventEntity.getInvoiceData())) {
-            businessEventEntity.setInvoiceData(null);
-            return businessEventEntities.remove(businessEventEntity);
-        }
-        return false;
-    }
+//    /** XXX: Not needed.
+//     * Returns if a business entity has been removed from this invoice data. <p>
+//     * 
+//     * In order to be removed the business event entity must have been previously added to this
+//     * invoice data object.
+//     * 
+//     * @param businessEventEntity the entity to add.
+//     * @return true if removed, otherwise false.
+//     */
+//    public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
+//        if (this.equals(businessEventEntity.getInvoiceData())) {
+//            businessEventEntity.setInvoiceData(null);
+//            return businessEventEntities.remove(businessEventEntity);
+//        }
+//        return false;
+//    }
 
     /**
      * Returns if a business entity has been added/assign to this invoice data. <p>
@@ -150,7 +199,7 @@ public class InvoiceDataEntity {
 
     public List<BusinessEventEntity> getBusinessEventEntities() {
         Collections.sort(businessEventEntities);
-        return Collections.unmodifiableList(businessEventEntities);
+        return businessEventEntities;
     }
 
     public String getCreatedBy() {
