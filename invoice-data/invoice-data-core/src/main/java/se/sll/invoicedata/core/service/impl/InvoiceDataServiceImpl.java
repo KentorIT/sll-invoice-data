@@ -281,11 +281,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
         return saved.getReferenceId();
     }
-
+    
     @Override
     public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
-
-        final Long id = Long.valueOf(validate(referenceId, "referenceId").substring(referenceId.lastIndexOf('.') + 1));
+    	Long id = Long.MIN_VALUE;
+    	try {
+    		id = Long.valueOf(validate(referenceId, "referenceId").substring(referenceId.lastIndexOf('.') + 1));
+		} catch (NumberFormatException nfException) {
+			throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("referenceId has invalid format:" + referenceId); 
+		}        
 
         final InvoiceDataEntity invoiceDataEntity = invoiceDataRepository.findOne(id);
 
