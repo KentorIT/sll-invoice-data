@@ -170,72 +170,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 		assertEquals(e.getAcknowledgedBy(), regEventList.get(0)
 				.getAcknowledgedBy());
 	}
-
-	@Test
-	@Transactional
-	@Rollback(true)
-	public void testGetAllInvoicedData() {
-		final String supplierId = "test-supplier-all";
-
-		createInvoiceData(supplierId);
-
-		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
-		getIDRequest.setSupplierId(supplierId);
-		getIDRequest.setPaymentResponsible("HSF");
-
-		final List<InvoiceDataHeader> invoiceDataList = invoiceDataService
-				.getAllInvoicedData(getIDRequest);
-
-		assertNotNull(invoiceDataList);
-		assertEquals(1, invoiceDataList.size());
-		assertEquals(supplierId, invoiceDataList.get(0).getSupplierId());
-		assertEquals("HSF", invoiceDataList.get(0).getPaymentResponsible());
-	}
-
-	@Test
-	@Transactional
-	@Rollback(true)
-	public void testGetInvoiceData() {
-
-		final Event e = createSampleEvent();
-		invoiceDataService.registerEvent(e);
-		e.setEventId("Event_2");
-		e.setAcknowledgementId("Ack_123");
-		invoiceDataService.registerEvent(e);
-		
-		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
-		getIDRequest.setSupplierId(e.getSupplierId());
-		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-		
-		List<RegisteredEvent> regEvtList = invoiceDataService
-				.getAllUnprocessedBusinessEvents(getIDRequest);
-
-		final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-		createReq.setSupplierId(regEvtList.get(0).getSupplierId());
-		createReq.setPaymentResponsible(regEvtList.get(0)
-				.getPaymentResponsible());
-		createReq.setCreatedBy("test-auto");
-		createReq.getAcknowledgementIdList().add(
-				regEvtList.get(0).getAcknowledgementId());
-
-		invoiceDataService.createInvoiceData(createReq);
-
-		getIDRequest = new GetInvoiceDataRequest();
-		getIDRequest.setSupplierId(e.getSupplierId());
-		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-		List<InvoiceDataHeader> iDH = invoiceDataService
-				.getAllInvoicedData(getIDRequest);
-		
-		assertNotNull(iDH);
-		
-		InvoiceData iData = invoiceDataService.getInvoiceDataByReferenceId(iDH
-				.get(0).getReferenceId());
-
-		assertNotNull(iData);
-		assertEquals(e.getPaymentResponsible(), iData.getPaymentResponsible());
-		assertEquals(e.getSupplierId(), iData.getSupplierId());
-	}
-
+	
 	@Test
 	@Transactional
 	@Rollback(true)

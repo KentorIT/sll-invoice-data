@@ -54,17 +54,6 @@ public interface InvoiceDataService {
 	List<RegisteredEvent> getAllUnprocessedBusinessEvents(
 			GetInvoiceDataRequest request);
 
-
-	/**
-	 * Fetches all invoiced data for a using criteria:
-	 * supplierId OR paymentResponsible OR date range 
-	 * 
-	 * @param supplierId
-	 * @param paymentResponsible
-	 * @return
-	 */
-	List<InvoiceDataHeader> getAllInvoicedData(GetInvoiceDataRequest request);
-
 	/**
 	 * Creates an invoice data object.
 	 * 

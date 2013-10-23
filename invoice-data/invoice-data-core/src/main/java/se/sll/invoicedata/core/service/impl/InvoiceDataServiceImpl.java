@@ -145,18 +145,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     				request.getSupplierId(), request.getPaymentResponsible(),
     				dateFrom, dateTo);
     	}
-    	Collections.sort(bEEntityList);
+    	//No requirement to fetch list sorted by date
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
 
     protected String validate(final String data, final String field) {
         mandatory(data, field);
         return data;
-    }
-
-    @Override
-    public List<InvoiceDataHeader> getAllInvoicedData(GetInvoiceDataRequest request) {
-        return listAllInvoiceData(CoreUtil.copyProperties(request, ListInvoiceDataRequest.class));
     }
 
     //
