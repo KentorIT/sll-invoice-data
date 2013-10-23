@@ -14,6 +14,13 @@
 		<module>invoice-data</module>
 	</modules>
 
+	<scm>
+          <connection>scm:git:https://code.google.com/p/sll-invoice-data/</connection>
+          <developerConnection>scm:git:https://code.google.com/p/sll-invoice-data/</developerConnection>
+          <url>https://code.google.com/p/sll-invoice-data/</url>
+	  <tag>HEAD</tag>
+	</scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.fw.version>3.1.2.RELEASE</spring.fw.version>
@@ -39,6 +46,14 @@
 	</properties>
 	<build>
 		<plugins>
+		  <plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-release-plugin</artifactId>
+		    <version>2.4.1</version>
+		    <configuration>
+		      <tagNameFormat>v@{project.version}</tagNameFormat>
+		    </configuration>
+		  </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -62,6 +77,7 @@
 						<exclude>lgpl-header.txt</exclude>
 						<exclude>TD_MONITORING_1_0_0_R/**/*</exclude>					
 						<exclude>**/*.properties</exclude>
+						<exclude>**/*.json</exclude>
 						<exclude>**/*.css</exclude>
 						<exclude>**/*.xsd</exclude>
 						<exclude>**/*.wsdl</exclude>
