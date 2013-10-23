@@ -167,11 +167,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
 				.createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
 		
-		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode().getCode());
-		//Fetch again the invoice data; previously registered event was checked
-		//Now invoice data list
-		response = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, request);		
-		Assert.assertNotNull(response.getInvoiceDataList());		
+		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode().getCode());			
     }
 
 	@Test
@@ -223,7 +219,6 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		Assert.assertNotNull(getInvoiceResp);
 		//One invoiced data back in response and othe the registedEvent which is not invoiced!
 		Assert.assertNotNull(getInvoiceResp.getRegisteredEventList());
-		Assert.assertNotNull(getInvoiceResp.getInvoiceDataList());
 	}
 	
 	

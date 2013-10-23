@@ -46,10 +46,7 @@ public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoi
                 //Fetching unprocessed events with price
                 response.getRegisteredEventList().addAll(getInvoiceDataService()
                         .getAllUnprocessedBusinessEvents(request));
-
-                //Fetching invoiced data            
-                response.getInvoiceDataList().addAll(getInvoiceDataService()
-                        .getAllInvoicedData(request));               
+                               
             }
         }));
         

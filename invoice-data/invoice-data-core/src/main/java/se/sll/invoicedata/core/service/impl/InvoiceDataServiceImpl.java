@@ -63,6 +63,7 @@ import se.sll.invoicedata.core.service.RatingService;
 public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceDataService.class);
+    private static final Logger TRANS_LOG = LoggerFactory.getLogger("TRANS-LOG");
 
     @Autowired
     private BusinessEventRepository businessEventRepository;
@@ -105,12 +106,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
 
         if (oldEntity != null) {
+            TRANS_LOG.info("Deleting previous event(id:" + oldEntity.getEventId() + "), acknowledgementId: " + oldEntity.getAcknowledgementId() 
+                    + " to register the updated event with acknowledgementId:" + newEntity.getAcknowledgementId());
             delete(oldEntity);
         }
-
+        TRANS_LOG.info("Registered an event(id:" + newEntity.getEventId() + "), acknowledgementId:" + newEntity.getAcknowledgementId());
         save(newEntity);
 
         if (creditCandidate != null) {
+            TRANS_LOG.info("Event already exists! A credit/debit will be triggered on the invoiced data");
             final BusinessEventEntity creditEntity = copyProperties(creditCandidate, BusinessEventEntity.class);
             creditEntity.setCredit(true);
             creditEntity.setInvoiceData(null);
@@ -146,18 +150,13 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
                             request.getSupplierId(), request.getPaymentResponsible(),
                             dateFrom, dateTo);
         }
-        Collections.sort(bEEntityList);
+        //No requirement to fetch list sorted by date
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
 
     protected String validate(final String data, final String field) {
         mandatory(data, field);
         return data;
-    }
-
-    @Override
-    public List<InvoiceDataHeader> getAllInvoicedData(GetInvoiceDataRequest request) {
-        return listAllInvoiceData(CoreUtil.copyProperties(request, ListInvoiceDataRequest.class));
     }
 
     //
@@ -265,6 +264,9 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Override
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
+
+        TRANS_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
+                + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
         final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
 
         final List<BusinessEventEntity> entities = businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
@@ -275,7 +277,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
         final int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
         if (expected != actual) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state: " + actual + ", expected: " + expected); 
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state! entities available: " + actual + ", request contains: " + expected); 
         }
 
         validate(invoiceDataEntity);
@@ -287,8 +289,12 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Override
     public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
-
-        final Long id = Long.valueOf(validate(referenceId, "referenceId").substring(referenceId.lastIndexOf('.') + 1));
+        Long id = Long.MIN_VALUE;
+        try {
+            id = Long.valueOf(validate(referenceId, "referenceId").substring(referenceId.lastIndexOf('.') + 1));
+        } catch (NumberFormatException nfException) {
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("referenceId has invalid format:" + referenceId); 
+        }        
 
         final InvoiceDataEntity invoiceDataEntity = invoiceDataRepository.findOne(id);
 
@@ -317,7 +323,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
 
 
-        statusBean.start("InoviceDataService/listAllInvoiceData");
+        statusBean.start("InoviceDataService.listAllInvoiceData");
 
         try {
             List<InvoiceDataEntity>  invoiceDataEntityList = findByCriteria(request);   
@@ -325,18 +331,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
             for (InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
                 List<RegisteredEvent> eventList = EntityBeanConverter.fromBEntity(iDataEntity.getBusinessEventEntities());
-
-                InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(iDataEntity);
-                invoiceData.getRegisteredEventList().addAll(eventList);
+                InvoiceDataHeader invoiceDataHeader = copyProperties(iDataEntity, InvoiceDataHeader.class);
                 Range range = new Range();
                 range.setStartDate(eventList.get(0).getStartTime());
                 range.setEndDate(eventList.get(eventList.size() - 1).getEndTime());
-                invoiceData.setRange(range);
-                invoiceDataList.add(invoiceData);
+                invoiceDataHeader.setRange(range);
+                invoiceDataList.add(invoiceDataHeader);
             }
-            
+
             return invoiceDataList;
-            
+
         } finally {
             statusBean.stop();
         }
@@ -351,7 +355,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      */
     private List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
 
-        statusBean.start("InvoiceDataService/findByCriteria");
+        statusBean.start("InvoiceDataService.findByCriteria");
         try {
             final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
             final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
