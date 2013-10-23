@@ -176,23 +176,6 @@ public class InvoiceDataEntity {
         this.createdTime = createdTime;
     }
 
-    //    /** XXX: Not needed.
-    //     * Returns if a business entity has been removed from this invoice data. <p>
-    //     * 
-    //     * In order to be removed the business event entity must have been previously added to this
-    //     * invoice data object.
-    //     * 
-    //     * @param businessEventEntity the entity to add.
-    //     * @return true if removed, otherwise false.
-    //     */
-    //    public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
-    //        if (this.equals(businessEventEntity.getInvoiceData())) {
-    //            businessEventEntity.setInvoiceData(null);
-    //            return businessEventEntities.remove(businessEventEntity);
-    //        }
-    //        return false;
-    //    }
-
     /**
      * Returns if a business entity has been added/assign to this invoice data. <p>
      * 
