@@ -329,7 +329,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
 
             for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
-                final InvoiceDataHeader invoiceDataHeader = copyProperties(iDataEntity, InvoiceDataHeader.class);
+                // FIXME: copyProperties seems to trigger lazy fetch of buisness entities
+                final InvoiceDataHeader invoiceDataHeader = new InvoiceDataHeader();
+                invoiceDataHeader.setCreatedBy(iDataEntity.getCreatedBy());
+                invoiceDataHeader.setCreatedTime(CoreUtil.toXMLGregorianCalendar(iDataEntity.getCreatedTime()));
+                invoiceDataHeader.setPaymentResponsible(iDataEntity.getPaymentResponsible());
+                invoiceDataHeader.setReferenceId(iDataEntity.getReferenceId());
+                invoiceDataHeader.setSupplierId(iDataEntity.getSupplierId());
+                invoiceDataHeader.setTotalAmount(iDataEntity.getTotalAmount());
                 final Range range = new Range();
                 range.setStartDate(CoreUtil.toXMLGregorianCalendar(iDataEntity.getStartDate()));
                 range.setEndDate(CoreUtil.toXMLGregorianCalendar(iDataEntity.getEndDate()));
