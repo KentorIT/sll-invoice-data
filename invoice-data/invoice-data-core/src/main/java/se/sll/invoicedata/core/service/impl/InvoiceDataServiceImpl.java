@@ -266,7 +266,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
     	
     	TRANS_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
-    			+ ", acknowledgementIdList:" + createInvoiceDataRequest.getAcknowledgementIdList());
+    			+ ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
         final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
 
         final List<BusinessEventEntity> entities = businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
