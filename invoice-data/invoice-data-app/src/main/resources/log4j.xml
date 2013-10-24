@@ -81,7 +81,11 @@
   <logger name="WS-API">
     <level value="debug" />
   </logger>
-  
+ 
+  <logger name="TX-API">
+    <level value="debug" />
+  </logger>
+    
   <!-- <logger name="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
   <!-- <level value="debug" /> -->
   <!-- </logger> -->

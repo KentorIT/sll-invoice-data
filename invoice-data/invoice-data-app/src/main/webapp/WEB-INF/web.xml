@@ -30,6 +30,10 @@
     <param-value>WEB-INF/spring/root-context.xml,WEB-INF/spring/cxf/cxf-services-config.xml</param-value>
   </context-param>
   
+  <context-param>
+	<param-name>log4jConfigLocation</param-name>
+	<param-value>file:${user.home}/sll-invoice-data/log4j.xml</param-value>
+  </context-param>
   <!-- Logging filter
   <filter>
     <filter-name>HttpRequestFilter</filter-name>
@@ -48,6 +52,10 @@
 
   <listener>
     <listener-class>se.sll.invoicedata.app.listener.ApplicationContextLoaderListener</listener-class>
+  </listener>
+
+  <listener>
+	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
   </listener>
  
   <servlet>
