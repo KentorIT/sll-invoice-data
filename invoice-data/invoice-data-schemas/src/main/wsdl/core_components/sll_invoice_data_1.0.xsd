@@ -94,14 +94,8 @@
 			<xs:element name="createdBy" type="xs:string"/>			
 			<xs:element name="createdTime" type="xs:dateTime"/>
 			<xs:element name="totalAmount" type="xs:decimal"/>
-			<xs:element name="range" type="tns:Range"/>
-		</xs:sequence>
-	</xs:complexType>
-	
-	<xs:complexType name="Range">
-		<xs:sequence>
-			<xs:element name="startDate" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
-			<xs:element name="endDate" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
+			<xs:element name="startDate" type="xs:date"/>
+			<xs:element name="endDate" type="xs:date"/>
 		</xs:sequence>
 	</xs:complexType>
 

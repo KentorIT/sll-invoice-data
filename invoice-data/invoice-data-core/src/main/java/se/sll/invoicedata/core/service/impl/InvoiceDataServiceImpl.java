@@ -36,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
-import riv.sll.invoicedata._1.Range;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
@@ -336,11 +335,6 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromEntity(businessEventEntity));
         }
 
-        Range range = new Range();
-        range.setStartDate(CoreUtil.toXMLGregorianCalendar(bEEList.get(0).getStartTime()));
-        range.setEndDate(CoreUtil.toXMLGregorianCalendar(bEEList.get(bEEList.size() - 1).getEndTime()));
-        invoiceData.setRange(range);
-
         return invoiceData;
     }
 
@@ -357,12 +351,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
 
             for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
-                final InvoiceDataHeader invoiceDataHeader = CoreUtil.copyProperties(iDataEntity, InvoiceDataHeader.class);
-                final Range range = new Range();
-                range.setStartDate(CoreUtil.toXMLGregorianCalendar(iDataEntity.getStartDate()));
-                range.setEndDate(CoreUtil.toXMLGregorianCalendar(iDataEntity.getEndDate()));
-                invoiceDataHeader.setRange(range);
-                invoiceDataList.add(invoiceDataHeader);
+                invoiceDataList.add(CoreUtil.copyProperties(iDataEntity, InvoiceDataHeader.class));
             }
 
             return invoiceDataList;

@@ -19,6 +19,7 @@
 
 package se.sll.invoicedata.core.service.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -41,20 +42,25 @@ public class CoreUtil {
     // dozer mapper singleton instance
     private static Mapper mapper = new DozerBeanMapper();
     
-    private static final DatatypeFactory datatypeFactory;
-    static {
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException("Init Error!", e);
-        }
-    }
     /** Minimum date value. */
     public static Date MIN_DATE = new Date(0L);
     
     /** Maximum date value. */
     public static Date MAX_DATE = new Date(Long.MAX_VALUE);
- 
+     
+    private static final DatatypeFactory datatypeFactory;
+    static {
+        try {
+            datatypeFactory = DatatypeFactory.newInstance();
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, 9999);
+            //Overwriting max date: SQL Server only accepts 9999 as max date
+            MAX_DATE = calendar.getTime();
+        } catch (DatatypeConfigurationException e) {
+            throw new RuntimeException("Init Error!", e);
+        }
+    }
+    
     /**
      * Copies properties/state from one object to another. <p>
      * 

@@ -65,11 +65,11 @@ public class InvoiceDataEntity {
     @Column(name = "created_timestamp", nullable=false, updatable=false)
     private Date createdTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "start_date", nullable=false, updatable=false)
     private Date startDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "end_date", nullable=false, updatable=false)
     private Date endDate;
 
