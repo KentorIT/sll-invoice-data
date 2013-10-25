@@ -40,8 +40,8 @@ public interface InvoiceDataService {
 	/**
 	 * Registers a business event.
 	 * 
-	 * @param buinsessEventEntity
-	 *            the business event entity.
+	 * @param event
+	 *            
 	 */
 	void registerEvent(Event event);
 		
@@ -63,16 +63,17 @@ public interface InvoiceDataService {
     String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest);
     
     /**
-     * 
+     * Fetches by reference id (reference id is created when createInvoice is 
+     * invoked on a supplier)
      * @param referenceId
-     * @return
+     * @return InvoiceData
      */
     InvoiceData getInvoiceDataByReferenceId(String referenceId);
     
     /**
      * 
      * @param request
-     * @return
+     * @return List<InvoiceDataHeader>
      */
     List<InvoiceDataHeader> listAllInvoiceData(ListInvoiceDataRequest request);
 }

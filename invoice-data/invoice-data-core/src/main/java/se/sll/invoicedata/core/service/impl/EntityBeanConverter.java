@@ -69,11 +69,11 @@ public class EntityBeanConverter {
 	}
 	
 	/**
-	 * 
+	 * Maps InvoiceDataEntity to InvoiceDataHeader object
 	 * @param entityList
-	 * @return
+	 * @return List<InvoiceDataHeader>
 	 */
-	static List<InvoiceDataHeader> fromIEntity(final List<InvoiceDataEntity> entityList) {
+	static List<InvoiceDataHeader> fromIDEntity(final List<InvoiceDataEntity> entityList) {
 		List<InvoiceDataHeader> iDHeaderList = new ArrayList<InvoiceDataHeader>(entityList.size());
 		for (final InvoiceDataEntity iDE : entityList) {
 			iDHeaderList.add(fromEntity(iDE));
@@ -82,9 +82,9 @@ public class EntityBeanConverter {
 	}
 	
 	/**
-	 * 
+	 * Maps BusinessEventEntity to RegisteredEvent object
 	 * @param bEEntity
-	 * @return
+	 * @return RegisteredEvent
 	 */
 	static RegisteredEvent fromEntity(final BusinessEventEntity bEEntity) {
 		final RegisteredEvent rEvent = copyProperties(bEEntity, RegisteredEvent.class);
@@ -95,9 +95,9 @@ public class EntityBeanConverter {
 	}
 	
 	/**
-	 * 
+	 * Maps list of BusinessEventEntity to RegisteredEvent list
 	 * @param bEEntityList
-	 * @return
+	 * @return List<RegisteredEvent>
 	 */
 	static List<RegisteredEvent> fromBEntity(
 			final List<BusinessEventEntity> bEEntityList) {
@@ -110,9 +110,9 @@ public class EntityBeanConverter {
 	}
 	
 	/**
-	 * 
+	 * Maps InvoiceDataEntity to InvoiceData object
 	 * @param entity
-	 * @return
+	 * @return InvoiceData
 	 */
 	static InvoiceData fromIDEntity(final InvoiceDataEntity entity) {
 		InvoiceData iData = copyProperties(entity, InvoiceData.class);

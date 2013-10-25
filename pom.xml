@@ -75,7 +75,8 @@
 						<exclude>LICENSE.txt</exclude>
 						<exclude>NOTICE.txt</exclude>
 						<exclude>lgpl-header.txt</exclude>
-						<exclude>TD_MONITORING_1_0_0_R/**/*</exclude>					
+						<exclude>TD_MONITORING_1_0_0_R/**/*</exclude>
+						<exclude>docs/**/*</exclude>					
 						<exclude>**/*.properties</exclude>
 						<exclude>**/*.json</exclude>
 						<exclude>**/*.css</exclude>
@@ -85,7 +86,7 @@
 						<exclude>**/*.js</exclude>
 						<exclude>**/*.jsp</exclude>
 						<exclude>**/.idea/</exclude>
-						<exclude>**/.doc*/</exclude>
+						<exclude>**/*.xpr</exclude>						
 						<exclude>**/.gitignore/</exclude>
 						<exclude>**/*-workspace.xml/</exclude>
 						<exclude>**/*-soapui-project.xml</exclude>

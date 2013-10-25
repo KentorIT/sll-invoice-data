@@ -28,52 +28,53 @@ import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
 /**
  * Invoice data repository functions.
- * 
- * @author Peter
- *
+ * Carries out DAO operations on InvoiceDataEntity
+ *  
+ * @see InvoiceDataEntity
+ * @author Peter 
  */
-public interface InvoiceDataRepository  extends JpaRepository<InvoiceDataEntity, Long> {
+public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, Long> {
     
 	/**
 	 * Fetches InvoiceData with matching within date range!
-     * Dates: fromDate date can be null so 1970 01 01 is taken as from date
-     * toDate can also be empty then the current date + 100 years is taken 
+     * Dates: fromDate date can be null so 1970 01 01 is set as from date
+     * toDate can also be null then the max valid date i.e 31 December 9999 is set 
 	 * @param fromDate
 	 * @param toDate
-	 * @return
+	 * @return List<InvoiceDataEntity>
 	 */
 	List<InvoiceDataEntity> findByCreatedTimeBetween(Date fromDate, Date toDate);
 	
 	/**
 	 * Fetches InvoiceData with matching supplierId within date range!
-     * Dates: fromDate date can be null so 1970 01 01 is taken as from date
-     * toDate can also be empty then the current date + 100 years is taken
+     * Dates: fromDate date can be null so 1970 01 01 is set as from date
+     * toDate can also be null then the max valid date i.e 31 December 9999 is set
 	 * @param supplierId
 	 * @param fromDate
 	 * @param toDate
-	 * @return
+	 * @return List<InvoiceDataEntity>
 	 */
 	List<InvoiceDataEntity> findBySupplierIdAndCreatedTimeBetween(String supplierId, Date fromDate, Date toDate);
 	
 	/**
 	 * Fetches InvoiceData with matching paymentResponsible within date range!
-     * Dates: fromDate date can be null so 1970 01 01 is taken as from date
-     * toDate can also be empty then the current date + 100 years is taken
-	 * @param supplierId
+     * Dates: fromDate date can be null so 1970 01 01 is set as from date
+     * toDate can also be null then the max valid date i.e 31 December 9999 is set
+	 * @param paymentResponsible
 	 * @param fromDate
 	 * @param toDate
-	 * @return
+	 * @return List<InvoiceDataEntity>
 	 */
 	List<InvoiceDataEntity> findByPaymentResponsibleAndCreatedTimeBetween(String paymentResponsible, Date fromDate, Date toDate);
 
 	/**
-	 * Fetches InvoiceData with matching supplierId And payment responsible within date range!
-     * Dates: fromDate date can be null so 1970 01 01 is taken as from date
-     * toDate can also be empty then the current date + 100 years is taken     * 
+	 * Fetches InvoiceData with matching supplierId and payment responsible within date range!
+     * Dates: fromDate date can be null so 1970 01 01 is set as from date
+     * toDate can also be null then the max valid date i.e 31 December 9999 is set 
 	 * @param supplierId
 	 * @param fromDate
 	 * @param toDate
-	 * @return
+	 * @return List<InvoiceDataEntity>
 	 */
 	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(String supplierId, String paymentResponsible, Date fromDate, Date toDate);
 	

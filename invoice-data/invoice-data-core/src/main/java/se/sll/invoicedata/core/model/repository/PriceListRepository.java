@@ -28,7 +28,9 @@ import se.sll.invoicedata.core.model.entity.PriceListEntity;
 
 /**
  * Price list repository functions.
+ * Performs DAO operations on PriceListEntity
  * 
+ * @see PriceListEntity
  * @author Peter
  */
 public interface PriceListRepository extends JpaRepository<PriceListEntity, Long> {
@@ -44,12 +46,12 @@ public interface PriceListRepository extends JpaRepository<PriceListEntity, Long
     List<PriceListEntity> findBySupplierIdAndServiceCodeAndValidFromLessThanEqualOrderByValidFromDesc(String supplierId, String serviceCode, Date actual);
     
     /**
-     * 
+     * Fetches PriceListEntity by supplierId, serviceCode and by validity period
      * @param supplierId
      * @param serviceCode
-     * @param valdiFrom
-     * @return
+     * @param validFrom
+     * @return PriceListEntity
      */
-    PriceListEntity findBySupplierIdAndServiceCodeAndValidFrom(String supplierId, String serviceCode, Date valdiFrom);
+    PriceListEntity findBySupplierIdAndServiceCodeAndValidFrom(String supplierId, String serviceCode, Date validFrom);
     
 }

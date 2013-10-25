@@ -21,7 +21,6 @@ package se.sll.invoicedata.core.service.impl;
 
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -58,7 +57,7 @@ import se.sll.invoicedata.core.service.RatingService;
  */
 @Service
 @Transactional
-public class InvoiceDataServiceImpl implements InvoiceDataService {
+public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements InvoiceDataService {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceDataService.class);
     private static final Logger TX_LOG = LoggerFactory.getLogger("TX-API");
@@ -74,60 +73,12 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     @Autowired
     private StatusBean statusBean;
-
-
-    //
-    private InvoiceDataServiceImpl save(BusinessEventEntity... entities) {
-        businessEventRepository.save(Arrays.asList(entities));
-        log.debug("saved = {}", entities);
-        return this;
-    }
-
-    //
-    private InvoiceDataServiceImpl delete(BusinessEventEntity... entities) {
-        businessEventRepository.delete(Arrays.asList(entities));
-        log.debug("deleted = {}", entities);
-        return this;
-    }
-
+    
     @Override
     public void registerEvent(Event event) {
-        BusinessEventEntity newEntity = EntityBeanConverter.toEntity(event);
-        registerBusinessEvent(newEntity);
+        registerBusinessEvent(EntityBeanConverter.toEntity(event));
     }
-
-    //
-    protected void registerBusinessEvent(final BusinessEventEntity newEntity) {
-        rate(validate(newEntity));
-
-        final BusinessEventEntity oldEntity = businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId());
-        final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
-
-        if (oldEntity != null) {
-            TX_LOG.info("Deleting previous event(id:" + oldEntity.getEventId() + "), acknowledgementId: " + oldEntity.getAcknowledgementId() 
-                    + " to register the updated event with acknowledgementId:" + newEntity.getAcknowledgementId());
-            delete(oldEntity);
-        }
-        TX_LOG.info("Registered an event(id:" + newEntity.getEventId() + "), acknowledgementId:" + newEntity.getAcknowledgementId());
-        save(newEntity);
-
-        if (creditCandidate != null) {
-            TX_LOG.info("Event already exists! A credit/debit will be triggered on the invoiced data");
-            final BusinessEventEntity creditEntity = copyProperties(creditCandidate, BusinessEventEntity.class);
-            creditEntity.setCredit(true);
-            creditEntity.setInvoiceData(null);
-            creditCandidate.setCredited(true);
-            for (final ItemEntity itemEntity : creditCandidate.getItemEntities()) {
-                final ItemEntity copy = copyProperties(itemEntity, ItemEntity.class);
-                // set parent to null to ensure acceptance by the new
-                copy.setEvent(null);
-                creditEntity.addItemEntity(copy);
-            }            
-            save(creditCandidate, creditEntity);
-        }
-
-    }
-
+    
     @Override
     public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
             GetInvoiceDataRequest request) {
@@ -151,138 +102,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         //No requirement to fetch list sorted by date
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
-
-    protected String validate(final String data, final String field) {
-        mandatory(data, field);
-        return data;
-    }
-
-    //
-    private static void mandatory(final String s, final String field) {
-        if (s == null || s.length() ==  0) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException(field);            
-        }
-    }
-
-    //
-    private static void mandatory(final Object s, final String field) {
-        if (s == null) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException(field);            
-        }
-    }
-
-    /**
-     * Rates all items of a {@link BusinessEventEntity} <p>
-     * 
-     * If a price already exists then rating is considered as carried out by the 
-     * service consumer.
-     * 
-     * @param businessEventEntity the business event.
-     * @return the rated business event, i.e. price has been set to all items.
-     */
-    protected BusinessEventEntity rate(BusinessEventEntity businessEventEntity) {
-        for (ItemEntity itemEntity : validate(businessEventEntity).getItemEntities()) {
-            if (itemEntity.getPrice() == null) {
-                itemEntity.setPrice(ratingService.rate(itemEntity));
-            }
-        }
-        return businessEventEntity;
-    }
-
-    /**
-     * Validates business entity.
-     * 
-     * @param businessEventEntity the entity.
-     * @return the same entity reference as passed as argument.
-     */
-    protected BusinessEventEntity validate(final BusinessEventEntity businessEventEntity) {
-
-        // mandatory fields according to schema
-        mandatory(businessEventEntity.getEventId(), "event.eventId");
-        mandatory(businessEventEntity.getHealthcareFacility(), "event.healthcareFacility");
-        mandatory(businessEventEntity.getSupplierId(), "event.supplierId");
-        mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
-        mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");        
-        mandatory(businessEventEntity.getPaymentResponsible(), "event.paymentResponsible");
-        mandatory(businessEventEntity.getHealthCareCommission(), "event.healthCareCommission");
-        mandatory(businessEventEntity.getAcknowledgedBy(), "event.acknowledgedBy");
-        mandatory(businessEventEntity.getAcknowledgedTime(), "event.acknowledgedTime");
-        mandatory(businessEventEntity.getAcknowledgementId(), "event.acknowledgementId");
-        mandatory(businessEventEntity.getStartTime(), "event.startTime");
-        mandatory(businessEventEntity.getEndTime(), "event.endTime");
-
-        // valid time period
-        if (businessEventEntity.getEndTime().before(businessEventEntity.getStartTime())) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.endTime is before event.startTime");            
-        }
-
-        // mandatory fields according to schema
-        final List<ItemEntity> items = businessEventEntity.getItemEntities();
-        if (items.size() == 0) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.items");            
-        }
-
-        // items
-        for (final ItemEntity itemEntity : items) {
-            mandatory(itemEntity.getDescription(), "item.description");
-            mandatory(itemEntity.getItemId(), "item.id");
-            mandatory(itemEntity.getEvent(), "item.event");
-            final BigDecimal qty = itemEntity.getQty();
-            if (qty.floatValue() < 0f || qty.floatValue() > 99999f) {
-                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, out of range: " + qty.floatValue());
-            }
-            if (qty.scale() > 2) {
-                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, invalid scale: " + qty.floatValue());                
-            }
-        }
-
-        return businessEventEntity;
-    }
-
-    protected InvoiceDataEntity validate(InvoiceDataEntity invoiceDataEntity) {
-        mandatory(invoiceDataEntity.getCreatedBy(), "invoiceData.createdBy");
-        mandatory(invoiceDataEntity.getPaymentResponsible(), "invoiceData.paymentResponsible");
-        mandatory(invoiceDataEntity.getSupplierId(), "invoiceData.supplierId");
-        if (invoiceDataEntity.getBusinessEventEntities().size() == 0) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("invoiceData.events");            
-        }
-
-        return invoiceDataEntity;
-    }
-
-    //
-    private BusinessEventEntity validate(BusinessEventEntity entity, CreateInvoiceDataRequest createInvoiceDataRequest) {
-        if (!entity.getSupplierId().equalsIgnoreCase(createInvoiceDataRequest.getSupplierId())) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same supplier: " + createInvoiceDataRequest.getSupplierId());
-        } else if (!entity.getPaymentResponsible().equalsIgnoreCase(createInvoiceDataRequest.getPaymentResponsible())) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same paymentResponsible: " + createInvoiceDataRequest.getPaymentResponsible());
-        }
-
-        return entity;
-    }
-
-    //
-    private List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(final List<String> list) {
-        statusBean.start("InvoiceDataService.findByAcknowledgementIdInAndPendingIsTrue(List<String>");
-        try {
-            return businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(list);
-        } finally {
-            statusBean.stop();
-        }
-    }
-
-    //
-    private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
-        statusBean.start("InvoiceDataService.save(InvoiceDataEntity)");
-        try {
-            final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
-            invoiceDataRepository.flush();
-            return saved;
-        } finally {
-            statusBean.stop();  
-        }
-    }
-
+    
     @Override
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
 
@@ -295,16 +115,8 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
             final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
 
-            int actual = 0;
-            for (final BusinessEventEntity entity : entities) {        	
-                invoiceDataEntity.addBusinessEventEntity(validate(entity, createInvoiceDataRequest));
-                actual++;
-            }
-            final int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
-            if (expected != actual) {
-                throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state! entities available: " + actual + ", request contains: " + expected); 
-            }
-            validate(invoiceDataEntity);
+            getValidInvoiceDataEntity(createInvoiceDataRequest,
+					invoiceDataEntity, entities);
 
             final InvoiceDataEntity saved  = save(invoiceDataEntity);
 
@@ -315,49 +127,92 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 
     @Override
-    public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
-        Long id = Long.MIN_VALUE;
-        try {
-            id = Long.valueOf(validate(referenceId, "referenceId").substring(referenceId.lastIndexOf('.') + 1));
-        } catch (NumberFormatException nfException) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("referenceId has invalid format:" + referenceId); 
-        }        
-
-        final InvoiceDataEntity invoiceDataEntity = invoiceDataRepository.findOne(id);
-
-        if (invoiceDataEntity == null) {
-            throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("invoice data", referenceId); 		    
-        }
-
-        final InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(invoiceDataEntity);
-        final List<BusinessEventEntity> bEEList = invoiceDataEntity.getBusinessEventEntities();
-        for (final BusinessEventEntity businessEventEntity : bEEList) {
-            invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromEntity(businessEventEntity));
-        }
-
-        return invoiceData;
-    }
-
-    @Override
     public List<InvoiceDataHeader> listAllInvoiceData(ListInvoiceDataRequest request) {
         if (CoreUtil.isEmpty(request.getSupplierId()) && CoreUtil.isEmpty(request.getPaymentResponsible())) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("supplierId or paymentResponsible");
         }
 
         statusBean.start("InvoiceDataService.listAllInvoiceData(ListInvoiceDataRequest)");
-
         try {
-            final List<InvoiceDataEntity>  invoiceDataEntityList = findByCriteria(request);   
-            final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
-
-            for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
-                invoiceDataList.add(CoreUtil.copyProperties(iDataEntity, InvoiceDataHeader.class));
-            }
-
-            return invoiceDataList;
+            return getInvoiceDataHeader(findByCriteria(request));
 
         } finally {
             statusBean.stop();
+        }
+    }
+
+    @Override
+    public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
+        return getInvoiceData(referenceId, invoiceDataRepository.findOne(extractId(referenceId)));
+    }
+        
+    private InvoiceDataServiceImpl save(BusinessEventEntity... entities) {
+        businessEventRepository.save(Arrays.asList(entities));
+        log.debug("saved = {}", entities);
+        return this;
+    }
+
+    private InvoiceDataServiceImpl delete(BusinessEventEntity... entities) {
+        businessEventRepository.delete(Arrays.asList(entities));
+        log.debug("deleted = {}", entities);
+        return this;
+    }
+
+    private void registerBusinessEvent(final BusinessEventEntity newEntity) {
+        rate(validate(newEntity));
+
+        final BusinessEventEntity oldEntity = businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId());
+        final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
+
+        if (oldEntity != null) {
+            TX_LOG.info("Deleting previous event(id:" + oldEntity.getEventId() + "), acknowledgementId: " + oldEntity.getAcknowledgementId() 
+                    + " to register the updated event with acknowledgementId:" + newEntity.getAcknowledgementId());
+            delete(oldEntity);
+        }
+        TX_LOG.info("Registered an event(id:" + newEntity.getEventId() + "), acknowledgementId:" + newEntity.getAcknowledgementId());
+        save(newEntity);
+
+        if (creditCandidate != null) {
+            TX_LOG.info("Event already exists! A credit/debit will be triggered on the invoiced data");
+            save(creditCandidate, createCreditEntity(creditCandidate));
+        }
+    }
+
+    /**
+     * Rates all items of a {@link BusinessEventEntity} <p>
+     * 
+     * If a price already exists then rating is considered as carried out by the 
+     * service consumer.
+     * 
+     * @param businessEventEntity the business event.
+     * @return the rated business event, i.e. price has been set to all items.
+     */
+    private BusinessEventEntity rate(BusinessEventEntity businessEventEntity) {
+        for (ItemEntity itemEntity : validate(businessEventEntity).getItemEntities()) {
+            if (itemEntity.getPrice() == null) {
+                itemEntity.setPrice(ratingService.rate(itemEntity));
+            }
+        }
+        return businessEventEntity;
+    }
+
+    private List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(final List<String> list) {
+        statusBean.start("InvoiceDataService.findByAcknowledgementIdInAndPendingIsTrue(List<String>");
+        try {
+            return businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(list);
+        } finally {
+            statusBean.stop();
+        }
+    }
+
+    private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
+        statusBean.start("InvoiceDataService.save(InvoiceDataEntity)");
+        try {
+            final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
+            invoiceDataRepository.flush();
+            return saved;
+        } finally {
+            statusBean.stop();  
         }
     }
 
@@ -366,7 +221,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      * Date: fromDate - if null then 1970 01 01
      * toDate: - if null then current year + 100 years
      * @param request
-     * @return
+     * @return List<InvoiceDataEntity>
      */
     private List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
 
