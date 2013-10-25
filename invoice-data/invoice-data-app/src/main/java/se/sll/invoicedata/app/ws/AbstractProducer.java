@@ -160,7 +160,7 @@ public abstract class AbstractProducer {
             statusBean.stop();
         }
         
-        log.debug("stats: {}", statusBean.getPerformanceMetrics());
+        log.debug("stats: {}", statusBean.getPerformanceMetricsAsJSON());
         
         return rc;
     }

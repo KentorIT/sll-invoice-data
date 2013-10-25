@@ -19,11 +19,9 @@
 
 package se.sll.invoicedata.core.jmx;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
@@ -71,7 +69,7 @@ public class StatusBean {
     };
 
     //
-    private static Map<String, Timer> timerMap = new HashMap<String, Timer>();
+    private static Map<String, HistoryTimer> timerMap = new HashMap<String, HistoryTimer>();
 
     //
     private static Concurrency concurrency = new Concurrency();
@@ -114,27 +112,22 @@ public class StatusBean {
 
 
     @ManagedMetric(category="utilization", displayName="Active (ongoing) requests", metricType=MetricType.COUNTER, unit="request")
-    public long getActiveRequests() {
+    public long getNumActiveRequests() {
         return concurrency.getActiveRequests();
     }
 
-    @ManagedMetric(category="utilization", displayName="Average response time", metricType=MetricType.GAUGE, unit="milliseconds")
-    public long getAvgResponseTime() {
-        int n = 0;
-        int avg = 0;
-        for (Timer timer : timerMap.values()) {
-            avg += timer.avg();
-            n++;
-        }
-        return (avg / n);
+    @ManagedMetric(category="utilization", displayName="Total requests served", metricType=MetricType.COUNTER, unit="request")
+    public long getNumTotalRequests() {
+        return concurrency.getTotalRequests();
     }
 
     @ManagedOperation(description="Returns performance metrics (JSON strings) in millisceonds for all instrumented operations")
-    public String[] getPerformanceMetrics() {
-        Collection<Timer> c = timerMap.values();
+    public String[] getPerformanceMetricsAsJSON() {
+        final Collection<HistoryTimer> c = timerMap.values();
         final String[] list = new String[c.size()];
         int i = 0;
-        for (Timer t : c) {
+        for (final HistoryTimer t : c) {
+            t.recalc();
             list[i++] = t.toString();
         }
         return list;
@@ -176,15 +169,10 @@ public class StatusBean {
 
     //
     public void start(final String path) {
-        start(path, false);
-    }
-    
-    //
-    public void start(final String path, boolean history) {
         if (samples.get().size() == 0) {
             concurrency.inc();
         }
-        samples.get().push(new Sample(path, history));
+        samples.get().push(new Sample(path));
     }
 
     //
@@ -192,7 +180,7 @@ public class StatusBean {
         final Sample sample = samples.get().pop();
         final String name = sample.getName();
         final long elapsed = sample.elapsed();
-        Timer timer = timerMap.get(name);
+        HistoryTimer timer = timerMap.get(name);
         if (timer == null) {
             timer = new HistoryTimer(name, this.historyLength);
             timerMap.put(name, timer);
@@ -211,19 +199,12 @@ public class StatusBean {
         private long timestamp;
         private String name;
         private String guid;
-        private boolean history;
 
         //
-        public Sample(final String name, boolean history) {
+        public Sample(final String name) {
             this.timestamp = System.currentTimeMillis();
             this.name = name;
             this.guid = UUID.randomUUID().toString();
-            this.history = history;
-        }
-
-        //
-        public boolean isHistoryEnabled() {
-            return history;
         }
         
         //
@@ -242,110 +223,15 @@ public class StatusBean {
             return (time < 0) ? 0 : time;
         }
     }
-    
-    static class HistoryTimer extends Timer {
-        private int len;
-        private int ofs = 0;
-        private long[] history;
-
-        //
-        public HistoryTimer(String name, int len) {
-            super(name);
-            this.len = len;
-            this.history = new long[len];
-            Arrays.fill(history, -1);
-        }
-
-        //
-        public void add(long t) {
-            if (ofs >= len) {
-                ofs = 0;
-            }
-            history[ofs++] = t;
-        }
-
-        //
-        public synchronized void recalc() {
-            reset();
-            for (int i = 0; i < len && history[i] >= 0; i++) {
-                super.add(history[i]);
-            }
-        }
-        
-        @Override
-        public synchronized String toString() {
-            recalc();
-            return String.format("{ name: \"%s\", history: %d, min: %d, max: %d, avg: %d }", name(), n(), min(), max(), avg()); 
-        }
-    }
-
-    //
-    static class Timer {
-        private long n;
-        private long min;
-        private long max;
-        private long sum;
-        private String name;
-
-        public Timer(String name) {
-            this.name = name;
-            reset();
-        }
-        
-        //
-        public String name() {
-            return name;
-        }
-
-
-        //
-        public void add(long t) {
-            sum += t;
-            min = Math.min(min, t);
-            max = Math.max(max, t);
-            n++;
-        }
-
-        //
-        protected void reset() {
-            n   = 0L;
-            sum = 0L;
-            min = Long.MAX_VALUE;
-            max = Long.MIN_VALUE;
-        }
-
-
-        public long min() {
-            return (min == Long.MAX_VALUE) ? 0 : min;
-        }
-
-        //
-        public long max() {
-            return (max == Long.MIN_VALUE) ? 0 : max;
-        }
-
-        //
-        public long avg() {
-            return (n == 0) ? 0 : (sum / n);
-        }
-
-        //
-        public long n() {
-            return n;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("{ name: \"%s\", n: %d, min: %d, max: %d, avg: %d }", name(), n(), min(), max(), avg()); 
-        }
-    }
-
+  
     //
     static class Concurrency {
         private long activeRequests;
+        private long totalRequests;
 
         public synchronized void inc() {
             activeRequests++;
+            totalRequests++;
         }
 
         public synchronized void dec() {
@@ -354,6 +240,10 @@ public class StatusBean {
 
         public synchronized long getActiveRequests() {
             return activeRequests;
+        }
+        
+        public synchronized long getTotalRequests() {
+            return totalRequests;
         }
 
     }    
