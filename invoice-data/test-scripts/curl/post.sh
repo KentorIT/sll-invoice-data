@@ -18,4 +18,7 @@
 #     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 #
 
-curl -v -i  -H "Accept: application/json" -H "Content-Type: application/json" -d @${1} http://localhost:8080/invoice-data-app/admin/pricelists
+local="localhost:8080"
+host=${2-$local}
+
+curl -v -i  -H "Accept: application/json" -H "Content-Type: application/json" -d @${1} http://$host/invoice-data-app/admin/pricelists
