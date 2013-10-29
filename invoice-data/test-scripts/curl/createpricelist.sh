@@ -1,5 +1,15 @@
 #!/bin/bash
-
+#
+# Reads a text file with item and price on each row and creates
+# a corresponding JSON structure.
+# Input file name is given as an argument and shall be named (basename) as the supplier id.
+# Validfrom date has to be edited by hand, and so also trailing commas
+#
+# record syntax:
+#
+# [itemId][space][price]
+#
+# 
 echo "{"
 echo "supplierId: \"$(basename $1)\","
 echo "serviceCode: \"01\","
