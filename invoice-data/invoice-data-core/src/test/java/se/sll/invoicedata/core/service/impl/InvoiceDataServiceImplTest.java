@@ -22,11 +22,14 @@
  */
 package se.sll.invoicedata.core.service.impl;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +39,12 @@ import org.springframework.transaction.annotation.Transactional;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
-import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.TestSupport;
 
 /**
@@ -54,24 +56,13 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	@Autowired
 	private InvoiceDataService invoiceDataService;
 
-	protected Event createSampleEvent() {
-		final BusinessEventEntity e = createSampleBusinessEventEntity();
-		e.addItemEntity(createSampleItemEntity());
-
-		final Event event = CoreUtil.copyProperties(e, Event.class);
-
-		CoreUtil.copyGenericLists(event.getItemList(), e.getItemEntities(),
-				Item.class);
-
-		return event;
-	}
-
 	@Test
 	@Transactional
 	@Rollback(true)
 	public void testFind_BusinessEvent_By_Id() {
 
 		final Event e = createSampleEvent();
+		e.getItemList().get(0).setPrice(null);
 		invoiceDataService.registerEvent(e);
 		
 		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
@@ -84,7 +75,47 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 		assertEquals(e.getSupplierName(), f.getSupplierName());
 		assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
 	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testRegister_Multiple_Events() {
+		final Event e = createSampleEvent();
+		e.getItemList().get(0).setPrice(null);
+		invoiceDataService.registerEvent(e);
+		e.setAcknowledgementId(UUID.randomUUID().toString());
+		invoiceDataService.registerEvent(e);
+		
+		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+		getIDRequest.setSupplierId(e.getSupplierId());
+		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+		final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+		final RegisteredEvent f = l.get(0);
 
+		assertEquals(e.getEventId(), f.getEventId());
+		assertEquals(e.getSupplierName(), f.getSupplierName());
+		assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
+
+	}
+		
+	@Test (expected = InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)
+	public void testRegisterEvent_With_No_Items_Result_Fail() {
+		final Event e = createSampleEvent();
+		e.setItemList(null);
+		invoiceDataService.registerEvent(e);		
+	}
+	
+	@Test (expected = InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)
+	public void testRegisterEvent_With_Invalid_Item_Qty_Result_Fail() {
+		final Event e = createSampleEvent();
+		e.getItemList().get(0).setQty(new BigDecimal(9999999));
+		invoiceDataService.registerEvent(e);		
+	}
+	
 	private void registerEvents(String supplierId, List<String> ids) {
 		for (final String id : ids) {
 			final Event e = createSampleEvent();
@@ -120,7 +151,61 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 
 		return ie;
 	}
-
+	
+	@Test (expected = InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)
+	public void testCreateInvoiceData_Result_Fail() {
+		final CreateInvoiceDataRequest ie = new CreateInvoiceDataRequest();
+		invoiceDataService.createInvoiceData(ie);
+	}
+	 
+	@Test (expected = InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)
+	public void testCreateInvoiceData_Invalid_Supplier() {
+		final Event e = createSampleEvent();
+		invoiceDataService.registerEvent(e);
+		
+		final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
+		createReq.setSupplierId(e.getSupplierId() + "_invalid");
+		createReq.setPaymentResponsible(e.getPaymentResponsible());
+		createReq.setCreatedBy("testCreateInvoiceData_Invalid_Supplier");
+		createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
+		invoiceDataService.createInvoiceData(createReq);
+	}
+	
+	@Test (expected = InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)
+	public void testCreateInvoiceData_Invalid_PaymentResponsible() {
+		final Event e = createSampleEvent();
+		invoiceDataService.registerEvent(e);
+		
+		final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
+		createReq.setSupplierId(e.getSupplierId());
+		createReq.setPaymentResponsible(e.getPaymentResponsible() + "_invalid");
+		createReq.setCreatedBy("testCreateInvoiceData_Invalid_PaymentResponsible");
+		createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
+		invoiceDataService.createInvoiceData(createReq);
+	}
+	
+	@Test (expected = InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)
+	public void testCreateInvoiceData_Duplicate_AckList() {
+		final Event e = createSampleEvent();
+		invoiceDataService.registerEvent(e);
+		
+		final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
+		createReq.setSupplierId(e.getSupplierId());
+		createReq.setPaymentResponsible(e.getPaymentResponsible());
+		createReq.setCreatedBy("testCreateInvoiceData_Duplicate_AckList");
+		createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
+		createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
+		invoiceDataService.createInvoiceData(createReq);
+	}
+	
 	@Test
 	@Transactional
 	@Rollback(true)
@@ -174,26 +259,16 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	@Test
 	@Transactional
 	@Rollback(true)
-	public void testListAllInvoiceData_With_Supplier_ID() {
+	public void testListAllInvoiceData_With_Alternatives() {
 
 		final Event e = createSampleEvent();
 		invoiceDataService.registerEvent(e);
-
-		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
-		getIDRequest.setSupplierId(e.getSupplierId());
-		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
 		
-		List<RegisteredEvent> regEvtList = invoiceDataService
-				.getAllUnprocessedBusinessEvents(getIDRequest);
-
 		final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-		createReq.setSupplierId(regEvtList.get(0).getSupplierId());
-		createReq.setPaymentResponsible(regEvtList.get(0)
-				.getPaymentResponsible());
-		createReq.setCreatedBy("test-auto");
-		createReq.getAcknowledgementIdList().add(
-				regEvtList.get(0).getAcknowledgementId());
-
+		createReq.setSupplierId(e.getSupplierId());
+		createReq.setPaymentResponsible(e.getPaymentResponsible());
+		createReq.setCreatedBy("testListAllInvoiceData_With_Supplier_ID");
+		createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
 		invoiceDataService.createInvoiceData(createReq);
 
 		// Request with only supplier id
@@ -206,6 +281,82 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 		assertNotNull(invoiceDataList);
 		assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0)
 				.getPaymentResponsible());
-	}
+		
+		// Request with only payment responsible
+		invoiceListRequest = new ListInvoiceDataRequest();
+		invoiceListRequest.setPaymentResponsible(e.getPaymentResponsible());
 
+		invoiceDataList = invoiceDataService
+				.listAllInvoiceData(invoiceListRequest);
+
+		assertNotNull(invoiceDataList);
+		assertEquals(e.getSupplierId(), invoiceDataList.get(0)
+				.getSupplierId());
+		
+		// Request with supplierId and paymentResponsible
+		invoiceListRequest = new ListInvoiceDataRequest();
+		invoiceListRequest.setSupplierId(e.getSupplierId());
+		invoiceListRequest.setPaymentResponsible(e.getPaymentResponsible());
+		
+		invoiceDataList = invoiceDataService
+				.listAllInvoiceData(invoiceListRequest);
+
+		assertNotNull(invoiceDataList);
+		assertEquals(e.getSupplierId(), invoiceDataList.get(0)
+				.getSupplierId());
+		assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0)
+				.getPaymentResponsible());
+		
+	}
+	
+	@Test (expected=InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)	
+	public void testListAllInvoiceData_Result_Fail() {
+		// Request with empty parameters
+		ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+		invoiceDataService.listAllInvoiceData(invoiceListRequest);
+	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testGetInvoiceDataByReferenceId() {
+		final Event e = createSampleEvent();
+		invoiceDataService.registerEvent(e);
+		
+		final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
+		createReq.setSupplierId(e.getSupplierId());
+		createReq.setPaymentResponsible(e.getPaymentResponsible());
+		createReq.setCreatedBy("testGetInvoiceDataByReferenceId_With_Alternatives");
+		createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
+		String referenceId = invoiceDataService.createInvoiceData(createReq);
+		
+		InvoiceData invoiceData = invoiceDataService.getInvoiceDataByReferenceId(referenceId);
+		
+		assertNotNull(invoiceData);
+		assertNotNull(invoiceData.getRegisteredEventList());
+		assertNotNull(invoiceData.getRegisteredEventList().get(0).getItemList().get(0).getItemId());
+	}
+	
+	@Test (expected = InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)
+	public void testGetInvoiceDataBy_Dummy_ReferenceId() {
+		//Valid referenceId
+		String referenceId = "supplierId.00000";
+		invoiceDataService.getInvoiceDataByReferenceId(referenceId);		
+	}
+	
+	@Test (expected = InvoiceDataServiceException.class)
+	@Transactional
+	@Rollback(true)
+	public void testGetInvoiceDataBy_Invalid_ReferenceId() {
+		//Valid referenceId
+		String referenceId = "supplierId.0000x";
+		invoiceDataService.getInvoiceDataByReferenceId(referenceId);		
+	}
+	
+	
+	
 }

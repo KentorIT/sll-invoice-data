@@ -20,8 +20,15 @@
 package se.sll.invoicedata.core.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.junit.Test;
 
@@ -87,5 +94,30 @@ public class CoreUtilTest extends TestSupport {
         assertEquals(entity.getDescription(), item.getDescription());
         assertEquals(entity.getPrice(), item.getPrice());
         assertEquals(entity.getQty(), item.getQty());
+    }
+    
+    @Test
+    public void testDateConversion() {
+    	Calendar cal = Calendar.getInstance();
+    	cal.set(Calendar.YEAR, 999);
+    	XMLGregorianCalendar xmlGregCal = CoreUtil.toXMLGregorianCalendar(cal.getTime());
+    	assertEquals(999, xmlGregCal.getYear());
+    	assertEquals(cal.get(Calendar.MONTH), xmlGregCal.getMonth() - 1);
+    	assertEquals(cal.get(Calendar.DATE), xmlGregCal.getDay());
+    	assertEquals(cal.get(Calendar.HOUR_OF_DAY), xmlGregCal.getHour());
+    	assertEquals(cal.get(Calendar.MINUTE), xmlGregCal.getMinute());
+    	assertEquals(cal.get(Calendar.SECOND), xmlGregCal.getSecond());
+    	
+    	Date date = CoreUtil.toDate(xmlGregCal);
+    	assertNotNull(date);
+    	Calendar newCal = Calendar.getInstance();
+    	newCal.setTime(date);
+    	assertEquals(cal.get(Calendar.YEAR), newCal.get(Calendar.YEAR));
+    	assertEquals(cal.get(Calendar.MONTH), newCal.get(Calendar.MONTH));
+    	assertEquals(cal.get(Calendar.DATE), newCal.get(Calendar.DATE));
+    	assertEquals(cal.get(Calendar.HOUR), newCal.get(Calendar.HOUR));
+    	assertEquals(cal.get(Calendar.MINUTE), newCal.get(Calendar.MINUTE));
+    	assertEquals(cal.get(Calendar.SECOND), newCal.get(Calendar.SECOND));
+    	
     }
 }

@@ -105,7 +105,9 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
     
     @Override
     public String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest) {
-
+    	
+    	validate(createInvoiceDataRequest);
+    	
         TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
                 + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
 

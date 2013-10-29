@@ -117,7 +117,14 @@ public class CoreUtil {
      * @return the {@link Date} representation.
      */
     public static Date toDate(XMLGregorianCalendar cal, Date defaultValue) {
-        return (cal == null) ? defaultValue : cal.toGregorianCalendar().getTime();
+    	if (cal != null) {
+    		Calendar c = Calendar.getInstance();
+    		c.set(Calendar.DATE, cal.getDay());
+    		c.set(Calendar.MONTH, cal.getMonth() - 1);
+    		c.set(Calendar.YEAR, cal.getYear());
+    		return c.getTime();
+    	}
+        return defaultValue;
     }
 
     

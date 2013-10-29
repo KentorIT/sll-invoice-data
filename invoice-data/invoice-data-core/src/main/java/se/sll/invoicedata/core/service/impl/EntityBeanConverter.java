@@ -58,30 +58,6 @@ public class EntityBeanConverter {
 	}
 
 	/**
-	 * Maps XML JAXB object to an entity bean.
-	 * 
-	 * @param event the JAXB object.
-	 * @return the entity bean.
-	 */
-	static InvoiceDataHeader fromEntity(final InvoiceDataEntity entity) {
-		final InvoiceDataHeader iDHeader = copyProperties(entity, InvoiceDataHeader.class);
-		return iDHeader;
-	}
-	
-	/**
-	 * Maps InvoiceDataEntity to InvoiceDataHeader object
-	 * @param entityList
-	 * @return List<InvoiceDataHeader>
-	 */
-	static List<InvoiceDataHeader> fromIDEntity(final List<InvoiceDataEntity> entityList) {
-		List<InvoiceDataHeader> iDHeaderList = new ArrayList<InvoiceDataHeader>(entityList.size());
-		for (final InvoiceDataEntity iDE : entityList) {
-			iDHeaderList.add(fromEntity(iDE));
-		}
-		return iDHeaderList;
-	}
-	
-	/**
 	 * Maps BusinessEventEntity to RegisteredEvent object
 	 * @param bEEntity
 	 * @return RegisteredEvent

@@ -30,12 +30,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.Item;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.entity.PriceListEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.service.impl.CoreUtil;
 
 /**
  * Abstracts JUnit and Spring configuration stuff, and is intended to extend
@@ -61,7 +64,19 @@ public abstract class TestSupport {
     protected InvoiceDataRepository getInvoiceDataRepository() {
         return invoiceDataRepository;
     }
+    
+	protected Event createSampleEvent() {
+		final BusinessEventEntity e = createSampleBusinessEventEntity();
+		e.addItemEntity(createSampleItemEntity());
 
+		final Event event = CoreUtil.copyProperties(e, Event.class);
+
+		CoreUtil.copyGenericLists(event.getItemList(), e.getItemEntities(),
+				Item.class);
+
+		return event;
+	}
+	
     protected ItemEntity createSampleItemEntity() {
     	ItemEntity i = new ItemEntity();
     	i.setDescription("Item is kind of a product");

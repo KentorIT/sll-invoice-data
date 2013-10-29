@@ -48,7 +48,7 @@ public class InvoiceDataBaseService {
 		}
 	}
 
-	private void mandatory(final Object s, final String field) {
+	void mandatory(final Object s, final String field) {
 		if (s == null) {
 			throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException(field);
 		}
@@ -90,6 +90,13 @@ public class InvoiceDataBaseService {
         validate(businessEventEntity.getItemEntities());
 
         return businessEventEntity;
+    }
+    
+    void validate(final CreateInvoiceDataRequest createInvoiceDataRequest) {
+    	mandatory(createInvoiceDataRequest.getSupplierId(), "supplierId");
+    	mandatory(createInvoiceDataRequest.getPaymentResponsible(), "paymentResponsible");
+    	mandatory(createInvoiceDataRequest.getCreatedBy(), "createdBy");
+    	mandatory(createInvoiceDataRequest.getAcknowledgementIdList(), "acknowledgementIdList");
     }
 
 	private void validate(final List<ItemEntity> items) {

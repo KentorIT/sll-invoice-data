@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +57,12 @@ public class BusinessEventRepositoryTest extends TestSupport {
         assertEquals(e.getEventId(), f.getEventId());
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
-        assertNotNull(f.getCreatedTimestamp());   
+        assertNotNull(f.getCreatedTimestamp());
+        assertEquals(null, f.getCredit());
+        assertEquals(null, f.getCredited());
+        assertEquals(false, f.isCredit());
+        assertEquals(false, f.isCredited());
+        assertEquals(true, f.isPending());
     }
     
     @Test
@@ -89,6 +95,17 @@ public class BusinessEventRepositoryTest extends TestSupport {
         
         assertNotNull(l);
         assertEquals(1, l.size());
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void test_BusinessEvent_Equals() {
+    	final BusinessEventEntity e1 = createSampleBusinessEventEntity();
+    	final BusinessEventEntity e2 = createSampleBusinessEventEntity();
+    	Assert.assertFalse(e1.equals(e2));
+    	e2.setAcknowledgementId(e1.getAcknowledgementId());
+    	Assert.assertFalse(e1.equals(e2));
     }
 
     @Test
