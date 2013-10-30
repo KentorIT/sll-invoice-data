@@ -20,6 +20,7 @@
 package se.sll.invoicedata.core.model.repository;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.entity.PriceListEntity;
@@ -46,6 +48,7 @@ public class PriceListRepositoryTest extends TestSupport {
 
     @Transactional
     @Test
+    @Rollback (true)
     public void testInsertFind_simple() {
         final PriceListEntity priceListEntity = createSamplePriceListEntity();
         priceListRepository.save(priceListEntity);
@@ -54,9 +57,26 @@ public class PriceListRepositoryTest extends TestSupport {
         assertEquals(1, priceListRepository.count());
         
     }
+    
+    @Transactional
+    @Test
+    public void testPriceListEntity_Equals() {
+    	final PriceListEntity pl1 = createSamplePriceListEntity();
+    	final PriceListEntity pl2 = createSamplePriceListEntity();
+    	
+    	assertFalse(pl1.equals(pl2));    	
+    }
+    
+    @Transactional
+    //@Test
+    public void testAddPriceEntity_Add_Null() {
+    	final PriceListEntity priceListEntity = createSamplePriceListEntity();
+    	priceListEntity.addPriceEntity(null);
+    }
 
     @Transactional
     @Test
+    @Rollback (true)
     public void testInsertFind_multiple_dates() {
         Calendar cal = today();
         cal.add(Calendar.DATE, 2);

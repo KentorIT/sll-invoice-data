@@ -30,6 +30,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.support.TestSupport;
 
 /**
@@ -107,6 +108,16 @@ public class BusinessEventRepositoryTest extends TestSupport {
     	e2.setAcknowledgementId(e1.getAcknowledgementId());
     	Assert.assertFalse(e1.equals(e2));
     }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void test_ItemEntity_Equals() {
+    	ItemEntity i1 = createSampleItemEntity();
+    	ItemEntity i2 = createSampleItemEntity();
+    	Assert.assertFalse(i1.equals(i2));
+    }
+    
 
     @Test
     @Transactional
