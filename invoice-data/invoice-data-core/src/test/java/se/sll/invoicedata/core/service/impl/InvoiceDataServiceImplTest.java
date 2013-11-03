@@ -39,10 +39,12 @@ import org.springframework.transaction.annotation.Transactional;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
+import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.TestSupport;
@@ -74,6 +76,34 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 		assertEquals(e.getEventId(), f.getEventId());
 		assertEquals(e.getSupplierName(), f.getSupplierName());
 		assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
+	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testGetTotalAmount_On_Registerevent() {
+		final Event e = createSampleEvent();
+		invoiceDataService.registerEvent(e);
+		
+		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+		getIDRequest.setSupplierId(e.getSupplierId());
+		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+		RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+		assertEquals(700, rE.getTotalAmount().intValue());
+		
+		//Test with more items
+		Item i1 = new Item();
+		i1.setDescription("Test item");
+		i1.setItemId("IT0x");
+		i1.setPrice(BigDecimal.valueOf(150));
+		i1.setQty(BigDecimal.valueOf(3));
+		e.getItemList().add(i1);
+		e.setAcknowledgementId(UUID.randomUUID().toString());
+		invoiceDataService.registerEvent(e);
+		
+		rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+		assertEquals(1150, rE.getTotalAmount().intValue());
+		
 	}
 	
 	@Test
