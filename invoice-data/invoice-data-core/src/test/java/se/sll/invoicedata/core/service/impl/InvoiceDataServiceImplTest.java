@@ -44,7 +44,6 @@ import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
-import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.TestSupport;
@@ -64,7 +63,6 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	public void testFind_BusinessEvent_By_Id() {
 
 		final Event e = createSampleEvent();
-		e.getItemList().get(0).setPrice(null);
 		invoiceDataService.registerEvent(e);
 		
 		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
@@ -111,7 +109,6 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	@Rollback(true)
 	public void testRegister_Multiple_Events() {
 		final Event e = createSampleEvent();
-		e.getItemList().get(0).setPrice(null);
 		invoiceDataService.registerEvent(e);
 		e.setAcknowledgementId(UUID.randomUUID().toString());
 		invoiceDataService.registerEvent(e);

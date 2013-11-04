@@ -24,12 +24,21 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
+import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.Item;
+import riv.sll.invoicedata._1.RegisteredEvent;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
+import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.service.PriceListService;
 import se.sll.invoicedata.core.service.dto.Price;
 import se.sll.invoicedata.core.service.dto.PriceList;
@@ -39,6 +48,9 @@ public class PriceListServiceImplTest extends TestSupport {
 
     @Autowired
     private PriceListService priceListService;
+    
+    @Autowired
+	private InvoiceDataService invoiceDataService;
     
     @Before
     public void deleteAll() {
@@ -77,6 +89,8 @@ public class PriceListServiceImplTest extends TestSupport {
     
 
     @Test
+	@Transactional
+	@Rollback(true)
     public void testSave_success() {
         final PriceList priceList = createSamplePriceList();
         
@@ -85,7 +99,60 @@ public class PriceListServiceImplTest extends TestSupport {
         assertEquals(1, priceListService.getPriceLists().size());        
     }
     
+    @Test
+	@Transactional
+	@Rollback(true)
+    public void testPrice_With_Actual_Event() {
+    	final PriceList priceList = createSamplePriceList();
+    	priceListService.savePriceLists(Collections.singletonList(priceList));
+    	
+    	final Event e = createSampleEvent();
+    	e.setServiceCode(priceList.getServiceCode());
+    	e.setSupplierId(priceList.getSupplierId());
+    	e.getItemList().clear(); //Remove all items and all new ones
+    	
+		Item i1 = new Item();
+		i1.setDescription("Test item");
+		i1.setItemId("item.1");
+		i1.setQty(BigDecimal.valueOf(3));
+		e.getItemList().add(i1);
+		invoiceDataService.registerEvent(e);
+		
+		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+		getIDRequest.setSupplierId(e.getSupplierId());
+		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+		RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+		
+		//650 * 3 = 1950
+		assertEquals(1950, rE.getTotalAmount().intValue());
+    }
     
+    @Test (expected = InvoiceDataServiceException.class)
+   	@Transactional
+   	@Rollback(true)
+    public void testPrice_With_Invalid_Servicecode_Fail() {
+   	    final PriceList priceList = createSamplePriceList();
+   	    priceListService.savePriceLists(Collections.singletonList(priceList));
+   	
+   	    final Event e = createSampleEvent();
+   	    //Service code and supplier id don't match item!
+   	    e.getItemList().clear(); //Remove all items and all new ones
+   	
+	    Item i1 = new Item();
+	    i1.setDescription("Test item");
+	    i1.setItemId("item.1");
+	    i1.setQty(BigDecimal.valueOf(3));
+	    e.getItemList().add(i1);
+	    invoiceDataService.registerEvent(e);
+	
+	    GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+	    getIDRequest.setSupplierId(e.getSupplierId());
+	    getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+	    RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+	
+	    //650 * 3 = 1950
+	    assertEquals(1950, rE.getTotalAmount().intValue());
+    }
     
     @Test(expected = DataIntegrityViolationException.class)
     public void testSave_duplicate_item_id_fail() {

@@ -33,6 +33,7 @@ import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.entity.PriceEntity;
 import se.sll.invoicedata.core.model.entity.PriceListEntity;
 import se.sll.invoicedata.core.model.repository.PriceListRepository;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.RatingService;
 
 /**
@@ -64,7 +65,7 @@ public class LocalRatingServiceImpl implements RatingService {
             }
         }
         log.error("No price information (zero) found for item {}", itemEntity);
-        return BigDecimal.ZERO;
+        throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("No price information (zero) found for item", itemEntity.getItemId());
     }
 
     //
