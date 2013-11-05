@@ -88,7 +88,7 @@ public abstract class TestSupport extends CoreUtil {
 	}
 	
 	public static String getWSDLURL(String serviceName) {
-		return "http://localhost:8080/invoice-data-app/ws/" + serviceName + "?wsdl";
+		return "http://localhost:8080/invoicedata-web-app/ws/" + serviceName + "?wsdl";
 	}
 	
 	public static Event createRandomEventData() {

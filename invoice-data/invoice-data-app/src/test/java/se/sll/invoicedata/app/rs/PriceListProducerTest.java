@@ -47,7 +47,7 @@ import se.sll.invoicedata.core.service.dto.ServiceResponse;
  */
 public class PriceListProducerTest {
     
-    static String LIST_ENDPOINT = "http://localhost:8080/invoice-data-app/admin";
+    static String LIST_ENDPOINT = "http://localhost:8080/invoicedata-web-app/admin";
     
     private static PriceListProducer priceListProducer;
     
