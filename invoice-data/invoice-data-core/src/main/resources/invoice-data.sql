@@ -17,314 +17,177 @@
 --     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 --
 
-USE [master]
-GO
-
-/****** Object:  Database [sll-invoice-data]    Script Date: 10/17/2013 10:10:02 ******/
-IF  EXISTS (SELECT name FROM sys.databases WHERE name = N'sll-invoice-data')
-DROP DATABASE [sll-invoice-data]
-GO
-
-USE [master]
-GO
-
-/****** Object:  Database [sll-invoice-data]    Script Date: 10/17/2013 10:10:02 ******/
-CREATE DATABASE [sll-invoice-data]
-GO
-
-ALTER DATABASE [sll-invoice-data] MODIFY FILE
-( NAME = N'sll-invoice-data',SIZE = 524288KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+-- MySQL Administrator dump 1.4
+--
+-- ------------------------------------------------------
+-- Server version	5.5.20
 
 
-ALTER DATABASE [sll-invoice-data] SET COMPATIBILITY_LEVEL = 100
-GO
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
-ALTER DATABASE [sll-invoice-data] SET ANSI_NULL_DEFAULT OFF 
-GO
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-ALTER DATABASE [sll-invoice-data] SET ANSI_NULLS OFF 
-GO
+--
+-- Create user
+--
 
-ALTER DATABASE [sll-invoice-data] SET ANSI_PADDING OFF 
-GO
+CREATE USER 'vsfuAdmin'@'localhost' IDENTIFIED BY %PASSWORD%;
+GRANT ALL PRIVILEGES ON *.* TO 'vsfuAdmin'@'localhost' WITH GRANT OPTION;
+--
+-- Create schema vsfunderlag
+--
 
-ALTER DATABASE [sll-invoice-data] SET ANSI_WARNINGS OFF 
-GO
+CREATE DATABASE IF NOT EXISTS vsfunderlag;
+USE vsfunderlag;
 
-ALTER DATABASE [sll-invoice-data] SET ARITHABORT OFF 
-GO
+--
+-- Definition of table `invoice_data`
+--
 
-ALTER DATABASE [sll-invoice-data] SET AUTO_CLOSE OFF 
-GO
+DROP TABLE IF EXISTS `invoice_data`;
+CREATE TABLE `invoice_data` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `created_by` varchar(64) NOT NULL,
+  `created_timestamp` datetime NOT NULL,
+  `end_date` date NOT NULL,
+  `payment_responsible` varchar(64) NOT NULL,
+  `start_date` date NOT NULL,
+  `supplier_id` varchar(64) NOT NULL,
+  `total_amount` decimal(8,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER DATABASE [sll-invoice-data] SET AUTO_CREATE_STATISTICS ON 
-GO
+--
+-- Dumping data for table `invoice_data`
+--
 
-ALTER DATABASE [sll-invoice-data] SET AUTO_SHRINK OFF 
-GO
+/*!40000 ALTER TABLE `invoice_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_data` ENABLE KEYS */;
 
-ALTER DATABASE [sll-invoice-data] SET AUTO_UPDATE_STATISTICS ON 
-GO
 
-ALTER DATABASE [sll-invoice-data] SET CURSOR_CLOSE_ON_COMMIT OFF 
-GO
+--
+-- Definition of table `invoice_data_event`
+--
 
-ALTER DATABASE [sll-invoice-data] SET CURSOR_DEFAULT  GLOBAL 
-GO
+DROP TABLE IF EXISTS `invoice_data_event`;
+CREATE TABLE `invoice_data_event` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `acknowledged_by` varchar(64) NOT NULL,
+  `acknowledged_time` datetime NOT NULL,
+  `acknowledgement_id` varchar(64) NOT NULL,
+  `created_timestamp` datetime NOT NULL,
+  `credit` bit(1) DEFAULT NULL,
+  `credited` bit(1) DEFAULT NULL,
+  `end_time` datetime NOT NULL,
+  `event_id` varchar(64) NOT NULL,
+  `healthcare_commission` varchar(64) NOT NULL,
+  `healthcare_facility` varchar(64) NOT NULL,
+  `payment_responsible` varchar(64) NOT NULL,
+  `pending` bit(1) DEFAULT NULL,
+  `ref_contract_id` varchar(64) NOT NULL,
+  `service_code` varchar(64) NOT NULL,
+  `start_time` datetime NOT NULL,
+  `supplier_id` varchar(64) NOT NULL,
+  `supplier_name` longtext NOT NULL,
+  `invoice_data_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `invoice_data_event_query_ix_2` (`event_id`),
+  KEY `invoice_data_event_query_ix_1` (`supplier_id`,`pending`),
+  KEY `invoice_data_event_query_ix_3` (`acknowledgement_id`),
+  KEY `FKC29022178FF8CD73` (`invoice_data_id`),
+  CONSTRAINT `FKC29022178FF8CD73` FOREIGN KEY (`invoice_data_id`) REFERENCES `invoice_data` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER DATABASE [sll-invoice-data] SET CONCAT_NULL_YIELDS_NULL OFF 
-GO
+--
+-- Dumping data for table `invoice_data_event`
+--
 
-ALTER DATABASE [sll-invoice-data] SET NUMERIC_ROUNDABORT OFF 
-GO
+/*!40000 ALTER TABLE `invoice_data_event` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_data_event` ENABLE KEYS */;
 
-ALTER DATABASE [sll-invoice-data] SET QUOTED_IDENTIFIER OFF 
-GO
 
-ALTER DATABASE [sll-invoice-data] SET RECURSIVE_TRIGGERS OFF 
-GO
+--
+-- Definition of table `invoice_data_event_item`
+--
 
-ALTER DATABASE [sll-invoice-data] SET  DISABLE_BROKER 
-GO
+DROP TABLE IF EXISTS `invoice_data_event_item`;
+CREATE TABLE `invoice_data_event_item` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `description` longtext NOT NULL,
+  `item_id` varchar(64) NOT NULL,
+  `price` decimal(8,2) DEFAULT NULL,
+  `qty` decimal(8,2) DEFAULT NULL,
+  `event_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK88E0C83BB8B18D8` (`event_id`),
+  CONSTRAINT `FK88E0C83BB8B18D8` FOREIGN KEY (`event_id`) REFERENCES `invoice_data_event` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER DATABASE [sll-invoice-data] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
-GO
+--
+-- Dumping data for table `invoice_data_event_item`
+--
 
-ALTER DATABASE [sll-invoice-data] SET DATE_CORRELATION_OPTIMIZATION OFF 
-GO
+/*!40000 ALTER TABLE `invoice_data_event_item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_data_event_item` ENABLE KEYS */;
 
-ALTER DATABASE [sll-invoice-data] SET TRUSTWORTHY OFF 
-GO
 
-ALTER DATABASE [sll-invoice-data] SET ALLOW_SNAPSHOT_ISOLATION OFF 
-GO
+--
+-- Definition of table `invoice_data_pricelist`
+--
 
-ALTER DATABASE [sll-invoice-data] SET PARAMETERIZATION SIMPLE 
-GO
+DROP TABLE IF EXISTS `invoice_data_pricelist`;
+CREATE TABLE `invoice_data_pricelist` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `service_code` varchar(64) NOT NULL,
+  `supplier_id` varchar(64) NOT NULL,
+  `valid_from` date NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `service_code` (`service_code`,`supplier_id`,`valid_from`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER DATABASE [sll-invoice-data] SET READ_COMMITTED_SNAPSHOT OFF 
-GO
+--
+-- Dumping data for table `invoice_data_pricelist`
+--
 
-ALTER DATABASE [sll-invoice-data] SET HONOR_BROKER_PRIORITY OFF 
-GO
+/*!40000 ALTER TABLE `invoice_data_pricelist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_data_pricelist` ENABLE KEYS */;
 
-ALTER DATABASE [sll-invoice-data] SET  READ_WRITE 
-GO
 
-ALTER DATABASE [sll-invoice-data] SET RECOVERY FULL 
-GO
+--
+-- Definition of table `invoice_data_pricelist_item`
+--
 
-ALTER DATABASE [sll-invoice-data] SET  MULTI_USER 
-GO
+DROP TABLE IF EXISTS `invoice_data_pricelist_item`;
+CREATE TABLE `invoice_data_pricelist_item` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `item_id` varchar(64) NOT NULL,
+  `price` decimal(8,2) NOT NULL,
+  `price_list_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `item_id` (`item_id`,`price_list_id`),
+  KEY `FKED35540EC367E1EB` (`price_list_id`),
+  CONSTRAINT `FKED35540EC367E1EB` FOREIGN KEY (`price_list_id`) REFERENCES `invoice_data_pricelist` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER DATABASE [sll-invoice-data] SET PAGE_VERIFY CHECKSUM  
-GO
+--
+-- Dumping data for table `invoice_data_pricelist_item`
+--
 
-ALTER DATABASE [sll-invoice-data] SET DB_CHAINING OFF 
-GO
+/*!40000 ALTER TABLE `invoice_data_pricelist_item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoice_data_pricelist_item` ENABLE KEYS */;
 
-------------------------------------------------------------------
---- Creating tables and indexes 
-------------------------------------------------------------------
- 
 
-USE [sll-invoice-data]
-GO
-/****** Object:  Table [dbo].[invoice_data_pricelist]    Script Date: 10/17/2013 10:07:43 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_pricelist]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[invoice_data_pricelist](
-	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
-	[service_code] [varchar](64) NOT NULL,
-	[supplier_id] [varchar](64) NOT NULL,
-	[valid_from] [datetime] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
-(
-	[service_code] ASC,
-	[supplier_id] ASC,
-	[valid_from] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
-(
-	[service_code] ASC,
-	[supplier_id] ASC,
-	[valid_from] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-SET ANSI_PADDING OFF
-GO
-/****** Object:  Table [dbo].[invoice_data]    Script Date: 10/17/2013 10:07:43 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[invoice_data](
-	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
-	[created_by] [varchar](64) NOT NULL,
-	[created_timestamp] [datetime] NOT NULL,
-	[payment_responsible] [varchar](64) NOT NULL,
-	[supplier_id] [varchar](64) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-SET ANSI_PADDING OFF
-GO
-/****** Object:  Table [dbo].[invoice_data_event]    Script Date: 10/17/2013 10:07:43 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[invoice_data_event](
-	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
-	[acknowledged_by] [varchar](64) NOT NULL,
-	[acknowledged_time] [datetime] NOT NULL,
-	[acknowledgement_id] [varchar](64) NOT NULL,
-	[created_timestamp] [datetime] NOT NULL,
-	[credit] [tinyint] NULL,
-	[credited] [tinyint] NULL,
-	[end_time] [datetime] NOT NULL,
-	[event_id] [varchar](64) NOT NULL,
-	[healthcare_commission] [varchar](64) NOT NULL,
-	[HEALTHCARE_FACILITY] [varchar](64) NOT NULL,
-	[payment_responsible] [varchar](64) NOT NULL,
-	[pending] [tinyint] NULL,
-	[refContract_Id] [varchar](64) NOT NULL,
-	[service_code] [varchar](64) NOT NULL,
-	[start_time] [datetime] NOT NULL,
-	[supplier_id] [varchar](64) NOT NULL,
-	[supplier_name] [varchar](256) NOT NULL,
-	[invoice_data_id] [numeric](19, 0) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-SET ANSI_PADDING OFF
-GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_1')
-CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_1] ON [dbo].[invoice_data_event] 
-(
-	[supplier_id] ASC,
-	[pending] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_2')
-CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_2] ON [dbo].[invoice_data_event] 
-(
-	[event_id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-GO
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event]') AND name = N'invoice_data_event_query_ix_3')
-CREATE NONCLUSTERED INDEX [invoice_data_event_query_ix_3] ON [dbo].[invoice_data_event] 
-(
-	[acknowledgement_id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[invoice_data_pricelist_item]    Script Date: 10/17/2013 10:07:43 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_pricelist_item]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[invoice_data_pricelist_item](
-	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
-	[item_id] [varchar](64) NOT NULL,
-	[price] [numeric](8, 2) NOT NULL,
-	[price_list_id] [numeric](19, 0) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
-(
-	[item_id] ASC,
-	[price_list_id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
-(
-	[item_id] ASC,
-	[price_list_id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-SET ANSI_PADDING OFF
-GO
-/****** Object:  Table [dbo].[invoice_data_event_item]    Script Date: 10/17/2013 10:07:43 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[invoice_data_event_item]') AND type in (N'U'))
-BEGIN
-CREATE TABLE [dbo].[invoice_data_event_item](
-	[id] [numeric](19, 0) IDENTITY(1,1) NOT NULL,
-	[description] [varchar](256) NOT NULL,
-	[item_id] [varchar](64) NOT NULL,
-	[price] [numeric](8, 2) NULL,
-	[qty] [numeric](8, 2) NULL,
-	[event_id] [numeric](19, 0) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-END
-GO
-SET ANSI_PADDING OFF
-GO
-/****** Object:  ForeignKey [FKC29022178FF8CD73]    Script Date: 10/17/2013 10:07:43 ******/
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKC29022178FF8CD73]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_event]'))
-ALTER TABLE [dbo].[invoice_data_event]  WITH CHECK ADD  CONSTRAINT [FKC29022178FF8CD73] FOREIGN KEY([invoice_data_id])
-REFERENCES [dbo].[invoice_data] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKC29022178FF8CD73]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_event]'))
-ALTER TABLE [dbo].[invoice_data_event] CHECK CONSTRAINT [FKC29022178FF8CD73]
-GO
-/****** Object:  ForeignKey [FK88E0C83BB8B18D8]    Script Date: 10/17/2013 10:07:43 ******/
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK88E0C83BB8B18D8]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_event_item]'))
-ALTER TABLE [dbo].[invoice_data_event_item]  WITH CHECK ADD  CONSTRAINT [FK88E0C83BB8B18D8] FOREIGN KEY([event_id])
-REFERENCES [dbo].[invoice_data_event] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK88E0C83BB8B18D8]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_event_item]'))
-ALTER TABLE [dbo].[invoice_data_event_item] CHECK CONSTRAINT [FK88E0C83BB8B18D8]
-GO
-/****** Object:  ForeignKey [FKED35540EC367E1EB]    Script Date: 10/17/2013 10:07:43 ******/
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKED35540EC367E1EB]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_pricelist_item]'))
-ALTER TABLE [dbo].[invoice_data_pricelist_item]  WITH CHECK ADD  CONSTRAINT [FKED35540EC367E1EB] FOREIGN KEY([price_list_id])
-REFERENCES [dbo].[invoice_data_pricelist] ([id])
-GO
-IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FKED35540EC367E1EB]') AND parent_object_id = OBJECT_ID(N'[dbo].[invoice_data_pricelist_item]'))
-ALTER TABLE [dbo].[invoice_data_pricelist_item] CHECK CONSTRAINT [FKED35540EC367E1EB]
-GO
+
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
