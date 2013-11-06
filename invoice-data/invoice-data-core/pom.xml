@@ -72,6 +72,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -89,9 +90,9 @@
 		</dependency>
 	
 		<dependency>
-			<groupId>net.sourceforge.jtds</groupId>
-			<artifactId>jtds</artifactId>
-		</dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>           
 			
 		<dependency>
 		  <groupId>net.sf.dozer</groupId>
