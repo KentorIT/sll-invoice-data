@@ -159,7 +159,7 @@ public class StatusBean {
 
     //
     public String getGUID() {
-        return samples.get().peek().getName();
+        return samples.get().peek().getGUID();
     }
 
     //
