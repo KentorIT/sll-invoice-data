@@ -198,7 +198,8 @@
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
 				<version>${h2db.version}</version>
-				<scope>compile</scope>
+				<scope>system</scope>
+        		<systemPath>${user.home}/sll-invoice-data/h2-${h2db.version}.jar</systemPath>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
