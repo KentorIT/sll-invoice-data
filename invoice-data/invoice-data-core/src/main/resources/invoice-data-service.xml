@@ -31,7 +31,7 @@
 
 
 	<beans profile="test">
-		<context:property-placeholder location="classpath:/application-dev.properties,file:${user.home}/.invoice-data-dev-config.properties"
+		<context:property-placeholder location="classpath:/application-dev.properties,file:///${user.home}/.invoicedata-config.properties"
 			ignore-unresolvable="true" ignore-resource-not-found="true"/>
 
 		<bean id="org.h2.tools.Server-WebServer" class="org.h2.tools.Server"
@@ -57,15 +57,15 @@
 
 	<beans profile="prod">
 		<context:property-placeholder
-			location="file:///${user.home}/sll-invoice-data/application-prod.properties"
-			ignore-unresolvable="true" />
+			location="classpath:/application-prod.properties,file:///${user.home}/.invoicedata-config.properties"
+			ignore-unresolvable="true" ignore-resource-not-found="true" />
 
 		<bean id="jpaProperties"
 			class="org.springframework.beans.factory.config.MapFactoryBean">
 			<property name="sourceMap">
 				<map>
 					<entry key="hibernate.dialect" value="${database.dialect}" />
-					<entry key="hibernate.connection.pool_size" value="10" />
+					<entry key="hibernate.connection.pool_size" value="${database.connections}" />
 					<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
 					<entry key="hibernate.hbm2ddl.auto" value="${database.updateStrategy}" />
 				</map>
