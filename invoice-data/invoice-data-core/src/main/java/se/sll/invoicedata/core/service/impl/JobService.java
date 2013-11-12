@@ -31,6 +31,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 
@@ -43,36 +44,44 @@ import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 @Service
 public class JobService {
 
-        private static final Logger log = LoggerFactory.getLogger(JobService.class);
+    private static final Logger log = LoggerFactory.getLogger(JobService.class);
 
-        @Autowired
-        private InvoiceDataRepository invoiceDataRepository;
-        
-        @Value("${invoicedata.monthTTL:0}")
-        private int invoiceDataTTL;
-        
-        @Scheduled(cron="${job.cron}")
-        public void batchJob() {
-            log.info("Start batch job");
-            final Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.MONTH, (-1 * invoiceDataTTL));
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            
+    @Autowired
+    private InvoiceDataRepository invoiceDataRepository;
+
+    @Autowired
+    private StatusBean statusBean;
+
+    @Value("${invoicedata.monthTTL:0}")
+    private int invoiceDataTTL;
+
+    @Scheduled(cron="${job.cron}")
+    public void batchJob() {
+        log.info("Start batch job");
+        final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, (-1 * invoiceDataTTL));
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        statusBean.start("JobService.removeOldData()");
+        try {
             removeOldData(cal.getTime());
+        } finally {
+            statusBean.stop();
         }
-        
-        @Transactional
-        private void removeOldData(final Date maxDate) {
-          if (invoiceDataTTL <= 0) {
-              log.info("Parameter invoicedata.monthTTL is zero, i.e. life-cycle management of old data is disabled");
-              return;
-          }
-          final List<InvoiceDataEntity> list = invoiceDataRepository.findByEndDateLessThan(maxDate);
-          log.info("Remove invoice data older than: {}, count: {}", maxDate, list.size());
-          invoiceDataRepository.delete(list);
+    }
+
+    @Transactional
+    private void removeOldData(final Date maxDate) {
+        if (invoiceDataTTL <= 0) {
+            log.info("Parameter invoicedata.monthTTL is zero, i.e. life-cycle management of old data has been disabled");
+            return;
         }
-        
+        final List<InvoiceDataEntity> list = invoiceDataRepository.findByEndDateLessThan(maxDate);
+        log.info("Remove invoice data older than: {}, count: {}", maxDate, list.size());
+        invoiceDataRepository.delete(list);
+    }
+
 }

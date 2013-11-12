@@ -111,7 +111,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
                 + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
 
-        statusBean.start("InvoiceDataService.createInvoiceData(CreateInvoiceDataRequest)");
+        statusBean.start("InvoiceDataService.createInvoiceData()");
 
         try {
             final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
@@ -134,7 +134,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("supplierId or paymentResponsible");
         }
 
-        statusBean.start("InvoiceDataService.listAllInvoiceData(ListInvoiceDataRequest)");
+        statusBean.start("InvoiceDataService.listAllInvoiceData()");
         try {
             return getInvoiceDataHeader(findByCriteria(request));
 
@@ -199,7 +199,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
     }
 
     private List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(final List<String> list) {
-        statusBean.start("InvoiceDataService.findByAcknowledgementIdInAndPendingIsTrue(List<String>");
+        statusBean.start("InvoiceDataService.findByAcknowledgementIdInAndPendingIsTrue()");
         try {
             return businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(list);
         } finally {
@@ -208,7 +208,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
     }
 
     private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
-        statusBean.start("InvoiceDataService.save(InvoiceDataEntity)");
+        statusBean.start("InvoiceDataService.save()");
         try {
             final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
             invoiceDataRepository.flush();
@@ -227,7 +227,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
      */
     private List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
 
-        statusBean.start("InvoiceDataService.findByCriteria(ListInvoiceDataRequest)");
+        statusBean.start("InvoiceDataService.findByCriteria()");
         try {
             final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
             final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
