@@ -24,16 +24,51 @@ import java.util.List;
 import se.sll.invoicedata.core.service.dto.PriceList;
 import se.sll.invoicedata.core.service.dto.ServiceResponse;
 
+/**
+ * Manages price-lists.
+ * 
+ * @author Peter
+ *
+ */
 public interface PriceListService {
 
+    /**
+     * Returns all price lists.
+     * 
+     * @return all price-lists.
+     */
     List<PriceList> getPriceLists();
 
+    /**
+     * Saves a list of price-lists.
+     * 
+     * @param priceLists the list.
+     * @return the response.
+     */
     List<ServiceResponse>  savePriceLists(List<PriceList> priceLists);
 
+    /**
+     * Deletes a price-list identified by the internal database id.
+     * 
+     * @param id the id.
+     * @return the response.
+     */
     ServiceResponse deletePriceList(Long id);
 
+    /**
+     * Saves a price-list.
+     * 
+     * @param priceList the price-list to save.
+     * @return the response.
+     */
     ServiceResponse savePriceList(PriceList priceList);
 
+    /**
+     * Returns a single price-list by the internal database id.
+     * 
+     * @param id the id.
+     * @return the price-list, or null if none found.
+     */
     PriceList getPriceList(Long id);
     
 }
