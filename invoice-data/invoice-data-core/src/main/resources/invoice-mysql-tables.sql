@@ -1,55 +1,27 @@
+-- MySQL dump 10.13  Distrib 5.6.14, for Linux (x86_64)
 --
--- Copyright (c) 2013 SLL. <http://sll.se>
---
--- This file is part of Invoice-Data.
---
---     Invoice-Data is free software: you can redistribute it and/or modify
---     it under the terms of the GNU Lesser General Public License as published by
---     the Free Software Foundation, either version 3 of the License, or
---     (at your option) any later version.
---
---     Invoice-Data is distributed in the hope that it will be useful,
---     but WITHOUT ANY WARRANTY; without even the implied warranty of
---     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
---     GNU Lesser General Public License for more details.
---
---     You should have received a copy of the GNU Lesser General Public License
---     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
---
-
--- MySQL Administrator dump 1.4
---
+-- Host: localhost    Database: vsfunderlag
 -- ------------------------------------------------------
--- Server version	5.5.20
-
+-- Server version 5.6.14-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
-
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Create user
---
-
-CREATE USER 'vsfuAdmin'@'localhost' IDENTIFIED BY %PASSWORD%;
-GRANT ALL PRIVILEGES ON *.* TO 'vsfuAdmin'@'localhost' WITH GRANT OPTION;
---
--- Create schema vsfunderlag
---
-
-CREATE DATABASE IF NOT EXISTS vsfunderlag;
-USE vsfunderlag;
-
---
--- Definition of table `invoice_data`
+-- Table structure for table `invoice_data`
 --
 
 DROP TABLE IF EXISTS `invoice_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invoice_data` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `created_by` varchar(64) NOT NULL,
@@ -60,21 +32,16 @@ CREATE TABLE `invoice_data` (
   `supplier_id` varchar(64) NOT NULL,
   `total_amount` decimal(8,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `invoice_data`
---
-
-/*!40000 ALTER TABLE `invoice_data` DISABLE KEYS */;
-/*!40000 ALTER TABLE `invoice_data` ENABLE KEYS */;
-
-
---
--- Definition of table `invoice_data_event`
+-- Table structure for table `invoice_data_event`
 --
 
 DROP TABLE IF EXISTS `invoice_data_event`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invoice_data_event` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `acknowledged_by` varchar(64) NOT NULL,
@@ -101,21 +68,16 @@ CREATE TABLE `invoice_data_event` (
   KEY `invoice_data_event_query_ix_3` (`acknowledgement_id`),
   KEY `FKC29022178FF8CD73` (`invoice_data_id`),
   CONSTRAINT `FKC29022178FF8CD73` FOREIGN KEY (`invoice_data_id`) REFERENCES `invoice_data` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `invoice_data_event`
---
-
-/*!40000 ALTER TABLE `invoice_data_event` DISABLE KEYS */;
-/*!40000 ALTER TABLE `invoice_data_event` ENABLE KEYS */;
-
-
---
--- Definition of table `invoice_data_event_item`
+-- Table structure for table `invoice_data_event_item`
 --
 
 DROP TABLE IF EXISTS `invoice_data_event_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invoice_data_event_item` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `description` longtext NOT NULL,
@@ -126,43 +88,34 @@ CREATE TABLE `invoice_data_event_item` (
   PRIMARY KEY (`id`),
   KEY `FK88E0C83BB8B18D8` (`event_id`),
   CONSTRAINT `FK88E0C83BB8B18D8` FOREIGN KEY (`event_id`) REFERENCES `invoice_data_event` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `invoice_data_event_item`
---
-
-/*!40000 ALTER TABLE `invoice_data_event_item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `invoice_data_event_item` ENABLE KEYS */;
-
-
---
--- Definition of table `invoice_data_pricelist`
+-- Table structure for table `invoice_data_pricelist`
 --
 
 DROP TABLE IF EXISTS `invoice_data_pricelist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invoice_data_pricelist` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `service_code` varchar(64) NOT NULL,
   `supplier_id` varchar(64) NOT NULL,
   `valid_from` date NOT NULL,
+  `supplier_name` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `service_code` (`service_code`,`supplier_id`,`valid_from`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `invoice_data_pricelist`
---
-
-/*!40000 ALTER TABLE `invoice_data_pricelist` DISABLE KEYS */;
-/*!40000 ALTER TABLE `invoice_data_pricelist` ENABLE KEYS */;
-
-
---
--- Definition of table `invoice_data_pricelist_item`
+-- Table structure for table `invoice_data_pricelist_item`
 --
 
 DROP TABLE IF EXISTS `invoice_data_pricelist_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invoice_data_pricelist_item` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `item_id` varchar(64) NOT NULL,
@@ -172,17 +125,9 @@ CREATE TABLE `invoice_data_pricelist_item` (
   UNIQUE KEY `item_id` (`item_id`,`price_list_id`),
   KEY `FKED35540EC367E1EB` (`price_list_id`),
   CONSTRAINT `FKED35540EC367E1EB` FOREIGN KEY (`price_list_id`) REFERENCES `invoice_data_pricelist` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `invoice_data_pricelist_item`
---
-
-/*!40000 ALTER TABLE `invoice_data_pricelist_item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `invoice_data_pricelist_item` ENABLE KEYS */;
-
-
-
+) ENGINE=InnoDB AUTO_INCREMENT=1841 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -190,4 +135,6 @@ CREATE TABLE `invoice_data_pricelist_item` (
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2013-11-14 11:10:00
