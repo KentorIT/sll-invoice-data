@@ -59,6 +59,9 @@ public class PriceListEntity {
     @Column(name = "valid_from", nullable=false, updatable=false)
     private Date validFrom;
 
+    @Column(name="supplier_name", length=64, nullable=true, updatable=true)
+    private String supplierName;
+
 
     @OneToMany(fetch=FetchType.EAGER, mappedBy="priceList", orphanRemoval=true, cascade=CascadeType.ALL)    
     private List<PriceEntity> priceEntities = new LinkedList<PriceEntity>();
@@ -125,6 +128,14 @@ public class PriceListEntity {
             return id.equals(((PriceListEntity)r).getId());
         }
         return false;
+    }
+ 
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
     }
     
     @Override

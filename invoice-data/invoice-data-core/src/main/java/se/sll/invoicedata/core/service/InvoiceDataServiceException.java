@@ -27,13 +27,24 @@ package se.sll.invoicedata.core.service;
 public class InvoiceDataServiceException extends RuntimeException {
     private static final long serialVersionUID = 1L;   
 
+    private InvoiceDataErrorCodeEnum code;
     /**
      * Creates an exception.
      * 
      * @param message the user message in plain text.
      */
-    protected InvoiceDataServiceException(String message) {
+    protected InvoiceDataServiceException(InvoiceDataErrorCodeEnum code, String message) {
         super(message);
+        this.code = code;
+    }
+    
+    /**
+     * Returns the causing code.
+     * 
+     * @return the code.
+     */
+    public InvoiceDataErrorCodeEnum getCode() {
+        return this.code;
     }
 
 }

@@ -23,6 +23,7 @@
 package se.sll.invoicedata.app.ws;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -125,7 +126,7 @@ public class CreateInvoiceDataProducerTest extends TestSupport {
         req.getAcknowledgementIdList().set(0, "zero");
 
         CreateInvoiceDataResponse resp = createInvoiceDataResponderInterface.createInvoiceData(LOGICAL_ADDRESS, req);
-        assertEquals(ResultCodeEnum.ERROR, resp.getResultCode().getCode());
+        assertFalse(ResultCodeEnum.OK  == resp.getResultCode().getCode());
         assertNotNull(resp.getResultCode().getMessage());
         assertNull(resp.getReferenceId());
     }

@@ -61,7 +61,7 @@ public class PingForConfigurationProducer extends AbstractProducer implements Pi
             }
         });
         
-        if (rc.getCode() == ResultCodeEnum.ERROR) {
+        if (rc.getCode() != ResultCodeEnum.OK) {
             throw createSoapFault(rc.getMessage());
         }
         

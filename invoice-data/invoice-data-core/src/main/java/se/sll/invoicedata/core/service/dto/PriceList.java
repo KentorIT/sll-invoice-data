@@ -45,7 +45,10 @@ public class PriceList {
     
     @XmlElement(required=true)
     private Date validFrom;
-    
+
+    @XmlElement(required=false)
+    private String supplierName;
+
     @XmlElement(required=true)
     private List<Price> prices;
 
@@ -92,8 +95,17 @@ public class PriceList {
         this.prices = prices;
     }
     
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
 }

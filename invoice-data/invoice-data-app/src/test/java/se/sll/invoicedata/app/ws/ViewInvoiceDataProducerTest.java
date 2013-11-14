@@ -162,7 +162,7 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 		ViewInvoiceDataResponse viewIDResp = viewIDRInterface.viewInvoiceData(LOGICAL_ADDRESS, viewIDReq);
 		
 		Assert.assertNotNull(viewIDResp);
-		Assert.assertEquals(ResultCodeEnum.ERROR, viewIDResp.getResultCode().getCode());
+		Assert.assertEquals(ResultCodeEnum.REQUEST_ERROR, viewIDResp.getResultCode().getCode());
 	}
 	
 	public static ViewInvoiceDataResponderInterface getViewInvoiceDataService() {

@@ -86,7 +86,7 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 
 		Assert.assertNotNull("Should not be null: OK|ERROR", response);
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 	}
 
@@ -105,7 +105,7 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 
 		Assert.assertNotNull("Should not be null: OK|ERROR", response);
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 	}
 
@@ -120,49 +120,49 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 				.registerInvoiceData(LOGICAL_ADDRESS, invoiceData);
 
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 
 		invoiceData.setEventId(emptyStr);
 		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
 				invoiceData);
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 
 		invoiceData.setHealthCareCommission(emptyStr);
 		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
 				invoiceData);
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 
 		invoiceData.setPaymentResponsible(emptyStr);
 		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
 				invoiceData);
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 
 		invoiceData.setServiceCode(emptyStr);
 		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
 				invoiceData);
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 
 		invoiceData.setSupplierId(emptyStr);
 		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
 				invoiceData);
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 
 		invoiceData.setSupplierName(emptyStr);
 		response = regIDRInterface.registerInvoiceData(LOGICAL_ADDRESS,
 				invoiceData);
 		Assert.assertEquals("Result code should be ERROR in this case: "
-				+ response.getResultCode().getMessage(), ResultCodeEnum.ERROR,
+				+ response.getResultCode().getMessage(), ResultCodeEnum.REQUEST_ERROR,
 				response.getResultCode().getCode());
 
 	}

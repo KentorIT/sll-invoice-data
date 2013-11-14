@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import se.sll.invoicedata.core.jmx.StatusBean;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
@@ -151,7 +152,7 @@ public abstract class AbstractProducer {
             runnable.run();
             rc.setCode(ResultCodeEnum.OK);
         } catch (InvoiceDataServiceException ex) {
-            rc.setCode(ResultCodeEnum.ERROR);
+            rc.setCode((ex.getCode() == InvoiceDataErrorCodeEnum.NOTFOUND_ERROR) ? ResultCodeEnum.NOTFOUND_ERROR : ResultCodeEnum.REQUEST_ERROR);
             rc.setMessage(ex.getMessage() + " (" + statusBean.getGUID() + ")");
             log.error(createLogMessage(ex.getMessage()));
         } catch (Throwable throwable) {

@@ -65,7 +65,7 @@ public enum InvoiceDataErrorCodeEnum {
     public InvoiceDataServiceException createException(Object... args) {
         final String message = String.format(getMessageFormat(), args);
         
-        return new InvoiceDataServiceException(String.format("%s: %s", getCode(), message));
+        return new InvoiceDataServiceException(this, String.format("%s: %s", getCode(), message));
         
     }
     
