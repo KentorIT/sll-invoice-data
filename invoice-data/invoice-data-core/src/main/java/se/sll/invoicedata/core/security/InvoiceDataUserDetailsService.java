@@ -17,7 +17,7 @@
  *     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
  */
 
-package se.sll.invoicedata.app.security;
+package se.sll.invoicedata.core.security;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,22 +26,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
-@SuppressWarnings("deprecation")
 public class InvoiceDataUserDetailsService implements UserDetailsService, AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceDataUserDetailsService.class);
-    private static Collection<? extends GrantedAuthority> grants = Collections.singleton(new GrantedAuthorityImpl("ROLE_USER"));
+    private static Collection<? extends GrantedAuthority> grants = Collections.singleton(new GrantedAuthority() {
+        private static final long serialVersionUID = 1L;
+        @Override
+        public String getAuthority() {
+            return "ROLE_USER";
+        }
+        
+    });
 
     @Value("${acl.allow:*}")
     private String[] acl;
 
+    public InvoiceDataUserDetailsService() {
+        super();
+        log.info("Created with acl: {}", acl);
+    }
+    
     @Override
     public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token)
             throws UsernameNotFoundException {
@@ -62,6 +72,10 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
     
     //
     private boolean allow(final String name) {
+        if (acl == null) {
+            log.warn("acl is null");
+            return true;
+        }
         if ((acl.length == 1) && "*".equals(acl[0])) {
             return true;
         }
