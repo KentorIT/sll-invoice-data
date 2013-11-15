@@ -31,7 +31,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Component;
 
+@Component
 public class InvoiceDataUserDetailsService implements UserDetailsService, AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceDataUserDetailsService.class);
@@ -44,12 +46,11 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
         
     });
 
-    @Value("${acl.allow:*}")
-    private String[] acl;
+    @Value("${acl.allow}") 
+    private String[] aclAllow;
 
     public InvoiceDataUserDetailsService() {
         super();
-        log.info("Created with acl: {}", acl);
     }
     
     @Override
@@ -72,19 +73,23 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
     
     //
     private boolean allow(final String name) {
-        if (acl == null) {
+        if (getAclAllow() == null) {
             log.warn("acl is null");
             return true;
         }
-        if ((acl.length == 1) && "*".equals(acl[0])) {
+        if ((getAclAllow().length == 1) && "*".equals(getAclAllow()[0])) {
             return true;
         }
-        for (final String a : acl) {
+        for (final String a : getAclAllow()) {
             if (a.equals(name)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public String[] getAclAllow() {
+        return aclAllow;
     }
 
     /**

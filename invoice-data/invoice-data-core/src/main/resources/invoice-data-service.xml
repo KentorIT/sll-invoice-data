@@ -79,7 +79,7 @@
 		<context:annotation-config />
 	
 		<context:component-scan
-			base-package="se.sll.invoicedata.core.service.impl,se.sll.invoicedata.core.jmx,se.sll.invoicedata.app.jmx" />
+			base-package="se.sll.invoicedata.core.service.impl,se.sll.invoicedata.core.security,se.sll.invoicedata.core.jmx,se.sll.invoicedata.app.jmx" />
 		
 		<task:annotation-driven />
 		

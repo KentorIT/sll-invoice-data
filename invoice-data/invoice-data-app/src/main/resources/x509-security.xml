@@ -35,5 +35,6 @@
 
 	<bean id="invoiceDataUserDetailsService"
 		class="se.sll.invoicedata.core.security.InvoiceDataUserDetailsService" />
+
 </beans>
     
