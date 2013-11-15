@@ -24,6 +24,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd ">
   
-  <import resource="classpath:invoice-data-service.xml"/>
+  <import resource="classpath:invoice-data-service.xml" />
+
+  <import resource="/cxf/cxf-services-config.xml" />
+  
+  <beans profile="test">
+  	<import resource="classpath:none-security.xml" />
+  </beans>
+  
+   <beans profile="prod">
+  	<import resource="classpath:x509-security.xml" />
+  </beans>
   
 </beans>

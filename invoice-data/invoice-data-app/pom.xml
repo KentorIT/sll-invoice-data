@@ -24,7 +24,7 @@
 				<configuration>
 					<systemProperties>
 						<spring.profiles.active>test</spring.profiles.active>
-						<security.conf>classpath:none-security.xml</security.conf>
+						<!-- <security.policy>none</security.policy> -->
 					</systemProperties>
 				</configuration>
 

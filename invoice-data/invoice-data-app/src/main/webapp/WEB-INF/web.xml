@@ -27,7 +27,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>WEB-INF/spring/root-context.xml,WEB-INF/spring/cxf/cxf-services-config.xml,WEB-INF/spring/security/security-context.xml</param-value>
+    <param-value>WEB-INF/spring/root-context.xml</param-value>
   </context-param>
    
   <context-param>
@@ -42,18 +42,7 @@
   <listener>
 	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
   </listener>
- 
- <!--  <servlet>
-    <servlet-name>spring</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>WEB-INF/spring/root-context.xml,WEB-INF/spring/cxf/cxf-services-config.xml,WEB-INF/spring/security/security-context.xml</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-   -->
-  
+   
   <servlet>
     <servlet-name>CXFServlet</servlet-name>
     <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>

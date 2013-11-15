@@ -31,9 +31,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.stereotype.Component;
 
-@Component
+/**
+ * Security policy.
+ * 
+ * @author Peter
+ *
+ */
 public class InvoiceDataUserDetailsService implements UserDetailsService, AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceDataUserDetailsService.class);
@@ -46,7 +50,7 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
         
     });
 
-    @Value("${acl.allow}") 
+    @Value("${security.acl}") 
     private String[] aclAllow;
 
     public InvoiceDataUserDetailsService() {
@@ -56,7 +60,7 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
     @Override
     public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token)
             throws UsernameNotFoundException {
-        log.info("Authenticate: {}", token);
+        log.debug("Authenticate: {}", token);
         return loadUserByUsername(token.getName());
     }
 
@@ -73,10 +77,6 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
     
     //
     private boolean allow(final String name) {
-        if (getAclAllow() == null) {
-            log.warn("acl is null");
-            return true;
-        }
         if ((getAclAllow().length == 1) && "*".equals(getAclAllow()[0])) {
             return true;
         }
