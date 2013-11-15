@@ -18,7 +18,7 @@
 	<sec:http create-session="never" use-expressions="true"
 		entry-point-ref="http403EntryPoint">
 		<sec:anonymous enabled="false" />
-		<sec:x509 subject-principal-regex="CN=(.*?),"
+		<sec:x509 subject-principal-regex="serialNumber=(.*?),"
 			user-service-ref="invoiceDataUserDetailsService" />
 		<sec:intercept-url pattern="/**" access="hasRole('ROLE_USER')"
 			requires-channel="https" />
