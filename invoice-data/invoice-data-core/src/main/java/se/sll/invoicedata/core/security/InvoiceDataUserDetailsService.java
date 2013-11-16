@@ -77,19 +77,15 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
     
     //
     private boolean allow(final String name) {
-        if ((getAclAllow().length == 1) && "*".equals(getAclAllow()[0])) {
+        if ((aclAllow.length == 1) && "*".equals(aclAllow[0])) {
             return true;
         }
-        for (final String a : getAclAllow()) {
+        for (final String a : aclAllow) {
             if (a.equals(name)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public String[] getAclAllow() {
-        return aclAllow;
     }
 
     /**
