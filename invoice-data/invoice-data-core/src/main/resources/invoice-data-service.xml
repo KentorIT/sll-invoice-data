@@ -97,7 +97,7 @@
 			<property name="password" value="${database.password}" />
 			<property name="defaultAutoCommit" value="false" />
 			<property name="testOnBorrow" value="true" />
-			<property name="validationQuery" value="select 1 from dual" />
+			<property name="validationQuery" value="select null" />
 		</bean>
 
 		<bean id="entityManagerFactory"
