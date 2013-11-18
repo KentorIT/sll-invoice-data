@@ -86,14 +86,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>system</scope>
-        	<systemPath>${user.home}/.m2/repository/com/h2database/h2/${h2db.version}/h2-${h2db.version}.jar</systemPath>
 		</dependency>
 
 		<dependency>
