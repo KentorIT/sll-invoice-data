@@ -36,7 +36,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
