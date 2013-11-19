@@ -27,7 +27,6 @@ import java.util.List;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
-import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
