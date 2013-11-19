@@ -38,7 +38,7 @@
 
 	<jaxws:endpoint id="registerInvoiceData"
 		implementor="se.sll.invoicedata.app.ws.RegisterInvoiceDataProducer"
-		address="/ws/registerInvoiceData">
+		address="/ws/registerInvoiceData/v1">
 		<jaxws:properties>
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
@@ -46,7 +46,7 @@
 
 	<jaxws:endpoint id="createInvoiceData"
 		implementor="se.sll.invoicedata.app.ws.CreateInvoiceDataProducer"
-		address="/ws/createInvoiceData">
+		address="/ws/createInvoiceData/v1">
 		<jaxws:properties>
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
@@ -54,7 +54,7 @@
 
 	<jaxws:endpoint id="getInvoiceData"
 		implementor="se.sll.invoicedata.app.ws.GetInvoiceDataProducer"
-		address="/ws/getInvoiceData">
+		address="/ws/getInvoiceData/v1">
 		<jaxws:properties>
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
@@ -62,7 +62,7 @@
 	
 	<jaxws:endpoint id="viewInvoiceData"
 		implementor="se.sll.invoicedata.app.ws.ViewInvoiceDataProducer"
-		address="/ws/viewInvoiceData">
+		address="/ws/viewInvoiceData/v1">
 		<jaxws:properties>
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
@@ -70,7 +70,7 @@
 
 	<jaxws:endpoint id="listInvoiceData"
 		implementor="se.sll.invoicedata.app.ws.ListInvoiceDataProducer"
-		address="/ws/listInvoiceData">
+		address="/ws/listInvoiceData/v1">
 		<jaxws:properties>
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
@@ -78,7 +78,7 @@
 
 	<jaxws:endpoint id="pingForConfiguration"
 		implementor="se.sll.invoicedata.app.ws.PingForConfigurationProducer"
-		address="/ws/pingForConfiguration">
+		address="/ws/pingForConfiguration/v1">
 		<jaxws:properties>
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
