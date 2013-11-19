@@ -24,7 +24,6 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -105,10 +104,36 @@ public class PriceListServiceImplTest extends TestSupport {
     public void testPrice_With_Actual_Event() {
     	final PriceList priceList = createSamplePriceList();
     	priceListService.savePriceLists(Collections.singletonList(priceList));
+		//650 * 3 = 1950
+		assertEquals(1950, createAndFetchRegisteredEvent(priceList.getSupplierId(), 
+				priceList.getServiceCode()).getTotalAmount().intValue());
+    }
+    
+    @Test
+	@Transactional
+	@Rollback(true)
+    public void testChange_In_Price_With_Actual_Event() {
+    	final PriceList priceList = createSamplePriceList();
+    	priceListService.savePriceLists(Collections.singletonList(priceList));
+    	
+    	//With pre-configured price 650 * 3 = 1950
+    	assertEquals(1950, createAndFetchRegisteredEvent(priceList.getSupplierId(), 
+    					priceList.getServiceCode()).getTotalAmount().intValue());
+    	
+    	//change in price from 650 to 155,25
+    	priceList.getPrices().get(0).setPrice(BigDecimal.valueOf(155.25));
+    	priceListService.savePriceLists(Collections.singletonList(priceList));
+    	
+		//155,25 * 3 = 465,75
+		assertEquals(465,75, createAndFetchRegisteredEvent(priceList.getSupplierId(), priceList.getServiceCode()).getTotalAmount().intValue());
+    }
+    
+    private RegisteredEvent createAndFetchRegisteredEvent(String supplierId, String serviceCode) {
+    	
     	
     	final Event e = createSampleEvent();
-    	e.setServiceCode(priceList.getServiceCode());
-    	e.setSupplierId(priceList.getSupplierId());
+    	e.setServiceCode(serviceCode);
+    	e.setSupplierId(supplierId);
     	e.getItemList().clear(); //Remove all items and all new ones
     	
 		Item i1 = new Item();
@@ -121,11 +146,10 @@ public class PriceListServiceImplTest extends TestSupport {
 		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
 		getIDRequest.setSupplierId(e.getSupplierId());
 		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-		RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
-		
-		//650 * 3 = 1950
-		assertEquals(1950, rE.getTotalAmount().intValue());
+		return invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
     }
+    
+    
     
     @Test (expected = InvoiceDataServiceException.class)
    	@Transactional
@@ -170,7 +194,7 @@ public class PriceListServiceImplTest extends TestSupport {
         
         priceList.setSupplierId("Tolk.001");
         priceList.setValidFrom(Calendar.getInstance().getTime());
-        priceList.setServiceCode("SprÃ¥ktolk");
+        priceList.setServiceCode("Språktolk");
         
         Price p1 = new Price();
         p1.setItemId("item.1");
