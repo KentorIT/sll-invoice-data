@@ -21,4 +21,4 @@
 local="localhost:8080"
 host=${2-$local}
 
-curl -v -i  -H "Accept: application/json" -H "Content-Type: application/json" -d @${1} http://$host/invoice-data-app/admin/pricelists
+curl -v -i  -H "Accept: application/json" -H "Content-Type: application/json" -d @${1} http://$host/invoicedata-web-app/admin/pricelists
