@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project activeEnvironment="Default" name="register-v1" resourceRoot="" soapui-version="4.6.0" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings/>
+  <con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="RegisterInvoiceDataProducerServiceSoapBinding" type="wsdl" bindingName="{http://ws.app.invoicedata.sll.se/}RegisterInvoiceDataProducerServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <con:settings/>
+    <con:definitionCache type="TEXT" rootPart="http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl">
+      <con:part>
+        <con:url>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl</con:url>
+        <con:content><![CDATA[<wsdl:definitions name="RegisterInvoiceDataProducerService" targetNamespace="http://ws.app.invoicedata.sll.se/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.app.invoicedata.sll.se/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns4="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21">
+  <wsdl:import location="http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl=RegisterInvoiceDataResponderInterface.wsdl" namespace="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21"></wsdl:import>
+  <wsdl:binding name="RegisterInvoiceDataProducerServiceSoapBinding" type="ns1:RegisterInvoiceDataResponderInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="RegisterInvoiceData">
+      <soap:operation soapAction="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" style="document"/>
+      <wsdl:input name="RegisterInvoiceData">
+        <soap:header message="ns1:RegisterInvoiceData" part="LogicalAddress" use="literal"></soap:header>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="RegisterInvoiceDataResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RegisterInvoiceDataProducerService">
+    <wsdl:port binding="tns:RegisterInvoiceDataProducerServiceSoapBinding" name="RegisterInvoiceDataProducerPort">
+      <soap:address location="http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content>
+        <con:type>http://schemas.xmlsoap.org/wsdl/</con:type>
+      </con:part>
+      <con:part>
+        <con:url>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl=RegisterInvoiceDataResponderInterface.wsdl</con:url>
+        <con:content><![CDATA[<wsdl:definitions name="RegisterInvoiceDataResponderInterface" targetNamespace="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns3="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:ns2="urn:riv:itintegration:registry:1" xmlns:ns1="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:ns1="urn:riv:sll:invoicedata:1">
+      <xs:import namespace="urn:riv:sll:invoicedata:1"/>
+      <xs:element name="RegisterInvoiceData" type="ns1:Event"/>
+      <xs:element name="RegisterInvoiceDataResponse" type="tns:RegisterInvoiceDataResponse"/>
+      <xs:complexType name="RegisterInvoiceDataResponse">
+        <xs:sequence>
+          <xs:element name="resultCode" type="ns1:ResultCode"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:1">
+      <xs:complexType name="Event">
+        <xs:sequence>
+          <xs:element name="eventId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="healthcareFacility" type="xs:string"/>
+          <xs:element name="refContractId" type="xs:string"/>
+          <xs:element name="supplierName" type="xs:string"/>
+          <xs:element name="serviceCode" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="healthCareCommission" type="xs:string"/>
+          <xs:element name="acknowledgementId" type="xs:string"/>
+          <xs:element name="acknowledgedBy" type="xs:string"/>
+          <xs:element name="acknowledgedTime" type="xs:dateTime"/>
+          <xs:element name="startTime" type="xs:dateTime"/>
+          <xs:element name="endTime" type="xs:dateTime"/>
+          <xs:element maxOccurs="unbounded" name="itemList" type="tns:Item"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Item">
+        <xs:sequence>
+          <xs:element name="itemId" type="xs:string"/>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="qty" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RegisteredEvent">
+        <xs:complexContent>
+          <xs:extension base="tns:Event">
+            <xs:sequence>
+              <xs:element name="id" type="xs:long"/>
+              <xs:element name="credit" type="xs:boolean"/>
+              <xs:element name="totalAmount" type="xs:decimal"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="ResultCode">
+        <xs:sequence>
+          <xs:element name="code" type="tns:ResultCodeEnum"/>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="InvoiceData">
+        <xs:complexContent>
+          <xs:extension base="tns:InvoiceDataHeader">
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="registeredEventList" type="tns:RegisteredEvent"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="InvoiceDataHeader">
+        <xs:sequence>
+          <xs:element name="referenceId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="createdBy" type="xs:string"/>
+          <xs:element name="createdTime" type="xs:dateTime"/>
+          <xs:element name="totalAmount" type="xs:decimal"/>
+          <xs:element name="startDate" type="xs:date"/>
+          <xs:element name="endDate" type="xs:date"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="ResultCodeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OK"/>
+          <xs:enumeration value="REQUEST_ERROR"/>
+          <xs:enumeration value="NOTFOUND_ERROR"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:itintegration:registry:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:itintegration:registry:1">
+      <xs:element name="LogicalAddress" type="xs:string"/>
+      <xs:element name="ServiceContract" type="tns:ServiceContractType"/>
+      <xs:complexType name="ServiceContractType">
+        <xs:sequence>
+          <xs:element name="ServiceContractNamespace" type="xs:anyURI"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="RegisterInvoiceData">
+    <wsdl:part element="ns2:LogicalAddress" name="LogicalAddress"></wsdl:part>
+    <wsdl:part element="ns3:RegisterInvoiceData" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RegisterInvoiceDataResponse">
+    <wsdl:part element="ns3:RegisterInvoiceDataResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="RegisterInvoiceDataResponderInterface">
+    <wsdl:operation name="RegisterInvoiceData">
+      <wsdl:input message="ns1:RegisterInvoiceData" name="RegisterInvoiceData"></wsdl:input>
+      <wsdl:output message="ns1:RegisterInvoiceDataResponse" name="RegisterInvoiceDataResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content>
+        <con:type>http://schemas.xmlsoap.org/wsdl/</con:type>
+      </con:part>
+    </con:definitionCache>
+    <con:endpoints>
+      <con:endpoint>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1</con:endpoint>
+    </con:endpoints>
+    <con:operation isOneWay="false" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" name="RegisterInvoiceData" bindingOperationName="RegisterInvoiceData" type="Request-Response" outputName="RegisterInvoiceDataResponse" inputName="RegisterInvoiceData" receivesAttachments="false" sendsAttachments="false" anonymous="optional">
+      <con:settings/>
+      <con:call name="Request 1">
+        <con:settings>
+          <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+        </con:settings>
+        <con:encoding>UTF-8</con:encoding>
+        <con:endpoint>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1</con:endpoint>
+        <con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>?</urn2:eventId>
+         <urn2:supplierId>?</urn2:supplierId>
+         <urn2:healthcareFacility>?</urn2:healthcareFacility>
+         <urn2:refContractId>?</urn2:refContractId>
+         <urn2:supplierName>?</urn2:supplierName>
+         <urn2:serviceCode>?</urn2:serviceCode>
+         <urn2:paymentResponsible>?</urn2:paymentResponsible>
+         <urn2:healthCareCommission>?</urn2:healthCareCommission>
+         <urn2:acknowledgementId>${=ackId}</urn2:acknowledgementId>
+         <urn2:acknowledgedBy>?</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>2013-02-02T15:00:15</urn2:acknowledgedTime>
+         <urn2:startTime>2013-02-02T13:00:15</urn2:startTime>
+         <urn2:endTime>2013-02-02T14:00:15</urn2:endTime>
+         <!--1 or more repetitions:-->
+         <urn2:itemList>
+            <urn2:itemId>?</urn2:itemId>
+            <urn2:description>?</urn2:description>
+            <urn2:qty>1</urn2:qty>
+            <!--Optional:-->
+            <urn2:price>0</urn2:price>
+         </urn2:itemList>
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request>
+        <con:credentials>
+          <con:authType>Global HTTP Settings</con:authType>
+        </con:credentials>
+        <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+        <con:jmsPropertyConfig/>
+        <con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/>
+        <con:wsrmConfig version="1.2"/>
+      </con:call>
+    </con:operation>
+  </con:interface>
+  <con:testSuite name="RegisterInvoiceDataProducerServiceSoapBinding TestSuite">
+    <con:settings/>
+    <con:runType>SEQUENTIAL</con:runType>
+    <con:testCase failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceDataProducerServiceSoapBinding TestSuite" searchProperties="true" id="c001cd61-5b27-41f0-b2d0-80c83d2efce5">
+      <con:settings>
+        <con:setting id="com.eviware.soapui.impl.wsdl.panels.testcase.JTestRunLog$OptionsForm@max_rows">1000</con:setting>
+        <con:setting id="com.eviware.soapui.impl.wsdl.panels.testcase.JTestRunLog$OptionsForm@errors_only">false</con:setting>
+      </con:settings>
+      <con:testStep type="request" name="RegisterInvoiceData">
+        <con:settings/>
+        <con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <con:interface>RegisterInvoiceDataProducerServiceSoapBinding</con:interface>
+          <con:operation>RegisterInvoiceData</con:operation>
+          <con:request name="RegisterInvoiceData">
+            <con:settings>
+              <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+            </con:settings>
+            <con:encoding>UTF-8</con:encoding>
+            <con:endpoint>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1</con:endpoint>
+            <con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>${=UUID.randomUUID().toString()}</urn2:eventId>
+         <urn2:supplierId>${=(Math.random() < 0.8) ? "999999-ORG1" : "999999-ORG2"}</urn2:supplierId>
+         <urn2:healthcareFacility>Vårby Vårdcentral</urn2:healthcareFacility>
+         <urn2:refContractId>${=Math.round((Math.random() * 10000) + 10000)}</urn2:refContractId>
+         <urn2:supplierName>Språktolkcentralen</urn2:supplierName>
+         <urn2:serviceCode>01</urn2:serviceCode>
+         <urn2:paymentResponsible>${=(Math.random() < 0.8) ? "HSF" : "TioHundra"}</urn2:paymentResponsible>
+         <urn2:healthCareCommission>MVC</urn2:healthCareCommission>
+         <urn2:acknowledgementId>${=UUID.randomUUID().toString()}</urn2:acknowledgementId>
+         <urn2:acknowledgedBy>Peter Larsson</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>2013-02-02T15:00:15</urn2:acknowledgedTime>
+         <urn2:startTime>2013-02-02T13:00:15</urn2:startTime>
+         <urn2:endTime>2013-02-02T14:00:15</urn2:endTime>
+         <!--1 or more repetitions:-->
+         <urn2:itemList>
+            <urn2:itemId>${=['463cf338-d6ec-402a-8f00-55fa5595e6e1', 
+         '463cf338-d6ec-402a-8f00-55fa5595e6e1',
+'f895d394-acb1-43e3-a18c-dd82a7af1482',
+'005ef454-1bda-4500-8375-d9ce9392ae93',
+'b4369381-82df-4b57-800b-3d7836e69e03',
+'e4b1d267-c2b2-4875-b263-086a99af39f2',
+'4e97dd3e-d0c3-4da0-b497-87abec3035ab',
+'4df7818f-a48b-4320-9403-7bfba111bd5c',
+'2efd654a-e1a3-43df-8b4a-a73cb5fc42ba',
+'ac48d0f5-4a49-4272-8148-47975f357ad0',
+'648949d6-cf8c-4313-a725-918043222520',
+'c60b0c11-82f0-4612-bd31-c62530bf81f0',
+'2532f879-d614-414e-8fdf-e84a24970471',
+'2340792c-32b8-46aa-895b-7e6a2f104095',
+'54027a3a-59e5-459e-8894-31ccf6c40036',
+'bef8a372-0d81-43de-afa9-dfe5e93b2dcd',
+'1683cae1-d4b6-4432-8728-a3c0d867a697',
+'a8772fe4-3816-4aa4-8e73-7510f6046ce8',
+'144fe042-dd20-4f96-a73e-58c596e18adb',
+'4a0d4a14-c828-4bb4-831f-e2a3299bb3c6',
+'afcc1325-adaf-492e-a82c-58bf95a11c32',
+'842c5168-ed2e-419a-934f-84457f12de5f',
+'cbfc0aa6-6822-4add-878d-465058b4d879',
+'0d2c6a22-0d1a-4c53-8d91-5c0eba8adc6a',
+'9b4e2b28-670b-4df3-9d4c-f2b0c73f3984',
+'eeacd251-b33a-4a06-98a7-f74b6fb985cd',
+'0f49da93-ceee-4861-9957-dab6f9d0e033',
+'f8973b1e-5251-452b-916c-df5f32d53a10',
+'8c084f21-ab7f-4fa8-b7de-2fa1cd982670',
+'5836cb77-4210-4d1b-980f-f46e09f826e9',
+'1335d640-09f8-46bc-bf28-66027844e48c',
+'af00fab9-c203-44b8-9dd0-b22c0168b628',
+'3abcc180-0add-428b-ad65-8480bc6260d9',
+'b187e6a4-92d4-4607-a8b7-c59e4030aeb3',
+'d9e16c30-337c-480a-90c9-214981d8962c',
+'134820c4-af79-4c89-a18f-192fc2929a8b',
+'c4d875fd-1080-4b1d-8e4d-9f97beaee3e6',
+'4becea17-639f-42f0-933d-23c43b486de2',
+'254396f3-bedb-4c33-bd6d-d989eb78a99e',
+'d690e57d-5747-415b-b5d3-73ca12f10b38',
+'dd46518e-8cbd-40d8-ae18-724e2f281113',
+'1a7cb60b-8e95-4a87-aceb-c7acb59488c7',
+'2805fe14-3ea7-45a6-87ae-f6e6ae108a8f',
+'7e0bdf31-6ebd-4f9c-8cd2-dd3189aba749',
+'ead83b93-af66-4885-a1f4-03995050a899',
+'bb0a87b9-08dc-4ce4-afbf-bc71d0ff86db',
+'88f39604-e5ff-4b83-a2d5-6bbfbce8196a',
+'a4916655-321b-4b3c-bf58-61edf63a9662',
+'14b87dec-9fa1-4838-8589-fbeaea8ededf',
+'c92a16e1-8de8-4f1e-a1b8-d2d9bd3cd97f',
+'91141e5f-f174-4448-b3c3-39db7f050ed4',
+'e97a0129-49db-46f4-9af9-ff4ade86fd9f',
+'cd3c1ac9-a207-4d9f-ab6c-80572326fbe0',
+'d92607bc-6326-49df-a31b-8f8b402945cc',
+'b0acc130-36a5-4c1c-b420-068293eadf2b',
+'e9502ec2-c441-4651-8cc0-afbb10b031e5',
+'72a5d083-7a6c-40ba-aa65-55d97956973f',
+'21bd6ea4-01bb-468f-a990-77d02c839978',
+'a229afe3-9dd1-41a2-8f3c-2c110a33836c',
+'303a2018-872b-4328-ab3f-7dbccadb1e72',
+'45432abd-5b03-42de-bf26-c5c42f0c235f',
+'225c5325-dfd5-4570-8898-8e6608a25e95',
+'b61f4f44-5865-41f8-84e7-11d898d40c3d',
+'a6af7e1e-eac3-40bc-8d2b-b1eaaeea1240',
+'ef500c95-b9d9-4bb8-abf7-b11867de5c92',
+'2cb20a67-dae0-4870-ba7a-90333e5c0168',
+'58c6886f-46f6-42b6-9a73-0cfdaf6723bf',
+'56f6e2e8-d08c-4689-a3a5-b3fec924a0b3',
+'a1f0cdfa-23d9-45a0-aaf7-158234c171f4',
+'0b9e3312-a580-4da8-b0fe-fa9c3f0f00e0',
+'9affaafd-db9e-47ab-aeb4-6c0207de598a',
+'36f03e07-f793-4819-98cc-90551657972c',
+'795b1ea2-306f-4058-9113-46be2c232100',
+'9642a659-3fbe-4cef-b4b0-181058f04240',
+'72c03912-e862-488c-863b-49fc9cf95d59',
+'3045d778-df1c-4f17-b2c2-4cfbfea862d9',
+'22185679-37ae-4b79-8650-bcfb4586eff8',
+'a7f14fc7-85ae-4fdd-87ed-52f5552169bc',
+'ec5f859c-68ff-4b8f-b43b-650eb92733d9',
+'ca3f59d7-de89-43bc-ba74-98a47b955f1b',
+'58770df5-8d03-4cbd-98f6-fa87ad8309f8',
+'1e67d45b-cae6-421a-b2b7-79d1b8c6acfc',
+'f1d72cb3-89f2-4156-b3eb-8bb892bffd40',
+'c405280b-93a9-4f3a-9ff7-b2b61ad8aac8',
+'60b6f04f-1f30-49b3-9226-c818dd5da699',
+'fd59800b-8961-46af-9d3d-1b8515f2e2ce',
+'b75163c2-b4ce-4025-94ae-a70fafd7af76',
+'f6ec77e1-2edf-4b45-b6a8-7d086ec0384d',
+'7baecadd-bc18-4de7-92c6-d56ce7b5bf83',
+'12be852b-32ff-4b28-97c7-2f496e495068',   
+            ][Math.round((float)Math.random() * 90f) % 90]}</urn2:itemId>
+            <urn2:description>Icke angiven beskrivning av ST tolk produkt</urn2:description>
+            <urn2:qty>${=[1,3,4,0.5,0.75][Math.round((float)Math.random() * 6f) % 6]}</urn2:qty>
+         </urn2:itemList>
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request>
+            <con:credentials>
+              <con:authType>Global HTTP Settings</con:authType>
+            </con:credentials>
+            <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+            <con:jmsPropertyConfig/>
+            <con:wsaConfig action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" mustUnderstand="NONE" version="200508"/>
+            <con:wsrmConfig version="1.2"/>
+          </con:request>
+        </con:config>
+      </con:testStep>
+      <con:loadTest name="LoadTest 1">
+        <con:settings/>
+        <con:threadCount>30</con:threadCount>
+        <con:startDelay>0</con:startDelay>
+        <con:sampleInterval>250</con:sampleInterval>
+        <con:calculateTPSOnTimePassed>true</con:calculateTPSOnTimePassed>
+        <con:resetStatisticsOnThreadCountChange>true</con:resetStatisticsOnThreadCountChange>
+        <con:historyLimit>-1</con:historyLimit>
+        <con:testLimit>10</con:testLimit>
+        <con:limitType>TIME</con:limitType>
+        <con:loadStrategy>
+          <con:type>Simple</con:type>
+          <con:config>
+            <testDelay>500</testDelay>
+            <randomFactor>0.5</randomFactor>
+          </con:config>
+        </con:loadStrategy>
+        <con:assertion type="Step Status" name="Step Status"/>
+        <con:maxAssertionErrors>100</con:maxAssertionErrors>
+        <con:cancelExcessiveThreads>true</con:cancelExcessiveThreads>
+        <con:strategyInterval>500</con:strategyInterval>
+      </con:loadTest>
+      <con:setupScript>log.info 'hello'</con:setupScript>
+      <con:properties>
+        <con:property>
+          <con:name>ackId</con:name>
+          <con:value>${= UUID.randomUUID.toString}</con:value>
+        </con:property>
+      </con:properties>
+    </con:testCase>
+    <con:properties/>
+  </con:testSuite>
+  <con:properties/>
+  <con:wssContainer/>
+  <con:sensitiveInformation/>
+</con:soapui-project>
