@@ -30,7 +30,7 @@
   </wsdl:documentation>
   <wsdl:types>
     <xs:schema targetNamespace='urn:riv:sll:invoicedata:CreateInvoiceData:1:rivtabp21'>
-      <xs:import schemaLocation='CreateInvoiceDataInteractionResponder_1.0.xsd' namespace='urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1' />
+      <xs:import schemaLocation='CreateInvoiceDataResponder_1.0.xsd' namespace='urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1' />
       <xs:import schemaLocation='../../core_components/itintegration_registry_1.0.xsd' namespace='urn:riv:itintegration:registry:1' />
     </xs:schema>
   </wsdl:types>
