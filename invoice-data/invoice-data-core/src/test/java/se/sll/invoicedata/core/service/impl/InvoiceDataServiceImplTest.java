@@ -124,6 +124,89 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 		assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
 
 	}
+	
+	final Event testEvent = createSampleEvent();
+	
+	private class RegisterThread implements Runnable {
+		
+		final int totalIterations = 2;		
+		private boolean isIterationsDone;
+		private boolean stopThread;
+		public RegisterThread(boolean iterationsDone) {
+			this.isIterationsDone = iterationsDone;			
+		}
+		
+		public boolean isProcessCompleted() {
+			return stopThread;
+		}
+		
+		@Override
+		public void run() {	
+			for (int i = 1; i <= totalIterations; i++) {				
+				invoiceDataService.registerEvent(testEvent);
+				performAssert(testEvent);
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				
+				if (isIterationsDone && i == totalIterations) {
+					stopThread = true;
+				}
+			}	
+		}		
+	}
+	
+	@Test
+	@Rollback(false)
+	public void testRegister_Duplicate_Events_Threads() {
+		boolean isRunning = true;
+		RegisterThread rThread = null;
+		final int nbrOfThreads = 2;
+		for (int i = 1; i <= nbrOfThreads; i ++) {
+			rThread = new RegisterThread(i==nbrOfThreads);
+			new Thread(rThread).start();			
+		}
+		
+		while (isRunning) {
+			try {
+				Thread.sleep(100);
+				if (rThread.isProcessCompleted()) {
+					isRunning = false;
+				}
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@Test
+	@Rollback(false)
+	public void testRegister_Duplicate_Events() {
+		
+		
+		final Event e = createSampleEvent();
+		invoiceDataService.registerEvent(e);
+		
+		performAssert(e);		
+		invoiceDataService.registerEvent(e);		
+		performAssert(e);		
+	}
+	
+	private void performAssert(Event e) {
+		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+		getIDRequest.setSupplierId(e.getSupplierId());
+		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+		final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+		
+		assertEquals(1, l.size());
+		
+		final RegisteredEvent f = l.get(0);
+		assertEquals(e.getEventId(), f.getEventId());
+		assertEquals(e.getAcknowledgementId(), f.getAcknowledgementId());
+	}
+
 		
 	@Test (expected = InvoiceDataServiceException.class)
 	@Transactional
@@ -140,7 +223,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	public void testRegisterEvent_With_Invalid_Item_Qty_Result_Fail() {
 		final Event e = createSampleEvent();
 		e.getItemList().get(0).setQty(new BigDecimal(9999999));
-		invoiceDataService.registerEvent(e);		
+		invoiceDataService.registerEvent(e);
 	}
 	
 	private void registerEvents(String supplierId, List<String> ids) {
