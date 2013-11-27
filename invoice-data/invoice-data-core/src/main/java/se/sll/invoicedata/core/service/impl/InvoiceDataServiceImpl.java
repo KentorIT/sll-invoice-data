@@ -85,7 +85,9 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
 
         mandatory(request.getSupplierId(), "supplierId");
 
-        List<BusinessEventEntity> bEEntityList = new ArrayList<BusinessEventEntity>();
+        List<BusinessEventEntity> bEEntityList;
+        
+        log.debug(request.getSupplierId() + " from: " + request.getFromDate() + " to: " + request.getToDate());
 
         final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
         final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
