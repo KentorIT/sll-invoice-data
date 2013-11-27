@@ -73,7 +73,7 @@ public class InvoiceDataEntity {
     @Column(name = "end_date", nullable=false, updatable=false)
     private Date endDate;
 
-    @Column(name="total_amount", precision=8, scale=2, updatable=false)
+    @Column(name="total_amount", precision=12, scale=2, updatable=false)
     private BigDecimal totalAmount;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
