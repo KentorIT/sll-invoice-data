@@ -28,7 +28,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.ui.context.Theme;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.ResultCodeEnum;

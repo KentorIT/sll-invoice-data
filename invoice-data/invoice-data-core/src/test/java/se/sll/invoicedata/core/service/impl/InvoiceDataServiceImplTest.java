@@ -25,7 +25,6 @@ package se.sll.invoicedata.core.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -82,6 +81,26 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         assertEquals(e.getSupplierName(), f.getSupplierName());
         assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
     }
+    
+
+    @Test(expected = InvoiceDataServiceException.class)
+    @Transactional
+    @Rollback(true)
+    public void testFind_BusinessEvent_over_size_limit() {
+
+        final int max = invoiceDataService.getEventMaxFindResultSize() + 1;
+        final Event e = createSampleEvent();
+        for (int i = 0; i < max; i++) {
+            e.setEventId("eventtest." + i);
+            invoiceDataService.registerEvent(e);
+        }
+
+        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+        getIDRequest.setSupplierId(e.getSupplierId());
+        getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+        final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+    }
+
 
     @Test
     @Transactional

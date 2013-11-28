@@ -29,6 +29,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +63,9 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceDataService.class);
     private static final Logger TX_LOG = LoggerFactory.getLogger("TX-API");
+
+    @Value("${event.maxFindResultSize:30000}")
+    private int eventMaxFindResultSize;
 
     @Autowired
     private BusinessEventRepository businessEventRepository;
@@ -104,15 +109,23 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
         final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
 
+       // max size
+        final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
+
         if (CoreUtil.isEmpty(request.getPaymentResponsible())) {
             bEEntityList = businessEventRepository.findBySupplierIdAndPendingIsTrueAndStartTimeBetween(
-                    request.getSupplierId(), dateFrom, dateTo);
+                    request.getSupplierId(), dateFrom, dateTo, pageRequest);
         } else {
             bEEntityList = businessEventRepository.
                     findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(
                             request.getSupplierId(), request.getPaymentResponsible(),
-                            dateFrom, dateTo);
+                            dateFrom, dateTo, pageRequest);
         }
+        
+        if (bEEntityList.size() >= eventMaxFindResultSize) {
+            throw InvoiceDataErrorCodeEnum.LIMIT_ERROR.createException(eventMaxFindResultSize, "please narrow down search criterias");
+        }
+        
         //No requirement to fetch list sorted by date
         return EntityBeanConverter.fromBEntity(bEEntityList);
     }
@@ -164,6 +177,12 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
     @Override
     public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
         return getInvoiceData(referenceId, invoiceDataRepository.findOne(extractId(referenceId)));
+    }
+    
+    //
+    @Override
+    public int getEventMaxFindResultSize() {
+        return eventMaxFindResultSize;
     }
         
     private InvoiceDataServiceImpl save(BusinessEventEntity... entities) {
