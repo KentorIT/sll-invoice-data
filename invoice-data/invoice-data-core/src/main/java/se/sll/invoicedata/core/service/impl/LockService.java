@@ -47,14 +47,12 @@ public class LockService {
      * @return true if a lock has been acquired for all, otherwise false.
      */
     public synchronized boolean acquire(final List<String> names) {
-        final int size = locks.size() + names.size();
-        locks.addAll(names);
-        if (locks.size() == size) {
-            return true;
-        } else {
-            locks.removeAll(names);
+        for (final String name : names) {
+            if (locks.contains(name)) {
+                return false;
+            }
         }
-        return false;
+        return locks.addAll(names);
     }
 
     
