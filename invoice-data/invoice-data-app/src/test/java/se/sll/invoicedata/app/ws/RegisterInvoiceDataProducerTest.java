@@ -28,6 +28,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.ui.context.Theme;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.ResultCodeEnum;
@@ -64,6 +65,35 @@ public class RegisterInvoiceDataProducerTest extends TestSupport {
 				+ response.getResultCode().getMessage(), ResultCodeEnum.OK,
 				response.getResultCode().getCode());
 
+	}
+	
+	@Test
+	public void registerInvoiceData_concurrent_updates() {
+        final Thread[] threads = new Thread[5];
+        final Event event = createRandomEventData();
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int n = 0; n < 50; n++) {
+                        RegisterInvoiceDataResponse response = regIDRInterface
+                                .registerInvoiceData(LOGICAL_ADDRESS, event);
+                        Assert.assertEquals("Result code should be OK in this case: "
+                                + response.getResultCode().getMessage(), ResultCodeEnum.OK,
+                                response.getResultCode().getCode());
+                   }
+                }
+            });
+            threads[i].start();
+        }
+
+        for (final Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
 	}
 
 	@Test(expected = SOAPFaultException.class)

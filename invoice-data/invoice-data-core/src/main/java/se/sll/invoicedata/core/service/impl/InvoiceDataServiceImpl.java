@@ -74,9 +74,21 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
     @Autowired
     private StatusBean statusBean;
     
+    @Autowired
+    private LockService lock;
+    
     @Override
     public void registerEvent(Event event) {
-        registerBusinessEvent(EntityBeanConverter.toEntity(event));
+        final String name = event.getEventId();
+        
+        if (!lock.acquire(name)) {
+            throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Event \"" + name + "\" currently is updated by another user");
+        }
+        try {
+            registerBusinessEvent(EntityBeanConverter.toEntity(event));
+        } finally {
+            lock.release(name);
+        }
     }
     
     @Override
@@ -114,10 +126,13 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
                 + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
 
         statusBean.start("InvoiceDataService.createInvoiceData()");
-
+        
+        final List<String> idList = createInvoiceDataRequest.getAcknowledgementIdList();
+        
+        lock.acquire(idList);
         try {
             final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
-            final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
+            final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(idList);
 
             getValidInvoiceDataEntity(createInvoiceDataRequest,
 					invoiceDataEntity, entities);
@@ -126,6 +141,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
 
             return saved.getReferenceId();
         } finally {
+            lock.release(idList);
             statusBean.stop();
         }
     }

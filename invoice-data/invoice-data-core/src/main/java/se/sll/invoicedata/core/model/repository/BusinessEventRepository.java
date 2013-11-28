@@ -19,15 +19,10 @@
 
 package se.sll.invoicedata.core.model.repository;
 
-
-
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.LockModeType;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
@@ -56,7 +51,6 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * @param eventId the event id.
      * @return the event or an empty list when none matches the criteria.
      */
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     BusinessEventEntity findByEventIdAndPendingIsTrueAndCreditIsNull(String eventId);
 
 
