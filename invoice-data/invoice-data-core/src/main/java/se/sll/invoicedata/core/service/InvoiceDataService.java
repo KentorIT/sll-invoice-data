@@ -65,15 +65,24 @@ public interface InvoiceDataService {
     /**
      * Fetches by reference id (reference id is created when createInvoice is 
      * invoked on a supplier)
+     * 
      * @param referenceId
      * @return InvoiceData
      */
     InvoiceData getInvoiceDataByReferenceId(String referenceId);
     
     /**
+     * Lists all invoice data.
      * 
      * @param request
      * @return List<InvoiceDataHeader>
      */
     List<InvoiceDataHeader> listAllInvoiceData(ListInvoiceDataRequest request);
+
+    /**
+     * Returns max limit of events to return.
+     * 
+     * @return the limit.
+     */
+    int getEventMaxFindResultSize();
 }

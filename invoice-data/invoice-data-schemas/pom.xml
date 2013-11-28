@@ -5,7 +5,7 @@
   <parent>
     <groupId>se.sll.invoicedata</groupId>
     <artifactId>invoice-data</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -17,28 +17,6 @@
     <schema.path>${basedir}/src/main/wsdl</schema.path>
   </properties>
 
-<!--
-  <repositories>
-    <repository>
-      <id>java.net</id>
-      <url>http://download.java.net/maven/1/</url>
-      <layout>legacy</layout>
-    </repository>
-    <repository>
-      <id>m2.java.net</id>
-      <name>Java.net Repository for Maven2</name>
-      <url>http://download.java.net/maven/2/</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>repository.codehaus.org</id>
-      <url>http://repository.codehaus.org/</url>
-    </pluginRepository>
-  </pluginRepositories>
--->
-
   <build>
     <resources>
      <resource>
@@ -48,6 +26,7 @@
       </includes>
      </resource>
     </resources>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -63,11 +42,34 @@
           </execution>
         </executions>
       </plugin>
+      
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+	    <id>attach-domain-schemas</id>
+            <phase>package</phase>
+	    <goals>
+              <goal>single</goal>
+	    </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/resources/assembly-schemas.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
       <plugin>
         <groupId>org.apache.cxf</groupId>
         <artifactId>cxf-codegen-plugin</artifactId>
         <version>${cxf-codegen.version}</version>
         <executions>
+	  <!-- Genereate sources -->
           <execution>
             <id>generate-sources-register-invoicedata</id>
             <phase>generate-sources</phase>
@@ -93,6 +95,7 @@
             </goals>
           </execution>
           
+
           <execution>
             <id>generate-sources-create-invoicedata</id>
             <phase>generate-sources</phase>

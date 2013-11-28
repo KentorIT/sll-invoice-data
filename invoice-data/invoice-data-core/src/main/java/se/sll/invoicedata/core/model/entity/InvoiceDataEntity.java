@@ -73,7 +73,7 @@ public class InvoiceDataEntity {
     @Column(name = "end_date", nullable=false, updatable=false)
     private Date endDate;
 
-    @Column(name="total_amount", precision=8, scale=2, updatable=false)
+    @Column(name="total_amount", precision=12, scale=2, updatable=false)
     private BigDecimal totalAmount;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
@@ -132,7 +132,7 @@ public class InvoiceDataEntity {
         if (getId() == null) {
             throw new IllegalStateException("A valid reference can only be retrieved after saving invoice data to database");
         }
-        return String.format("%s.%06d", getSupplierId(), getId());
+        return String.format("%s.%04d", getSupplierId(), getId());
     }
 
     public String getSupplierId() {

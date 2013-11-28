@@ -35,7 +35,7 @@ public interface RatingService {
     /**
      * Rates a business event.
      * 
-     * @param ItemEntity the entity.
+     * @param itemEntity the entity.
      * @return the actual rate.
      */
     BigDecimal rate(ItemEntity itemEntity);

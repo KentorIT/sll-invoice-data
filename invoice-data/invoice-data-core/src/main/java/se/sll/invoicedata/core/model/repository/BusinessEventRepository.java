@@ -19,11 +19,11 @@
 
 package se.sll.invoicedata.core.model.repository;
 
-
-
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
@@ -98,10 +98,11 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * @param supplierId the supplier id.
      * @param startTime the period start time.
      * @param endTime the period end time.
+     * @param pageable page info.
      * 
      * @return the list of matching events, might be empty when none matches the criteria.
      */
-    List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndStartTimeBetween(String supplierId, Date startTime, Date endTime);
+    List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndStartTimeBetween(String supplierId, Date startTime, Date endTime, Pageable pageable);
     
     /**
      * Returns entities for a supplier and payment responsible, and where start time is within a period of time.
@@ -110,9 +111,10 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * @param paymentResponsible the payment responsible.
      * @param startTime the period start time.
      * @param endTime the period end time.
+     * @param pageable page info.
      * 
      * @return the list of matching events, might be empty when none matches the criteria.
      */
-    List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(String supplierId, String paymentResponsible, Date startTime, Date endTime);
+    List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(String supplierId, String paymentResponsible, Date startTime, Date endTime, Pageable pageable);
     
 }
