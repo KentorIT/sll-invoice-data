@@ -19,11 +19,13 @@
 
 package se.sll.invoicedata.core.service.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -128,13 +130,68 @@ public class PriceListServiceImplTest extends TestSupport {
 		assertEquals(465,75, createAndFetchRegisteredEvent(priceList.getSupplierId(), priceList.getServiceCode()).getTotalAmount().intValue());
     }
     
-    private RegisteredEvent createAndFetchRegisteredEvent(String supplierId, String serviceCode) {
+    @Test
+	@Transactional
+	@Rollback(true)
+    public void testMultiple_PriceList_For_Different_Periods() {
+    	Calendar cal = Calendar.getInstance();
+    	//Price is valid from year 2000
+    	cal.set(Calendar.YEAR, 2000);    	
+    	final PriceList priceList = createAdvancePriceList(cal);
+    	priceListService.savePriceLists(Collections.singletonList(priceList));
     	
+    	//Event is created in 2013
+		cal.set(Calendar.YEAR, 2013);
+		
+    	final Event e = createSampleEvent();
+    	e.setServiceCode(priceList.getServiceCode());
+    	e.setSupplierId(priceList.getSupplierId());
+    	e.setStartTime(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
+    	e.setEndTime(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
+    	e.getItemList().clear(); //Remove all items and add new ones
+    	
+    	Item i1 = new Item();
+		i1.setDescription("Test item");
+		i1.setItemId("item.1");
+		i1.setQty(BigDecimal.valueOf(3));
+		e.getItemList().add(i1);
+		
+		assertPrice(e, 1950);
+
+		//Price is valid from year 2013, price updated
+    	cal.set(Calendar.YEAR, 2013);
+	    final PriceList updatedPriceList = createAdvancePriceList(cal);
+	    //change in price from 650 to 155
+	    updatedPriceList.getPrices().get(0).setPrice(BigDecimal.valueOf(155));
+    	priceListService.savePriceLists(Collections.singletonList(updatedPriceList));
+    	List<PriceList> priceListsAvailable = priceListService.getPriceLists();
+    	
+    	assertNotNull(priceListsAvailable);
+    	assertEquals(2, priceListsAvailable.size());
+    	assertEquals("Tolk.001", priceListsAvailable.get(0).getSupplierId());
+    	assertEquals("Tolk.001", priceListsAvailable.get(1).getSupplierId());
+    	
+    	assertPrice(e, 465);
+    }
+    
+    private void assertPrice(Event e, long pris) {
+    	invoiceDataService.registerEvent(e);
+    	
+    	GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+	    getIDRequest.setSupplierId(e.getSupplierId());
+	    getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+	    RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+	
+	    //item x qty
+	    assertEquals(pris, rE.getTotalAmount().intValue());
+    }
+    
+    private RegisteredEvent createAndFetchRegisteredEvent(String supplierId, String serviceCode) {
     	
     	final Event e = createSampleEvent();
     	e.setServiceCode(serviceCode);
     	e.setSupplierId(supplierId);
-    	e.getItemList().clear(); //Remove all items and all new ones
+    	e.getItemList().clear(); //Remove all items and add new ones
     	
 		Item i1 = new Item();
 		i1.setDescription("Test item");
@@ -190,10 +247,18 @@ public class PriceListServiceImplTest extends TestSupport {
     
     
     PriceList createSamplePriceList() {
-        final PriceList priceList = new PriceList();
+    	return _createSamplePriceList(Calendar.getInstance());
+    }
+    
+    PriceList createAdvancePriceList(Calendar cal) {
+    	return _createSamplePriceList(cal);
+    }
+    
+    PriceList _createSamplePriceList(Calendar cal) {
+    	final PriceList priceList = new PriceList();
         
         priceList.setSupplierId("Tolk.001");
-        priceList.setValidFrom(Calendar.getInstance().getTime());
+        priceList.setValidFrom(cal.getTime());
         priceList.setServiceCode("Språktolk");
         
         Price p1 = new Price();
@@ -208,7 +273,7 @@ public class PriceListServiceImplTest extends TestSupport {
         priceList.getPrices().add(p2);
 
         return priceList;
+
     }
-    
     
 }

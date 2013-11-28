@@ -158,8 +158,8 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 		}		
 	}
 	
-	@Test
-	@Rollback(false)
+	//@Test
+	@Rollback(true)
 	public void testRegister_Duplicate_Events_Threads() {
 		boolean isRunning = true;
 		RegisterThread rThread = null;
@@ -182,9 +182,8 @@ public class InvoiceDataServiceImplTest extends TestSupport {
 	}
 	
 	@Test
-	@Rollback(false)
-	public void testRegister_Duplicate_Events() {
-		
+	@Rollback(true)
+	public void testRegister_Duplicate_Events() {		
 		
 		final Event e = createSampleEvent();
 		invoiceDataService.registerEvent(e);
