@@ -86,9 +86,9 @@ public class InvoiceDataServiceImplTest extends TestSupport {
     @Test(expected = InvoiceDataServiceException.class)
     @Transactional
     @Rollback(true)
-    public void testFind_BusinessEvent_over_size_limit() {
+    public void testFind_BusinessEvent_Over_Size_Limit() {
 
-        final int max = invoiceDataService.getEventMaxFindResultSize() + 1;
+        final int max = invoiceDataService.getEventMaxFindResultSize();
         final Event e = createSampleEvent();
         for (int i = 0; i < max; i++) {
             e.setEventId("eventtest." + i);
@@ -98,7 +98,7 @@ public class InvoiceDataServiceImplTest extends TestSupport {
         GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
         getIDRequest.setSupplierId(e.getSupplierId());
         getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-        final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
     }
 
 
