@@ -25,6 +25,13 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+/**
+ * Single node simple lock service, please note that this has to be coordinated by central resource as a database or similar to support scale out 
+ * of application to several multiple servers.
+ * 
+ * @author Peter
+ *
+ */
 @Service
 public class LockService {
     
