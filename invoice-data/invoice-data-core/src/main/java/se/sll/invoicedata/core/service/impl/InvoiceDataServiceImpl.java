@@ -138,13 +138,13 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
                 + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
 
-        statusBean.start("InvoiceDataService.createInvoiceData()");
         
         final List<String> idList = createInvoiceDataRequest.getAcknowledgementIdList();
         
         if (!lock.acquire(idList)) {
             throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Events \"" + idList + "\" currently is updated by another user");
         }
+        statusBean.start("InvoiceDataService.createInvoiceData()");
         try {
             final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
             final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(idList);
