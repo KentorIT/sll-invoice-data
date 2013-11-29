@@ -106,8 +106,8 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         
         log.debug(request.getSupplierId() + " from: " + request.getFromDate() + " to: " + request.getToDate());
 
-        final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
-        final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
+        final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
+        final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
 
        // max size
         final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
@@ -268,8 +268,8 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
 
         statusBean.start("InvoiceDataService.findByCriteria()");
         try {
-            final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
-            final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
+            final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
+            final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
 
             List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
 

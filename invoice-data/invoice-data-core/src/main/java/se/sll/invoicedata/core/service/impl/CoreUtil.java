@@ -52,14 +52,60 @@ public class CoreUtil {
     static {
         try {
             datatypeFactory = DatatypeFactory.newInstance();
-            Calendar calendar = Calendar.getInstance();
+            final Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, 9999);
+            calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+            calendar.set(Calendar.DAY_OF_MONTH, 31);
             //Overwriting max date: SQL Server only accepts 9999 as max date
-            MAX_DATE = calendar.getTime();
+            MAX_DATE = floorDate(calendar).getTime();
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException("Init Error!", e);
         }
     }
+    
+    // truncates a date to 00:00:00
+    public static Calendar floorDate(final Calendar cal) {
+        if (cal == null) {
+            return null;
+        }
+        for (final int field : new int[] { Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND }) {
+            cal.set(field, 0);
+        }
+        return cal;
+    }
+    
+    // increases a date to 23:59:59
+    public static Calendar ceilDate(final Calendar cal) {
+        if (cal == null) {
+            return null;
+        }
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        return cal;
+    }
+
+    // truncates a date to 00:00:00
+    public static Date floorDate(final Date date) {
+        if (date == null) {
+            return null;
+        }
+        final Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return floorDate(cal).getTime();
+    }
+    
+    // increases a date to day 23:59:59
+    public static Date ceilDate(final Date date) {
+        if (date == null) {
+            return null;
+        }
+        final Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return ceilDate(cal).getTime();
+    }
+
     
     /**
      * Copies properties/state from one object to another. <p>

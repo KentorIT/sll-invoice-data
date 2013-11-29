@@ -19,8 +19,7 @@
 
 package se.sll.invoicedata.core.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
@@ -67,8 +66,14 @@ public class CoreUtilTest extends TestSupport {
     }
 
     @Test
+    public void testDate_ceil_floor() {
+        Date date = new Date();
+        assertTrue(date.compareTo(CoreUtil.ceilDate(date)) <= 0);
+        assertTrue(date.compareTo(CoreUtil.floorDate(date)) >= 0);
+    }
+    
+    @Test
     public void testAppUtil_copyProperties2() {
-        copyProperties(new String(), String.class);        
         copyProperties(new String(), String.class);        
     }
 
