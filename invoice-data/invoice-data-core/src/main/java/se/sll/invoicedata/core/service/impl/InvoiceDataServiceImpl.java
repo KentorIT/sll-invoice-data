@@ -106,8 +106,8 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         
         log.debug(request.getSupplierId() + " from: " + request.getFromDate() + " to: " + request.getToDate());
 
-        final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
-        final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
+        final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
+        final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
 
        // max size
         final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
@@ -138,13 +138,13 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
                 + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
 
-        statusBean.start("InvoiceDataService.createInvoiceData()");
         
         final List<String> idList = createInvoiceDataRequest.getAcknowledgementIdList();
         
         if (!lock.acquire(idList)) {
             throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Events \"" + idList + "\" currently is updated by another user");
         }
+        statusBean.start("InvoiceDataService.createInvoiceData()");
         try {
             final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
             final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(idList);
@@ -268,8 +268,8 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
 
         statusBean.start("InvoiceDataService.findByCriteria()");
         try {
-            final Date dateFrom = CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE);
-            final Date dateTo = CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE);
+            final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
+            final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
 
             List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
 
