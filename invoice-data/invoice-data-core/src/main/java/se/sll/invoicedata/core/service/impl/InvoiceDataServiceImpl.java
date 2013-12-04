@@ -274,16 +274,16 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
             List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
 
             if (request.getSupplierId() != null && request.getPaymentResponsible() != null) {            	
-                invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleBetweenStartDateOrEndDate(
+                invoiceDataEntityList = invoiceDataRepository.getInvoiceDataBySupplierIdAndPaymentResponsibleBetweenDates(
                         request.getSupplierId(),
                         request.getPaymentResponsible(),
                         dateFrom, dateTo);
             } else  if (request.getSupplierId() != null) {            	
-                invoiceDataEntityList = invoiceDataRepository.findBySupplierIdBetweenStartDateOrEndDate(
+                invoiceDataEntityList = invoiceDataRepository.getInvoiceDataBySupplierIdBetweenDates(
                         request.getSupplierId(),
                         dateFrom, dateTo);
             } else if (request.getPaymentResponsible() != null) {
-                invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleBetweenStartDateOrEndDate(
+                invoiceDataEntityList = invoiceDataRepository.getInvoiceDataByPaymentResponsibleBetweenDates(
                         request.getPaymentResponsible(),
                         dateFrom, dateTo);
             }

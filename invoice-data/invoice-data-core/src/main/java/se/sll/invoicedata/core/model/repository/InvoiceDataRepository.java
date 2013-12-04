@@ -38,15 +38,6 @@ import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, Long> {
     
 	/**
-	 * Returns InvoiceData with matching within date range!
-     * 
-     * @param fromDate can be null so 1970 01 01 is set as from date
-     * @param toDate can also be null then the max valid date i.e 31 December 9999 is set
-	 * @return List<InvoiceDataEntity> the resulting list, might be empty.
-	 */
-	List<InvoiceDataEntity> findByStartDateBetweenOrEndDateBetween(Date startFromDate, Date startToDate, Date endFromDate, Date endToDate);
-	
-	/**
 	 * Returns InvoiceData with matching supplierId within date range!
      * 
 	 * @param supplierId the supplier id.
@@ -56,7 +47,7 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
      */
 	@Query("FROM InvoiceDataEntity WHERE supplierId = :supplierId "
             + "AND ((startDate BETWEEN :fromDate AND :toDate) OR (endDate BETWEEN :fromDate AND :toDate))")
-	List<InvoiceDataEntity> findBySupplierIdBetweenStartDateOrEndDate(@Param("supplierId") String paymentResponsible, 
+	List<InvoiceDataEntity> getInvoiceDataBySupplierIdBetweenDates(@Param("supplierId") String supplierId, 
             @Param("fromDate") Date fromDate, @Param("toDate") Date toDate);
 	
 	/**
@@ -69,7 +60,7 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
 	 */
 	@Query("FROM InvoiceDataEntity WHERE paymentResponsible = :paymentResponsible "
             + "AND ((startDate BETWEEN :fromDate AND :toDate) OR (endDate BETWEEN :fromDate AND :toDate))")
-	List<InvoiceDataEntity> findByPaymentResponsibleBetweenStartDateOrEndDate(@Param("paymentResponsible") String paymentResponsible, 
+	List<InvoiceDataEntity> getInvoiceDataByPaymentResponsibleBetweenDates(@Param("paymentResponsible") String paymentResponsible, 
             @Param("fromDate") Date fromDate, @Param("toDate") Date toDate);
 
 	/**
@@ -83,7 +74,7 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
 	 */
 	@Query("FROM InvoiceDataEntity WHERE supplierId = :supplierId AND paymentResponsible = :paymentResponsible "
             + "AND ((startDate BETWEEN :fromDate AND :toDate) OR (endDate BETWEEN :fromDate AND :toDate))")
-	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleBetweenStartDateOrEndDate(@Param("supplierId") String supplierId,
+	List<InvoiceDataEntity> getInvoiceDataBySupplierIdAndPaymentResponsibleBetweenDates(@Param("supplierId") String supplierId,
             @Param("paymentResponsible") String paymentResponsible, 
             @Param("fromDate") Date fromDate, 
             @Param("toDate") Date toDate);
