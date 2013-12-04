@@ -270,20 +270,20 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         try {
             final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
             final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
-
+            
             List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
 
-            if (request.getSupplierId() != null && request.getPaymentResponsible() != null) {
-                invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(
+            if (request.getSupplierId() != null && request.getPaymentResponsible() != null) {            	
+                invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleBetweenStartDateOrEndDate(
                         request.getSupplierId(),
                         request.getPaymentResponsible(),
                         dateFrom, dateTo);
-            } else  if (request.getSupplierId() != null) {
-                invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndCreatedTimeBetween(
+            } else  if (request.getSupplierId() != null) {            	
+                invoiceDataEntityList = invoiceDataRepository.findBySupplierIdBetweenStartDateOrEndDate(
                         request.getSupplierId(),
                         dateFrom, dateTo);
             } else if (request.getPaymentResponsible() != null) {
-                invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndCreatedTimeBetween(
+                invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleBetweenStartDateOrEndDate(
                         request.getPaymentResponsible(),
                         dateFrom, dateTo);
             }
