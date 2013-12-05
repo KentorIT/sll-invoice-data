@@ -193,8 +193,8 @@ public class ListInvoiceDataProducerTest extends TestSupport {
 		// Request with only to date; toDate
 		invoiceListRequest = new ListInvoiceDataRequest();
 		invoiceListRequest.setPaymentResponsible(event.getPaymentResponsible());
-		invoiceListRequest.setToDate(CoreUtil
-				.toXMLGregorianCalendar(new Date()));
+		cal.set(Calendar.YEAR, 9999);
+		invoiceListRequest.setToDate(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
 
 		invoiceDataResponse = listIDRInterface.listInvoiceData(LOGICAL_ADDRESS, invoiceListRequest);
 		
