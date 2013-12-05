@@ -211,4 +211,11 @@ public class CoreUtil {
     	return (data == null) || data.isEmpty();  
     }
     
+    public static XMLGregorianCalendar getCustomDate(int month, int date) {
+    	Calendar cal = Calendar.getInstance();
+    	cal.set(Calendar.MONDAY, month);
+    	cal.set(Calendar.DATE, date);
+    	return CoreUtil.toXMLGregorianCalendar(cal.getTime());
+    }
+    
 }

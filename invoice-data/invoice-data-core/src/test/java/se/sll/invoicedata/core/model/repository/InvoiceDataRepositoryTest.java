@@ -57,7 +57,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getInvoiceDataRepository().save(e);
         getInvoiceDataRepository().flush();
         
-        final List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(e.getSupplierId(), e.getPaymentResponsible(), CoreUtil.MIN_DATE, new Date());
+        final List<InvoiceDataEntity> l = getInvoiceDataRepository().getInvoiceDataBySupplierIdAndPaymentResponsibleBetweenDates(e.getSupplierId(), e.getPaymentResponsible(), CoreUtil.MIN_DATE, new Date());
         
         assertNotNull(l);
         assertEquals(1, l.size());
@@ -143,7 +143,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getInvoiceDataRepository().save(ie);
         getInvoiceDataRepository().flush();
         
-        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndPaymentResponsibleAndCreatedTimeBetween(be.getSupplierId(), be.getPaymentResponsible(), CoreUtil.MIN_DATE, new Date());
+        List<InvoiceDataEntity> l = getInvoiceDataRepository().getInvoiceDataBySupplierIdAndPaymentResponsibleBetweenDates(be.getSupplierId(), be.getPaymentResponsible(), CoreUtil.MIN_DATE, new Date());
         
         assertEquals(1, l.size());
         

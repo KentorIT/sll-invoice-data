@@ -20,8 +20,10 @@
 package se.sll.invoicedata.core.support;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.runner.RunWith;
@@ -32,12 +34,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
+import riv.sll.invoicedata._1.RegisteredEvent;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.entity.PriceListEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.impl.CoreUtil;
 
 /**
@@ -54,8 +60,12 @@ public abstract class TestSupport {
 
     @Autowired
     private BusinessEventRepository businessEventRepository;
+    
     @Autowired
     private InvoiceDataRepository invoiceDataRepository;
+    
+	@Autowired
+    private InvoiceDataService invoiceDataService;
 
     protected BusinessEventRepository getBusinessEventRepository() {
         return businessEventRepository;
@@ -132,6 +142,42 @@ public abstract class TestSupport {
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
         return c;
+    }
+    
+    protected CreateInvoiceDataRequest createInvoiceData(String supplierId) {
+        final List<String> ids = Arrays.asList(new String[] { "event-1",
+                "event-2", "event-3" });
+
+        registerEvents(supplierId, ids);
+
+        final CreateInvoiceDataRequest ie = new CreateInvoiceDataRequest();
+        ie.setSupplierId(supplierId);
+        ie.setPaymentResponsible("HSF");
+        ie.setCreatedBy("test-auto");
+
+        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+        getIDRequest.setSupplierId(supplierId);
+
+        final List<RegisteredEvent> l = invoiceDataService
+                .getAllUnprocessedBusinessEvents(getIDRequest);
+
+        for (final RegisteredEvent e : l) {
+            ie.getAcknowledgementIdList().add(e.getAcknowledgementId());
+        }
+
+        invoiceDataService.createInvoiceData(ie);
+
+        return ie;
+    }
+    
+    protected void registerEvents(String supplierId, List<String> ids) {
+        for (final String id : ids) {
+            final Event e = createSampleEvent();
+            e.setEventId(id);
+            e.setSupplierId(supplierId);
+
+            invoiceDataService.registerEvent(e);
+        }
     }
 
 }
