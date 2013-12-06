@@ -87,7 +87,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         final InvoiceDataEntity saved = getInvoiceDataRepository().save(e);
         getInvoiceDataRepository().flush();
         
-        final String expected = String.format("%s.%04d", "supplierId", saved.getId());
+        final String expected = String.format("%04d", saved.getId());
         
         assertEquals(expected, saved.getReferenceId());
      }
