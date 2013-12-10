@@ -38,7 +38,7 @@ import org.springframework.jmx.support.MetricType;
 import org.springframework.stereotype.Component;
 
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
-import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 
 /**
  * JMX Bean to keep track of application status. <p>
@@ -55,7 +55,7 @@ public class StatusBean {
     private static final Logger log = LoggerFactory.getLogger(StatusBean.class);
 
     @Autowired
-    private InvoiceDataService invoiceDataService;
+    private InvoiceDataRepository invoiceDataRepository;
 
     //
     private int historyLength = 1000;
@@ -76,7 +76,7 @@ public class StatusBean {
 
     // checks database
     private void checkDatabase() {
-        invoiceDataService.getAllUnprocessedBusinessEvents(new GetInvoiceDataRequest());
+        invoiceDataRepository.findOne(0L);
         log.info("health-check database: OK");
     }
 
