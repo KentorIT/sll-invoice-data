@@ -132,7 +132,7 @@ public class InvoiceDataEntity {
         if (getId() == null) {
             throw new IllegalStateException("A valid reference can only be retrieved after saving invoice data to database");
         }
-        return String.format("%s.%04d", getSupplierId(), getId());
+        return String.valueOf(getId());
     }
 
     public String getSupplierId() {

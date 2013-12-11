@@ -188,7 +188,7 @@ public class InvoiceDataBaseService {
 	Long extractId(final String referenceId) {
 		Long id = Long.MIN_VALUE;
         try {
-            id = Long.valueOf(validate(referenceId, "referenceId").substring(referenceId.lastIndexOf('.') + 1));
+            id = Long.valueOf(validate(referenceId, "referenceId"));
         } catch (NumberFormatException nfException) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("referenceId has invalid format:" + referenceId); 
         }
