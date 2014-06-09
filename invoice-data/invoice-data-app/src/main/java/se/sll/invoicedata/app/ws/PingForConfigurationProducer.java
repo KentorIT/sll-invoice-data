@@ -22,6 +22,8 @@ package se.sll.invoicedata.app.ws;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import se.riv.itintegration.monitoring.rivtabp21.v1.PingForConfigurationResponderInterface;
@@ -37,6 +39,9 @@ import se.riv.itintegration.monitoring.v1.PingForConfigurationType;
  */
 public class PingForConfigurationProducer extends AbstractProducer implements PingForConfigurationResponderInterface {
     
+	@Value("${application.version}") 
+	private String applicationVersion;
+	
     private static ThreadLocal<SimpleDateFormat> formatter = new ThreadLocal<SimpleDateFormat>() {
         @Override
         public SimpleDateFormat initialValue() {
@@ -55,7 +60,7 @@ public class PingForConfigurationProducer extends AbstractProducer implements Pi
         final ResultCode rc = fulfill(new Runnable() {
             @Override
             public void run() {
-                response.setVersion("1.0");
+                response.setVersion(applicationVersion);
                 response.setPingDateTime(formatter.get().format(new Date()));
                 getStatusBean().healthCheck();
             }
