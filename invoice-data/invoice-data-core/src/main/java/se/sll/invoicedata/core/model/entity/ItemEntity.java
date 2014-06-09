@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,6 +53,10 @@ public class ItemEntity {
 
     @Column(name="price", precision=8, scale=2, updatable=false)
     private BigDecimal price;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name="item_type", length=64, nullable=false, updatable=false)
+    private ItemType itemType;
 
     @ManyToOne(optional=false)
     @JoinColumn(name="event_id", updatable=false)
@@ -99,8 +105,16 @@ public class ItemEntity {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+    
+    public ItemType getItemType() {
+		return itemType;
+	}
 
-    @Override
+	public void setItemType(ItemType itemType) {
+		this.itemType = itemType;
+	}
+
+	@Override
     public boolean equals(Object r) {
         if (this == r) {
             return true;

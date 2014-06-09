@@ -21,6 +21,7 @@ package se.sll.invoicedata.core.service.impl;
 
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -34,6 +35,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
@@ -45,6 +47,7 @@ import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
+import se.sll.invoicedata.core.model.entity.ItemType;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
@@ -90,7 +93,9 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
             throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Event \"" + name + "\" currently is updated by another user");
         }
         try {
-            registerBusinessEvent(EntityBeanConverter.toEntity(event));
+        	validateForAnyDuplicateDiscountItems(event);
+        	final BusinessEventEntity businessEventEntity = EntityBeanConverter.toEntity(event);
+            registerBusinessEvent(businessEventEntity, event.getDiscountItemList());
         } finally {
             lock.release(name);
         }
@@ -199,8 +204,9 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         return this;
     }
 
-    private void registerBusinessEvent(final BusinessEventEntity newEntity) {
-        rate(validate(newEntity));
+    private void registerBusinessEvent(final BusinessEventEntity newEntity, List<DiscountItem> discountItemList) {
+        rate(validateBusinessEventWithItemList(newEntity), discountItemList);
+        addDiscountItemsToBusinessEventEntity(newEntity, discountItemList);
 
         final BusinessEventEntity oldEntity = businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId());
         final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
@@ -228,13 +234,35 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
      * @param businessEventEntity the business event.
      * @return the rated business event, i.e. price has been set to all items.
      */
-    private BusinessEventEntity rate(BusinessEventEntity businessEventEntity) {
-        for (ItemEntity itemEntity : validate(businessEventEntity).getItemEntities()) {
-            if (itemEntity.getPrice() == null) {
-                itemEntity.setPrice(ratingService.rate(itemEntity));
-            }
+    private BusinessEventEntity rate(BusinessEventEntity businessEventEntity, List<DiscountItem> discountItemList) {
+        for (ItemEntity itemEntity : validateBusinessEventWithItemList(businessEventEntity).getItemEntities()) {
+        	
+        	if (itemEntity.getPrice() == null) {
+        		BigDecimal calculatedPrice = ratingService.rate(itemEntity);
+        		DiscountItem discountItem = getDiscountItemById(discountItemList, itemEntity.getItemId());
+        		
+        		if (discountItem != null) {
+        			double discount = (discountItem.getDiscountInPercent().intValue() * calculatedPrice.doubleValue()) / 100;
+        			discountItem.setDiscountedPrice(new BigDecimal(discount));
+        			calculatedPrice = new BigDecimal(calculatedPrice.doubleValue() - discount);
+        		}
+        		itemEntity.setPrice(calculatedPrice);
+        	} 
         }
+        
         return businessEventEntity;
+    }
+    
+    private void addDiscountItemsToBusinessEventEntity(BusinessEventEntity businessEventEntity, List<DiscountItem> discountItemList) {
+    	
+    	for (DiscountItem discountItem : discountItemList) {
+    		ItemEntity itemEntity = CoreUtil.copyProperties(discountItem, ItemEntity.class);
+    		itemEntity.setPrice(discountItem.getDiscountedPrice());
+    		itemEntity.setItemType(ItemType.DISCOUNT);
+    		itemEntity.setQty(new BigDecimal(1));
+    		
+    		businessEventEntity.addItemEntity(itemEntity);
+    	}
     }
 
     private List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(final List<String> list) {

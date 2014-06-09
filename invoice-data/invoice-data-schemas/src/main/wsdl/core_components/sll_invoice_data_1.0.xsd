@@ -33,6 +33,22 @@
 			<xs:element name="price" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:complexType name="DiscountItem">
+		<xs:sequence>
+			<xs:element name="itemId" type="xs:string"/>
+			<xs:element name="description" type="xs:string"/>
+			<xs:element name="discountInPercent">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal">
+						<xs:maxInclusive value="100"/>
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="discountedPrice" type="xs:decimal" minOccurs="0" maxOccurs="1"/>			
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:complexType name="Event">
 		<xs:sequence>
@@ -57,7 +73,8 @@
 			<xs:element name="acknowledgedTime" type="xs:dateTime"/>
 			<xs:element name="startTime" type="xs:dateTime"/>
 			<xs:element name="endTime" type="xs:dateTime"/>
-			<xs:element name="itemList" type="tns:Item" minOccurs="1" maxOccurs="unbounded"/>			
+			<xs:element name="itemList" type="tns:Item" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="discountItemList" type="tns:DiscountItem" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	

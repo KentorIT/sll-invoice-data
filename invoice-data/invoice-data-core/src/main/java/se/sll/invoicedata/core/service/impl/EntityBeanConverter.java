@@ -32,6 +32,7 @@ import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
+import se.sll.invoicedata.core.model.entity.ItemType;
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
@@ -50,7 +51,9 @@ public class EntityBeanConverter {
 	static BusinessEventEntity toEntity(final Event event) {
 		final BusinessEventEntity entity = copyProperties(event, BusinessEventEntity.class);
 		for (final Item item : event.getItemList()) {
-			entity.addItemEntity(copyProperties(item, ItemEntity.class));
+			ItemEntity itemEntity = copyProperties(item, ItemEntity.class);
+			itemEntity.setItemType(ItemType.SERVICE);
+			entity.addItemEntity(itemEntity);
 		}
 
 		return entity;
