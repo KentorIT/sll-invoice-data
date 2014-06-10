@@ -209,10 +209,10 @@ public class InvoiceDataBaseService {
             throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("invoice data", referenceId); 		    
         }
 
-        final InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(invoiceDataEntity);
+        final InvoiceData invoiceData = EntityBeanConverter.fromInvoiceDataEntityToInvoiceData(invoiceDataEntity);
         final List<BusinessEventEntity> bEEList = invoiceDataEntity.getBusinessEventEntities();
         for (final BusinessEventEntity businessEventEntity : bEEList) {
-            invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromEntity(businessEventEntity));
+            invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromBusinessEventEntityToRegisteredEvent(businessEventEntity));
         }
         
 		return invoiceData;

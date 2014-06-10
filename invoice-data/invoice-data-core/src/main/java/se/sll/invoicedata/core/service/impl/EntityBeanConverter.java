@@ -22,9 +22,13 @@
  */
 package se.sll.invoicedata.core.service.impl;
 
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
+import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.Item;
@@ -33,8 +37,6 @@ import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.entity.ItemType;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 /**
  * @author muqkha
@@ -48,7 +50,7 @@ public class EntityBeanConverter {
 	 * @param event the JAXB object.
 	 * @return the entity bean.
 	 */
-	static BusinessEventEntity toEntity(final Event event) {
+	static BusinessEventEntity toBusinessEventEntity(final Event event) {
 		final BusinessEventEntity entity = copyProperties(event, BusinessEventEntity.class);
 		for (final Item item : event.getItemList()) {
 			ItemEntity itemEntity = copyProperties(item, ItemEntity.class);
@@ -64,12 +66,38 @@ public class EntityBeanConverter {
 	 * @param bEEntity
 	 * @return RegisteredEvent
 	 */
-	static RegisteredEvent fromEntity(final BusinessEventEntity bEEntity) {
+	static RegisteredEvent fromBusinessEventEntityToRegisteredEvent(final BusinessEventEntity bEEntity) {
 		final RegisteredEvent rEvent = copyProperties(bEEntity, RegisteredEvent.class);
-
-		copyGenericLists(rEvent.getItemList(), bEEntity.getItemEntities(), Item.class);
+		
+		rEvent.getItemList().addAll(copyItemEntityToServiceItem(bEEntity.getItemEntities()));
+		rEvent.getDiscountItemList().addAll(copyItemEntityToDiscountItem(bEEntity.getItemEntities()));
 
 		return rEvent;
+	}
+	
+	private static List<Item> copyItemEntityToServiceItem(List<ItemEntity> itemEntityList) {
+		List<Item> itemList = new ArrayList<Item>();
+		for (ItemEntity itemEntity : itemEntityList) {
+			if (itemEntity.getItemType() == ItemType.SERVICE) {
+				itemList.add(copyProperties(itemEntity, Item.class));
+			}
+		}
+		
+		return itemList;
+	}
+	
+	private static List<DiscountItem> copyItemEntityToDiscountItem(List<ItemEntity> itemEntityList) {
+		List<DiscountItem> discountItemList = new ArrayList<DiscountItem>();
+		for (ItemEntity itemEntity : itemEntityList) {
+			if (itemEntity.getItemType() == ItemType.DISCOUNT) {
+				DiscountItem discountItem = copyProperties(itemEntity, DiscountItem.class);
+				discountItem.setDiscountInPercent(itemEntity.getQty());
+				discountItem.setDiscountedPrice(itemEntity.getPrice());
+				discountItemList.add(discountItem);
+			}
+		}
+		
+		return discountItemList;
 	}
 	
 	/**
@@ -77,11 +105,11 @@ public class EntityBeanConverter {
 	 * @param bEEntityList
 	 * @return List<RegisteredEvent>
 	 */
-	static List<RegisteredEvent> fromBEntity(
+	static List<RegisteredEvent> fromBusinessEventEntityToRegisteredEvent(
 			final List<BusinessEventEntity> bEEntityList) {
 		List<RegisteredEvent> registeredEventList = new ArrayList<RegisteredEvent>(bEEntityList.size());
 		for (final BusinessEventEntity bEEntity : bEEntityList) {
-			registeredEventList.add(fromEntity(bEEntity));
+			registeredEventList.add(fromBusinessEventEntityToRegisteredEvent(bEEntity));
 
 		}
 		return registeredEventList;
@@ -92,9 +120,7 @@ public class EntityBeanConverter {
 	 * @param entity
 	 * @return InvoiceData
 	 */
-	static InvoiceData fromIDEntity(final InvoiceDataEntity entity) {
-		InvoiceData iData = copyProperties(entity, InvoiceData.class);
-
-		return iData;
+	static InvoiceData fromInvoiceDataEntityToInvoiceData(final InvoiceDataEntity entity) {
+		return copyProperties(entity, InvoiceData.class);
 	}
 }

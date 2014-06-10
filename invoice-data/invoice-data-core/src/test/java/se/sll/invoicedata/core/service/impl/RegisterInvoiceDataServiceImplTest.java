@@ -142,6 +142,42 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         e.setItemList(null);
         invoiceDataService.registerEvent(e);		
     }
+    
+    @Test (expected = InvoiceDataServiceException.class)
+    @Transactional
+    @Rollback(true)
+    public void testRegisterEvent_With_Duplicate_Items_Result_Fail() {
+        final Event e = createSampleEvent();
+        Item item = e.getItemList().get(0);
+        e.getItemList().add(item);
+        invoiceDataService.registerEvent(e);		
+    }
+    
+    @Test (expected = InvoiceDataServiceException.class)
+    @Transactional
+    @Rollback(true)
+    public void testRegisterEvent_With_Duplicate_Discount_Items_Result_Fail() {
+        final Event e = createSampleEvent();
+        e.getDiscountItemList().add(createDiscountItem());
+        e.getDiscountItemList().add(createDiscountItem());
+        invoiceDataService.registerEvent(e);		
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testRegisterEvent_With_Discount_Item_Result_Pass() {
+        final Event e = createSampleEvent();
+        e.getDiscountItemList().add(createDiscountItem());
+        invoiceDataService.registerEvent(e);
+        
+        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+        getIDRequest.setSupplierId(e.getSupplierId());
+        getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+        RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+        assertEquals(350, rE.getTotalAmount().intValue());
+    }
+    
 
     @Test (expected = InvoiceDataServiceException.class)
     @Transactional

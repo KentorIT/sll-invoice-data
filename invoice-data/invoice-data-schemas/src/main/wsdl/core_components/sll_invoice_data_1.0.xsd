@@ -84,7 +84,13 @@
 				<xs:sequence>
 					<xs:element name="id" type="xs:long" />
 					<xs:element name="credit" type="xs:boolean" />
-					<xs:element name="totalAmount" type="xs:decimal" />					
+					<xs:element name="totalAmount">
+						<xs:simpleType>
+							<xs:restriction base="xs:decimal">
+								<xs:fractionDigits value="2"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>					
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

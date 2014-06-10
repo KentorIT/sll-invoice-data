@@ -20,6 +20,7 @@
 package se.sll.invoicedata.core.model.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -371,8 +372,13 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     public BigDecimal getTotalAmount() {
         BigDecimal amount = BigDecimal.valueOf(0.0);
         for (final ItemEntity itemEntity : itemEntities) {
-           amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty())); 
+        	if (itemEntity.getItemType() == ItemType.SERVICE) {
+        		amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty()));
+        	} else if (itemEntity.getItemType() == ItemType.DISCOUNT) {
+        		amount = amount.subtract(itemEntity.getPrice());
+        	}
         }
+        amount = amount.setScale(2, RoundingMode.HALF_UP);
         return amount;
     }
 

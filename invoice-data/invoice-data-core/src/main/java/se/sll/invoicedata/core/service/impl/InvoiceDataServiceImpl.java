@@ -94,7 +94,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         }
         try {
         	validateForAnyDuplicateDiscountItems(event);
-        	final BusinessEventEntity businessEventEntity = EntityBeanConverter.toEntity(event);
+        	final BusinessEventEntity businessEventEntity = EntityBeanConverter.toBusinessEventEntity(event);
             registerBusinessEvent(businessEventEntity, event.getDiscountItemList());
         } finally {
             lock.release(name);
@@ -132,7 +132,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         }
         
         //No requirement to fetch list sorted by date
-        return EntityBeanConverter.fromBEntity(bEEntityList);
+        return EntityBeanConverter.fromBusinessEventEntityToRegisteredEvent(bEEntityList);
     }
     
     @Override
@@ -239,15 +239,15 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         	
         	if (itemEntity.getPrice() == null) {
         		BigDecimal calculatedPrice = ratingService.rate(itemEntity);
-        		DiscountItem discountItem = getDiscountItemById(discountItemList, itemEntity.getItemId());
-        		
-        		if (discountItem != null) {
-        			double discount = (discountItem.getDiscountInPercent().intValue() * calculatedPrice.doubleValue()) / 100;
-        			discountItem.setDiscountedPrice(new BigDecimal(discount));
-        			calculatedPrice = new BigDecimal(calculatedPrice.doubleValue() - discount);
-        		}
-        		itemEntity.setPrice(calculatedPrice);
-        	} 
+        		itemEntity.setPrice(calculatedPrice);        		     		
+        	}
+
+        	DiscountItem discountItem = getDiscountItemById(discountItemList, itemEntity.getItemId());
+    		if (discountItem != null) {
+    			BigDecimal totalAmount = itemEntity.getPrice().multiply(itemEntity.getQty());
+    			BigDecimal discount = (totalAmount.multiply(discountItem.getDiscountInPercent())).divide(new BigDecimal(100));
+    			discountItem.setDiscountedPrice(discount);	
+    		}
         }
         
         return businessEventEntity;
@@ -259,7 +259,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
     		ItemEntity itemEntity = CoreUtil.copyProperties(discountItem, ItemEntity.class);
     		itemEntity.setPrice(discountItem.getDiscountedPrice());
     		itemEntity.setItemType(ItemType.DISCOUNT);
-    		itemEntity.setQty(new BigDecimal(1));
+    		itemEntity.setQty(discountItem.getDiscountInPercent());
     		
     		businessEventEntity.addItemEntity(itemEntity);
     	}

@@ -32,6 +32,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
@@ -96,6 +97,14 @@ public abstract class TestSupport {
 		
 		return i;
 	
+    }
+    
+    protected DiscountItem createDiscountItem() {
+    	DiscountItem discountItem = new DiscountItem();
+    	discountItem.setItemId("IT101");
+    	discountItem.setDescription("A discount item shall have same id as service item");
+    	discountItem.setDiscountInPercent(new BigDecimal(50));
+    	return discountItem;
     }
     
     protected BusinessEventEntity createSampleBusinessEventEntity() {
