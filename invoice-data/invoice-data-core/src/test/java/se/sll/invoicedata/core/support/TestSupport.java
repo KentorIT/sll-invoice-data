@@ -35,6 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
+import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
@@ -101,9 +102,14 @@ public abstract class TestSupport {
     
     protected DiscountItem createDiscountItem() {
     	DiscountItem discountItem = new DiscountItem();
-    	discountItem.setItemId("IT101");
     	discountItem.setDescription("A discount item shall have same id as service item");
-    	discountItem.setDiscountInPercent(new BigDecimal(50));
+    	discountItem.setDiscountInPercentage(50);
+    	discountItem.setOrderOfDiscount(1);
+    	
+    	ReferenceItem refItem = new ReferenceItem();
+    	refItem.setQty(1);
+    	refItem.setRefItemId("IT101");    	
+    	discountItem.getReferenceItemList().add(refItem);
     	return discountItem;
     }
     

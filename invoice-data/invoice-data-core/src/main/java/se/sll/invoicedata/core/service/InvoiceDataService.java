@@ -47,7 +47,7 @@ public interface InvoiceDataService {
 		
 	/**
 	 * Returns all unprocessed events for a particular supplier.
-	 * @param request TODO
+	 * @param request
 	 * 
 	 * @return the result list, might be empty if no none events found.
 	 */

@@ -23,8 +23,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -122,8 +125,11 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     @Column(name = "end_time", nullable=false, updatable=false)
     private Date endTime;
     
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
     private List<ItemEntity> itemEntities = new LinkedList<ItemEntity>();
+    
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
+    private List<DiscountItemEntity> discountItemEntities = new LinkedList<DiscountItemEntity>();
 
     @ManyToOne(optional=true)
     @JoinColumn(name="invoice_data_id")
@@ -328,8 +334,20 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         return false;
     }
     
+    public boolean addDiscountItemEntity(DiscountItemEntity discountItemEntity) {
+        if (discountItemEntity.getEvent() == null) {
+        	discountItemEntity.setEvent(this);
+            return discountItemEntities.add(discountItemEntity);
+        }
+        return false;
+    }
+    
     public List<ItemEntity> getItemEntities() {
         return Collections.unmodifiableList(itemEntities);
+    }
+    
+    public List<DiscountItemEntity> getDiscountItemEntities() {
+        return Collections.unmodifiableList(discountItemEntities);
     }
 
     public InvoiceDataEntity getInvoiceData() {
@@ -371,14 +389,24 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
      */
     public BigDecimal getTotalAmount() {
         BigDecimal amount = BigDecimal.valueOf(0.0);
+        Map<String, ItemEntity> serviceItemMap = new HashMap<String, ItemEntity>();
+        
         for (final ItemEntity itemEntity : itemEntities) {
-        	if (itemEntity.getItemType() == ItemType.SERVICE) {
-        		amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty()));
-        	} else if (itemEntity.getItemType() == ItemType.DISCOUNT) {
-        		amount = amount.subtract(itemEntity.getPrice());
-        	}
+       		amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty()));
+       		serviceItemMap.put(itemEntity.getItemId(), itemEntity);
         }
+        
+        TreeSet<DiscountItemEntity> discountItemSet = new TreeSet<DiscountItemEntity>(discountItemEntities);
+        for (final DiscountItemEntity discountItemEntity : discountItemSet) {
+        	for (ReferenceItemEntity referenceItemEntity : discountItemEntity.getReferenceItemEntities()) {
+        		ItemEntity itemEntity = serviceItemMap.get(referenceItemEntity.getRefItemId());
+        		BigDecimal priceOnDiscountItems = itemEntity.getPrice().multiply(new BigDecimal(referenceItemEntity.getQty()));
+        		amount = amount.subtract(priceOnDiscountItems.multiply(new BigDecimal(discountItemEntity.getDiscountInPercentage())).divide(new BigDecimal(100)));
+        	}
+        	
+        }        
         amount = amount.setScale(2, RoundingMode.HALF_UP);
+        serviceItemMap.clear();
         return amount;
     }
 

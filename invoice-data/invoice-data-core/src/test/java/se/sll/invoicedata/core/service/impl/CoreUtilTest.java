@@ -83,7 +83,6 @@ public class CoreUtilTest extends TestSupport {
         be.addItemEntity(createSampleItemEntity());
         
         final Event e = copyProperties(be, Event.class);
-        // TODO: asserts
         
         assertEquals(0, e.getItemList().size());
         

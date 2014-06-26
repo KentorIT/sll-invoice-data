@@ -34,6 +34,7 @@ import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
@@ -65,15 +66,17 @@ public class InvoiceDataBaseService {
 	
 	void validateForAnyDuplicateDiscountItems(final Event event) {
 		
-		if (event.getDiscountItemList() != null) {
-			Collections.sort(event.getDiscountItemList(), new Comparator<DiscountItem>() {
-				public int compare(DiscountItem discountItem1, DiscountItem discountItem2) {
-					if (discountItem1.getItemId().equals(discountItem2.getItemId())) {
-						throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.items, duplicate items identified. Check item ids");
-					}
-					return discountItem1.getItemId().compareTo(discountItem2.getItemId());
-			    }
-			});					
+		if (CoreUtil.ifDiscountItemExists(event.getDiscountItemList())) {
+			for (DiscountItem discountItem : event.getDiscountItemList()) {
+				Collections.sort(discountItem.getReferenceItemList(), new Comparator<ReferenceItem>() {
+					public int compare(ReferenceItem refItem1, ReferenceItem refItem2) {
+						if (refItem1.getRefItemId().equals(refItem2.getRefItemId())) {
+							throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.discountItems, duplicate discount items identified. Check item id");
+						}
+						return refItem1.getRefItemId().compareTo(refItem2.getRefItemId());
+				    }
+				});					
+			}
 		}
 	}
        
@@ -239,19 +242,5 @@ public class InvoiceDataBaseService {
 
 		return invoiceDataList;
 	}
-	
-	DiscountItem getDiscountItemById(List<DiscountItem> discountItemList, String itemId) {
-		DiscountItem selectedDiscountItem = null;
-		if (discountItemList != null) {
-			for (DiscountItem discountItem : discountItemList) {
-				if (discountItem.getItemId().equals(itemId)) {
-					selectedDiscountItem = discountItem;
-					break;
-				}
-			}
-		}
-		return selectedDiscountItem;		
-	}
-
 
 }

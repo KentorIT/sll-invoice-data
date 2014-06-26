@@ -39,15 +39,17 @@ import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.DiscountItemEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
-import se.sll.invoicedata.core.model.entity.ItemType;
+import se.sll.invoicedata.core.model.entity.ReferenceItemEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
@@ -95,6 +97,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         try {
         	validateForAnyDuplicateDiscountItems(event);
         	final BusinessEventEntity businessEventEntity = EntityBeanConverter.toBusinessEventEntity(event);
+        	addDiscountItemsToBusinessEventEntity(businessEventEntity, event.getDiscountItemList());
             registerBusinessEvent(businessEventEntity, event.getDiscountItemList());
         } finally {
             lock.release(name);
@@ -206,7 +209,6 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
 
     private void registerBusinessEvent(final BusinessEventEntity newEntity, List<DiscountItem> discountItemList) {
         rate(validateBusinessEventWithItemList(newEntity), discountItemList);
-        addDiscountItemsToBusinessEventEntity(newEntity, discountItemList);
 
         final BusinessEventEntity oldEntity = businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId());
         final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
@@ -241,27 +243,21 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         		BigDecimal calculatedPrice = ratingService.rate(itemEntity);
         		itemEntity.setPrice(calculatedPrice);        		     		
         	}
-
-        	DiscountItem discountItem = getDiscountItemById(discountItemList, itemEntity.getItemId());
-    		if (discountItem != null) {
-    			BigDecimal totalAmount = itemEntity.getPrice().multiply(itemEntity.getQty());
-    			BigDecimal discount = (totalAmount.multiply(discountItem.getDiscountInPercent())).divide(new BigDecimal(100));
-    			discountItem.setDiscountedPrice(discount);	
-    		}
         }
         
         return businessEventEntity;
     }
     
     private void addDiscountItemsToBusinessEventEntity(BusinessEventEntity businessEventEntity, List<DiscountItem> discountItemList) {
-    	
-    	for (DiscountItem discountItem : discountItemList) {
-    		ItemEntity itemEntity = CoreUtil.copyProperties(discountItem, ItemEntity.class);
-    		itemEntity.setPrice(discountItem.getDiscountedPrice());
-    		itemEntity.setItemType(ItemType.DISCOUNT);
-    		itemEntity.setQty(discountItem.getDiscountInPercent());
-    		
-    		businessEventEntity.addItemEntity(itemEntity);
+    	if (CoreUtil.ifDiscountItemExists(discountItemList)) {
+	    	for (DiscountItem discountItem : discountItemList) {
+	    		DiscountItemEntity discountItemEntity = CoreUtil.copyProperties(discountItem, DiscountItemEntity.class);
+	    		for (ReferenceItem referenceItem : discountItem.getReferenceItemList()) {
+	    			ReferenceItemEntity referenceItemEntity = CoreUtil.copyProperties(referenceItem, ReferenceItemEntity.class);
+	    			discountItemEntity.addReferenceItemEntity(referenceItemEntity);
+	    		}
+	    		businessEventEntity.addDiscountItemEntity(discountItemEntity);    		
+	    	}
     	}
     }
 

@@ -36,8 +36,10 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
+import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
@@ -158,8 +160,10 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
     @Rollback(true)
     public void testRegisterEvent_With_Duplicate_Discount_Items_Result_Fail() {
         final Event e = createSampleEvent();
-        e.getDiscountItemList().add(createDiscountItem());
-        e.getDiscountItemList().add(createDiscountItem());
+        DiscountItem discountItem = createDiscountItem();
+        ReferenceItem existingItem = discountItem.getReferenceItemList().get(0);
+        discountItem.getReferenceItemList().add(existingItem);
+        e.getDiscountItemList().add(discountItem);
         invoiceDataService.registerEvent(e);		
     }
     
@@ -175,7 +179,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         getIDRequest.setSupplierId(e.getSupplierId());
         getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
         RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
-        assertEquals(350, rE.getTotalAmount().intValue());
+        assertEquals(525, rE.getTotalAmount().intValue());
     }
     
 

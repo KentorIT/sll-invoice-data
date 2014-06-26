@@ -22,21 +22,23 @@
  */
 package se.sll.invoicedata.core.service.impl;
 
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.Item;
+import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.DiscountItemEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
-import se.sll.invoicedata.core.model.entity.ItemType;
+import se.sll.invoicedata.core.model.entity.ReferenceItemEntity;
 
 /**
  * @author muqkha
@@ -51,53 +53,46 @@ public class EntityBeanConverter {
 	 * @return the entity bean.
 	 */
 	static BusinessEventEntity toBusinessEventEntity(final Event event) {
-		final BusinessEventEntity entity = copyProperties(event, BusinessEventEntity.class);
+		final BusinessEventEntity businessEventEntity = copyProperties(event, BusinessEventEntity.class);
 		for (final Item item : event.getItemList()) {
-			ItemEntity itemEntity = copyProperties(item, ItemEntity.class);
-			itemEntity.setItemType(ItemType.SERVICE);
-			entity.addItemEntity(itemEntity);
+			businessEventEntity.addItemEntity(copyProperties(item, ItemEntity.class));
 		}
 
-		return entity;
+		return businessEventEntity;
 	}
-
+	
 	/**
 	 * Maps BusinessEventEntity to RegisteredEvent object
-	 * @param bEEntity
+	 * @param businessEventEntity
 	 * @return RegisteredEvent
 	 */
-	static RegisteredEvent fromBusinessEventEntityToRegisteredEvent(final BusinessEventEntity bEEntity) {
-		final RegisteredEvent rEvent = copyProperties(bEEntity, RegisteredEvent.class);
+	static RegisteredEvent fromBusinessEventEntityToRegisteredEvent(final BusinessEventEntity businessEventEntity) {
+		final RegisteredEvent registeredEvent = copyProperties(businessEventEntity, RegisteredEvent.class);
 		
-		rEvent.getItemList().addAll(copyItemEntityToServiceItem(bEEntity.getItemEntities()));
-		rEvent.getDiscountItemList().addAll(copyItemEntityToDiscountItem(bEEntity.getItemEntities()));
+		CoreUtil.copyGenericLists(registeredEvent.getItemList(), businessEventEntity.getItemEntities(), Item.class);
+		registeredEvent.getDiscountItemList().addAll(copyDiscountItemEntityToDiscountItem(businessEventEntity.getDiscountItemEntities()));
 
-		return rEvent;
+		return registeredEvent;
 	}
 	
-	private static List<Item> copyItemEntityToServiceItem(List<ItemEntity> itemEntityList) {
-		List<Item> itemList = new ArrayList<Item>();
-		for (ItemEntity itemEntity : itemEntityList) {
-			if (itemEntity.getItemType() == ItemType.SERVICE) {
-				itemList.add(copyProperties(itemEntity, Item.class));
-			}
-		}
-		
-		return itemList;
-	}
-	
-	private static List<DiscountItem> copyItemEntityToDiscountItem(List<ItemEntity> itemEntityList) {
+	private static List<DiscountItem> copyDiscountItemEntityToDiscountItem(Collection<DiscountItemEntity> discountItemCollection) {
 		List<DiscountItem> discountItemList = new ArrayList<DiscountItem>();
-		for (ItemEntity itemEntity : itemEntityList) {
-			if (itemEntity.getItemType() == ItemType.DISCOUNT) {
-				DiscountItem discountItem = copyProperties(itemEntity, DiscountItem.class);
-				discountItem.setDiscountInPercent(itemEntity.getQty());
-				discountItem.setDiscountedPrice(itemEntity.getPrice());
-				discountItemList.add(discountItem);
-			}
+		for (DiscountItemEntity discountItemEntity : discountItemCollection) {
+			discountItemList.add(toDiscountItem(discountItemEntity));
 		}
 		
 		return discountItemList;
+	}
+	
+	static DiscountItem toDiscountItem(final DiscountItemEntity discountItemEntity) {
+		final DiscountItem discountItem = copyProperties(discountItemEntity, DiscountItem.class);			
+		
+		for (final ReferenceItemEntity referenceItemEntity : discountItemEntity.getReferenceItemEntities()) {
+			final ReferenceItem referenceItem = copyProperties(referenceItemEntity, ReferenceItem.class);
+			discountItem.getReferenceItemList().add(referenceItem);
+		}
+		
+		return discountItem;	
 	}
 	
 	/**

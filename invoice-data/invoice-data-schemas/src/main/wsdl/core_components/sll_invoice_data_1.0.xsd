@@ -24,8 +24,7 @@
 			<xs:element name="qty">
 				<xs:simpleType>
 					<xs:restriction base="xs:decimal">
-						<xs:maxExclusive value="99999"/>
-						<xs:fractionDigits value="2"/>
+						<xs:maxExclusive value="99999"/>						
 						<xs:minInclusive value="0"/>
 					</xs:restriction>
 				</xs:simpleType>
@@ -36,17 +35,31 @@
 	
 	<xs:complexType name="DiscountItem">
 		<xs:sequence>
-			<xs:element name="itemId" type="xs:string"/>
 			<xs:element name="description" type="xs:string"/>
-			<xs:element name="discountInPercent">
+			<xs:element name="discountInPercentage">
 				<xs:simpleType>
-					<xs:restriction base="xs:decimal">
+					<xs:restriction base="xs:int">
 						<xs:maxInclusive value="100"/>
 						<xs:minInclusive value="0"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="discountedPrice" type="xs:decimal" minOccurs="0" maxOccurs="1"/>			
+			<xs:element name="orderOfDiscount" type="xs:int" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="referenceItemList" type="tns:ReferenceItem" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ReferenceItem">
+		<xs:sequence>
+			<xs:element name="refItemId" type="xs:string"/>			
+			<xs:element name="qty">
+				<xs:simpleType>
+					<xs:restriction base="xs:int">
+						<xs:maxExclusive value="99999"/>						
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
 
