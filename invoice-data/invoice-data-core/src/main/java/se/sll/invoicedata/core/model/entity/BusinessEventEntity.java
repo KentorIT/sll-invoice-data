@@ -389,24 +389,16 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
      */
     public BigDecimal getTotalAmount() {
         BigDecimal amount = BigDecimal.valueOf(0.0);
-        Map<String, ItemEntity> serviceItemMap = new HashMap<String, ItemEntity>();
         
         for (final ItemEntity itemEntity : itemEntities) {
-       		amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty()));
-       		serviceItemMap.put(itemEntity.getItemId(), itemEntity);
+       		amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty()));       	
         }
         
-        TreeSet<DiscountItemEntity> discountItemSet = new TreeSet<DiscountItemEntity>(discountItemEntities);
+        TreeSet<DiscountItemEntity> discountItemSet = new TreeSet<DiscountItemEntity>(discountItemEntities);        
         for (final DiscountItemEntity discountItemEntity : discountItemSet) {
-        	for (ReferenceItemEntity referenceItemEntity : discountItemEntity.getReferenceItemEntities()) {
-        		ItemEntity itemEntity = serviceItemMap.get(referenceItemEntity.getRefItemId());
-        		BigDecimal priceOnDiscountItems = itemEntity.getPrice().multiply(new BigDecimal(referenceItemEntity.getQty()));
-        		amount = amount.subtract(priceOnDiscountItems.multiply(new BigDecimal(discountItemEntity.getDiscountInPercentage())).divide(new BigDecimal(100)));
-        	}
-        	
+        	amount = amount.subtract(discountItemEntity.getTotalAmount());
         }        
         amount = amount.setScale(2, RoundingMode.HALF_UP);
-        serviceItemMap.clear();
         return amount;
     }
 

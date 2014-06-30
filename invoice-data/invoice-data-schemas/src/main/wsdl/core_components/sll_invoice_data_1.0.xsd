@@ -46,6 +46,7 @@
 			</xs:element>
 			<xs:element name="orderOfDiscount" type="xs:int" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="referenceItemList" type="tns:ReferenceItem" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="discountedPrice" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 	

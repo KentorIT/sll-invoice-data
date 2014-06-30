@@ -85,7 +85,8 @@ public class EntityBeanConverter {
 	}
 	
 	static DiscountItem toDiscountItem(final DiscountItemEntity discountItemEntity) {
-		final DiscountItem discountItem = copyProperties(discountItemEntity, DiscountItem.class);			
+		final DiscountItem discountItem = copyProperties(discountItemEntity, DiscountItem.class);
+		discountItem.setDiscountedPrice(discountItemEntity.getTotalAmount());
 		
 		for (final ReferenceItemEntity referenceItemEntity : discountItemEntity.getReferenceItemEntities()) {
 			final ReferenceItem referenceItem = copyProperties(referenceItemEntity, ReferenceItem.class);
