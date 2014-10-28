@@ -45,7 +45,7 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
             public void run() {
                 viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
             }
-        }));
+        },  parameters.getSupplierId()));
         
         return viewIDataResponse;
 	}

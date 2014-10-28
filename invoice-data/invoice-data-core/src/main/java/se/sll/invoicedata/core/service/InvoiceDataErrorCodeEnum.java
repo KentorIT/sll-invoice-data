@@ -28,7 +28,8 @@ public enum InvoiceDataErrorCodeEnum {
     TECHNICAL_ERROR("1001", "Encountered a technical error: %s"),
     VALIDATION_ERROR("1002", "Invalid or missing input data: %s"),
     NOTFOUND_ERROR("1003", "No such %s found: %s"),
-    LIMIT_ERROR("1004", "Reached maximum limit %d: %s");
+    LIMIT_ERROR("1004", "Reached maximum limit %d: %s"),
+    AUTHORIZATION_ERROR("1005", "Requesting system has no access to the given supplier: %s");
     
     
     private final String code;

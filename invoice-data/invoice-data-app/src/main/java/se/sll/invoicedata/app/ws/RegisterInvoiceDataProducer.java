@@ -44,7 +44,7 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
             public void run() {
                 getInvoiceDataService().registerEvent(parameters);
             }
-        }));
+        },  parameters.getSupplierId()));
         
         return response;
     }

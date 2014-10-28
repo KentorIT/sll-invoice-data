@@ -135,6 +135,7 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 	public void testViewInvoiceData_1_Event_Result_Success() {
 		
 		ViewInvoiceDataRequest viewIDReq = new ViewInvoiceDataRequest();
+		viewIDReq.setSupplierId(supplierId);
 		viewIDReq.setReferenceId(referenceId);
 		
 		// 5. Use the referenceId to fetch the InvoiceData;
@@ -158,6 +159,7 @@ public class ViewInvoiceDataProducerTest extends TestSupport {
 	@Test
 	public void testViewInvoiceData_Empty_Request_Result_Fail() {
 		ViewInvoiceDataRequest viewIDReq = new ViewInvoiceDataRequest();
+		viewIDReq.setSupplierId(supplierId);
 		viewIDReq.setReferenceId("");
 		ViewInvoiceDataResponse viewIDResp = viewIDRInterface.viewInvoiceData(LOGICAL_ADDRESS, viewIDReq);
 		

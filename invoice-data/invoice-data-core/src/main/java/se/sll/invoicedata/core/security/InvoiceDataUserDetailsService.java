@@ -75,7 +75,6 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
         throw new UsernameNotFoundException(name);
     }
     
-    //
     private boolean allow(final String name) {
         if ((aclAllow.length == 1) && "*".equals(aclAllow[0])) {
             return true;

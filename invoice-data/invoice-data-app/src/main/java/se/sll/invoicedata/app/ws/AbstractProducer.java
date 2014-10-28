@@ -29,10 +29,12 @@ import org.apache.cxf.binding.soap.SoapFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import se.sll.invoicedata.core.jmx.StatusBean;
+import se.sll.invoicedata.core.service.HSAToSupplierMappingService;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
@@ -53,9 +55,15 @@ public abstract class AbstractProducer {
     
     @Autowired
     private InvoiceDataService invoiceDataService;
+    
+    @Autowired
+    private HSAToSupplierMappingService hsaToSupplierMappningService;
 
     @Resource
     private WebServiceContext webServiceContext;
+    
+    @Value("${security.acl}") 
+    private String aclAllow;
     
     /**
      * Creates a soap fault.
@@ -119,8 +127,7 @@ public abstract class AbstractProducer {
      * 
      * @param messageContext the context.
      */
-    private void log(MessageContext messageContext) {
-        final Map<?, ?> headers = (Map<?, ?>)messageContext.get(MessageContext.HTTP_REQUEST_HEADERS);
+    private void log(final Map<?, ?> headers) {
         log.info(createLogMessage(headers.get(SERVICE_CONSUMER_HEADER_NAME)));
         log.debug("HTTP Headers {}", headers);
     }
@@ -142,15 +149,17 @@ public abstract class AbstractProducer {
      * @param runnable the runnable to run.
      * @return the result code.
      */
-    protected ResultCode fulfill(final Runnable runnable) {
+    protected ResultCode fulfill(final Runnable runnable, final String supplierId) {
         final MessageContext messageContext = getMessageContext();
         final String path = (String)messageContext.get(MessageContext.PATH_INFO);
         statusBean.start(path);
-        log(messageContext);
+        final Map<?, ?> headers = (Map<?, ?>)messageContext.get(MessageContext.HTTP_REQUEST_HEADERS);
+        log(headers);         
         final ResultCode rc = new ResultCode();
         try {
-            runnable.run();
-            rc.setCode(ResultCodeEnum.OK);
+        	throwExceptionIfNotAuthorizedToAccessSupplier(headers, supplierId);
+        	runnable.run();
+			rc.setCode(ResultCodeEnum.OK);
         } catch (InvoiceDataServiceException ex) {
             rc.setCode((ex.getCode() == InvoiceDataErrorCodeEnum.NOTFOUND_ERROR) ? ResultCodeEnum.NOTFOUND_ERROR : ResultCodeEnum.REQUEST_ERROR);
             rc.setMessage(ex.getMessage() + " (" + statusBean.getGUID() + ")");
@@ -163,5 +172,14 @@ public abstract class AbstractProducer {
         
         return rc;
     }
+
+	public void throwExceptionIfNotAuthorizedToAccessSupplier(final Map<?, ?> headers, final String supplierId) {
+		String hsaID = (String) headers.get(SERVICE_CONSUMER_HEADER_NAME);
+		if (!aclAllow.equals("*") && 
+				!(hsaToSupplierMappningService.isHSAIdMappedToSupplier(hsaID, supplierId)
+						&& aclAllow.contains(hsaID))) {
+			throw InvoiceDataErrorCodeEnum.AUTHORIZATION_ERROR.createException(supplierId);
+		}
+	}
     
 }

@@ -48,7 +48,7 @@ public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoi
                         .getAllUnprocessedBusinessEvents(request));
                                
             }
-        }));
+        },  request.getSupplierId()));
         
         return response;
     }

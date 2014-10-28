@@ -45,7 +45,7 @@ public class ListInvoiceDataProducer extends AbstractProducer implements ListInv
             public void run() {
             	listIDataResponse.getInvoiceDataList().addAll(getInvoiceDataService().listAllInvoiceData(parameters));                
             }
-        }));
+        },  parameters.getSupplierId()));
         
         return listIDataResponse;
 	}
