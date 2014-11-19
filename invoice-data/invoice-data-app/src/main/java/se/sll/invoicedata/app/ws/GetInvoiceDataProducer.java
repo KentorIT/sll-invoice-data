@@ -43,12 +43,13 @@ public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoi
         response.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
+            	throwExceptionIfNotAuthorizedToAccessSupplier(request.getSupplierId());
                 //Fetching unprocessed events with price
                 response.getRegisteredEventList().addAll(getInvoiceDataService()
                         .getAllUnprocessedBusinessEvents(request));
                                
             }
-        },  request.getSupplierId()));
+        }));
         
         return response;
     }

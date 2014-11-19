@@ -43,9 +43,10 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
         createInvoiceDataResp.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
+            	throwExceptionIfNotAuthorizedToAccessSupplier(parameters.getSupplierId()); 
                 createInvoiceDataResp.setReferenceId(getInvoiceDataService().createInvoiceData(parameters));                
             }
-        },  parameters.getSupplierId()));
+        }));
         
         return createInvoiceDataResp;        
     }

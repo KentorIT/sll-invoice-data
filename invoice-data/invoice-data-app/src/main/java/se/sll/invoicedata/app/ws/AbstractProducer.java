@@ -30,10 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import se.sll.invoicedata.core.jmx.StatusBean;
+import se.sll.invoicedata.core.security.User;
 import se.sll.invoicedata.core.service.HSAToSupplierMappingService;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
@@ -48,8 +50,6 @@ public abstract class AbstractProducer {
 
     private static final Logger log = LoggerFactory.getLogger("WS-API");
     
-    private static final String SERVICE_CONSUMER_HEADER_NAME = "x-rivta-original-serviceconsumer-hsaid";
-
     @Autowired
     private StatusBean statusBean;
     
@@ -128,7 +128,7 @@ public abstract class AbstractProducer {
      * @param messageContext the context.
      */
     private void log(final Map<?, ?> headers) {
-        log.info(createLogMessage(headers.get(SERVICE_CONSUMER_HEADER_NAME)));
+        log.info(createLogMessage(getHSAId()));
         log.debug("HTTP Headers {}", headers);
     }
     
@@ -149,17 +149,15 @@ public abstract class AbstractProducer {
      * @param runnable the runnable to run.
      * @return the result code.
      */
-    protected ResultCode fulfill(final Runnable runnable, final String supplierId) {
+    protected ResultCode fulfill(final Runnable runnable) {
         final MessageContext messageContext = getMessageContext();
         final String path = (String)messageContext.get(MessageContext.PATH_INFO);
         statusBean.start(path);
-        final Map<?, ?> headers = (Map<?, ?>)messageContext.get(MessageContext.HTTP_REQUEST_HEADERS);
-        log(headers);         
+        log(messageContext);
         final ResultCode rc = new ResultCode();
         try {
-        	throwExceptionIfNotAuthorizedToAccessSupplier(headers, supplierId);
-        	runnable.run();
-			rc.setCode(ResultCodeEnum.OK);
+            runnable.run();
+            rc.setCode(ResultCodeEnum.OK);
         } catch (InvoiceDataServiceException ex) {
             rc.setCode((ex.getCode() == InvoiceDataErrorCodeEnum.NOTFOUND_ERROR) ? ResultCodeEnum.NOTFOUND_ERROR : ResultCodeEnum.REQUEST_ERROR);
             rc.setMessage(ex.getMessage() + " (" + statusBean.getGUID() + ")");
@@ -173,13 +171,28 @@ public abstract class AbstractProducer {
         return rc;
     }
 
-	public void throwExceptionIfNotAuthorizedToAccessSupplier(final Map<?, ?> headers, final String supplierId) {
-		String hsaID = (String) headers.get(SERVICE_CONSUMER_HEADER_NAME);
-		if (!aclAllow.equals("*") && 
-				!(hsaToSupplierMappningService.isHSAIdMappedToSupplier(hsaID, supplierId)
-						&& aclAllow.contains(hsaID))) {
-			throw InvoiceDataErrorCodeEnum.AUTHORIZATION_ERROR.createException(supplierId);
+	public void throwExceptionIfNotAuthorizedToAccessSupplier(final String supplierId) {
+		if (!aclAllow.equals("*")) {			
+			String hsaID = getHSAId();
+			if (!(hsaToSupplierMappningService.isHSAIdMappedToSupplier(hsaID, supplierId)
+					&& aclAllow.contains(hsaID))) {
+				log.warn(hsaID + " has no access to " + supplierId);
+				throw InvoiceDataErrorCodeEnum.AUTHORIZATION_ERROR.createException(supplierId);
+			}
 		}
+	}
+	
+	private String getHSAId() {
+		String hsaId = null;		
+		try {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			hsaId = user.getUsername();
+		} catch (Exception e) {
+			log.error("Could not fetch username from SecurityContextHolder " + e.getMessage());
+		}
+		
+        log.info("HsaId from certificate: " + hsaId);
+        return hsaId;
 	}
     
 }

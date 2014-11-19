@@ -39,3 +39,14 @@ CREATE TABLE `invoice_data_event_reference_item` (
   KEY `FK562AC6AF2A7105A5` (`discount_item_id`),
   CONSTRAINT `FK562AC6AF2A7105A5` FOREIGN KEY (`discount_item_id`) REFERENCES `invoice_data_event_discount_item` (`id`)
 ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS `hsa_supplier_mapping`;
+CREATE TABLE `hsa_supplier_mapping` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `hsaId` varchar(64) NOT NULL,
+  `supplier_id_config` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `hsaId` (`hsaId`)
+) ENGINE=InnoDB;
+
+insert into hsa_supplier_mapping values(1, 'SE2321000016-70XZ', '556482-8654');

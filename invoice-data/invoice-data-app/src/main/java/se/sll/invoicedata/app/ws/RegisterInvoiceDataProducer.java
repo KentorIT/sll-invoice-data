@@ -42,9 +42,10 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
         response.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
+            	throwExceptionIfNotAuthorizedToAccessSupplier(parameters.getSupplierId());
                 getInvoiceDataService().registerEvent(parameters);
             }
-        },  parameters.getSupplierId()));
+        }));
         
         return response;
     }

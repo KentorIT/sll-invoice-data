@@ -19,6 +19,11 @@
 
 package se.sll.invoicedata.app.ws;
 
+import java.util.Map;
+
+import javax.xml.ws.handler.MessageContext;
+
+import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata.viewinvoicedata._1.rivtabp21.ViewInvoiceDataResponderInterface;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataRequest;
@@ -34,20 +39,23 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
 
     static final ObjectFactory objectFactory = new ObjectFactory();
 
-	@Override
-	public ViewInvoiceDataResponse viewInvoiceData(final String logicalAddress,
-			final ViewInvoiceDataRequest parameters) {		
-		
-        final ViewInvoiceDataResponse viewIDataResponse = objectFactory.createViewInvoiceDataResponse();
+    @Override
+    public ViewInvoiceDataResponse viewInvoiceData(final String logicalAddress,
+                    final ViewInvoiceDataRequest parameters) {              
+            
+    final ViewInvoiceDataResponse viewIDataResponse = objectFactory.createViewInvoiceDataResponse();
 
-        viewIDataResponse.setResultCode(fulfill(new Runnable() {
-            @Override
-            public void run() {
-                viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
-            }
-        },  parameters.getSupplierId()));
-        
-        return viewIDataResponse;
-	}
+    viewIDataResponse.setResultCode(fulfill(new Runnable() {
+        @Override
+        public void run() {
+        	InvoiceData invoiceData = getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId());
+        	throwExceptionIfNotAuthorizedToAccessSupplier(invoiceData.getSupplierId());
+            viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
+        }
+    }));
+	    
+    return viewIDataResponse;
+    }
+
 
 }
