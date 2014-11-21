@@ -23,7 +23,6 @@
 package se.sll.invoicedata.core.model.entity;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,10 +67,8 @@ public class DiscountItemEntity implements Comparable<DiscountItemEntity> {
     @JoinColumn(name="event_id", updatable=false)
     private BusinessEventEntity event;
     
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="id", orphanRemoval=true, cascade=CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="discountItemEntity", orphanRemoval=true, cascade=CascadeType.ALL)    
     private List<ReferenceItemEntity> referenceItemEntities = new LinkedList<ReferenceItemEntity>();
-    
-    
     
 	public Long getId() {
 		return id;
@@ -134,7 +131,7 @@ public class DiscountItemEntity implements Comparable<DiscountItemEntity> {
 		BigDecimal amount = BigDecimal.valueOf(0.0);		
 		Map<String, ItemEntity> serviceItemMap = new HashMap<String, ItemEntity>();
         
-        for (final ItemEntity itemEntity : event.getItemEntities()) {        	
+        for (final ItemEntity itemEntity : event.getItemEntities()) {
        		serviceItemMap.put(itemEntity.getItemId(), itemEntity);
         }
         
