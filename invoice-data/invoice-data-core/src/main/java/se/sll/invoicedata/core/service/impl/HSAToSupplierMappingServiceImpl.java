@@ -43,11 +43,11 @@ public class HSAToSupplierMappingServiceImpl implements HSAToSupplierMappingServ
 	private Map<String, String> serviceCodeToSupplierMap = null; 
 	
 	@Override
-	public boolean isHSAIdMappedToSupplier(String serviceCode, String supplierId) {
+	public boolean isHSAIdMappedToSupplier(String hsaID, String supplierId) {
 		if (serviceCodeToSupplierMap == null) {
 			reloadHSAIdSupplierRelation();
 		}
-		String config = serviceCodeToSupplierMap.get(serviceCode);		
+		String config = serviceCodeToSupplierMap.get(hsaID);		
 		return config != null && (config.startsWith("*") || config.contains(supplierId));
 	}
 	
