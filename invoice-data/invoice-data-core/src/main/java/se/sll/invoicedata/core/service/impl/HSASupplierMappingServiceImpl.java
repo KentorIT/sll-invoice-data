@@ -28,17 +28,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import se.sll.invoicedata.core.model.entity.HSAToSupplierMappingEntity;
-import se.sll.invoicedata.core.model.repository.HSAToSupplierdMappingRepository;
-import se.sll.invoicedata.core.service.HSAToSupplierMappingService;
+import se.sll.invoicedata.core.model.entity.HSASupplierMappingEntity;
+import se.sll.invoicedata.core.model.repository.HSASupplierMappingRepository;
+import se.sll.invoicedata.core.service.HSASupplierMappingService;
 
 @Service
-public class HSAToSupplierMappingServiceImpl implements HSAToSupplierMappingService {
+public class HSASupplierMappingServiceImpl implements HSASupplierMappingService {
 	
-	private static final Logger log = LoggerFactory.getLogger(HSAToSupplierMappingServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(HSASupplierMappingServiceImpl.class);
 	
 	@Autowired
-	private HSAToSupplierdMappingRepository serviceAuthorizationRepository;
+	private HSASupplierMappingRepository serviceAuthorizationRepository;
 	
 	private Map<String, String> serviceCodeToSupplierMap = null; 
 	
@@ -53,10 +53,10 @@ public class HSAToSupplierMappingServiceImpl implements HSAToSupplierMappingServ
 	
 	public void reloadHSAIdSupplierRelation() {
 		log.info("AuthorizationService loading/reloading service code supplier relation");
-		List<HSAToSupplierMappingEntity> serviceAuthEntityList = serviceAuthorizationRepository.findAll();
+		List<HSASupplierMappingEntity> serviceAuthEntityList = serviceAuthorizationRepository.findAll();
 		serviceCodeToSupplierMap = new HashMap<String, String>();
 		
-		for (HSAToSupplierMappingEntity entity : serviceAuthEntityList) {
+		for (HSASupplierMappingEntity entity : serviceAuthEntityList) {
 			serviceCodeToSupplierMap.put(entity.getHSAId(), entity.getSupplierIdConfig());
 		}
 	}

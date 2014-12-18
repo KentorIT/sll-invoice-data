@@ -23,6 +23,7 @@ import riv.sll.invoicedata.listinvoicedata._1.rivtabp21.ListInvoiceDataResponder
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataResponse;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ObjectFactory;
+import se.sll.invoicedata.core.utility.Operation;
 
 /**
  * 
@@ -44,6 +45,7 @@ public class ListInvoiceDataProducer extends AbstractProducer implements ListInv
 			@Override
 			public void run() {
 				throwExceptionIfNotAuthorizedToAccessSupplier(parameters.getSupplierId());
+				throwExceptionIfNotAuthorizedToAccessOperation(parameters.getSupplierId(), Operation.LIST);
 			    listIDataResponse.getInvoiceDataList().addAll(getInvoiceDataService().listAllInvoiceData(parameters));                
 			}
 		}));

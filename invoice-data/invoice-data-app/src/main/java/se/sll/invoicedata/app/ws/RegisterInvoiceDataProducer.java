@@ -24,6 +24,7 @@ import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
+import se.sll.invoicedata.core.utility.Operation;
 
 /**
  * Registers new business events.
@@ -43,6 +44,7 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
             @Override
             public void run() {
             	throwExceptionIfNotAuthorizedToAccessSupplier(parameters.getSupplierId());
+            	throwExceptionIfNotAuthorizedToAccessOperation(parameters.getSupplierId(), Operation.REGISTER);
                 getInvoiceDataService().registerEvent(parameters);
             }
         }));

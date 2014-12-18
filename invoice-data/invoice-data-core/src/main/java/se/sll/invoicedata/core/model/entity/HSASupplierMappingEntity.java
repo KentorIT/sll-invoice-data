@@ -35,7 +35,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "hsa_supplier_mapping")
-public class HSAToSupplierMappingEntity {
+public class HSASupplierMappingEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

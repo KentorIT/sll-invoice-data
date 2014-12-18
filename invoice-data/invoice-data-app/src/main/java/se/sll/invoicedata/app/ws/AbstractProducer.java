@@ -36,10 +36,12 @@ import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.security.User;
-import se.sll.invoicedata.core.service.HSAToSupplierMappingService;
+import se.sll.invoicedata.core.service.HSASupplierMappingService;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
+import se.sll.invoicedata.core.service.SupplierOperationMappingService;
+import se.sll.invoicedata.core.utility.Operation;
 
 /**
  * Abstracts generic logging and error handling for Web Service Producers.
@@ -57,13 +59,19 @@ public abstract class AbstractProducer {
     private InvoiceDataService invoiceDataService;
     
     @Autowired
-    private HSAToSupplierMappingService hsaToSupplierMappningService;
+    private HSASupplierMappingService hsaToSupplierMappningService;
+    
+    @Autowired
+    private SupplierOperationMappingService supplierOperationMappingService;
 
     @Resource
     private WebServiceContext webServiceContext;
     
     @Value("${security.acl}") 
-    private String aclAllow;
+    private String securityAccessList;
+    
+    @Value("${operation.acl}") 
+    private String operationAccessList;
     
     /**
      * Creates a soap fault.
@@ -172,14 +180,29 @@ public abstract class AbstractProducer {
     }
 
 	public void throwExceptionIfNotAuthorizedToAccessSupplier(final String supplierId) {
-		if (!aclAllow.equals("*")) {			
+		if (!isOpenToAllSystems()) {			
 			String hsaID = getHSAId();
 			if (!(hsaToSupplierMappningService.isHSAIdMappedToSupplier(hsaID, supplierId)
-					&& aclAllow.contains(hsaID))) {
+					&& securityAccessList.contains(hsaID))) {
 				log.warn(hsaID + " has no access to " + supplierId);
-				throw InvoiceDataErrorCodeEnum.AUTHORIZATION_ERROR.createException(supplierId);
+				throw InvoiceDataErrorCodeEnum.SERVICE_AUTHORIZATION_ERROR.createException(supplierId);
 			}
 		}
+	}
+	
+	public void throwExceptionIfNotAuthorizedToAccessOperation(final String supplierId, final Operation operationEnum) {
+		if (!isOpenToAllSuppliers() && !supplierOperationMappingService.isSupplierMappedToOperation(supplierId, operationEnum)) {
+			log.warn(supplierId + " has no access to operation " + operationEnum.name());
+			throw InvoiceDataErrorCodeEnum.SUPPLIER_AUTHORIZATION_ERROR.createException(supplierId);
+		}
+	}
+	
+	private boolean isOpenToAllSystems() {
+		return (securityAccessList != null && securityAccessList.equals("*"));
+	}
+	
+	private boolean isOpenToAllSuppliers() {
+		return (operationAccessList != null && operationAccessList.equals("*"));
 	}
 	
 	private String getHSAId() {

@@ -17,19 +17,11 @@
  *     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
  */
 
-/**
- * 
- */
-package se.sll.invoicedata.core.model.repository;
+package se.sll.invoicedata.core.service;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import se.sll.invoicedata.core.model.entity.HSAToSupplierMappingEntity;
-
-/**
- * @author muqkha
- *
- */
-public interface HSAToSupplierdMappingRepository extends JpaRepository<HSAToSupplierMappingEntity, Long> {
-
+public interface HSASupplierMappingService {
+	
+	boolean isHSAIdMappedToSupplier(String hsaId, String supplierId);
+	
+	void reloadHSAIdSupplierRelation();
 }

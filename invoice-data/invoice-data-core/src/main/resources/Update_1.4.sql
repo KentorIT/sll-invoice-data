@@ -17,6 +17,7 @@
 --     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
 --
 
+--Add new table invoice_data_discount_item
 DROP TABLE IF EXISTS `invoice_data_event_discount_item`;
 CREATE TABLE `invoice_data_event_discount_item` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -29,6 +30,8 @@ CREATE TABLE `invoice_data_event_discount_item` (
   CONSTRAINT `FK6C0DF29B8B18D8` FOREIGN KEY (`event_id`) REFERENCES `invoice_data_event` (`id`)
 ) ENGINE=InnoDB;
 
+
+--Add new table invoice_data_event_reference_item
 DROP TABLE IF EXISTS `invoice_data_event_reference_item`;
 CREATE TABLE `invoice_data_event_reference_item` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -40,6 +43,14 @@ CREATE TABLE `invoice_data_event_reference_item` (
   CONSTRAINT `FK562AC6AF2A7105A5` FOREIGN KEY (`discount_item_id`) REFERENCES `invoice_data_event_discount_item` (`id`)
 ) ENGINE=InnoDB;
 
+
+--Alter table invoice_data_event_item
+ALTER TABLE invoice_data_event_item ADD COLUMN item_type varchar(64) NOT NULL;
+
+--Update table invoice_data_event_item
+UPDATE invoice_data_event_item SET item_type='SERVICE';
+
+--Add new table hsa_supplier_mapping
 DROP TABLE IF EXISTS `hsa_supplier_mapping`;
 CREATE TABLE `hsa_supplier_mapping` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -49,4 +60,14 @@ CREATE TABLE `hsa_supplier_mapping` (
   UNIQUE KEY `hsaId` (`hsaId`)
 ) ENGINE=InnoDB;
 
+--Insert into hsa_supplier_mapping
 insert into hsa_supplier_mapping values(1, 'SE2321000016-70XZ', '556482-8654');
+
+--Add new table supplier_operation_mapping
+DROP TABLE IF EXISTS `supplier_operation_mapping`;
+CREATE TABLE `supplier_operation_mapping` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `supplier_id` varchar(64) NOT NULL,
+  `operation_enum` varchar(255) NOT NULL,  
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;

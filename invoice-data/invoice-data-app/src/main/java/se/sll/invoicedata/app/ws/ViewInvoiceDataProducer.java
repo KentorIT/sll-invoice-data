@@ -19,15 +19,12 @@
 
 package se.sll.invoicedata.app.ws;
 
-import java.util.Map;
-
-import javax.xml.ws.handler.MessageContext;
-
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata.viewinvoicedata._1.rivtabp21.ViewInvoiceDataResponderInterface;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataRequest;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataResponse;
+import se.sll.invoicedata.core.utility.Operation;
 
 /**
  * 
@@ -50,6 +47,7 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
         public void run() {
         	InvoiceData invoiceData = getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId());
         	throwExceptionIfNotAuthorizedToAccessSupplier(invoiceData.getSupplierId());
+        	throwExceptionIfNotAuthorizedToAccessOperation(invoiceData.getSupplierId(), Operation.VIEW);
             viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
         }
     }));

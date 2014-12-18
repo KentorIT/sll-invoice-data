@@ -23,6 +23,7 @@ import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderIn
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
 import riv.sll.invoicedata.getinvoicedataresponder._1.ObjectFactory;
+import se.sll.invoicedata.core.utility.Operation;
 
 /**
  * 
@@ -44,6 +45,7 @@ public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoi
             @Override
             public void run() {
             	throwExceptionIfNotAuthorizedToAccessSupplier(request.getSupplierId());
+            	throwExceptionIfNotAuthorizedToAccessOperation(request.getSupplierId(), Operation.GET);
                 //Fetching unprocessed events with price
                 response.getRegisteredEventList().addAll(getInvoiceDataService()
                         .getAllUnprocessedBusinessEvents(request));

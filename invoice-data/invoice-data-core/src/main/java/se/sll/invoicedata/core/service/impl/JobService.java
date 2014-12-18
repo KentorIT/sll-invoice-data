@@ -34,7 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
-import se.sll.invoicedata.core.service.HSAToSupplierMappingService;
+import se.sll.invoicedata.core.service.HSASupplierMappingService;
+import se.sll.invoicedata.core.service.SupplierOperationMappingService;
 
 /**
  * Runs service batch jobs.
@@ -51,7 +52,10 @@ public class JobService {
     private InvoiceDataRepository invoiceDataRepository;
     
     @Autowired
-    private HSAToSupplierMappingService authorizationService;
+    private HSASupplierMappingService hsaSupplierMappingService;
+    
+    @Autowired
+    private SupplierOperationMappingService supplierOperationMappingService;
 
     @Autowired
     private StatusBean statusBean;
@@ -63,7 +67,12 @@ public class JobService {
     public void batchJob() {
         log.info("Start batch job");
         
-        //authorizationService.loadServiceCodeSupplierRelation();
+        try {
+        	hsaSupplierMappingService.reloadHSAIdSupplierRelation();
+        	supplierOperationMappingService.reloadSupplierOperationRelation();
+        } catch (Exception e) {
+        	log.error("Problem reloading cached data " + e.getMessage());
+        }
         
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, (-1 * invoiceDataTTL));
