@@ -187,7 +187,7 @@ public abstract class AbstractProducer {
 	}
 	
 	public void throwExceptionIfSupplierHasNoAccessToOperation(final Operation operationEnum, final String supplierId) {
-		if (!isOpenToAllSuppliers() && !operationAccessConfigService.hasSupplierAccessToOperation(operationEnum, supplierId)) {
+		if (!isOpenToAllSuppliers() && !operationAccessConfigService.hasSupplierAccessToOperation(operationEnum, getHSAId(), supplierId)) {
 			log.warn(supplierId + " has no access to operation " + operationEnum.name());
 			throw InvoiceDataErrorCodeEnum.SUPPLIER_AUTHORIZATION_ERROR.createException(supplierId);
 		}

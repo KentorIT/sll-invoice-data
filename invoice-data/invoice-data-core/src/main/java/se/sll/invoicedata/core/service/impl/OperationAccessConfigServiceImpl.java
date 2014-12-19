@@ -46,20 +46,21 @@ public class OperationAccessConfigServiceImpl implements OperationAccessConfigSe
 	private Map<OperationAccessKey, SupplierConfig> operationAccessConfigMap = null; 
 	
 	@Override
-	public boolean hasSystemAccessToOperation(Operation opearationEnum, String hsaId) {
+	public boolean hasSystemAccessToOperation(Operation operationEnum, String hsaId) {
 		if (operationAccessConfigMap == null) {
 			reloadOperationAccessConfig();
 		}		
-		OperationAccessKey key = new OperationAccessKey(opearationEnum, hsaId);		
+		OperationAccessKey key = new OperationAccessKey(operationEnum, hsaId);		
 		return operationAccessConfigMap.containsKey(key);
 	}
 	
 	@Override
-	public boolean hasSupplierAccessToOperation(Operation operationEnum, String supplierId) {
+	public boolean hasSupplierAccessToOperation(Operation operationEnum, String hsaId, String supplierId) {
 		if (operationAccessConfigMap == null) {
 			reloadOperationAccessConfig();
 		}
-		return operationAccessConfigMap.get(operationEnum).hasSupplierAccess(supplierId);		
+		OperationAccessKey key = new OperationAccessKey(operationEnum, hsaId);
+		return operationAccessConfigMap.get(key).hasSupplierAccess(supplierId);		
 	}
 	
 	public void reloadOperationAccessConfig() {

@@ -24,7 +24,7 @@ import se.sll.invoicedata.core.access.Operation;
 public interface OperationAccessConfigService {
 	
 	boolean hasSystemAccessToOperation(Operation opearationEnum, String hsaId);
-	boolean hasSupplierAccessToOperation(Operation operationEnum, String supplierId);
+	boolean hasSupplierAccessToOperation(Operation operationEnum, String hsaId, String supplierId);
 	
 	void reloadOperationAccessConfig();
 }
