@@ -34,14 +34,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
+import se.sll.invoicedata.core.access.Operation;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.security.User;
-import se.sll.invoicedata.core.service.HSASupplierMappingService;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
-import se.sll.invoicedata.core.service.SupplierOperationMappingService;
-import se.sll.invoicedata.core.utility.Operation;
+import se.sll.invoicedata.core.service.OperationAccessConfigService;
 
 /**
  * Abstracts generic logging and error handling for Web Service Producers.
@@ -59,11 +58,8 @@ public abstract class AbstractProducer {
     private InvoiceDataService invoiceDataService;
     
     @Autowired
-    private HSASupplierMappingService hsaToSupplierMappningService;
+    private OperationAccessConfigService operationAccessConfigService;
     
-    @Autowired
-    private SupplierOperationMappingService supplierOperationMappingService;
-
     @Resource
     private WebServiceContext webServiceContext;
     
@@ -179,19 +175,19 @@ public abstract class AbstractProducer {
         return rc;
     }
 
-	public void throwExceptionIfNotAuthorizedToAccessSupplier(final String supplierId) {
+	public void throwExceptionIfSystemHasNoAccessToOperation(final Operation operationEnum) {
 		if (!isOpenToAllSystems()) {			
 			String hsaID = getHSAId();
-			if (!(hsaToSupplierMappningService.isHSAIdMappedToSupplier(hsaID, supplierId)
+			if (!(operationAccessConfigService.hasSystemAccessToOperation(operationEnum, hsaID)
 					&& securityAccessList.contains(hsaID))) {
-				log.warn(hsaID + " has no access to " + supplierId);
-				throw InvoiceDataErrorCodeEnum.SERVICE_AUTHORIZATION_ERROR.createException(supplierId);
+				log.warn(hsaID + " has no access to operation " + operationEnum);
+				throw InvoiceDataErrorCodeEnum.SERVICE_AUTHORIZATION_ERROR.createException(hsaID);
 			}
 		}
 	}
 	
-	public void throwExceptionIfNotAuthorizedToAccessOperation(final String supplierId, final Operation operationEnum) {
-		if (!isOpenToAllSuppliers() && !supplierOperationMappingService.isSupplierMappedToOperation(supplierId, operationEnum)) {
+	public void throwExceptionIfSupplierHasNoAccessToOperation(final Operation operationEnum, final String supplierId) {
+		if (!isOpenToAllSuppliers() && !operationAccessConfigService.hasSupplierAccessToOperation(operationEnum, supplierId)) {
 			log.warn(supplierId + " has no access to operation " + operationEnum.name());
 			throw InvoiceDataErrorCodeEnum.SUPPLIER_AUTHORIZATION_ERROR.createException(supplierId);
 		}

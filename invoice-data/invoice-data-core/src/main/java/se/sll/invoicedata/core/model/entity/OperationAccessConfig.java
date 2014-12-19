@@ -24,24 +24,34 @@ package se.sll.invoicedata.core.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import se.sll.invoicedata.core.access.Operation;
 
 /**
  * @author muqkha
  *
  */
 @Entity
-@Table(name = "hsa_supplier_mapping")
-public class HSASupplierMappingEntity {
+@Table(name = "operation_access_config", 
+uniqueConstraints= @UniqueConstraint(columnNames={"operation_enum", "hsa_id"}))
+public class OperationAccessConfig {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="hsaId", length=64, nullable=false, updatable=false, unique=true)
+	@Column(name="operation_enum", nullable=false, updatable=true)
+	@Enumerated(EnumType.STRING)
+    private Operation operationEnum;
+	
+	@Column(name="hsa_id", nullable=false, updatable=true)
     private String hsaId;
 	
 	@Column(name="supplier_id_config", nullable=false, updatable=true)
@@ -54,12 +64,20 @@ public class HSASupplierMappingEntity {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	public Operation getOperationEnum() {
+		return operationEnum;
+	}
 
-	public String getHSAId() {
+	public void setOperationEnum(Operation operationEnum) {
+		this.operationEnum = operationEnum;
+	}
+
+	public String getHsaId() {
 		return hsaId;
 	}
 
-	public void setHSAId(String hsaId) {
+	public void setHsaId(String hsaId) {
 		this.hsaId = hsaId;
 	}
 

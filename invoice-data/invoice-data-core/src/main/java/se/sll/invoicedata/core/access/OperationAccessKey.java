@@ -17,11 +17,23 @@
  *     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
  */
 
-package se.sll.invoicedata.core.service;
+package se.sll.invoicedata.core.access;
 
-public interface HSASupplierMappingService {
+public class OperationAccessKey {
 	
-	boolean isHSAIdMappedToSupplier(String hsaId, String supplierId);
+	private String key;
 	
-	void reloadHSAIdSupplierRelation();
+	@SuppressWarnings("unused")
+	private OperationAccessKey() {
+		super();
+	}
+	
+	public OperationAccessKey(Operation operationEnum, String hsaId) {
+		key = operationEnum.name() + hsaId;
+	}
+	
+	public String getKey() {
+		return key;
+	}	
+
 }

@@ -34,8 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
-import se.sll.invoicedata.core.service.HSASupplierMappingService;
-import se.sll.invoicedata.core.service.SupplierOperationMappingService;
+import se.sll.invoicedata.core.service.OperationAccessConfigService;
 
 /**
  * Runs service batch jobs.
@@ -52,11 +51,8 @@ public class JobService {
     private InvoiceDataRepository invoiceDataRepository;
     
     @Autowired
-    private HSASupplierMappingService hsaSupplierMappingService;
+    private OperationAccessConfigService hsaSupplierMappingService;
     
-    @Autowired
-    private SupplierOperationMappingService supplierOperationMappingService;
-
     @Autowired
     private StatusBean statusBean;
 
@@ -68,8 +64,7 @@ public class JobService {
         log.info("Start batch job");
         
         try {
-        	hsaSupplierMappingService.reloadHSAIdSupplierRelation();
-        	supplierOperationMappingService.reloadSupplierOperationRelation();
+        	hsaSupplierMappingService.reloadOperationAccessConfig();
         } catch (Exception e) {
         	log.error("Problem reloading cached data " + e.getMessage());
         }

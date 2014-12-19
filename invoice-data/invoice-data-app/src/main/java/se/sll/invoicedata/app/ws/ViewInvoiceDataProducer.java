@@ -24,7 +24,7 @@ import riv.sll.invoicedata.viewinvoicedata._1.rivtabp21.ViewInvoiceDataResponder
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataRequest;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataResponse;
-import se.sll.invoicedata.core.utility.Operation;
+import se.sll.invoicedata.core.access.Operation;
 
 /**
  * 
@@ -45,9 +45,10 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
     viewIDataResponse.setResultCode(fulfill(new Runnable() {
         @Override
         public void run() {
+        	throwExceptionIfSystemHasNoAccessToOperation(Operation.VIEW_INVOICE_DATA);
+        	
         	InvoiceData invoiceData = getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId());
-        	throwExceptionIfNotAuthorizedToAccessSupplier(invoiceData.getSupplierId());
-        	throwExceptionIfNotAuthorizedToAccessOperation(invoiceData.getSupplierId(), Operation.VIEW);
+        	throwExceptionIfSupplierHasNoAccessToOperation(Operation.VIEW_INVOICE_DATA, invoiceData.getSupplierId());
             viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
         }
     }));

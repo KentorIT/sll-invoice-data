@@ -17,15 +17,14 @@
  *     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
  */
 
-package se.sll.invoicedata.core.utility;
+package se.sll.invoicedata.core.service;
 
-public enum Operation {
+import se.sll.invoicedata.core.access.Operation;
+
+public interface OperationAccessConfigService {
 	
-	ALL,
-	CREATE,
-	GET,
-	LIST,
-	REGISTER,
-	VIEW
-
+	boolean hasSystemAccessToOperation(Operation opearationEnum, String hsaId);
+	boolean hasSupplierAccessToOperation(Operation operationEnum, String supplierId);
+	
+	void reloadOperationAccessConfig();
 }

@@ -17,13 +17,41 @@
  *     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
  */
 
-package se.sll.invoicedata.core.service;
+package se.sll.invoicedata.core.access;
 
-import se.sll.invoicedata.core.utility.Operation;
+import java.util.Arrays;
+import java.util.List;
 
-public interface SupplierOperationMappingService {
+
+public class SupplierConfig {
 	
-	boolean isSupplierMappedToOperation(String supplierId, Operation operationEnum);
+	private boolean hasSupplierFullAccess;
 	
-	void reloadSupplierOperationRelation();
+	private List<String> supplierList;
+	
+	private void setFullAccessForSupplier() {
+		this.hasSupplierFullAccess = true;
+	}
+	
+	public boolean hasSupplierAccess(String supplierId) {
+		return hasSupplierFullAccess || supplierList.contains(supplierId);
+	}
+	
+	@SuppressWarnings("unused")
+	private SupplierConfig() {
+		super();
+	}
+	
+	public SupplierConfig(String supplierIdConfig) {
+		if (hasFullAccess(supplierIdConfig)) {
+			setFullAccessForSupplier();
+		} else {
+			supplierList = Arrays.asList(org.apache.commons.lang3.StringUtils.split(supplierIdConfig, ','));
+		}
+	}
+	
+	private boolean hasFullAccess(String config) {
+		return config.equals("*");
+	}
+	
 }

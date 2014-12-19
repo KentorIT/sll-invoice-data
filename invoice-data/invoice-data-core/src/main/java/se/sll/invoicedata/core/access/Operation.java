@@ -17,19 +17,14 @@
  *     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
  */
 
-/**
- * 
- */
-package se.sll.invoicedata.core.model.repository;
+package se.sll.invoicedata.core.access;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import se.sll.invoicedata.core.model.entity.HSASupplierMappingEntity;
-
-/**
- * @author muqkha
- *
- */
-public interface HSASupplierMappingRepository extends JpaRepository<HSASupplierMappingEntity, Long> {
+public enum Operation {
+	
+	REGISTER_INVOICE_DATA,
+	GET_INVOICE_DATA,
+	LIST_INVOICE_DATA,
+	CREATE_INVOICE_DATA,
+	VIEW_INVOICE_DATA
 
 }

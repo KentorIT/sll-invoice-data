@@ -24,12 +24,12 @@ package se.sll.invoicedata.core.model.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import se.sll.invoicedata.core.model.entity.SupplierOperationMappingEntity;
+import se.sll.invoicedata.core.model.entity.OperationAccessConfig;
 
 /**
  * @author muqkha
  *
  */
-public interface SupplierOperationMappingRepository extends JpaRepository<SupplierOperationMappingEntity, Long> {
+public interface OperationAccessConfigRepository extends JpaRepository<OperationAccessConfig, Long> {
 
 }

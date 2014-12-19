@@ -50,24 +50,21 @@ ALTER TABLE invoice_data_event_item ADD COLUMN item_type varchar(64) NOT NULL;
 --Update table invoice_data_event_item
 UPDATE invoice_data_event_item SET item_type='SERVICE';
 
---Add new table hsa_supplier_mapping
-DROP TABLE IF EXISTS `hsa_supplier_mapping`;
-CREATE TABLE `hsa_supplier_mapping` (
+--Add new table operation_access_config
+DROP TABLE IF EXISTS `operation_access_config`;
+CREATE TABLE `operation_access_config` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `hsaId` varchar(64) NOT NULL,
-  `supplier_id_config` varchar(255) NOT NULL,
+  `operation_enum` varchar(255) NOT NULL,
+  `hsa_id` varchar(255) NOT NULL,  
+  `supplier_id_config` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `hsaId` (`hsaId`)
+  UNIQUE KEY `operation_enum` (`operation_enum`,`hsa_id`)
 ) ENGINE=InnoDB;
 
---Insert into hsa_supplier_mapping
-insert into hsa_supplier_mapping values(1, 'SE2321000016-70XZ', '556482-8654');
+--Insert into operation_access_config
+INSERT INTO operation_access_config VALUES(1, 'REGISTER_INVOICE_DATA', <HSA-id>, '*');
+INSERT INTO operation_access_config VALUES(2, 'GET_INVOICE_DATA', <HSA-id>, '*');
+INSERT INTO operation_access_config VALUES(3, 'LIST_INVOICE_DATA', <HSA-id>, '*');
+INSERT INTO operation_access_config VALUES(4, 'CREATE_INVOICE_DATA', <HSA-id>, '*');
+INSERT INTO operation_access_config VALUES(5, 'VIEW_INVOICE_DATA', <HSA-id>, '*');
 
---Add new table supplier_operation_mapping
-DROP TABLE IF EXISTS `supplier_operation_mapping`;
-CREATE TABLE `supplier_operation_mapping` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `supplier_id` varchar(64) NOT NULL,
-  `operation_enum` varchar(255) NOT NULL,  
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;

@@ -29,7 +29,7 @@ public enum InvoiceDataErrorCodeEnum {
     VALIDATION_ERROR("1002", "Invalid or missing input data: %s"),
     NOTFOUND_ERROR("1003", "No such %s found: %s"),
     LIMIT_ERROR("1004", "Reached maximum limit %d: %s"),
-    SERVICE_AUTHORIZATION_ERROR("1005", "Requesting system has no access to the given supplier: %s"),
+    SERVICE_AUTHORIZATION_ERROR("1005", "Requesting system has no access to the given operation: %s"),
     SUPPLIER_AUTHORIZATION_ERROR("1006", "Requesting supplier has no access to the given operation: %s");
     
     
