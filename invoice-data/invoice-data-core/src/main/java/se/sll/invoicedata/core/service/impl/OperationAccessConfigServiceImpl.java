@@ -36,43 +36,54 @@ import se.sll.invoicedata.core.model.repository.OperationAccessConfigRepository;
 import se.sll.invoicedata.core.service.OperationAccessConfigService;
 
 @Service
-public class OperationAccessConfigServiceImpl implements OperationAccessConfigService {
-	
-	private static final Logger log = LoggerFactory.getLogger(OperationAccessConfigServiceImpl.class);
-	
+public class OperationAccessConfigServiceImpl implements
+		OperationAccessConfigService {
+
+	private static final Logger log = LoggerFactory
+			.getLogger(OperationAccessConfigServiceImpl.class);
+
 	@Autowired
 	private OperationAccessConfigRepository operationAccessConfigRepo;
-	
-	private Map<OperationAccessKey, SupplierConfig> operationAccessConfigMap = null; 
-	
+
+	private Map<OperationAccessKey, SupplierConfig> operationAccessConfigMap = null;
+
 	@Override
-	public boolean hasSystemAccessToOperation(Operation operationEnum, String hsaId) {
-		if (operationAccessConfigMap == null) {
-			reloadOperationAccessConfig();
-		}		
-		OperationAccessKey key = new OperationAccessKey(operationEnum, hsaId);		
-		return operationAccessConfigMap.containsKey(key);
-	}
-	
-	@Override
-	public boolean hasSupplierAccessToOperation(Operation operationEnum, String hsaId, String supplierId) {
+	public boolean hasSystemAccessToOperation(Operation operationEnum,
+			String hsaId) {
 		if (operationAccessConfigMap == null) {
 			reloadOperationAccessConfig();
 		}
 		OperationAccessKey key = new OperationAccessKey(operationEnum, hsaId);
-		return operationAccessConfigMap.get(key).hasSupplierAccess(supplierId);		
+		return operationAccessConfigMap.containsKey(key);
 	}
-	
+
+	@Override
+	public boolean hasSupplierAccessToOperation(Operation operationEnum,
+			String hsaId, String supplierId) {
+		if (operationAccessConfigMap == null) {
+			reloadOperationAccessConfig();
+		}
+		OperationAccessKey key = new OperationAccessKey(operationEnum, hsaId);
+		if (operationAccessConfigMap.containsKey(key)) {
+			return operationAccessConfigMap.get(key).hasSupplierAccess(
+					supplierId);
+		}
+		return false;
+	}
+
 	public void reloadOperationAccessConfig() {
 		log.info("OperationAccessConfig loading/reloading operation-hsaId-supplier mapping");
-		List<OperationAccessConfig> operationAccessConfigList = operationAccessConfigRepo.findAll();
+		List<OperationAccessConfig> operationAccessConfigList = operationAccessConfigRepo
+				.findAll();
 		operationAccessConfigMap = new HashMap<OperationAccessKey, SupplierConfig>();
-		
-		for (OperationAccessConfig entity : operationAccessConfigList) {			
-			SupplierConfig operationConfig = new SupplierConfig(entity.getSupplierIdConfig());
-			OperationAccessKey key = new OperationAccessKey(entity.getOperationEnum(), entity.getHsaId());
+
+		for (OperationAccessConfig entity : operationAccessConfigList) {
+			SupplierConfig operationConfig = new SupplierConfig(
+					entity.getSupplierIdConfig());
+			OperationAccessKey key = new OperationAccessKey(
+					entity.getOperationEnum(), entity.getHsaId());
 			operationAccessConfigMap.put(key, operationConfig);
 		}
 	}
-	
+
 }
