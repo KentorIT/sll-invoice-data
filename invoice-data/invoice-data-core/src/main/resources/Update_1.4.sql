@@ -62,9 +62,9 @@ CREATE TABLE `operation_access_config` (
 ) ENGINE=InnoDB;
 
 --Insert into operation_access_config
-INSERT INTO operation_access_config VALUES(1, 'REGISTER_INVOICE_DATA', <HSA-id>, '*');
-INSERT INTO operation_access_config VALUES(2, 'GET_INVOICE_DATA', <HSA-id>, '*');
-INSERT INTO operation_access_config VALUES(3, 'LIST_INVOICE_DATA', <HSA-id>, '*');
-INSERT INTO operation_access_config VALUES(4, 'CREATE_INVOICE_DATA', <HSA-id>, '*');
-INSERT INTO operation_access_config VALUES(5, 'VIEW_INVOICE_DATA', <HSA-id>, '*');
+INSERT INTO operation_access_config VALUES(1, 'REGISTER_INVOICE_DATA', 'SE2321000016-7P7D', '*');
+INSERT INTO operation_access_config VALUES(2, 'GET_INVOICE_DATA', 'SE2321000016-7P7D', '*');
+INSERT INTO operation_access_config VALUES(3, 'LIST_INVOICE_DATA', 'SE2321000016-7P7D', '*');
+INSERT INTO operation_access_config VALUES(4, 'CREATE_INVOICE_DATA', 'SE2321000016-7P7D', '*');
+INSERT INTO operation_access_config VALUES(5, 'VIEW_INVOICE_DATA', 'SE2321000016-7P7D', '*');
 
