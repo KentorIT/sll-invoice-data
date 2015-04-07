@@ -5,7 +5,7 @@
   <parent>
     <groupId>se.sll.invoicedata</groupId>
     <artifactId>invoice-data-system</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.5-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
