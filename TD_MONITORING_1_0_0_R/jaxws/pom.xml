@@ -22,7 +22,7 @@
   <parent>
     <groupId>se.sll.invoicedata</groupId>
     <artifactId>invoice-data-system</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
