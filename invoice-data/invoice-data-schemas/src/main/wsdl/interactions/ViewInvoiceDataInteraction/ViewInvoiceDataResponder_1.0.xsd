@@ -21,14 +21,14 @@
 	<xs:element name='ViewInvoiceDataRequest' type='tns:ViewInvoiceDataRequest' />
 	<xs:element name='ViewInvoiceDataResponse' type='tns:ViewInvoiceDataResponse' />
 
-	<xs:complexType name="ViewInvoiceDataRequest">
-		<xs:sequence>
+	 <xs:complexType name="ViewInvoiceDataRequest">
+	     <xs:sequence>
 			<xs:element name="referenceId" type="xs:string" minOccurs="1"
-				maxOccurs="1" />
+			        maxOccurs="1" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
-				maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
+			        maxOccurs="unbounded" />
+	     </xs:sequence>
+    </xs:complexType>
 	
 	<xs:complexType name='ViewInvoiceDataResponse'>
 		<xs:sequence>

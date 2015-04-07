@@ -26,10 +26,15 @@ import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import riv.sll.invoicedata._1.DiscountItem;
+import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
@@ -58,6 +63,22 @@ public class InvoiceDataBaseService {
         mandatory(data, field);
         return data;
     }
+	
+	void validateForAnyDuplicateDiscountItems(final Event event) {
+		
+		if (CoreUtil.ifDiscountItemExists(event.getDiscountItemList())) {
+			for (DiscountItem discountItem : event.getDiscountItemList()) {
+				Collections.sort(discountItem.getReferenceItemList(), new Comparator<ReferenceItem>() {
+					public int compare(ReferenceItem refItem1, ReferenceItem refItem2) {
+						if (refItem1.getRefItemId().equals(refItem2.getRefItemId())) {
+							throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.discountItems, duplicate discount items identified. Check item id");
+						}
+						return refItem1.getRefItemId().compareTo(refItem2.getRefItemId());
+				    }
+				});					
+			}
+		}
+	}
        
     /**
      * Validates business entity.
@@ -65,7 +86,7 @@ public class InvoiceDataBaseService {
      * @param businessEventEntity the entity.
      * @return the same entity reference as passed as argument.
      */
-    BusinessEventEntity validate(final BusinessEventEntity businessEventEntity) {
+    BusinessEventEntity validateBusinessEventWithItemList(final BusinessEventEntity businessEventEntity) {
 
         // mandatory fields according to schema
         mandatory(businessEventEntity.getEventId(), "event.eventId");
@@ -85,9 +106,10 @@ public class InvoiceDataBaseService {
         if (businessEventEntity.getEndTime().before(businessEventEntity.getStartTime())) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.endTime is before event.startTime");            
         }
-
-        // mandatory fields according to schema        
-        validate(businessEventEntity.getItemEntities());
+        
+        validateItemListForNullOrEmpty(businessEventEntity.getItemEntities());
+        validateEachFieldInItemList(businessEventEntity.getItemEntities());
+        validateIfItemsNotDuplicate(new ArrayList<ItemEntity>(businessEventEntity.getItemEntities()));
 
         return businessEventEntity;
     }
@@ -98,12 +120,15 @@ public class InvoiceDataBaseService {
     	mandatory(createInvoiceDataRequest.getCreatedBy(), "createdBy");
     	mandatory(createInvoiceDataRequest.getAcknowledgementIdList(), "acknowledgementIdList");
     }
-
-	private void validate(final List<ItemEntity> items) {
-		if (items.size() == 0) {
+    
+    private void validateItemListForNullOrEmpty(final List<ItemEntity> items) {
+    	if (items == null || items.isEmpty()) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.items");            
         }
-		
+    }
+
+	private void validateEachFieldInItemList(final List<ItemEntity> items) {
+				
 		for (final ItemEntity itemEntity : items) {
             mandatory(itemEntity.getDescription(), "item.description");
             mandatory(itemEntity.getItemId(), "item.id");
@@ -116,6 +141,17 @@ public class InvoiceDataBaseService {
                 throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("item.qty, invalid scale: " + qty.floatValue());                
             }
         }
+	}
+	
+	private void validateIfItemsNotDuplicate(final List<ItemEntity> itemEntityList) {
+		Collections.sort(itemEntityList, new Comparator<ItemEntity>() {
+			public int compare(ItemEntity itemEntity1, ItemEntity itemEntity2) {
+				if (itemEntity1.getItemId().equals(itemEntity2.getItemId())) {
+					throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.discountitems, duplicate items identified. Check item ids");
+				}
+				return itemEntity1.getItemId().compareTo(itemEntity2.getItemId());
+		    }
+		});		
 	}
 
     InvoiceDataEntity validate(InvoiceDataEntity invoiceDataEntity) {
@@ -176,10 +212,10 @@ public class InvoiceDataBaseService {
             throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("invoice data", referenceId); 		    
         }
 
-        final InvoiceData invoiceData = EntityBeanConverter.fromIDEntity(invoiceDataEntity);
+        final InvoiceData invoiceData = EntityBeanConverter.fromInvoiceDataEntityToInvoiceData(invoiceDataEntity);
         final List<BusinessEventEntity> bEEList = invoiceDataEntity.getBusinessEventEntities();
         for (final BusinessEventEntity businessEventEntity : bEEList) {
-            invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromEntity(businessEventEntity));
+            invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromBusinessEventEntityToRegisteredEvent(businessEventEntity));
         }
         
 		return invoiceData;
@@ -206,6 +242,5 @@ public class InvoiceDataBaseService {
 
 		return invoiceDataList;
 	}
-
 
 }

@@ -19,10 +19,12 @@
 
 package se.sll.invoicedata.app.ws;
 
+import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata.viewinvoicedata._1.rivtabp21.ViewInvoiceDataResponderInterface;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataRequest;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataResponse;
+import se.sll.invoicedata.core.access.Operation;
 
 /**
  * 
@@ -34,20 +36,25 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
 
     static final ObjectFactory objectFactory = new ObjectFactory();
 
-	@Override
-	public ViewInvoiceDataResponse viewInvoiceData(final String logicalAddress,
-			final ViewInvoiceDataRequest parameters) {		
-		
-        final ViewInvoiceDataResponse viewIDataResponse = objectFactory.createViewInvoiceDataResponse();
+    @Override
+    public ViewInvoiceDataResponse viewInvoiceData(final String logicalAddress,
+                    final ViewInvoiceDataRequest parameters) {              
+            
+    final ViewInvoiceDataResponse viewIDataResponse = objectFactory.createViewInvoiceDataResponse();
 
-        viewIDataResponse.setResultCode(fulfill(new Runnable() {
-            @Override
-            public void run() {
-                viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
-            }
-        }));
-        
-        return viewIDataResponse;
-	}
+    viewIDataResponse.setResultCode(fulfill(new Runnable() {
+        @Override
+        public void run() {
+        	throwExceptionIfSystemHasNoAccessToOperation(Operation.VIEW_INVOICE_DATA);
+        	
+        	InvoiceData invoiceData = getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId());
+        	throwExceptionIfSupplierHasNoAccessToOperation(Operation.VIEW_INVOICE_DATA, invoiceData.getSupplierId());
+            viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
+        }
+    }));
+	    
+    return viewIDataResponse;
+    }
+
 
 }

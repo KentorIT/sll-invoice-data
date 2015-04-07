@@ -21,6 +21,7 @@ package se.sll.invoicedata.core.service.impl;
 
 import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -34,17 +35,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
+import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.DiscountItemEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
+import se.sll.invoicedata.core.model.entity.ReferenceItemEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
@@ -90,7 +95,10 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
             throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Event \"" + name + "\" currently is updated by another user");
         }
         try {
-            registerBusinessEvent(EntityBeanConverter.toEntity(event));
+        	validateForAnyDuplicateDiscountItems(event);
+        	final BusinessEventEntity businessEventEntity = EntityBeanConverter.toBusinessEventEntity(event);
+        	addDiscountItemsToBusinessEventEntity(businessEventEntity, event.getDiscountItemList());
+            registerBusinessEvent(businessEventEntity, event.getDiscountItemList());
         } finally {
             lock.release(name);
         }
@@ -127,7 +135,7 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         }
         
         //No requirement to fetch list sorted by date
-        return EntityBeanConverter.fromBEntity(bEEntityList);
+        return EntityBeanConverter.fromBusinessEventEntityToRegisteredEvent(bEEntityList);
     }
     
     @Override
@@ -199,8 +207,8 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
         return this;
     }
 
-    private void registerBusinessEvent(final BusinessEventEntity newEntity) {
-        rate(validate(newEntity));
+    private void registerBusinessEvent(final BusinessEventEntity newEntity, List<DiscountItem> discountItemList) {
+        rate(validateBusinessEventWithItemList(newEntity), discountItemList);
 
         final BusinessEventEntity oldEntity = businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId());
         final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
@@ -228,13 +236,29 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
      * @param businessEventEntity the business event.
      * @return the rated business event, i.e. price has been set to all items.
      */
-    private BusinessEventEntity rate(BusinessEventEntity businessEventEntity) {
-        for (ItemEntity itemEntity : validate(businessEventEntity).getItemEntities()) {
-            if (itemEntity.getPrice() == null) {
-                itemEntity.setPrice(ratingService.rate(itemEntity));
-            }
+    private BusinessEventEntity rate(BusinessEventEntity businessEventEntity, List<DiscountItem> discountItemList) {
+        for (ItemEntity itemEntity : validateBusinessEventWithItemList(businessEventEntity).getItemEntities()) {
+        	
+        	if (itemEntity.getPrice() == null) {
+        		BigDecimal calculatedPrice = ratingService.rate(itemEntity);
+        		itemEntity.setPrice(calculatedPrice);        		     		
+        	}
         }
+        
         return businessEventEntity;
+    }
+    
+    private void addDiscountItemsToBusinessEventEntity(BusinessEventEntity businessEventEntity, List<DiscountItem> discountItemList) {
+    	if (CoreUtil.ifDiscountItemExists(discountItemList)) {
+	    	for (DiscountItem discountItem : discountItemList) {
+	    		DiscountItemEntity discountItemEntity = CoreUtil.copyProperties(discountItem, DiscountItemEntity.class);
+	    		for (ReferenceItem referenceItem : discountItem.getReferenceItemList()) {
+	    			ReferenceItemEntity referenceItemEntity = CoreUtil.copyProperties(referenceItem, ReferenceItemEntity.class);
+	    			discountItemEntity.addReferenceItemEntity(referenceItemEntity);
+	    		}
+	    		businessEventEntity.addDiscountItemEntity(discountItemEntity);    		
+	    	}
+    	}
     }
 
     private List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(final List<String> list) {

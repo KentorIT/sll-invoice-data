@@ -23,6 +23,7 @@ import riv.sll.invoicedata.createinvoicedata._1.rivtabp21.CreateInvoiceDataRespo
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
 import riv.sll.invoicedata.createinvoicedataresponder._1.ObjectFactory;
+import se.sll.invoicedata.core.access.Operation;
 
 /**
  * Creates invoice data.
@@ -43,6 +44,8 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
         createInvoiceDataResp.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
+            	throwExceptionIfSystemHasNoAccessToOperation(Operation.CREATE_INVOICE_DATA); 
+            	throwExceptionIfSupplierHasNoAccessToOperation(Operation.CREATE_INVOICE_DATA, parameters.getSupplierId());
                 createInvoiceDataResp.setReferenceId(getInvoiceDataService().createInvoiceData(parameters));                
             }
         }));

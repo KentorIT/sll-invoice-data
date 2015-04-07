@@ -31,6 +31,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 
+import riv.sll.invoicedata._1.DiscountItem;
+
 /**
  * Transformation to and from JAXB Beans, Entities and related data types.
  * 
@@ -216,6 +218,10 @@ public class CoreUtil {
     	cal.set(Calendar.MONDAY, month);
     	cal.set(Calendar.DATE, date);
     	return CoreUtil.toXMLGregorianCalendar(cal.getTime());
+    }
+    
+    public static boolean ifDiscountItemExists(List<DiscountItem> items) {
+    	return items != null && !items.isEmpty();
     }
     
 }

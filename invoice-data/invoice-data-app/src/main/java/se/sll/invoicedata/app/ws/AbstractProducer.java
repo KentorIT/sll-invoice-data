@@ -29,13 +29,18 @@ import org.apache.cxf.binding.soap.SoapFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import riv.sll.invoicedata._1.ResultCode;
 import riv.sll.invoicedata._1.ResultCodeEnum;
+import se.sll.invoicedata.core.access.Operation;
 import se.sll.invoicedata.core.jmx.StatusBean;
+import se.sll.invoicedata.core.security.User;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
+import se.sll.invoicedata.core.service.OperationAccessConfigService;
 
 /**
  * Abstracts generic logging and error handling for Web Service Producers.
@@ -46,16 +51,23 @@ public abstract class AbstractProducer {
 
     private static final Logger log = LoggerFactory.getLogger("WS-API");
     
-    private static final String SERVICE_CONSUMER_HEADER_NAME = "x-rivta-original-serviceconsumer-hsaid";
-
     @Autowired
     private StatusBean statusBean;
     
     @Autowired
     private InvoiceDataService invoiceDataService;
-
+    
+    @Autowired
+    private OperationAccessConfigService operationAccessConfigService;
+    
     @Resource
     private WebServiceContext webServiceContext;
+    
+    @Value("${security.acl}") 
+    private String securityAccessList;
+    
+    @Value("${operation.acl}") 
+    private String operationAccessList;
     
     /**
      * Creates a soap fault.
@@ -119,9 +131,8 @@ public abstract class AbstractProducer {
      * 
      * @param messageContext the context.
      */
-    private void log(MessageContext messageContext) {
-        final Map<?, ?> headers = (Map<?, ?>)messageContext.get(MessageContext.HTTP_REQUEST_HEADERS);
-        log.info(createLogMessage(headers.get(SERVICE_CONSUMER_HEADER_NAME)));
+    private void log(final Map<?, ?> headers) {
+        log.info(createLogMessage(getHSAId()));
         log.debug("HTTP Headers {}", headers);
     }
     
@@ -163,5 +174,44 @@ public abstract class AbstractProducer {
         
         return rc;
     }
+
+	public void throwExceptionIfSystemHasNoAccessToOperation(final Operation operationEnum) {
+		if (!isOpenToAllSystems()) {			
+			String hsaID = getHSAId();
+			if (!(operationAccessConfigService.hasSystemAccessToOperation(operationEnum, hsaID)
+					&& securityAccessList.contains(hsaID))) {
+				log.warn(hsaID + " has no access to operation " + operationEnum);
+				throw InvoiceDataErrorCodeEnum.SERVICE_AUTHORIZATION_ERROR.createException(hsaID);
+			}
+		}
+	}
+	
+	public void throwExceptionIfSupplierHasNoAccessToOperation(final Operation operationEnum, final String supplierId) {
+		if (!isOpenToAllSuppliers() && !operationAccessConfigService.hasSupplierAccessToOperation(operationEnum, getHSAId(), supplierId)) {
+			log.warn(supplierId + " has no access to operation " + operationEnum.name());
+			throw InvoiceDataErrorCodeEnum.SUPPLIER_AUTHORIZATION_ERROR.createException(supplierId);
+		}
+	}
+	
+	private boolean isOpenToAllSystems() {
+		return (securityAccessList != null && securityAccessList.equals("*"));
+	}
+	
+	private boolean isOpenToAllSuppliers() {
+		return (operationAccessList != null && operationAccessList.equals("*"));
+	}
+	
+	private String getHSAId() {
+		String hsaId = null;		
+		try {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			hsaId = user.getUsername();
+		} catch (Exception e) {
+			log.error("Could not fetch username from SecurityContextHolder " + e.getMessage());
+		}
+		
+        log.info("HsaId from certificate: " + hsaId);
+        return hsaId;
+	}
     
 }

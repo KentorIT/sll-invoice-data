@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.service.OperationAccessConfigService;
 
 /**
  * Runs service batch jobs.
@@ -48,7 +49,10 @@ public class JobService {
 
     @Autowired
     private InvoiceDataRepository invoiceDataRepository;
-
+    
+    @Autowired
+    private OperationAccessConfigService hsaSupplierMappingService;
+    
     @Autowired
     private StatusBean statusBean;
 
@@ -58,6 +62,13 @@ public class JobService {
     @Scheduled(cron="${job.cron}")
     public void batchJob() {
         log.info("Start batch job");
+        
+        try {
+        	hsaSupplierMappingService.reloadOperationAccessConfig();
+        } catch (Exception e) {
+        	log.error("Problem reloading cached data " + e.getMessage());
+        }
+        
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, (-1 * invoiceDataTTL));
         cal.set(Calendar.HOUR_OF_DAY, 0);

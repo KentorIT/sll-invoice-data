@@ -19,13 +19,9 @@
 
 package se.sll.invoicedata.core.security;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,14 +37,6 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 public class InvoiceDataUserDetailsService implements UserDetailsService, AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceDataUserDetailsService.class);
-    private static Collection<? extends GrantedAuthority> grants = Collections.singleton(new GrantedAuthority() {
-        private static final long serialVersionUID = 1L;
-        @Override
-        public String getAuthority() {
-            return "ROLE_USER";
-        }
-        
-    });
 
     @Value("${security.acl}") 
     private String[] aclAllow;
@@ -75,7 +63,6 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
         throw new UsernameNotFoundException(name);
     }
     
-    //
     private boolean allow(final String name) {
         if ((aclAllow.length == 1) && "*".equals(aclAllow[0])) {
             return true;
@@ -88,52 +75,5 @@ public class InvoiceDataUserDetailsService implements UserDetailsService, Authen
         return false;
     }
 
-    /**
-     * User impl.
-     */
-    public static class User implements UserDetails {
-        private static final long serialVersionUID = 1L;
-        
-        private String name;
-        
-        public User(final String name) {
-            this.name = name;
-        }
-        
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            return grants;
-        }
-
-        @Override
-        public String getPassword() {
-            return "";
-        }
-
-        @Override
-        public String getUsername() {
-            return name;
-        }
-
-        @Override
-        public boolean isAccountNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isAccountNonLocked() {
-            return true;
-        }
-
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
-        
-    }
+    
 }

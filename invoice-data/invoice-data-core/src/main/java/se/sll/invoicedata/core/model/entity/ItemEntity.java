@@ -51,7 +51,7 @@ public class ItemEntity {
 
     @Column(name="price", precision=8, scale=2, updatable=false)
     private BigDecimal price;
-
+    
     @ManyToOne(optional=false)
     @JoinColumn(name="event_id", updatable=false)
     private BusinessEventEntity event;
@@ -100,7 +100,7 @@ public class ItemEntity {
         this.price = price;
     }
 
-    @Override
+	@Override
     public boolean equals(Object r) {
         if (this == r) {
             return true;

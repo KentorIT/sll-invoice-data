@@ -31,6 +31,7 @@
 # 
 echo "{"
 echo "supplierId: \"$(basename $1)\","
+echo "supplierName: \"Enter a Name\","
 echo "serviceCode: \"01\","
 echo "validFrom: \"2013-01-01\","
 echo "prices: ["

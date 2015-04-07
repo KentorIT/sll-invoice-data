@@ -23,6 +23,7 @@ import riv.sll.invoicedata.listinvoicedata._1.rivtabp21.ListInvoiceDataResponder
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataResponse;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ObjectFactory;
+import se.sll.invoicedata.core.access.Operation;
 
 /**
  * 
@@ -35,19 +36,21 @@ public class ListInvoiceDataProducer extends AbstractProducer implements ListInv
     static final ObjectFactory objectFactory = new ObjectFactory();
 
 	@Override
-	public ListInvoiceDataResponse listInvoiceData(final String logicalAddress,
-			final ListInvoiceDataRequest parameters) {		
+    public ListInvoiceDataResponse listInvoiceData(final String logicalAddress,
+            final ListInvoiceDataRequest parameters) {              
+    
+		final ListInvoiceDataResponse listIDataResponse = objectFactory.createListInvoiceDataResponse();
 		
-        final ListInvoiceDataResponse listIDataResponse = objectFactory.createListInvoiceDataResponse();
-
-        listIDataResponse.setResultCode(fulfill(new Runnable() {
-            @Override
-            public void run() {
-            	listIDataResponse.getInvoiceDataList().addAll(getInvoiceDataService().listAllInvoiceData(parameters));                
-            }
-        }));
-        
-        return listIDataResponse;
+		listIDataResponse.setResultCode(fulfill(new Runnable() {
+			@Override
+			public void run() {
+				throwExceptionIfSystemHasNoAccessToOperation(Operation.LIST_INVOICE_DATA);
+				throwExceptionIfSupplierHasNoAccessToOperation(Operation.LIST_INVOICE_DATA, parameters.getSupplierId());
+			    listIDataResponse.getInvoiceDataList().addAll(getInvoiceDataService().listAllInvoiceData(parameters));                
+			}
+		}));
+		
+		return listIDataResponse;
 	}
 
 }
