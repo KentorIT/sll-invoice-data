@@ -27,6 +27,7 @@ import javax.servlet.ServletContextEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -71,4 +72,22 @@ public class ApplicationContextLoaderListener extends ContextLoaderListener {
 
         return false;
     }
+    
+    protected WebApplicationContext createWebApplicationContext(ServletContext sc) {
+		WebApplicationContext webAppContext = super.createWebApplicationContext(sc);
+		logConfiguration(webAppContext);
+		return webAppContext;
+	}
+    
+    private void logConfiguration(WebApplicationContext webAppContext) {
+		Environment env = webAppContext.getEnvironment();
+		if (env.getActiveProfiles().length == 0) {
+			String errorMsg = "@createWebApplicationContext(): There are no ACTIVE Spring profiles available to run the application";			
+			throw new IllegalStateException(errorMsg);
+		} else {
+			for (String profile : env.getActiveProfiles()) {
+				log.info(String.format("@createWebApplicationContext(): Spring profile:%s is ACTIVE", profile));
+			}
+		}
+	}
 }
