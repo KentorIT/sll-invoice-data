@@ -94,6 +94,7 @@
 						<exclude>**/.gitignore/</exclude>
 						<exclude>**/*-workspace.xml/</exclude>
 						<exclude>**/*-soapui-project.xml</exclude>
+						<exclude>**/*.xls</exclude>
 					</excludes>
 				</configuration>
 				<executions>

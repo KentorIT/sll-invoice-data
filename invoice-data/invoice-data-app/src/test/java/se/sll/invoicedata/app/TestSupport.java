@@ -123,6 +123,7 @@ public abstract class TestSupport extends CoreUtil {
 		return event;
 	}
 	
+	@SuppressWarnings("unused")
 	private void print(Event event) {
 		System.out.println("AcknowledgementId: " + event.getAcknowledgementId() + ", Event id: " + 
 				event.getEventId() + ", supplierId: " + event.getSupplierId() + ", paymentResponsible: " + 
