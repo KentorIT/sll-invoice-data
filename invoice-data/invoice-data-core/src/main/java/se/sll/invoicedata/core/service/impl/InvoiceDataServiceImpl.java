@@ -19,7 +19,7 @@
 
 package se.sll.invoicedata.core.service.impl;
 
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+import static se.sll.invoicedata.core.pojo.mapping.LocalMapper.copyToInvoiceDataEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -153,12 +153,11 @@ public class InvoiceDataServiceImpl extends InvoiceDataBaseService implements In
             throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Events \"" + idList + "\" currently is updated by another user");
         }
         statusBean.start("InvoiceDataService.createInvoiceData()");
-        try {
-            final InvoiceDataEntity invoiceDataEntity = copyProperties(createInvoiceDataRequest, InvoiceDataEntity.class);
+        try {            
+            final InvoiceDataEntity invoiceDataEntity = copyToInvoiceDataEntity(createInvoiceDataRequest);
             final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(idList);
 
-            getValidInvoiceDataEntity(createInvoiceDataRequest,
-					invoiceDataEntity, entities);
+            getValidInvoiceDataEntity(createInvoiceDataRequest, invoiceDataEntity, entities);
 
             final InvoiceDataEntity saved  = save(invoiceDataEntity);
 

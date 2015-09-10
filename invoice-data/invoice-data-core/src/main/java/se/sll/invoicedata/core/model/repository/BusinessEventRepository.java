@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
@@ -89,7 +91,8 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * @param acknowledgementId the list of acknowledgment identities.
      * @return the list of matching events, might be empty when none matches the acknowledgementId.
      */
-    List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(List<String> acknowledgementId);
+    @Query("FROM BusinessEventEntity WHERE acknowledgementId in (:acknowledgementId) AND pending=true")
+    List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(@Param("acknowledgementId") List<String> acknowledgementId);
     
     /**
      * Returns entities for a supplier and where start time is within a period of time.

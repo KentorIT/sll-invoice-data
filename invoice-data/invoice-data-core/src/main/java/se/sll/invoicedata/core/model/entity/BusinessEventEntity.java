@@ -50,7 +50,7 @@ import org.hibernate.annotations.Index;
  *
  * @author Peter
  */
-@Entity(name=BusinessEventEntity.TABLE_NAME)
+@Entity
 @javax.persistence.Table(name = BusinessEventEntity.TABLE_NAME)
 @org.hibernate.annotations.Table(appliesTo=BusinessEventEntity.TABLE_NAME, indexes = { 
 @Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ),
