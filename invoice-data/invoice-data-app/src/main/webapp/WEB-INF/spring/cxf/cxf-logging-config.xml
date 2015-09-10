@@ -21,20 +21,21 @@
 -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd ">
-  
-  <import resource="classpath:invoice-data-service.xml" />
-
-  <import resource="/cxf/cxf-services-config.xml" />
-  <import resource="/cxf/cxf-logging-config.xml" />
-  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cxf="http://cxf.apache.org/core"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+    http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+    
   <beans profile="test">
-  	<import resource="classpath:none-security.xml" />
-  </beans>
-  
-   <beans profile="prod">
-  	<import resource="classpath:x509-security.xml" />
+  	<bean id="loggingFeature" class="org.apache.cxf.feature.LoggingFeature">
+		<property name="prettyLogging" value="true" />
+	</bean>
+
+	<cxf:bus>
+   		<cxf:features>
+        	<ref bean="loggingFeature" />
+    	</cxf:features>
+	</cxf:bus>
   </beans>
   
 </beans>
