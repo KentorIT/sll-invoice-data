@@ -147,7 +147,7 @@ public class InvoiceDataBaseService {
 		Collections.sort(itemEntityList, new Comparator<ItemEntity>() {
 			public int compare(ItemEntity itemEntity1, ItemEntity itemEntity2) {
 				if (itemEntity1.getItemId().equals(itemEntity2.getItemId())) {
-					throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.discountitems, duplicate items identified. Check item ids");
+					throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("event.items, duplicate items identified. Check item ids");
 				}
 				return itemEntity1.getItemId().compareTo(itemEntity2.getItemId());
 		    }
