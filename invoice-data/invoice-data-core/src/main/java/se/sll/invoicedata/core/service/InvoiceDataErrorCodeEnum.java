@@ -30,7 +30,8 @@ public enum InvoiceDataErrorCodeEnum {
     NOTFOUND_ERROR("1003", "No such %s found: %s"),
     LIMIT_ERROR("1004", "Reached maximum limit %d: %s"),
     SERVICE_AUTHORIZATION_ERROR("1005", "Requesting system has no access to the given operation: %s"),
-    SUPPLIER_AUTHORIZATION_ERROR("1006", "Requesting supplier has no access to the given operation: %s");
+    SUPPLIER_AUTHORIZATION_ERROR("1006", "Requesting supplier has no access to the given operation: %s"),
+    SYSTEM_BUSY_WITH_CREATE_INVOICE_REQUEST("1007", "System is busy with Create Invoice Data request: %s");
     
     
     private final String code;

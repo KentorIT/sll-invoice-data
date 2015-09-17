@@ -46,7 +46,7 @@ import se.sll.invoicedata.core.model.entity.PriceListEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataService;
-import se.sll.invoicedata.core.service.impl.CoreUtil;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * Abstracts JUnit and Spring configuration stuff, and is intended to extend

@@ -94,6 +94,9 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
     @Query("FROM BusinessEventEntity WHERE acknowledgementId in (:acknowledgementId) AND pending=true")
     List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(@Param("acknowledgementId") List<String> acknowledgementId);
     
+    @Query("SELECT count(b) FROM BusinessEventEntity b WHERE b.supplierId = :supplierId AND b.paymentResponsible = :paymentResponsible AND b.acknowledgementId in (:acknowledgementId) AND b.pending=true")
+    Long countBySupplierIdAndPaymentResponsibleAndAckIdAndPendingIsTrue(@Param("supplierId") String supplierId, @Param("paymentResponsible") String paymentResponsible, @Param("acknowledgementId") List<String> acknowledgementId);
+    
     /**
      * Returns entities for a supplier and where start time is within a period of time.
      * 

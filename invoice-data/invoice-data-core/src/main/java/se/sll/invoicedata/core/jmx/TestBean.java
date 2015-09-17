@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
-import se.sll.invoicedata.core.service.impl.TestDataHelperService;
+import se.sll.invoicedata.core.util.TestDataHelperService;
 
 /**
  * JMX Bean with to expose test helper functions, i.e. create test data and clean-up database, .... <p>

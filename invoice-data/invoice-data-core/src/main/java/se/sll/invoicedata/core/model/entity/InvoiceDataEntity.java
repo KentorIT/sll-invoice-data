@@ -34,6 +34,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -66,17 +67,17 @@ public class InvoiceDataEntity {
     private Date createdTime;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "start_date", nullable=false, updatable=false)
+    @Column(name = "start_date", nullable=false, updatable=true)
     private Date startDate;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "end_date", nullable=false, updatable=false)
+    @Column(name = "end_date", nullable=false, updatable=true)
     private Date endDate;
 
-    @Column(name="total_amount", precision=12, scale=2, updatable=false)
+    @Column(name="total_amount", precision=12, scale=2, updatable=true)
     private BigDecimal totalAmount;
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
     private List<BusinessEventEntity> businessEventEntities = new LinkedList<BusinessEventEntity>();
 
 
@@ -85,14 +86,22 @@ public class InvoiceDataEntity {
         setCreatedTime(new Date());
         calcDerivedValues();
     }
-
+    
+    @PreUpdate
+    void onPreUpdate() {
+    	setCreatedTime(new Date());
+        calcDerivedValues();
+    }
+    
 
     /**
      * Calculates derived property values, and stores them into database.
      */
-    void calcDerivedValues() {
+    public void calcDerivedValues() {
 
         if (businessEventEntities.size() == 0) {
+        	setStartDate(new Date());
+        	setEndDate(new Date());
             return;
         }
 

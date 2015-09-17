@@ -32,7 +32,7 @@ import javax.xml.ws.Service;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
-import se.sll.invoicedata.core.service.impl.CoreUtil;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 
 /**

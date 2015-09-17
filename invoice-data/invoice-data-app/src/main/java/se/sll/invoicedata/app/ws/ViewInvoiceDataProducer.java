@@ -49,7 +49,7 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
         	
         	InvoiceData invoiceData = getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId());
         	throwExceptionIfSupplierHasNoAccessToOperation(Operation.VIEW_INVOICE_DATA, invoiceData.getSupplierId());
-            viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
+            viewIDataResponse.setInvoiceData(invoiceData);
         }
     }));
 	    

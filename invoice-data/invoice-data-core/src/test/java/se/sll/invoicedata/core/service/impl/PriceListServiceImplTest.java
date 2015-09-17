@@ -44,6 +44,7 @@ import se.sll.invoicedata.core.service.PriceListService;
 import se.sll.invoicedata.core.service.dto.Price;
 import se.sll.invoicedata.core.service.dto.PriceList;
 import se.sll.invoicedata.core.support.TestSupport;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 public class PriceListServiceImplTest extends TestSupport {
 
@@ -259,7 +260,7 @@ public class PriceListServiceImplTest extends TestSupport {
         
         priceList.setSupplierId("Tolk.001");
         priceList.setValidFrom(cal.getTime());
-        priceList.setServiceCode("Språktolk");
+        priceList.setServiceCode("Sprï¿½ktolk");
         
         Price p1 = new Price();
         p1.setItemId("item.1");

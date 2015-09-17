@@ -40,6 +40,7 @@ import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.TestSupport;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * @author muqkha

@@ -19,8 +19,8 @@
 
 package se.sll.invoicedata.core.service.impl;
 
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+import static se.sll.invoicedata.core.util.CoreUtil.copyGenericLists;
+import static se.sll.invoicedata.core.util.CoreUtil.copyProperties;
 
 import java.util.ArrayList;
 import java.util.List;

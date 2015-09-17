@@ -43,6 +43,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Index;
 
 /**
@@ -55,17 +57,21 @@ import org.hibernate.annotations.Index;
 @org.hibernate.annotations.Table(appliesTo=BusinessEventEntity.TABLE_NAME, indexes = { 
 @Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ),
 @Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }),
-@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.ACKNOWLEDGEMENT_ID }) })
+@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.ACKNOWLEDGEMENT_ID, BusinessEventEntity.PENDING }), 
+@Index(name=BusinessEventEntity.INDEX_NAME_4, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PAYMENT_RESPONSIBLE, 
+		BusinessEventEntity.ACKNOWLEDGEMENT_ID, BusinessEventEntity.PENDING })})
 
 public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     static final String TABLE_NAME = "invoice_data_event";
     static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";
     static final String INDEX_NAME_2 = "invoice_data_event_query_ix_2";
     static final String INDEX_NAME_3 = "invoice_data_event_query_ix_3";
+    static final String INDEX_NAME_4 = "invoice_data_event_query_ix_4";
     static final String SUPPLIER_ID = "supplier_id";
     static final String PENDING = "pending";
     static final String EVENT_ID = "event_id";
     static final String ACKNOWLEDGEMENT_ID = "acknowledgement_id";
+    static final String PAYMENT_RESPONSIBLE = "payment_responsible";
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -123,10 +129,12 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     @Column(name = "end_time", nullable=false, updatable=false)
     private Date endTime;
     
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL) 
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<ItemEntity> itemEntities = new LinkedList<ItemEntity>();
     
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<DiscountItemEntity> discountItemEntities = new LinkedList<DiscountItemEntity>();
 
     @ManyToOne(optional=true)

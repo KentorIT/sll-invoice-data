@@ -22,8 +22,6 @@
  */
 package se.sll.invoicedata.core.service.impl;
 
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,20 +30,19 @@ import java.util.List;
 
 import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.InvoiceData;
-import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * @author muqkha
  *
  */
-public class InvoiceDataBaseService {
+public class ValidationService {
 	
 	void mandatory(final String s, final String field) {
 		if (s == null || s.length() == 0) {
@@ -59,7 +56,7 @@ public class InvoiceDataBaseService {
 		}
 	}
 
-	private String validate(final String data, final String field) {
+	String validate(final String data, final String field) {
         mandatory(data, field);
         return data;
     }
@@ -175,72 +172,4 @@ public class InvoiceDataBaseService {
         return entity;
     }
     
-    BusinessEventEntity createCreditEntity(
-			final BusinessEventEntity creditCandidate) {
-		final BusinessEventEntity creditEntity = copyProperties(creditCandidate, BusinessEventEntity.class);
-		creditEntity.setCredit(true);
-		creditEntity.setInvoiceData(null);
-		creditCandidate.setCredited(true);
-		for (final ItemEntity itemEntity : creditCandidate.getItemEntities()) {
-		    final ItemEntity copy = copyProperties(itemEntity, ItemEntity.class);
-		    // set parent to null to ensure acceptance by the new
-		    copy.setEvent(null);
-		    creditEntity.addItemEntity(copy);
-		}
-		return creditEntity;
-	}
-    
-	InvoiceDataEntity getValidInvoiceDataEntity(
-			CreateInvoiceDataRequest createInvoiceDataRequest,
-			final InvoiceDataEntity invoiceDataEntity,
-			final List<BusinessEventEntity> entities) {
-		int actual = 0;
-		for (final BusinessEventEntity entity : entities) {        	
-		    invoiceDataEntity.addBusinessEventEntity(validate(entity, createInvoiceDataRequest));
-		    actual++;
-		}
-		final int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
-		if (expected != actual) {
-		    throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state! entities available: " + actual + ", request contains: " + expected); 
-		}
-		
-		return validate(invoiceDataEntity);
-	}
-	
-	InvoiceData getInvoiceData(final String referenceId, final InvoiceDataEntity invoiceDataEntity) {
-		if (invoiceDataEntity == null) {
-            throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("invoice data", referenceId); 		    
-        }
-
-        final InvoiceData invoiceData = EntityBeanConverter.fromInvoiceDataEntityToInvoiceData(invoiceDataEntity);
-        final List<BusinessEventEntity> bEEList = invoiceDataEntity.getBusinessEventEntities();
-        for (final BusinessEventEntity businessEventEntity : bEEList) {
-            invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromBusinessEventEntityToRegisteredEvent(businessEventEntity));
-        }
-        
-		return invoiceData;
-	}
-	
-	Long extractId(final String referenceId) {
-		Long id = Long.MIN_VALUE;
-        try {
-            id = Long.valueOf(validate(referenceId, "referenceId"));
-        } catch (NumberFormatException nfException) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("referenceId has invalid format:" + referenceId); 
-        }
-        
-		return id;
-	}
-
-	List<InvoiceDataHeader> getInvoiceDataHeader(List<InvoiceDataEntity> invoiceDataEntityList) {
-		
-		final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
-		
-		for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
-		    invoiceDataList.add(CoreUtil.copyProperties(iDataEntity, InvoiceDataHeader.class));
-		}
-
-		return invoiceDataList;
-	}
-
 }

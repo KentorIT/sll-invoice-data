@@ -33,8 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
-import se.sll.invoicedata.core.service.impl.CoreUtil;
 import se.sll.invoicedata.core.support.TestSupport;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * Unit tests.

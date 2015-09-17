@@ -46,7 +46,7 @@ import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataResponse;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
 import se.sll.invoicedata.app.TestSupport;
-import se.sll.invoicedata.core.service.impl.CoreUtil;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * @author muqkha

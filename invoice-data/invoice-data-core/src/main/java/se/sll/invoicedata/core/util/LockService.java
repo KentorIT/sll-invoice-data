@@ -17,7 +17,7 @@
  *     along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
  */
 
-package se.sll.invoicedata.core.service.impl;
+package se.sll.invoicedata.core.util;
 
 import java.util.HashSet;
 import java.util.List;
