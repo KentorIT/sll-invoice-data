@@ -19,6 +19,8 @@
 
 package se.sll.invoicedata.app.ws;
 
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.listinvoicedata._1.rivtabp21.ListInvoiceDataResponderInterface;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataResponse;
@@ -48,9 +50,15 @@ public class ListInvoiceDataProducer extends AbstractProducer implements ListInv
 				throwExceptionIfSupplierHasNoAccessToOperation(Operation.LIST_INVOICE_DATA, parameters.getSupplierId());
 			    listIDataResponse.getInvoiceDataList().addAll(getInvoiceDataService().listAllInvoiceData(parameters));                
 			}
-		}));
+		}, setResultCode()));
 		
 		return listIDataResponse;
 	}
+	
+	ResultCode setResultCode() {
+    	ResultCode rc = new ResultCode();
+    	rc.setCode(ResultCodeEnum.OK);
+    	return rc;
+    }
 
 }

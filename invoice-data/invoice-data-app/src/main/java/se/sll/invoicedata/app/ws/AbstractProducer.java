@@ -153,15 +153,13 @@ public abstract class AbstractProducer {
      * @param runnable the runnable to run.
      * @return the result code.
      */
-    protected ResultCode fulfill(final Runnable runnable) {
+    protected ResultCode fulfill(final Runnable runnable, final ResultCode rc) {
         final MessageContext messageContext = getMessageContext();
         final String path = (String)messageContext.get(MessageContext.PATH_INFO);
         statusBean.start(path);
         log(messageContext);
-        final ResultCode rc = new ResultCode();
         try {
             runnable.run();
-            rc.setCode(ResultCodeEnum.OK);
         } catch (InvoiceDataServiceException ex) {
             rc.setCode((ex.getCode() == InvoiceDataErrorCodeEnum.NOTFOUND_ERROR) ? ResultCodeEnum.NOTFOUND_ERROR : ResultCodeEnum.REQUEST_ERROR);
             rc.setMessage(ex.getMessage() + " (" + statusBean.getGUID() + ")");
@@ -214,4 +212,5 @@ public abstract class AbstractProducer {
         return hsaId;
 	}
     
+	abstract ResultCode setResultCode();
 }

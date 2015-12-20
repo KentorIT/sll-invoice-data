@@ -64,12 +64,18 @@ public class PingForConfigurationProducer extends AbstractProducer implements Pi
                 response.setPingDateTime(formatter.get().format(new Date()));
                 getStatusBean().healthCheck();
             }
-        });
+        }, setResultCode());
         
         if (rc.getCode() != ResultCodeEnum.OK) {
             throw createSoapFault(rc.getMessage());
         }
         
         return response;
+    }
+    
+    ResultCode setResultCode() {
+    	ResultCode rc = new ResultCode();
+    	rc.setCode(ResultCodeEnum.OK);
+    	return rc;
     }
 }

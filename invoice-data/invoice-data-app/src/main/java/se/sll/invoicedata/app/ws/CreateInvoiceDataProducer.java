@@ -19,6 +19,8 @@
 
 package se.sll.invoicedata.app.ws;
 
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedata._1.rivtabp21.CreateInvoiceDataResponderInterface;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
@@ -46,11 +48,17 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
             public void run() {
             	throwExceptionIfSystemHasNoAccessToOperation(Operation.CREATE_INVOICE_DATA); 
             	throwExceptionIfSupplierHasNoAccessToOperation(Operation.CREATE_INVOICE_DATA, parameters.getSupplierId());
-                createInvoiceDataResp.setReferenceId(getInvoiceDataService().createInvoiceData(parameters));                
+                createInvoiceDataResp.setReferenceId(getInvoiceDataService().createInvoiceData(parameters));
             }
-        }));
+        }, setResultCode()));
         
         return createInvoiceDataResp;        
     }
-
+    
+    ResultCode setResultCode() {
+    	ResultCode rc = new ResultCode();
+    	rc.setCode(ResultCodeEnum.INFO);
+    	rc.setMessage("Request received, invoice is in the process of generation");
+    	return rc;
+    }
 }
