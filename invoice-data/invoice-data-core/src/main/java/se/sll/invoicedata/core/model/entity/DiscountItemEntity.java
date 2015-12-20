@@ -127,7 +127,7 @@ public class DiscountItemEntity implements Comparable<DiscountItemEntity> {
         return false;
     }
 	
-	public BigDecimal getTotalAmount() {
+	public BigDecimal calculateDiscountPrice() {
 		BigDecimal amount = BigDecimal.valueOf(0.0);		
 		Map<String, ItemEntity> serviceItemMap = new HashMap<String, ItemEntity>();
         

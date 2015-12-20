@@ -24,15 +24,18 @@ package se.sll.invoicedata.core.pojo.mapping;
 
 import static se.sll.invoicedata.core.util.CoreUtil.copyProperties;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.Item;
-import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.DiscountItemEntity;
@@ -62,39 +65,73 @@ public class EntityBeanConverter {
 		return businessEventEntity;
 	}
 	
+	private static boolean getValue(Boolean b) {
+		return b == null ? false : b.booleanValue();
+	}
+	
 	/**
+	 * This method was rewritten to gain performance since the DOZER API was inconsistent w.r.t performance   
 	 * Maps BusinessEventEntity to RegisteredEvent object
 	 * @param businessEventEntity
 	 * @return RegisteredEvent
 	 */
 	public static RegisteredEvent fromBusinessEventEntityToRegisteredEvent(final BusinessEventEntity businessEventEntity) {
-		final RegisteredEvent registeredEvent = copyProperties(businessEventEntity, RegisteredEvent.class);
+		final RegisteredEvent registeredEvent = new RegisteredEvent();
+		registeredEvent.setAcknowledgedBy(businessEventEntity.getAcknowledgedBy());
+		registeredEvent.setAcknowledgedTime(CoreUtil.toXMLGregorianCalendar(businessEventEntity.getAcknowledgedTime()));
+		registeredEvent.setAcknowledgementId(businessEventEntity.getAcknowledgementId());
+		registeredEvent.setCredit(getValue(businessEventEntity.getCredit()));
+		registeredEvent.setEndTime(CoreUtil.toXMLGregorianCalendar(businessEventEntity.getEndTime()));
+		registeredEvent.setEventId(businessEventEntity.getEventId());
+		registeredEvent.setHealthCareCommission(businessEventEntity.getHealthCareCommission());
+		registeredEvent.setHealthcareFacility(businessEventEntity.getHealthcareFacility());
+		registeredEvent.setId(businessEventEntity.getId());
+		registeredEvent.setPaymentResponsible(businessEventEntity.getPaymentResponsible());
+		registeredEvent.setRefContractId(businessEventEntity.getRefContractId());
+		registeredEvent.setServiceCode(businessEventEntity.getServiceCode());
+		registeredEvent.setStartTime(CoreUtil.toXMLGregorianCalendar(businessEventEntity.getStartTime()));
+		registeredEvent.setSupplierId(businessEventEntity.getSupplierId());
+		registeredEvent.setSupplierName(businessEventEntity.getSupplierName());
 		
-		CoreUtil.copyGenericLists(registeredEvent.getItemList(), businessEventEntity.getItemEntities(), Item.class);
-		registeredEvent.getDiscountItemList().addAll(copyDiscountItemEntityToDiscountItem(businessEventEntity.getDiscountItemEntities()));
-
+		Map<String, ItemEntity> serviceItemMap = new HashMap<String, ItemEntity>();
+		
+		BigDecimal amount = BigDecimal.valueOf(0.0);
+		for (ItemEntity itemEntity : businessEventEntity.getItemEntities()) {
+			Item item = new Item();
+			item.setDescription(itemEntity.getDescription());
+			item.setItemId(itemEntity.getItemId());
+			item.setPrice(itemEntity.getPrice());
+			item.setQty(itemEntity.getQty());
+			
+			amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty()));
+			
+			serviceItemMap.put(itemEntity.getItemId(), itemEntity);
+			registeredEvent.getItemList().add(item);
+		}
+		
+		TreeSet<DiscountItemEntity> discountItemSet = new TreeSet<DiscountItemEntity>(businessEventEntity.getDiscountItemEntities());
+		for (DiscountItemEntity discountItemEntity : discountItemSet) {
+			DiscountItem discountItem = new DiscountItem();
+			discountItem.setDescription(discountItemEntity.getDescription());
+			discountItem.setDiscountInPercentage(discountItemEntity.getDiscountInPercentage());
+			discountItem.setOrderOfDiscount(discountItemEntity.getOrderOfDiscount());
+			
+			BigDecimal discountAmount = BigDecimal.valueOf(0.0);
+			
+			for (ReferenceItemEntity referenceItemEntity : discountItemEntity.getReferenceItemEntities()) {
+	    		ItemEntity itemEntity = serviceItemMap.get(referenceItemEntity.getRefItemId());
+	    		BigDecimal priceBeforeDiscount = itemEntity.getPrice().multiply(new BigDecimal(referenceItemEntity.getQty()));
+	    		BigDecimal priceAfterDiscount = (priceBeforeDiscount.multiply(new BigDecimal(discountItemEntity.getDiscountInPercentage()))).divide(new BigDecimal(100));
+	    		discountAmount = discountAmount.add(priceAfterDiscount);
+	    	}
+			
+			discountItem.setDiscountedPrice(discountAmount);
+			amount = amount.subtract(discountAmount);
+		}
+		amount = amount.setScale(2, RoundingMode.HALF_UP);
+		registeredEvent.setTotalAmount(amount);
+		
 		return registeredEvent;
-	}
-	
-	private static List<DiscountItem> copyDiscountItemEntityToDiscountItem(Collection<DiscountItemEntity> discountItemCollection) {
-		List<DiscountItem> discountItemList = new ArrayList<DiscountItem>();
-		for (DiscountItemEntity discountItemEntity : discountItemCollection) {
-			discountItemList.add(toDiscountItem(discountItemEntity));
-		}
-		
-		return discountItemList;
-	}
-	
-	static DiscountItem toDiscountItem(final DiscountItemEntity discountItemEntity) {
-		final DiscountItem discountItem = copyProperties(discountItemEntity, DiscountItem.class);
-		discountItem.setDiscountedPrice(discountItemEntity.getTotalAmount());
-		
-		for (final ReferenceItemEntity referenceItemEntity : discountItemEntity.getReferenceItemEntities()) {
-			final ReferenceItem referenceItem = copyProperties(referenceItemEntity, ReferenceItem.class);
-			discountItem.getReferenceItemList().add(referenceItem);
-		}
-		
-		return discountItem;	
 	}
 	
 	/**
@@ -102,7 +139,7 @@ public class EntityBeanConverter {
 	 * @param bEEntityList
 	 * @return List<RegisteredEvent>
 	 */
-	public static List<RegisteredEvent> fromBusinessEventEntityToRegisteredEvent(
+	public static List<RegisteredEvent> processBusinessEventEntitiesToRegisteredEvent(
 			final List<BusinessEventEntity> bEEntityList) {
 		List<RegisteredEvent> registeredEventList = new ArrayList<RegisteredEvent>(bEEntityList.size());
 		for (final BusinessEventEntity bEEntity : bEEntityList) {

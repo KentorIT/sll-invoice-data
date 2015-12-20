@@ -89,6 +89,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
     }
     
+    /**
+     * Service name - GetInvoiceData
+     * Consumers uses this service to dry run before creating actual invoice
+     */
     @Override
     public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
             GetInvoiceDataRequest request) {
@@ -143,11 +147,20 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 
 		return invoiceDataList;
 	}
-
+    
+    /**
+     * Service name - ViewInvoiceData
+     */
     @Override
     public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
     	Long id = listInvoiceDataService.extractId(referenceId);
-        return getInvoiceData(referenceId, invoiceDataRepository.findOne(id));
+        InvoiceData invoiceData = getInvoiceData(referenceId, invoiceDataRepository.findOne(id));
+        
+        if (invoiceData.getTotalAmount() == null || invoiceData.getTotalAmount().intValue() == 0) {
+        	throw InvoiceDataErrorCodeEnum.SYSTEM_BUSY_WITH_CREATE_INVOICE_REQUEST.createException("Invoice is in the process of creation. Requested to try again later");
+        }
+        
+        return invoiceData;        
     }
     
     private InvoiceData getInvoiceData(final String referenceId, final InvoiceDataEntity invoiceDataEntity) {

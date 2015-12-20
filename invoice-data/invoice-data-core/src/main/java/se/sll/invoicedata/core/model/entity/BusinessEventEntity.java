@@ -393,7 +393,7 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
      * 
      * @return the total amount for all items.
      */
-    public BigDecimal getTotalAmount() {
+    public BigDecimal calculateTotalAmount() {
         BigDecimal amount = BigDecimal.valueOf(0.0);
         
         for (final ItemEntity itemEntity : itemEntities) {
@@ -402,7 +402,7 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         
         TreeSet<DiscountItemEntity> discountItemSet = new TreeSet<DiscountItemEntity>(discountItemEntities);        
         for (final DiscountItemEntity discountItemEntity : discountItemSet) {
-        	amount = amount.subtract(discountItemEntity.getTotalAmount());
+        	amount = amount.subtract(discountItemEntity.calculateDiscountPrice());
         }        
         amount = amount.setScale(2, RoundingMode.HALF_UP);
         return amount;

@@ -90,7 +90,6 @@ public class InvoiceDataEntity {
     @PreUpdate
     void onPreUpdate() {
     	setCreatedTime(new Date());
-        calcDerivedValues();
     }
     
 
@@ -117,9 +116,9 @@ public class InvoiceDataEntity {
                 end = e.getEndTime();
             }
             if (e.isCredit()) {
-                amount = amount.subtract(e.getTotalAmount());
+                amount = amount.subtract(e.calculateTotalAmount());
             } else {
-                amount = amount.add(e.getTotalAmount()); 
+                amount = amount.add(e.calculateTotalAmount()); 
             }
         }
         

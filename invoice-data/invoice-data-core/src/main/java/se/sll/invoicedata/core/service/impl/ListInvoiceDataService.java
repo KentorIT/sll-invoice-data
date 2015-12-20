@@ -98,7 +98,7 @@ public class ListInvoiceDataService extends ValidationService {
         }
         
         //No requirement to fetch list sorted by date
-        return EntityBeanConverter.fromBusinessEventEntityToRegisteredEvent(bEEntityList);
+        return EntityBeanConverter.processBusinessEventEntitiesToRegisteredEvent(bEEntityList);
     }
 	
 	/**
