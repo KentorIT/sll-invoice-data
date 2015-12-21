@@ -161,7 +161,8 @@ public abstract class AbstractProducer {
         try {
             runnable.run();
         } catch (InvoiceDataServiceException ex) {
-            rc.setCode((ex.getCode() == InvoiceDataErrorCodeEnum.NOTFOUND_ERROR) ? ResultCodeEnum.NOTFOUND_ERROR : ResultCodeEnum.REQUEST_ERROR);
+            rc.setCode(ResultCodeEnum.ERROR);
+            rc.setApplicationStatusCode(ex.getCode().getCode());
             rc.setMessage(ex.getMessage() + " (" + statusBean.getGUID() + ")");
             log.error(createLogMessage(ex.getMessage()));
         } catch (Throwable throwable) {

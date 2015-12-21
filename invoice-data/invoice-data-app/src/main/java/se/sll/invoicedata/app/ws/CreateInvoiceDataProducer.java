@@ -26,6 +26,7 @@ import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataReques
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
 import riv.sll.invoicedata.createinvoicedataresponder._1.ObjectFactory;
 import se.sll.invoicedata.core.access.Operation;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 
 /**
  * Creates invoice data.
@@ -58,6 +59,7 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
     ResultCode setResultCode() {
     	ResultCode rc = new ResultCode();
     	rc.setCode(ResultCodeEnum.INFO);
+    	rc.setApplicationStatusCode(InvoiceDataErrorCodeEnum.SYSTEM_BUSY_WITH_CREATE_INVOICE_REQUEST.getCode());
     	rc.setMessage("Request received, invoice is in the process of generation");
     	return rc;
     }

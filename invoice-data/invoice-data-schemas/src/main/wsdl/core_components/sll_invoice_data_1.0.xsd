@@ -139,15 +139,14 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="OK"/>
 			<xs:enumeration value="INFO"/>
-			<xs:enumeration value="REQUEST_ERROR"/>
-			<xs:enumeration value="NOTFOUND_ERROR"/>
-			<xs:enumeration value="AUTHORIZATION_ERROR"/>
+			<xs:enumeration value="ERROR"/>
 		</xs:restriction>
 	</xs:simpleType>
 
 	<xs:complexType name="ResultCode">
 		<xs:sequence>
 			<xs:element name="code" type="tns:ResultCodeEnum" minOccurs="1"/>
+			<xs:element name="applicationStatusCode" type="xs:int" minOccurs="1"/>
 			<xs:element name="message" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>

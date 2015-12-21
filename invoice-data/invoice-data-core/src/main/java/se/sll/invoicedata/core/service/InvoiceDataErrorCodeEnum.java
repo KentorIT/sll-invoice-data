@@ -25,20 +25,20 @@ package se.sll.invoicedata.core.service;
  * @author Peter
  */
 public enum InvoiceDataErrorCodeEnum {
-    TECHNICAL_ERROR("1001", "Encountered a technical error: %s"),
-    VALIDATION_ERROR("1002", "Invalid or missing input data: %s"),
-    NOTFOUND_ERROR("1003", "No such %s found: %s"),
-    LIMIT_ERROR("1004", "Reached maximum limit %d: %s"),
-    SERVICE_AUTHORIZATION_ERROR("1005", "Requesting system has no access to the given operation: %s"),
-    SUPPLIER_AUTHORIZATION_ERROR("1006", "Requesting supplier has no access to the given operation: %s"),
-    SYSTEM_BUSY_WITH_CREATE_INVOICE_REQUEST("1007", "System is busy with Create Invoice Data request: %s");
+    TECHNICAL_ERROR(1001, "Encountered a technical error: %s"),
+    VALIDATION_ERROR(1002, "Invalid or missing input data: %s"),
+    NOTFOUND_ERROR(1003, "No such %s found: %s"),
+    LIMIT_ERROR(1004, "Reached maximum limit %d: %s"),
+    SERVICE_AUTHORIZATION_ERROR(1005, "Requesting system has no access to the given operation: %s"),
+    SUPPLIER_AUTHORIZATION_ERROR(1006, "Requesting supplier has no access to the given operation: %s"),
+    SYSTEM_BUSY_WITH_CREATE_INVOICE_REQUEST(1007, "System is busy with Create Invoice Data request: %s");
     
     
-    private final String code;
+    private final int code;
     private final String messageFormat;
     
     //
-    private InvoiceDataErrorCodeEnum(String code, String messageFormat) {
+    private InvoiceDataErrorCodeEnum(int code, String messageFormat) {
         this.code = code;
         this.messageFormat = messageFormat;
     }
@@ -48,7 +48,7 @@ public enum InvoiceDataErrorCodeEnum {
      * 
      * @return the error code.
      */
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
@@ -70,7 +70,7 @@ public enum InvoiceDataErrorCodeEnum {
     public InvoiceDataServiceException createException(Object... args) {
         final String message = String.format(getMessageFormat(), args);
         
-        return new InvoiceDataServiceException(this, String.format("%s: %s", getCode(), message));
+        return new InvoiceDataServiceException(this, String.format("%s", message));
         
     }
     

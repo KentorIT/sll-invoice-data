@@ -109,8 +109,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 		response = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, request);
 
 		Assert.assertNotNull(response);
-		Assert.assertFalse(ResultCodeEnum.OK == response.getResultCode()
-				.getCode());
+		Assert.assertFalse(ResultCodeEnum.OK == response.getResultCode().getCode());
 		//Not a valid request without supplier id!
 	}
 	
