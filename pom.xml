@@ -72,7 +72,7 @@
 				<artifactId>maven-license-plugin</artifactId>
 				<version>${license.plugin.version}</version>
 				<configuration>
-					<header>https://github.com/KentorIT/sll-invoicedata/lgpl-header.txt</header>
+					<header>lgpl-header.txt</header>
 					<excludes>
 						<exclude>target/**</exclude>
 						<exclude>schemas/**</exclude>
