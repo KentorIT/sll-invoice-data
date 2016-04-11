@@ -1,0 +1,3630 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="28512bf8-70bf-4003-91a1-15b87b5f51fe" activeEnvironment="Default environment" name="RegisterInvoiceData" resourceRoot="" soapui-version="6.0.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="303f8547-bd91-419b-834b-cfa5c009f58f" wsaVersion="NONE" name="RegisterInvoiceDataProducerServiceSoapBinding" type="wsdl" bindingName="{http://ws.app.invoicedata.sll.se/}RegisterInvoiceDataProducerServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl"><con:part><con:url>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="RegisterInvoiceDataProducerService" targetNamespace="http://ws.app.invoicedata.sll.se/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.app.invoicedata.sll.se/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns4="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21">
+  <wsdl:import location="http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl=RegisterInvoiceDataResponderInterface.wsdl" namespace="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21"></wsdl:import>
+  <wsdl:binding name="RegisterInvoiceDataProducerServiceSoapBinding" type="ns1:RegisterInvoiceDataResponderInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="RegisterInvoiceData">
+      <soap:operation soapAction="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" style="document"/>
+      <wsdl:input name="RegisterInvoiceData">
+        <soap:header message="ns1:RegisterInvoiceData" part="LogicalAddress" use="literal"></soap:header>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="RegisterInvoiceDataResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RegisterInvoiceDataProducerService">
+    <wsdl:port binding="tns:RegisterInvoiceDataProducerServiceSoapBinding" name="RegisterInvoiceDataProducerPort">
+      <soap:address location="http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1?wsdl=RegisterInvoiceDataResponderInterface.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="RegisterInvoiceDataResponderInterface" targetNamespace="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns3="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:ns2="urn:riv:itintegration:registry:1" xmlns:ns1="urn:riv:sll:invoicedata:RegisterInvoiceData:1:rivtabp21">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:ns1="urn:riv:sll:invoicedata:1">
+      <xs:import namespace="urn:riv:sll:invoicedata:1"/>
+      <xs:element name="RegisterInvoiceData" type="ns1:Event"/>
+      <xs:element name="RegisterInvoiceDataResponse" type="tns:RegisterInvoiceDataResponse"/>
+      <xs:complexType name="RegisterInvoiceDataResponse">
+        <xs:sequence>
+          <xs:element name="resultCode" type="ns1:ResultCode"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:1">
+      <xs:complexType name="Event">
+        <xs:sequence>
+          <xs:element name="eventId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="healthcareFacility" type="xs:string"/>
+          <xs:element name="refContractId" type="xs:string"/>
+          <xs:element name="supplierName" type="xs:string"/>
+          <xs:element name="serviceCode" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="healthCareCommission" type="xs:string"/>
+          <xs:element name="acknowledgementId" type="xs:string"/>
+          <xs:element name="acknowledgedBy" type="xs:string"/>
+          <xs:element name="acknowledgedTime" type="xs:dateTime"/>
+          <xs:element name="startTime" type="xs:dateTime"/>
+          <xs:element name="endTime" type="xs:dateTime"/>
+          <xs:element maxOccurs="unbounded" name="itemList" type="tns:Item"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="discountItemList" nillable="true" type="tns:DiscountItem"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Item">
+        <xs:sequence>
+          <xs:element name="itemId" type="xs:string"/>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="qty" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DiscountItem">
+        <xs:sequence>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="discountInPercentage" type="xs:int"/>
+          <xs:element name="orderOfDiscount" type="xs:int"/>
+          <xs:element maxOccurs="unbounded" name="referenceItemList" type="tns:ReferenceItem"/>
+          <xs:element minOccurs="0" name="discountedPrice" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ReferenceItem">
+        <xs:sequence>
+          <xs:element name="refItemId" type="xs:string"/>
+          <xs:element name="qty" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RegisteredEvent">
+        <xs:complexContent>
+          <xs:extension base="tns:Event">
+            <xs:sequence>
+              <xs:element name="id" type="xs:long"/>
+              <xs:element name="credit" type="xs:boolean"/>
+              <xs:element name="totalAmount" type="xs:decimal"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="ResultCode">
+        <xs:sequence>
+          <xs:element name="code" type="tns:ResultCodeEnum"/>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="InvoiceData">
+        <xs:complexContent>
+          <xs:extension base="tns:InvoiceDataHeader">
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="registeredEventList" type="tns:RegisteredEvent"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="InvoiceDataHeader">
+        <xs:sequence>
+          <xs:element name="referenceId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="createdBy" type="xs:string"/>
+          <xs:element name="createdTime" type="xs:dateTime"/>
+          <xs:element name="totalAmount" type="xs:decimal"/>
+          <xs:element name="startDate" type="xs:date"/>
+          <xs:element name="endDate" type="xs:date"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="ResultCodeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OK"/>
+          <xs:enumeration value="REQUEST_ERROR"/>
+          <xs:enumeration value="NOTFOUND_ERROR"/>
+          <xs:enumeration value="AUTHORIZATION_ERROR"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:itintegration:registry:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:itintegration:registry:1">
+      <xs:element name="LogicalAddress" type="xs:string"/>
+      <xs:element name="ServiceContract" type="tns:ServiceContractType"/>
+      <xs:complexType name="ServiceContractType">
+        <xs:sequence>
+          <xs:element name="ServiceContractNamespace" type="xs:anyURI"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="RegisterInvoiceData">
+    <wsdl:part element="ns2:LogicalAddress" name="LogicalAddress"></wsdl:part>
+    <wsdl:part element="ns3:RegisterInvoiceData" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RegisterInvoiceDataResponse">
+    <wsdl:part element="ns3:RegisterInvoiceDataResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="RegisterInvoiceDataResponderInterface">
+    <wsdl:operation name="RegisterInvoiceData">
+      <wsdl:input message="ns1:RegisterInvoiceData" name="RegisterInvoiceData"></wsdl:input>
+      <wsdl:output message="ns1:RegisterInvoiceDataResponse" name="RegisterInvoiceDataResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1</con:endpoint></con:endpoints><con:operation id="d9bafb8a-07b2-4ccb-bca6-b1401fd63a6d" isOneWay="false" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" name="RegisterInvoiceData" bindingOperationName="RegisterInvoiceData" type="Request-Response" outputName="RegisterInvoiceDataResponse" inputName="RegisterInvoiceData" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="91063444-0339-4a99-a98d-a88ff855782a" defaultOutgoingWss="" defaultIncomingWss="" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:urn2="urn:riv:sll:invoicedata:1">\r
+   <soapenv:Header>\r
+      <urn:LogicalAddress>?</urn:LogicalAddress>\r
+   </soapenv:Header>\r
+   <soapenv:Body>\r
+      <urn1:RegisterInvoiceData>\r
+         <urn2:eventId>?</urn2:eventId>\r
+         <urn2:supplierId>?</urn2:supplierId>\r
+         <urn2:healthcareFacility>?</urn2:healthcareFacility>\r
+         <urn2:refContractId>?</urn2:refContractId>\r
+         <urn2:supplierName>?</urn2:supplierName>\r
+         <urn2:serviceCode>?</urn2:serviceCode>\r
+         <urn2:paymentResponsible>?</urn2:paymentResponsible>\r
+         <urn2:healthCareCommission>?</urn2:healthCareCommission>\r
+         <urn2:acknowledgementId>?</urn2:acknowledgementId>\r
+         <urn2:acknowledgedBy>?</urn2:acknowledgedBy>\r
+         <urn2:acknowledgedTime>?</urn2:acknowledgedTime>\r
+         <urn2:startTime>?</urn2:startTime>\r
+         <urn2:endTime>?</urn2:endTime>\r
+         <!--1 or more repetitions:-->\r
+         <urn2:itemList>\r
+            <urn2:itemId>?</urn2:itemId>\r
+            <urn2:description>?</urn2:description>\r
+            <urn2:qty>?</urn2:qty>\r
+            <!--Optional:-->\r
+            <urn2:price>?</urn2:price>\r
+         </urn2:itemList>\r
+         <!--Zero or more repetitions:-->\r
+         <urn2:discountItemList>\r
+            <urn2:description>?</urn2:description>\r
+            <urn2:discountInPercentage>?</urn2:discountInPercentage>\r
+            <urn2:orderOfDiscount>?</urn2:orderOfDiscount>\r
+            <!--1 or more repetitions:-->\r
+            <urn2:referenceItemList>\r
+               <urn2:refItemId>?</urn2:refItemId>\r
+               <urn2:qty>?</urn2:qty>\r
+            </urn2:referenceItemList>\r
+            <!--Optional:-->\r
+            <urn2:discountedPrice>?</urn2:discountedPrice>\r
+         </urn2:discountItemList>\r
+      </urn1:RegisterInvoiceData>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/></con:call></con:operation></con:interface><con:testSuite id="fdec1912-ec76-4d80-a20b-e421c0153650" name="SetUp"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="7be8f7e1-593c-4480-8025-feb3a2ed7fd7" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="httprequest" name="Create data to run tests" id="4d75fdcd-fcca-4d2e-b0ae-5f264a43e1a8"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" id="d6e72d93-3457-461e-ac1c-f998dedd5e0d" name="Create data to run tests" postQueryString="false" mediaType="application/json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/invoicedata-web-app/admin/pricelists</con:endpoint><con:request>{
+   priceList:[
+      {
+         supplierId:"TEST_556482-8654",
+		 supplierName:"TEST_Transvoice",
+         serviceCode:"01",
+         validFrom:"2015-01-01",
+         prices:[
+            {
+               itemId:"463cf338-d6ec-402a-8f00-55fa5595e6e1",
+               price:4435.00
+            },
+            {
+               itemId:"f895d394-acb1-43e3-a18c-dd82a7af1482",
+               price:4445.00
+            },
+            {
+               itemId:"005ef454-1bda-4500-8375-d9ce9392ae93",
+               price:4445.00
+            },
+            {
+               itemId:"b4369381-82df-4b57-800b-3d7836e69e03",
+               price:4445.00
+            },
+            {
+               itemId:"e4b1d267-c2b2-4875-b263-086a99af39f2",
+               price:4445.00
+            },
+            {
+               itemId:"4e97dd3e-d0c3-4da0-b497-87abec3035ab",
+               price:4414.00
+            },
+            {
+               itemId:"4df7818f-a48b-4320-9403-7bfba111bd5c",
+               price:4423.00
+            },
+            {
+               itemId:"2efd654a-e1a3-43df-8b4a-a73cb5fc42ba",
+               price:4423.00
+            },
+            {
+               itemId:"ac48d0f5-4a49-4272-8148-47975f357ad0",
+               price:4423.00
+            },
+            {
+               itemId:"648949d6-cf8c-4313-a725-918043222520",
+               price:4423.00
+            },
+            {
+               itemId:"c60b0c11-82f0-4612-bd31-c62530bf81f0",
+               price:3305.00
+            },
+            {
+               itemId:"2532f879-d614-414e-8fdf-e84a24970471",
+               price:3312.00
+            },
+            {
+               itemId:"2340792c-32b8-46aa-895b-7e6a2f104095",
+               price:3312.00
+            },
+            {
+               itemId:"54027a3a-59e5-459e-8894-31ccf6c40036",
+               price:3312.00
+            },
+            {
+               itemId:"bef8a372-0d81-43de-afa9-dfe5e93b2dcd",
+               price:3312.00
+            },
+            {
+               itemId:"1683cae1-d4b6-4432-8728-a3c0d867a697",
+               price:1176.00
+            },
+            {
+               itemId:"a8772fe4-3816-4aa4-8e73-7510f6046ce8",
+               price:1176.00
+            },
+            {
+               itemId:"144fe042-dd20-4f96-a73e-58c596e18adb",
+               price:1176.00
+            },
+            {
+               itemId:"4a0d4a14-c828-4bb4-831f-e2a3299bb3c6",
+               price:1176.00
+            },
+            {
+               itemId:"afcc1325-adaf-492e-a82c-58bf95a11c32",
+               price:1176.00
+            },
+            {
+               itemId:"842c5168-ed2e-419a-934f-84457f12de5f",
+               price:1167.00
+            },
+            {
+               itemId:"cbfc0aa6-6822-4add-878d-465058b4d879",
+               price:1167.00
+            },
+            {
+               itemId:"0d2c6a22-0d1a-4c53-8d91-5c0eba8adc6a",
+               price:1167.00
+            },
+            {
+               itemId:"9b4e2b28-670b-4df3-9d4c-f2b0c73f3984",
+               price:1167.00
+            },
+            {
+               itemId:"eeacd251-b33a-4a06-98a7-f74b6fb985cd",
+               price:1167.00
+            },
+            {
+               itemId:"0f49da93-ceee-4861-9957-dab6f9d0e033",
+               price:1123.00
+            },
+            {
+               itemId:"f8973b1e-5251-452b-916c-df5f32d53a10",
+               price:1123.00
+            },
+            {
+               itemId:"8c084f21-ab7f-4fa8-b7de-2fa1cd982670",
+               price:1123.00
+            },
+            {
+               itemId:"5836cb77-4210-4d1b-980f-f46e09f826e9",
+               price:1123.00
+            },
+            {
+               itemId:"1335d640-09f8-46bc-bf28-66027844e48c",
+               price:1123.00
+            },
+            {
+               itemId:"af00fab9-c203-44b8-9dd0-b22c0168b628",
+               price:888.00
+            },
+            {
+               itemId:"3abcc180-0add-428b-ad65-8480bc6260d9",
+               price:888.00
+            },
+            {
+               itemId:"b187e6a4-92d4-4607-a8b7-c59e4030aeb3",
+               price:888.00
+            },
+            {
+               itemId:"d9e16c30-337c-480a-90c9-214981d8962c",
+               price:888.00
+            },
+            {
+               itemId:"134820c4-af79-4c89-a18f-192fc2929a8b",
+               price:888.00
+            },
+            {
+               itemId:"c4d875fd-1080-4b1d-8e4d-9f97beaee3e6",
+               price:883.50
+            },
+            {
+               itemId:"4becea17-639f-42f0-933d-23c43b486de2",
+               price:883.50
+            },
+            {
+               itemId:"254396f3-bedb-4c33-bd6d-d989eb78a99e",
+               price:883.50
+            },
+            {
+               itemId:"d690e57d-5747-415b-b5d3-73ca12f10b38",
+               price:883.50
+            },
+            {
+               itemId:"dd46518e-8cbd-40d8-ae18-724e2f281113",
+               price:883.50
+            },
+            {
+               itemId:"1a7cb60b-8e95-4a87-aceb-c7acb59488c7",
+               price:661.50
+            },
+            {
+               itemId:"2805fe14-3ea7-45a6-87ae-f6e6ae108a8f",
+               price:661.50
+            },
+            {
+               itemId:"7e0bdf31-6ebd-4f9c-8cd2-dd3189aba749",
+               price:661.50
+            },
+            {
+               itemId:"ead83b93-af66-4885-a1f4-03995050a899",
+               price:661.50
+            },
+            {
+               itemId:"bb0a87b9-08dc-4ce4-afbf-bc71d0ff86db",
+               price:661.50
+            },
+            {
+               itemId:"51794bd8-bd16-4b37-9966-eee871618b80",
+               price:3108.00
+            },
+            {
+               itemId:"88f39604-e5ff-4b83-a2d5-6bbfbce8196a",
+               price:2953.00
+            },
+            {
+               itemId:"a4916655-321b-4b3c-bf58-61edf63a9662",
+               price:3108.00
+            },
+            {
+               itemId:"14b87dec-9fa1-4838-8589-fbeaea8ededf",
+               price:2952.00
+            },
+            {
+               itemId:"c92a16e1-8de8-4f1e-a1b8-d2d9bd3cd97f",
+               price:3108.00
+            },
+            {
+               itemId:"91141e5f-f174-4448-b3c3-39db7f050ed4",
+               price:2953.00
+            },
+            {
+               itemId:"e97a0129-49db-46f4-9af9-ff4ade86fd9f",
+               price:3108.00
+            },
+            {
+               itemId:"cd3c1ac9-a207-4d9f-ab6c-80572326fbe0",
+               price:2952.00
+            },
+            {
+               itemId:"d92607bc-6326-49df-a31b-8f8b402945cc",
+               price:3108.00
+            },
+            {
+               itemId:"b0acc130-36a5-4c1c-b420-068293eadf2b",
+               price:2953.00
+            },
+            {
+               itemId:"e9502ec2-c441-4651-8cc0-afbb10b031e5",
+               price:3108.00
+            },
+            {
+               itemId:"72a5d083-7a6c-40ba-aa65-55d97956973f",
+               price:2952.00
+            },
+            {
+               itemId:"21bd6ea4-01bb-468f-a990-77d02c839978",
+               price:2218.00
+            },
+            {
+               itemId:"a229afe3-9dd1-41a2-8f3c-2c110a33836c",
+               price:2218.00
+            },
+            {
+               itemId:"303a2018-872b-4328-ab3f-7dbccadb1e72",
+               price:2218.00
+            },
+            {
+               itemId:"45432abd-5b03-42de-bf26-c5c42f0c235f",
+               price:2218.00
+            },
+            {
+               itemId:"225c5325-dfd5-4570-8898-8e6608a25e95",
+               price:2218.00
+            },
+            {
+               itemId:"b61f4f44-5865-41f8-84e7-11d898d40c3d",
+               price:2207.00
+            },
+            {
+               itemId:"a6af7e1e-eac3-40bc-8d2b-b1eaaeea1240",
+               price:2207.00
+            },
+            {
+               itemId:"ef500c95-b9d9-4bb8-abf7-b11867de5c92",
+               price:2207.00
+            },
+            {
+               itemId:"2cb20a67-dae0-4870-ba7a-90333e5c0168",
+               price:2207.00
+            },
+            {
+               itemId:"58c6886f-46f6-42b6-9a73-0cfdaf6723bf",
+               price:2207.00
+            },
+            {
+               itemId:"56f6e2e8-d08c-4689-a3a5-b3fec924a0b3",
+               price:1152.00
+            },
+            {
+               itemId:"a1f0cdfa-23d9-45a0-aaf7-158234c171f4",
+               price:1152.00
+            },
+            {
+               itemId:"0b9e3312-a580-4da8-b0fe-fa9c3f0f00e0",
+               price:1152.00
+            },
+            {
+               itemId:"9affaafd-db9e-47ab-aeb4-6c0207de598a",
+               price:1152.00
+            },
+            {
+               itemId:"36f03e07-f793-4819-98cc-90551657972c",
+               price:1152.00
+            },
+            {
+               itemId:"795b1ea2-306f-4058-9113-46be2c232100",
+               price:662.00
+            },
+            {
+               itemId:"9642a659-3fbe-4cef-b4b0-181058f04240",
+               price:662.00
+            },
+            {
+               itemId:"72c03912-e862-488c-863b-49fc9cf95d59",
+               price:662.00
+            },
+            {
+               itemId:"3045d778-df1c-4f17-b2c2-4cfbfea862d9",
+               price:662.00
+            },
+            {
+               itemId:"22185679-37ae-4b79-8650-bcfb4586eff8",
+               price:662.00
+            },
+            {
+               itemId:"a7f14fc7-85ae-4fdd-87ed-52f5552169bc",
+               price:559.00
+            },
+            {
+               itemId:"ec5f859c-68ff-4b8f-b43b-650eb92733d9",
+               price:559.00
+            },
+            {
+               itemId:"ca3f59d7-de89-43bc-ba74-98a47b955f1b",
+               price:559.00
+            },
+            {
+               itemId:"58770df5-8d03-4cbd-98f6-fa87ad8309f8",
+               price:559.00
+            },
+            {
+               itemId:"1e67d45b-cae6-421a-b2b7-79d1b8c6acfc",
+               price:559.00
+            },
+            {
+               itemId:"f1d72cb3-89f2-4156-b3eb-8bb892bffd40",
+               price:444.00
+            },
+            {
+               itemId:"c405280b-93a9-4f3a-9ff7-b2b61ad8aac8",
+               price:444.00
+            },
+            {
+               itemId:"60b6f04f-1f30-49b3-9226-c818dd5da699",
+               price:444.00
+            },
+            {
+               itemId:"fd59800b-8961-46af-9d3d-1b8515f2e2ce",
+               price:444.00
+            },
+            {
+               itemId:"b75163c2-b4ce-4025-94ae-a70fafd7af76",
+               price:444.00
+            },
+            {
+               itemId:"f6ec77e1-2edf-4b45-b6a8-7d086ec0384d",
+               price:-2217.50
+            },
+            {
+               itemId:"7baecadd-bc18-4de7-92c6-d56ce7b5bf83",
+               price:-2222.50
+            },
+            {
+               itemId:"12be852b-32ff-4b28-97c7-2f496e495068",
+               price:-2222.50
+            },
+            {
+               itemId:"297c55d9-7160-460c-acdc-0978153098c1",
+               price:-2222.50
+            },
+            {
+               itemId:"bd8e3535-3230-42d4-93ce-15b62228cb3c",
+               price:-2222.50
+            },
+            {
+               itemId:"1621af6e-1eec-4d08-980a-c56f4a65d0de",
+               price:-2207.00
+            },
+            {
+               itemId:"87d4b113-4fe4-43d6-a602-ee9b803c1a85",
+               price:-2211.50
+            },
+            {
+               itemId:"b411c686-241c-466a-be7b-e76837fb8f60",
+               price:-2211.50
+            },
+            {
+               itemId:"7f6301b1-94b2-4429-9c81-ecf352eb956d",
+               price:-2211.50
+            },
+            {
+               itemId:"57c0c9df-e499-4d4f-ae7d-73f77d509dcb",
+               price:-2211.50
+            },
+            {
+               itemId:"6e04ddbe-7084-42c0-858d-14ed15f17b31",
+               price:-1152.50
+            },
+            {
+               itemId:"172e1207-1742-45ea-876c-a31f59586d07",
+               price:-1156.00
+            },
+            {
+               itemId:"9c1e7ca9-6e29-4bd7-8859-2bd0975970f1",
+               price:-1156.00
+            },
+            {
+               itemId:"f5ecdb61-16b5-4345-850d-43abee2a3ab0",
+               price:-1156.00
+            },
+            {
+               itemId:"c7bff2e9-fa27-47e4-8d0d-c1c2d425d6b2",
+               price:-1156.00
+            },
+            {
+               itemId:"b590b62e-d994-4e13-a839-17103221cfba",
+               price:100.00
+            },
+            {
+               itemId:"4591dde7-ce82-4ede-a899-d15c1bbcd658",
+               price:100.00
+            },
+            {
+               itemId:"0986b664-41db-4587-8698-2fc9ef33536c",
+               price:100.00
+            },
+            {
+               itemId:"4718bb31-574c-481d-800f-82177eec75f2",
+               price:100.00
+            },
+            {
+               itemId:"2ee8b336-f2b7-4f63-9c8b-7262f0631ef6",
+               price:100.00
+            },
+            {
+               itemId:"fe66aa08-1b48-449d-9ace-ceb11a7bc9b6",
+               price:100.00
+            },
+            {
+               itemId:"dd236a10-ae24-4fdb-b91d-2d991cba2902",
+               price:-1109.00
+            },
+            {
+               itemId:"22b57eeb-6597-41cf-a754-fa04f5e10b8d",
+               price:-1109.00
+            },
+            {
+               itemId:"cc9863cc-afef-4228-832d-b9c94b4272ec",
+               price:-1109.00
+            },
+            {
+               itemId:"38445b09-51a4-45f0-b263-b4cd2c8519e0",
+               price:-1109.00
+            },
+            {
+               itemId:"4643238d-a0a8-45e7-9088-0ac506b1b033",
+               price:-1109.00
+            },
+            {
+               itemId:"5445b926-19a7-4e9c-819d-03d0cda94776",
+               price:-1103.50
+            },
+            {
+               itemId:"c5355382-ff5c-4efd-b466-e386156fb248",
+               price:-1103.50
+            },
+            {
+               itemId:"ee812381-154d-48b2-9bd3-f135c888a546",
+               price:-1103.50
+            },
+            {
+               itemId:"3b092d4b-7c41-4441-8cca-6df66788900f",
+               price:-1103.50
+            },
+            {
+               itemId:"c1e65b43-078b-4bcb-b267-ff0352e82672",
+               price:-1103.50
+            },
+            {
+               itemId:"9c1d41e7-b425-4746-a0db-66b6134694ab",
+               price:-776.00
+            },
+            {
+               itemId:"430562b4-b7fb-40a1-a8d2-daec6fcb5fe3",
+               price:-776.00
+            },
+            {
+               itemId:"e4d30c24-f17a-423b-a256-f28404c72737",
+               price:-776.00
+            },
+            {
+               itemId:"62d22435-b5f3-4bc3-bdcb-715537b9e46e",
+               price:-776.00
+            },
+				 {
+				     itemId: "5c078eff-f3db-4d8c-829b-536079a0a927",
+					 price: -776.00
+					 }
+         ]
+      },
+      {
+         supplierId:"TEST_556629-1513",
+		 supplierName:"TEST_Språkservice",
+         serviceCode:"01",
+         validFrom:"2015-01-01",
+         prices:[
+            {
+               itemId:"463cf338-d6ec-402a-8f00-55fa5595e6e1",
+               price:4449.00
+            },
+            {
+               itemId:"f895d394-acb1-43e3-a18c-dd82a7af1482",
+               price:4449.00
+            },
+            {
+               itemId:"005ef454-1bda-4500-8375-d9ce9392ae93",
+               price:4449.00
+            },
+            {
+               itemId:"b4369381-82df-4b57-800b-3d7836e69e03",
+               price:4449.00
+            },
+            {
+               itemId:"e4b1d267-c2b2-4875-b263-086a99af39f2",
+               price:4449.00
+            },
+            {
+               itemId:"4e97dd3e-d0c3-4da0-b497-87abec3035ab",
+               price:4426.00
+            },
+            {
+               itemId:"4df7818f-a48b-4320-9403-7bfba111bd5c",
+               price:4426.00
+            },
+            {
+               itemId:"2efd654a-e1a3-43df-8b4a-a73cb5fc42ba",
+               price:4426.00
+            },
+            {
+               itemId:"ac48d0f5-4a49-4272-8148-47975f357ad0",
+               price:4426.00
+            },
+            {
+               itemId:"648949d6-cf8c-4313-a725-918043222520",
+               price:4426.00
+            },
+            {
+               itemId:"c60b0c11-82f0-4612-bd31-c62530bf81f0",
+               price:3312.00
+            },
+            {
+               itemId:"2532f879-d614-414e-8fdf-e84a24970471",
+               price:3312.00
+            },
+            {
+               itemId:"2340792c-32b8-46aa-895b-7e6a2f104095",
+               price:3312.00
+            },
+            {
+               itemId:"54027a3a-59e5-459e-8894-31ccf6c40036",
+               price:3312.00
+            },
+            {
+               itemId:"bef8a372-0d81-43de-afa9-dfe5e93b2dcd",
+               price:3312.00
+            },
+            {
+               itemId:"1683cae1-d4b6-4432-8728-a3c0d867a697",
+               price:1158.00
+            },
+            {
+               itemId:"a8772fe4-3816-4aa4-8e73-7510f6046ce8",
+               price:1158.00
+            },
+            {
+               itemId:"144fe042-dd20-4f96-a73e-58c596e18adb",
+               price:1158.00
+            },
+            {
+               itemId:"4a0d4a14-c828-4bb4-831f-e2a3299bb3c6",
+               price:1158.00
+            },
+            {
+               itemId:"afcc1325-adaf-492e-a82c-58bf95a11c32",
+               price:1158.00
+            },
+            {
+               itemId:"842c5168-ed2e-419a-934f-84457f12de5f",
+               price:1151.00
+            },
+            {
+               itemId:"cbfc0aa6-6822-4add-878d-465058b4d879",
+               price:1151.00
+            },
+            {
+               itemId:"0d2c6a22-0d1a-4c53-8d91-5c0eba8adc6a",
+               price:1151.00
+            },
+            {
+               itemId:"9b4e2b28-670b-4df3-9d4c-f2b0c73f3984",
+               price:1151.00
+            },
+            {
+               itemId:"eeacd251-b33a-4a06-98a7-f74b6fb985cd",
+               price:1151.00
+            },
+            {
+               itemId:"0f49da93-ceee-4861-9957-dab6f9d0e033",
+               price:1106.00
+            },
+            {
+               itemId:"f8973b1e-5251-452b-916c-df5f32d53a10",
+               price:1106.00
+            },
+            {
+               itemId:"8c084f21-ab7f-4fa8-b7de-2fa1cd982670",
+               price:1106.00
+            },
+            {
+               itemId:"5836cb77-4210-4d1b-980f-f46e09f826e9",
+               price:1106.00
+            },
+            {
+               itemId:"1335d640-09f8-46bc-bf28-66027844e48c",
+               price:1106.00
+            },
+            {
+               itemId:"af00fab9-c203-44b8-9dd0-b22c0168b628",
+               price:1158.00
+            },
+            {
+               itemId:"3abcc180-0add-428b-ad65-8480bc6260d9",
+               price:1158.00
+            },
+            {
+               itemId:"b187e6a4-92d4-4607-a8b7-c59e4030aeb3",
+               price:1158.00
+            },
+            {
+               itemId:"d9e16c30-337c-480a-90c9-214981d8962c",
+               price:1158.00
+            },
+            {
+               itemId:"134820c4-af79-4c89-a18f-192fc2929a8b",
+               price:1158.00
+            },
+            {
+               itemId:"c4d875fd-1080-4b1d-8e4d-9f97beaee3e6",
+               price:1151.00
+            },
+            {
+               itemId:"4becea17-639f-42f0-933d-23c43b486de2",
+               price:1151.00
+            },
+            {
+               itemId:"254396f3-bedb-4c33-bd6d-d989eb78a99e",
+               price:1151.00
+            },
+            {
+               itemId:"d690e57d-5747-415b-b5d3-73ca12f10b38",
+               price:1151.00
+            },
+            {
+               itemId:"dd46518e-8cbd-40d8-ae18-724e2f281113",
+               price:1151.00
+            },
+            {
+               itemId:"1a7cb60b-8e95-4a87-aceb-c7acb59488c7",
+               price:1106.00
+            },
+            {
+               itemId:"2805fe14-3ea7-45a6-87ae-f6e6ae108a8f",
+               price:1106.00
+            },
+            {
+               itemId:"7e0bdf31-6ebd-4f9c-8cd2-dd3189aba749",
+               price:1106.00
+            },
+            {
+               itemId:"ead83b93-af66-4885-a1f4-03995050a899",
+               price:1106.00
+            },
+            {
+               itemId:"bb0a87b9-08dc-4ce4-afbf-bc71d0ff86db",
+               price:1106.00
+            },
+            {
+               itemId:"51794bd8-bd16-4b37-9966-eee871618b80",
+               price:7045.00
+            },
+            {
+               itemId:"88f39604-e5ff-4b83-a2d5-6bbfbce8196a",
+               price:3833.00
+            },
+            {
+               itemId:"a4916655-321b-4b3c-bf58-61edf63a9662",
+               price:6693.00
+            },
+            {
+               itemId:"14b87dec-9fa1-4838-8589-fbeaea8ededf",
+               price:3641.00
+            },
+            {
+               itemId:"c92a16e1-8de8-4f1e-a1b8-d2d9bd3cd97f",
+               price:7045.00
+            },
+            {
+               itemId:"91141e5f-f174-4448-b3c3-39db7f050ed4",
+               price:3833.00
+            },
+            {
+               itemId:"e97a0129-49db-46f4-9af9-ff4ade86fd9f",
+               price:6693.00
+            },
+            {
+               itemId:"cd3c1ac9-a207-4d9f-ab6c-80572326fbe0",
+               price:3641.00
+            },
+            {
+               itemId:"d92607bc-6326-49df-a31b-8f8b402945cc",
+               price:7045.00
+            },
+            {
+               itemId:"b0acc130-36a5-4c1c-b420-068293eadf2b",
+               price:3833.00
+            },
+            {
+               itemId:"e9502ec2-c441-4651-8cc0-afbb10b031e5",
+               price:6693.00
+            },
+            {
+               itemId:"72a5d083-7a6c-40ba-aa65-55d97956973f",
+               price:3641.00
+            },
+            {
+               itemId:"21bd6ea4-01bb-468f-a990-77d02c839978",
+               price:1167.00
+            },
+            {
+               itemId:"a229afe3-9dd1-41a2-8f3c-2c110a33836c",
+               price:1197.00
+            },
+            {
+               itemId:"303a2018-872b-4328-ab3f-7dbccadb1e72",
+               price:1197.00
+            },
+            {
+               itemId:"45432abd-5b03-42de-bf26-c5c42f0c235f",
+               price:1197.00
+            },
+            {
+               itemId:"225c5325-dfd5-4570-8898-8e6608a25e95",
+               price:1197.00
+            },
+            {
+               itemId:"b61f4f44-5865-41f8-84e7-11d898d40c3d",
+               price:1559.00
+            },
+            {
+               itemId:"a6af7e1e-eac3-40bc-8d2b-b1eaaeea1240",
+               price:1187.00
+            },
+            {
+               itemId:"ef500c95-b9d9-4bb8-abf7-b11867de5c92",
+               price:1187.00
+            },
+            {
+               itemId:"2cb20a67-dae0-4870-ba7a-90333e5c0168",
+               price:1187.00
+            },
+            {
+               itemId:"58c6886f-46f6-42b6-9a73-0cfdaf6723bf",
+               price:1187.00
+            },
+            {
+               itemId:"56f6e2e8-d08c-4689-a3a5-b3fec924a0b3",
+               price:1116.00
+            },
+            {
+               itemId:"a1f0cdfa-23d9-45a0-aaf7-158234c171f4",
+               price:1138.00
+            },
+            {
+               itemId:"0b9e3312-a580-4da8-b0fe-fa9c3f0f00e0",
+               price:1138.00
+            },
+            {
+               itemId:"9affaafd-db9e-47ab-aeb4-6c0207de598a",
+               price:1138.00
+            },
+            {
+               itemId:"36f03e07-f793-4819-98cc-90551657972c",
+               price:1138.00
+            },
+            {
+               itemId:"795b1ea2-306f-4058-9113-46be2c232100",
+               price:884.00
+            },
+            {
+               itemId:"9642a659-3fbe-4cef-b4b0-181058f04240",
+               price:999.00
+            },
+            {
+               itemId:"72c03912-e862-488c-863b-49fc9cf95d59",
+               price:999.00
+            },
+            {
+               itemId:"3045d778-df1c-4f17-b2c2-4cfbfea862d9",
+               price:999.00
+            },
+            {
+               itemId:"22185679-37ae-4b79-8650-bcfb4586eff8",
+               price:999.00
+            },
+            {
+               itemId:"a7f14fc7-85ae-4fdd-87ed-52f5552169bc",
+               price:779.00
+            },
+            {
+               itemId:"ec5f859c-68ff-4b8f-b43b-650eb92733d9",
+               price:994.00
+            },
+            {
+               itemId:"ca3f59d7-de89-43bc-ba74-98a47b955f1b",
+               price:994.00
+            },
+            {
+               itemId:"58770df5-8d03-4cbd-98f6-fa87ad8309f8",
+               price:994.00
+            },
+            {
+               itemId:"1e67d45b-cae6-421a-b2b7-79d1b8c6acfc",
+               price:994.00
+            },
+            {
+               itemId:"f1d72cb3-89f2-4156-b3eb-8bb892bffd40",
+               price:558.00
+            },
+            {
+               itemId:"c405280b-93a9-4f3a-9ff7-b2b61ad8aac8",
+               price:668.00
+            },
+            {
+               itemId:"60b6f04f-1f30-49b3-9226-c818dd5da699",
+               price:668.00
+            },
+            {
+               itemId:"fd59800b-8961-46af-9d3d-1b8515f2e2ce",
+               price:668.00
+            },
+            {
+               itemId:"b75163c2-b4ce-4025-94ae-a70fafd7af76",
+               price:668.00
+            },
+            {
+               itemId:"f6ec77e1-2edf-4b45-b6a8-7d086ec0384d",
+               price:-2224.50
+            },
+            {
+               itemId:"7baecadd-bc18-4de7-92c6-d56ce7b5bf83",
+               price:-2224.50
+            },
+            {
+               itemId:"12be852b-32ff-4b28-97c7-2f496e495068",
+               price:-2224.50
+            },
+            {
+               itemId:"297c55d9-7160-460c-acdc-0978153098c1",
+               price:-2224.50
+            },
+            {
+               itemId:"bd8e3535-3230-42d4-93ce-15b62228cb3c",
+               price:-2224.50
+            },
+            {
+               itemId:"1621af6e-1eec-4d08-980a-c56f4a65d0de",
+               price:-2213.00
+            },
+            {
+               itemId:"87d4b113-4fe4-43d6-a602-ee9b803c1a85",
+               price:-2213.00
+            },
+            {
+               itemId:"b411c686-241c-466a-be7b-e76837fb8f60",
+               price:-2213.00
+            },
+            {
+               itemId:"7f6301b1-94b2-4429-9c81-ecf352eb956d",
+               price:-2213.00
+            },
+            {
+               itemId:"57c0c9df-e499-4d4f-ae7d-73f77d509dcb",
+               price:-2213.00
+            },
+            {
+               itemId:"6e04ddbe-7084-42c0-858d-14ed15f17b31",
+               price:-1156.00
+            },
+            {
+               itemId:"172e1207-1742-45ea-876c-a31f59586d07",
+               price:-1156.00
+            },
+            {
+               itemId:"9c1e7ca9-6e29-4bd7-8859-2bd0975970f1",
+               price:-1156.00
+            },
+            {
+               itemId:"f5ecdb61-16b5-4345-850d-43abee2a3ab0",
+               price:-1156.00
+            },
+            {
+               itemId:"c7bff2e9-fa27-47e4-8d0d-c1c2d425d6b2",
+               price:-1156.00
+            },
+            {
+               itemId:"b590b62e-d994-4e13-a839-17103221cfba",
+               price:100.00
+            },
+            {
+               itemId:"4591dde7-ce82-4ede-a899-d15c1bbcd658",
+               price:100.00
+            },
+            {
+               itemId:"0986b664-41db-4587-8698-2fc9ef33536c",
+               price:100.00
+            },
+            {
+               itemId:"4718bb31-574c-481d-800f-82177eec75f2",
+               price:100.00
+            },
+            {
+               itemId:"2ee8b336-f2b7-4f63-9c8b-7262f0631ef6",
+               price:100.00
+            },
+            {
+               itemId:"fe66aa08-1b48-449d-9ace-ceb11a7bc9b6",
+               price:100.00
+            },
+            {
+               itemId:"dd236a10-ae24-4fdb-b91d-2d991cba2902",
+               price:-883.50
+            },
+            {
+               itemId:"22b57eeb-6597-41cf-a754-fa04f5e10b8d",
+               price:-998.50
+            },
+            {
+               itemId:"cc9863cc-afef-4228-832d-b9c94b4272ec",
+               price:-998.50
+            },
+            {
+               itemId:"38445b09-51a4-45f0-b263-b4cd2c8519e0",
+               price:-998.50
+            },
+            {
+               itemId:"4643238d-a0a8-45e7-9088-0ac506b1b033",
+               price:-998.50
+            },
+            {
+               itemId:"5445b926-19a7-4e9c-819d-03d0cda94776",
+               price:-779.50
+            },
+            {
+               itemId:"c5355382-ff5c-4efd-b466-e386156fb248",
+               price:-993.50
+            },
+            {
+               itemId:"ee812381-154d-48b2-9bd3-f135c888a546",
+               price:-993.50
+            },
+            {
+               itemId:"3b092d4b-7c41-4441-8cca-6df66788900f",
+               price:-993.50
+            },
+            {
+               itemId:"c1e65b43-078b-4bcb-b267-ff0352e82672",
+               price:-993.50
+            },
+            {
+               itemId:"9c1d41e7-b425-4746-a0db-66b6134694ab",
+               price:-558.00
+            },
+            {
+               itemId:"430562b4-b7fb-40a1-a8d2-daec6fcb5fe3",
+               price:-669.00
+            },
+            {
+               itemId:"e4d30c24-f17a-423b-a256-f28404c72737",
+               price:-669.00
+            },
+            {
+               itemId:"62d22435-b5f3-4bc3-bdcb-715537b9e46e",
+               price:-669.00
+            },
+			{
+			    itemId: "5c078eff-f3db-4d8c-829b-536079a0a927",
+			    price: -669.00
+			}
+         ]
+      },
+      {
+         supplierId:"TEST_556526-2630",
+		 supplierName:"TEST_Semantix Tolkjouren",
+         serviceCode:"01",
+         validFrom:"2015-01-01",
+         prices:[
+            {
+               itemId:"463cf338-d6ec-402a-8f00-55fa5595e6e1",
+               price:4436.00
+            },
+            {
+               itemId:"f895d394-acb1-43e3-a18c-dd82a7af1482",
+               price:6645.00
+            },
+            {
+               itemId:"005ef454-1bda-4500-8375-d9ce9392ae93",
+               price:6645.00
+            },
+            {
+               itemId:"b4369381-82df-4b57-800b-3d7836e69e03",
+               price:6645.00
+            },
+            {
+               itemId:"e4b1d267-c2b2-4875-b263-086a99af39f2",
+               price:8864.00
+            },
+            {
+               itemId:"4e97dd3e-d0c3-4da0-b497-87abec3035ab",
+               price:4414.00
+            },
+            {
+               itemId:"4df7818f-a48b-4320-9403-7bfba111bd5c",
+               price:6613.00
+            },
+            {
+               itemId:"2efd654a-e1a3-43df-8b4a-a73cb5fc42ba",
+               price:6613.00
+            },
+            {
+               itemId:"ac48d0f5-4a49-4272-8148-47975f357ad0",
+               price:6613.00
+            },
+            {
+               itemId:"648949d6-cf8c-4313-a725-918043222520",
+               price:8821.00
+            },
+            {
+               itemId:"c60b0c11-82f0-4612-bd31-c62530bf81f0",
+               price:3305.00
+            },
+            {
+               itemId:"2532f879-d614-414e-8fdf-e84a24970471",
+               price:4448.00
+            },
+            {
+               itemId:"2340792c-32b8-46aa-895b-7e6a2f104095",
+               price:4448.00
+            },
+            {
+               itemId:"54027a3a-59e5-459e-8894-31ccf6c40036",
+               price:4448.00
+            },
+            {
+               itemId:"bef8a372-0d81-43de-afa9-dfe5e93b2dcd",
+               price:6605.00
+            },
+            {
+               itemId:"1683cae1-d4b6-4432-8728-a3c0d867a697",
+               price:1888.00
+            },
+            {
+               itemId:"a8772fe4-3816-4aa4-8e73-7510f6046ce8",
+               price:2277.00
+            },
+            {
+               itemId:"144fe042-dd20-4f96-a73e-58c596e18adb",
+               price:2277.00
+            },
+            {
+               itemId:"4a0d4a14-c828-4bb4-831f-e2a3299bb3c6",
+               price:2277.00
+            },
+            {
+               itemId:"afcc1325-adaf-492e-a82c-58bf95a11c32",
+               price:3372.00
+            },
+            {
+               itemId:"842c5168-ed2e-419a-934f-84457f12de5f",
+               price:1178.00
+            },
+            {
+               itemId:"cbfc0aa6-6822-4add-878d-465058b4d879",
+               price:22264.00
+            },
+            {
+               itemId:"0d2c6a22-0d1a-4c53-8d91-5c0eba8adc6a",
+               price:2264.00
+            },
+            {
+               itemId:"9b4e2b28-670b-4df3-9d4c-f2b0c73f3984",
+               price:2264.00
+            },
+            {
+               itemId:"eeacd251-b33a-4a06-98a7-f74b6fb985cd",
+               price:3353.00
+            },
+            {
+               itemId:"0f49da93-ceee-4861-9957-dab6f9d0e033",
+               price:13100.00
+            },
+            {
+               itemId:"f8973b1e-5251-452b-916c-df5f32d53a10",
+               price:1195.00
+            },
+            {
+               itemId:"8c084f21-ab7f-4fa8-b7de-2fa1cd982670",
+               price:1195.00
+            },
+            {
+               itemId:"5836cb77-4210-4d1b-980f-f46e09f826e9",
+               price:1195.00
+            },
+            {
+               itemId:"1335d640-09f8-46bc-bf28-66027844e48c",
+               price:26100.00
+            },
+            {
+               itemId:"af00fab9-c203-44b8-9dd0-b22c0168b628",
+               price:1172.96
+            },
+            {
+               itemId:"3abcc180-0add-428b-ad65-8480bc6260d9",
+               price:254.84
+            },
+            {
+               itemId:"b187e6a4-92d4-4607-a8b7-c59e4030aeb3",
+               price:254.84
+            },
+            {
+               itemId:"d9e16c30-337c-480a-90c9-214981d8962c",
+               price:254.84
+            },
+            {
+               itemId:"134820c4-af79-4c89-a18f-192fc2929a8b",
+               price:342.24
+            },
+            {
+               itemId:"c4d875fd-1080-4b1d-8e4d-9f97beaee3e6",
+               price:163.76
+            },
+            {
+               itemId:"4becea17-639f-42f0-933d-23c43b486de2",
+               price:242.88
+            },
+            {
+               itemId:"254396f3-bedb-4c33-bd6d-d989eb78a99e",
+               price:242.88
+            },
+            {
+               itemId:"d690e57d-5747-415b-b5d3-73ca12f10b38",
+               price:242.88
+            },
+            {
+               itemId:"dd46518e-8cbd-40d8-ae18-724e2f281113",
+               price:324.76
+            },
+            {
+               itemId:"1a7cb60b-8e95-4a87-aceb-c7acb59488c7",
+               price:119.60
+            },
+            {
+               itemId:"2805fe14-3ea7-45a6-87ae-f6e6ae108a8f",
+               price:179.40
+            },
+            {
+               itemId:"7e0bdf31-6ebd-4f9c-8cd2-dd3189aba749",
+               price:179.40
+            },
+            {
+               itemId:"ead83b93-af66-4885-a1f4-03995050a899",
+               price:179.40
+            },
+            {
+               itemId:"bb0a87b9-08dc-4ce4-afbf-bc71d0ff86db",
+               price:239.20
+            },
+            {
+               itemId:"51794bd8-bd16-4b37-9966-eee871618b80",
+               price:3937.00
+            },
+            {
+               itemId:"88f39604-e5ff-4b83-a2d5-6bbfbce8196a",
+               price:374100.00
+            },
+            {
+               itemId:"a4916655-321b-4b3c-bf58-61edf63a9662",
+               price:3108.00
+            },
+            {
+               itemId:"14b87dec-9fa1-4838-8589-fbeaea8ededf",
+               price:2953.00
+            },
+            {
+               itemId:"c92a16e1-8de8-4f1e-a1b8-d2d9bd3cd97f",
+               price:3937.00
+            },
+            {
+               itemId:"91141e5f-f174-4448-b3c3-39db7f050ed4",
+               price:374100.00
+            },
+            {
+               itemId:"e97a0129-49db-46f4-9af9-ff4ade86fd9f",
+               price:3108.00
+            },
+            {
+               itemId:"cd3c1ac9-a207-4d9f-ab6c-80572326fbe0",
+               price:2953.00
+            },
+            {
+               itemId:"d92607bc-6326-49df-a31b-8f8b402945cc",
+               price:3937.00
+            },
+            {
+               itemId:"b0acc130-36a5-4c1c-b420-068293eadf2b",
+               price:374100.00
+            },
+            {
+               itemId:"e9502ec2-c441-4651-8cc0-afbb10b031e5",
+               price:3108.00
+            },
+            {
+               itemId:"72a5d083-7a6c-40ba-aa65-55d97956973f",
+               price:2953.00
+            },
+            {
+               itemId:"21bd6ea4-01bb-468f-a990-77d02c839978",
+               price:241.00
+            },
+            {
+               itemId:"a229afe3-9dd1-41a2-8f3c-2c110a33836c",
+               price:356.00
+            },
+            {
+               itemId:"303a2018-872b-4328-ab3f-7dbccadb1e72",
+               price:356.00
+            },
+            {
+               itemId:"45432abd-5b03-42de-bf26-c5c42f0c235f",
+               price:356.00
+            },
+            {
+               itemId:"225c5325-dfd5-4570-8898-8e6608a25e95",
+               price:476.00
+            },
+            {
+               itemId:"b61f4f44-5865-41f8-84e7-11d898d40c3d",
+               price:228.00
+            },
+            {
+               itemId:"a6af7e1e-eac3-40bc-8d2b-b1eaaeea1240",
+               price:338.00
+            },
+            {
+               itemId:"ef500c95-b9d9-4bb8-abf7-b11867de5c92",
+               price:338.00
+            },
+            {
+               itemId:"2cb20a67-dae0-4870-ba7a-90333e5c0168",
+               price:338.00
+            },
+            {
+               itemId:"58c6886f-46f6-42b6-9a73-0cfdaf6723bf",
+               price:453.00
+            },
+            {
+               itemId:"56f6e2e8-d08c-4689-a3a5-b3fec924a0b3",
+               price:1668.00
+            },
+            {
+               itemId:"a1f0cdfa-23d9-45a0-aaf7-158234c171f4",
+               price:248.00
+            },
+            {
+               itemId:"0b9e3312-a580-4da8-b0fe-fa9c3f0f00e0",
+               price:248.00
+            },
+            {
+               itemId:"9affaafd-db9e-47ab-aeb4-6c0207de598a",
+               price:248.00
+            },
+            {
+               itemId:"36f03e07-f793-4819-98cc-90551657972c",
+               price:332.00
+            },
+            {
+               itemId:"795b1ea2-306f-4058-9113-46be2c232100",
+               price:12100.00
+            },
+            {
+               itemId:"9642a659-3fbe-4cef-b4b0-181058f04240",
+               price:177.00
+            },
+            {
+               itemId:"72c03912-e862-488c-863b-49fc9cf95d59",
+               price:177.00
+            },
+            {
+               itemId:"3045d778-df1c-4f17-b2c2-4cfbfea862d9",
+               price:177.00
+            },
+            {
+               itemId:"22185679-37ae-4b79-8650-bcfb4586eff8",
+               price:238.00
+            },
+            {
+               itemId:"a7f14fc7-85ae-4fdd-87ed-52f5552169bc",
+               price:114.00
+            },
+            {
+               itemId:"ec5f859c-68ff-4b8f-b43b-650eb92733d9",
+               price:1668.00
+            },
+            {
+               itemId:"ca3f59d7-de89-43bc-ba74-98a47b955f1b",
+               price:1668.00
+            },
+            {
+               itemId:"58770df5-8d03-4cbd-98f6-fa87ad8309f8",
+               price:1668.00
+            },
+            {
+               itemId:"1e67d45b-cae6-421a-b2b7-79d1b8c6acfc",
+               price:225.00
+            },
+            {
+               itemId:"f1d72cb3-89f2-4156-b3eb-8bb892bffd40",
+               price:84.00
+            },
+            {
+               itemId:"c405280b-93a9-4f3a-9ff7-b2b61ad8aac8",
+               price:1123.00
+            },
+            {
+               itemId:"60b6f04f-1f30-49b3-9226-c818dd5da699",
+               price:1123.00
+            },
+            {
+               itemId:"fd59800b-8961-46af-9d3d-1b8515f2e2ce",
+               price:1123.00
+            },
+            {
+               itemId:"b75163c2-b4ce-4025-94ae-a70fafd7af76",
+               price:166.00
+            },
+            {
+               itemId:"f6ec77e1-2edf-4b45-b6a8-7d086ec0384d",
+               price:-2218.00
+            },
+            {
+               itemId:"7baecadd-bc18-4de7-92c6-d56ce7b5bf83",
+               price:-322.50
+            },
+            {
+               itemId:"12be852b-32ff-4b28-97c7-2f496e495068",
+               price:-322.50
+            },
+            {
+               itemId:"297c55d9-7160-460c-acdc-0978153098c1",
+               price:-322.50
+            },
+            {
+               itemId:"bd8e3535-3230-42d4-93ce-15b62228cb3c",
+               price:-432.00
+            },
+            {
+               itemId:"1621af6e-1eec-4d08-980a-c56f4a65d0de",
+               price:-2207.00
+            },
+            {
+               itemId:"87d4b113-4fe4-43d6-a602-ee9b803c1a85",
+               price:-306.50
+            },
+            {
+               itemId:"b411c686-241c-466a-be7b-e76837fb8f60",
+               price:-306.50
+            },
+            {
+               itemId:"7f6301b1-94b2-4429-9c81-ecf352eb956d",
+               price:-306.50
+            },
+            {
+               itemId:"57c0c9df-e499-4d4f-ae7d-73f77d509dcb",
+               price:-410.50
+            },
+            {
+               itemId:"6e04ddbe-7084-42c0-858d-14ed15f17b31",
+               price:-152.50
+            },
+            {
+               itemId:"172e1207-1742-45ea-876c-a31f59586d07",
+               price:-224.00
+            },
+            {
+               itemId:"9c1e7ca9-6e29-4bd7-8859-2bd0975970f1",
+               price:-224.00
+            },
+            {
+               itemId:"f5ecdb61-16b5-4345-850d-43abee2a3ab0",
+               price:-224.00
+            },
+            {
+               itemId:"c7bff2e9-fa27-47e4-8d0d-c1c2d425d6b2",
+               price:-302.50
+            },
+            {
+               itemId:"b590b62e-d994-4e13-a839-17103221cfba",
+               price:100.00
+            },
+            {
+               itemId:"4591dde7-ce82-4ede-a899-d15c1bbcd658",
+               price:100.00
+            },
+            {
+               itemId:"0986b664-41db-4587-8698-2fc9ef33536c",
+               price:100.00
+            },
+            {
+               itemId:"4718bb31-574c-481d-800f-82177eec75f2",
+               price:100.00
+            },
+            {
+               itemId:"2ee8b336-f2b7-4f63-9c8b-7262f0631ef6",
+               price:100.00
+            },
+            {
+               itemId:"fe66aa08-1b48-449d-9ace-ceb11a7bc9b6",
+               price:100.00
+            },
+            {
+               itemId:"dd236a10-ae24-4fdb-b91d-2d991cba2902",
+               price:-120.50
+            },
+            {
+               itemId:"22b57eeb-6597-41cf-a754-fa04f5e10b8d",
+               price:-178.00
+            },
+            {
+               itemId:"cc9863cc-afef-4228-832d-b9c94b4272ec",
+               price:-178.00
+            },
+            {
+               itemId:"38445b09-51a4-45f0-b263-b4cd2c8519e0",
+               price:-178.00
+            },
+            {
+               itemId:"4643238d-a0a8-45e7-9088-0ac506b1b033",
+               price:-238.00
+            },
+            {
+               itemId:"5445b926-19a7-4e9c-819d-03d0cda94776",
+               price:-114.00
+            },
+            {
+               itemId:"c5355382-ff5c-4efd-b466-e386156fb248",
+               price:-169.00
+            },
+            {
+               itemId:"ee812381-154d-48b2-9bd3-f135c888a546",
+               price:-169.00
+            },
+            {
+               itemId:"3b092d4b-7c41-4441-8cca-6df66788900f",
+               price:-169.00
+            },
+            {
+               itemId:"c1e65b43-078b-4bcb-b267-ff0352e82672",
+               price:-226.50
+            },
+            {
+               itemId:"9c1d41e7-b425-4746-a0db-66b6134694ab",
+               price:-84.00
+            },
+            {
+               itemId:"430562b4-b7fb-40a1-a8d2-daec6fcb5fe3",
+               price:-124.00
+            },
+            {
+               itemId:"e4d30c24-f17a-423b-a256-f28404c72737",
+               price:-124.00
+            },
+            {
+               itemId:"62d22435-b5f3-4bc3-bdcb-715537b9e46e",
+               price:-124.00
+            },
+			{
+			    itemId: "5c078eff-f3db-4d8c-829b-536079a0a927",
+				price: -166.00
+			}
+         ]
+      },
+      {
+         supplierId:"TEST_556613-1792",
+		 supplierName:"TEST_Järva tolk",
+         serviceCode:"01",
+         validFrom:"2015-01-01",
+         prices:[
+            {
+               itemId:"463cf338-d6ec-402a-8f00-55fa5595e6e1",
+               price:4444.00
+            },
+            {
+               itemId:"f895d394-acb1-43e3-a18c-dd82a7af1482",
+               price:533.00
+            },
+            {
+               itemId:"005ef454-1bda-4500-8375-d9ce9392ae93",
+               price:533.00
+            },
+            {
+               itemId:"b4369381-82df-4b57-800b-3d7836e69e03",
+               price:577.00
+            },
+            {
+               itemId:"e4b1d267-c2b2-4875-b263-086a99af39f2",
+               price:577.00
+            },
+            {
+               itemId:"4e97dd3e-d0c3-4da0-b497-87abec3035ab",
+               price:422.00
+            },
+            {
+               itemId:"4df7818f-a48b-4320-9403-7bfba111bd5c",
+               price:506.00
+            },
+            {
+               itemId:"2efd654a-e1a3-43df-8b4a-a73cb5fc42ba",
+               price:506.00
+            },
+            {
+               itemId:"ac48d0f5-4a49-4272-8148-47975f357ad0",
+               price:548.00
+            },
+            {
+               itemId:"648949d6-cf8c-4313-a725-918043222520",
+               price:548.00
+            },
+            {
+               itemId:"c60b0c11-82f0-4612-bd31-c62530bf81f0",
+               price:311.00
+            },
+            {
+               itemId:"2532f879-d614-414e-8fdf-e84a24970471",
+               price:373.00
+            },
+            {
+               itemId:"2340792c-32b8-46aa-895b-7e6a2f104095",
+               price:373.00
+            },
+            {
+               itemId:"54027a3a-59e5-459e-8894-31ccf6c40036",
+               price:405.00
+            },
+            {
+               itemId:"bef8a372-0d81-43de-afa9-dfe5e93b2dcd",
+               price:405.00
+            },
+            {
+               itemId:"1683cae1-d4b6-4432-8728-a3c0d867a697",
+               price:17100.00
+            },
+            {
+               itemId:"a8772fe4-3816-4aa4-8e73-7510f6046ce8",
+               price:204.00
+            },
+            {
+               itemId:"144fe042-dd20-4f96-a73e-58c596e18adb",
+               price:204.00
+            },
+            {
+               itemId:"4a0d4a14-c828-4bb4-831f-e2a3299bb3c6",
+               price:221.00
+            },
+            {
+               itemId:"afcc1325-adaf-492e-a82c-58bf95a11c32",
+               price:221.00
+            },
+            {
+               itemId:"842c5168-ed2e-419a-934f-84457f12de5f",
+               price:1662.00
+            },
+            {
+               itemId:"cbfc0aa6-6822-4add-878d-465058b4d879",
+               price:1994.00
+            },
+            {
+               itemId:"0d2c6a22-0d1a-4c53-8d91-5c0eba8adc6a",
+               price:1994.00
+            },
+            {
+               itemId:"9b4e2b28-670b-4df3-9d4c-f2b0c73f3984",
+               price:21100.00
+            },
+            {
+               itemId:"eeacd251-b33a-4a06-98a7-f74b6fb985cd",
+               price:21100.00
+            },
+            {
+               itemId:"0f49da93-ceee-4861-9957-dab6f9d0e033",
+               price:119.00
+            },
+            {
+               itemId:"f8973b1e-5251-452b-916c-df5f32d53a10",
+               price:143.00
+            },
+            {
+               itemId:"8c084f21-ab7f-4fa8-b7de-2fa1cd982670",
+               price:143.00
+            },
+            {
+               itemId:"5836cb77-4210-4d1b-980f-f46e09f826e9",
+               price:155.00
+            },
+            {
+               itemId:"1335d640-09f8-46bc-bf28-66027844e48c",
+               price:155.00
+            },
+            {
+               itemId:"af00fab9-c203-44b8-9dd0-b22c0168b628",
+               price:17100.00
+            },
+            {
+               itemId:"3abcc180-0add-428b-ad65-8480bc6260d9",
+               price:204.00
+            },
+            {
+               itemId:"b187e6a4-92d4-4607-a8b7-c59e4030aeb3",
+               price:204.00
+            },
+            {
+               itemId:"d9e16c30-337c-480a-90c9-214981d8962c",
+               price:221.00
+            },
+            {
+               itemId:"134820c4-af79-4c89-a18f-192fc2929a8b",
+               price:221.00
+            },
+            {
+               itemId:"c4d875fd-1080-4b1d-8e4d-9f97beaee3e6",
+               price:1662.00
+            },
+            {
+               itemId:"4becea17-639f-42f0-933d-23c43b486de2",
+               price:1994.00
+            },
+            {
+               itemId:"254396f3-bedb-4c33-bd6d-d989eb78a99e",
+               price:1994.00
+            },
+            {
+               itemId:"d690e57d-5747-415b-b5d3-73ca12f10b38",
+               price:21100.00
+            },
+            {
+               itemId:"dd46518e-8cbd-40d8-ae18-724e2f281113",
+               price:21100.00
+            },
+            {
+               itemId:"1a7cb60b-8e95-4a87-aceb-c7acb59488c7",
+               price:119.00
+            },
+            {
+               itemId:"2805fe14-3ea7-45a6-87ae-f6e6ae108a8f",
+               price:143.00
+            },
+            {
+               itemId:"7e0bdf31-6ebd-4f9c-8cd2-dd3189aba749",
+               price:143.00
+            },
+            {
+               itemId:"ead83b93-af66-4885-a1f4-03995050a899",
+               price:155.00
+            },
+            {
+               itemId:"bb0a87b9-08dc-4ce4-afbf-bc71d0ff86db",
+               price:155.00
+            },
+            {
+               itemId:"51794bd8-bd16-4b37-9966-eee871618b80",
+               price:1451.00
+            },
+            {
+               itemId:"88f39604-e5ff-4b83-a2d5-6bbfbce8196a",
+               price:932.00
+            },
+            {
+               itemId:"a4916655-321b-4b3c-bf58-61edf63a9662",
+               price:1378.00
+            },
+            {
+               itemId:"14b87dec-9fa1-4838-8589-fbeaea8ededf",
+               price:886.00
+            },
+            {
+               itemId:"c92a16e1-8de8-4f1e-a1b8-d2d9bd3cd97f",
+               price:1451.00
+            },
+            {
+               itemId:"91141e5f-f174-4448-b3c3-39db7f050ed4",
+               price:932.00
+            },
+            {
+               itemId:"e97a0129-49db-46f4-9af9-ff4ade86fd9f",
+               price:1378.00
+            },
+            {
+               itemId:"cd3c1ac9-a207-4d9f-ab6c-80572326fbe0",
+               price:886.00
+            },
+            {
+               itemId:"d92607bc-6326-49df-a31b-8f8b402945cc",
+               price:1451.00
+            },
+            {
+               itemId:"b0acc130-36a5-4c1c-b420-068293eadf2b",
+               price:932.00
+            },
+            {
+               itemId:"e9502ec2-c441-4651-8cc0-afbb10b031e5",
+               price:1378.00
+            },
+            {
+               itemId:"72a5d083-7a6c-40ba-aa65-55d97956973f",
+               price:886.00
+            },
+            {
+               itemId:"21bd6ea4-01bb-468f-a990-77d02c839978",
+               price:193.00
+            },
+            {
+               itemId:"a229afe3-9dd1-41a2-8f3c-2c110a33836c",
+               price:231.00
+            },
+            {
+               itemId:"303a2018-872b-4328-ab3f-7dbccadb1e72",
+               price:231.00
+            },
+            {
+               itemId:"45432abd-5b03-42de-bf26-c5c42f0c235f",
+               price:25100.00
+            },
+            {
+               itemId:"225c5325-dfd5-4570-8898-8e6608a25e95",
+               price:25100.00
+            },
+            {
+               itemId:"b61f4f44-5865-41f8-84e7-11d898d40c3d",
+               price:183.00
+            },
+            {
+               itemId:"a6af7e1e-eac3-40bc-8d2b-b1eaaeea1240",
+               price:22100.00
+            },
+            {
+               itemId:"ef500c95-b9d9-4bb8-abf7-b11867de5c92",
+               price:22100.00
+            },
+            {
+               itemId:"2cb20a67-dae0-4870-ba7a-90333e5c0168",
+               price:237.00
+            },
+            {
+               itemId:"58c6886f-46f6-42b6-9a73-0cfdaf6723bf",
+               price:237.00
+            },
+            {
+               itemId:"56f6e2e8-d08c-4689-a3a5-b3fec924a0b3",
+               price:134.00
+            },
+            {
+               itemId:"a1f0cdfa-23d9-45a0-aaf7-158234c171f4",
+               price:1662.00
+            },
+            {
+               itemId:"0b9e3312-a580-4da8-b0fe-fa9c3f0f00e0",
+               price:1662.00
+            },
+            {
+               itemId:"9affaafd-db9e-47ab-aeb4-6c0207de598a",
+               price:175.00
+            },
+            {
+               itemId:"36f03e07-f793-4819-98cc-90551657972c",
+               price:175.00
+            },
+            {
+               itemId:"795b1ea2-306f-4058-9113-46be2c232100",
+               price:96.00
+            },
+            {
+               itemId:"9642a659-3fbe-4cef-b4b0-181058f04240",
+               price:115.00
+            },
+            {
+               itemId:"72c03912-e862-488c-863b-49fc9cf95d59",
+               price:115.00
+            },
+            {
+               itemId:"3045d778-df1c-4f17-b2c2-4cfbfea862d9",
+               price:125.00
+            },
+            {
+               itemId:"22185679-37ae-4b79-8650-bcfb4586eff8",
+               price:125.00
+            },
+            {
+               itemId:"a7f14fc7-85ae-4fdd-87ed-52f5552169bc",
+               price:91.00
+            },
+            {
+               itemId:"ec5f859c-68ff-4b8f-b43b-650eb92733d9",
+               price:109.00
+            },
+            {
+               itemId:"ca3f59d7-de89-43bc-ba74-98a47b955f1b",
+               price:109.00
+            },
+            {
+               itemId:"58770df5-8d03-4cbd-98f6-fa87ad8309f8",
+               price:119.00
+            },
+            {
+               itemId:"1e67d45b-cae6-421a-b2b7-79d1b8c6acfc",
+               price:119.00
+            },
+            {
+               itemId:"f1d72cb3-89f2-4156-b3eb-8bb892bffd40",
+               price:67.00
+            },
+            {
+               itemId:"c405280b-93a9-4f3a-9ff7-b2b61ad8aac8",
+               price:8100.00
+            },
+            {
+               itemId:"60b6f04f-1f30-49b3-9226-c818dd5da699",
+               price:8100.00
+            },
+            {
+               itemId:"fd59800b-8961-46af-9d3d-1b8515f2e2ce",
+               price:888.00
+            },
+            {
+               itemId:"b75163c2-b4ce-4025-94ae-a70fafd7af76",
+               price:888.00
+            },
+            {
+               itemId:"f6ec77e1-2edf-4b45-b6a8-7d086ec0384d",
+               price:-222.00
+            },
+            {
+               itemId:"7baecadd-bc18-4de7-92c6-d56ce7b5bf83",
+               price:-266.50
+            },
+            {
+               itemId:"12be852b-32ff-4b28-97c7-2f496e495068",
+               price:-266.50
+            },
+            {
+               itemId:"297c55d9-7160-460c-acdc-0978153098c1",
+               price:-288.50
+            },
+            {
+               itemId:"bd8e3535-3230-42d4-93ce-15b62228cb3c",
+               price:-288.50
+            },
+            {
+               itemId:"1621af6e-1eec-4d08-980a-c56f4a65d0de",
+               price:-211.00
+            },
+            {
+               itemId:"87d4b113-4fe4-43d6-a602-ee9b803c1a85",
+               price:-253.00
+            },
+            {
+               itemId:"b411c686-241c-466a-be7b-e76837fb8f60",
+               price:-253.00
+            },
+            {
+               itemId:"7f6301b1-94b2-4429-9c81-ecf352eb956d",
+               price:-274.00
+            },
+            {
+               itemId:"57c0c9df-e499-4d4f-ae7d-73f77d509dcb",
+               price:-274.00
+            },
+            {
+               itemId:"6e04ddbe-7084-42c0-858d-14ed15f17b31",
+               price:-155.50
+            },
+            {
+               itemId:"172e1207-1742-45ea-876c-a31f59586d07",
+               price:-186.50
+            },
+            {
+               itemId:"9c1e7ca9-6e29-4bd7-8859-2bd0975970f1",
+               price:-186.50
+            },
+            {
+               itemId:"f5ecdb61-16b5-4345-850d-43abee2a3ab0",
+               price:-202.50
+            },
+            {
+               itemId:"c7bff2e9-fa27-47e4-8d0d-c1c2d425d6b2",
+               price:-202.50
+            },
+            {
+               itemId:"b590b62e-d994-4e13-a839-17103221cfba",
+               price:100.00
+            },
+            {
+               itemId:"4591dde7-ce82-4ede-a899-d15c1bbcd658",
+               price:100.00
+            },
+            {
+               itemId:"0986b664-41db-4587-8698-2fc9ef33536c",
+               price:100.00
+            },
+            {
+               itemId:"4718bb31-574c-481d-800f-82177eec75f2",
+               price:100.00
+            },
+            {
+               itemId:"2ee8b336-f2b7-4f63-9c8b-7262f0631ef6",
+               price:100.00
+            },
+            {
+               itemId:"fe66aa08-1b48-449d-9ace-ceb11a7bc9b6",
+               price:100.00
+            },
+            {
+               itemId:"dd236a10-ae24-4fdb-b91d-2d991cba2902",
+               price:-96.50
+            },
+            {
+               itemId:"22b57eeb-6597-41cf-a754-fa04f5e10b8d",
+               price:-115.50
+            },
+            {
+               itemId:"cc9863cc-afef-4228-832d-b9c94b4272ec",
+               price:-115.50
+            },
+            {
+               itemId:"38445b09-51a4-45f0-b263-b4cd2c8519e0",
+               price:-125.00
+            },
+            {
+               itemId:"4643238d-a0a8-45e7-9088-0ac506b1b033",
+               price:-125.00
+            },
+            {
+               itemId:"5445b926-19a7-4e9c-819d-03d0cda94776",
+               price:-91.50
+            },
+            {
+               itemId:"c5355382-ff5c-4efd-b466-e386156fb248",
+               price:-11100.00
+            },
+            {
+               itemId:"ee812381-154d-48b2-9bd3-f135c888a546",
+               price:-11100.00
+            },
+            {
+               itemId:"3b092d4b-7c41-4441-8cca-6df66788900f",
+               price:-118.50
+            },
+            {
+               itemId:"c1e65b43-078b-4bcb-b267-ff0352e82672",
+               price:-118.50
+            },
+            {
+               itemId:"9c1d41e7-b425-4746-a0db-66b6134694ab",
+               price:-67.00
+            },
+            {
+               itemId:"430562b4-b7fb-40a1-a8d2-daec6fcb5fe3",
+               price:-81.00
+            },
+            {
+               itemId:"e4d30c24-f17a-423b-a256-f28404c72737",
+               price:-81.00
+            },
+            {
+               itemId:"62d22435-b5f3-4bc3-bdcb-715537b9e46e",
+               price:-87.50
+            },
+			{
+				itemId: "5c078eff-f3db-4d8c-829b-536079a0a927",
+				price: -87.50
+			}
+         ]
+      },      
+	  {
+         supplierId:"TEST_556560-0854",
+		 supplierName:"TEST_Semantix Equator",
+         serviceCode:"01",
+         validFrom:"2015-01-01",
+         prices:[
+            {
+               itemId:"463cf338-d6ec-402a-8f00-55fa5595e6e1",
+               price:100.00
+            },
+            {
+               itemId:"f895d394-acb1-43e3-a18c-dd82a7af1482",
+               price:100.00
+            },
+            {
+               itemId:"005ef454-1bda-4500-8375-d9ce9392ae93",
+               price:100.00
+            },
+            {
+               itemId:"b4369381-82df-4b57-800b-3d7836e69e03",
+               price:100.00
+            },
+            {
+               itemId:"e4b1d267-c2b2-4875-b263-086a99af39f2",
+               price:100.00
+            },
+            {
+               itemId:"4e97dd3e-d0c3-4da0-b497-87abec3035ab",
+               price:100.00
+            },
+            {
+               itemId:"4df7818f-a48b-4320-9403-7bfba111bd5c",
+               price:100.00
+            },
+            {
+               itemId:"2efd654a-e1a3-43df-8b4a-a73cb5fc42ba",
+               price:100.00
+            },
+            {
+               itemId:"ac48d0f5-4a49-4272-8148-47975f357ad0",
+               price:100.00
+            },
+            {
+               itemId:"648949d6-cf8c-4313-a725-918043222520",
+               price:100.00
+            },
+            {
+               itemId:"c60b0c11-82f0-4612-bd31-c62530bf81f0",
+               price:100.00
+            },
+            {
+               itemId:"2532f879-d614-414e-8fdf-e84a24970471",
+               price:100.00
+            },
+            {
+               itemId:"2340792c-32b8-46aa-895b-7e6a2f104095",
+               price:100.00
+            },
+            {
+               itemId:"54027a3a-59e5-459e-8894-31ccf6c40036",
+               price:100.00
+            },
+            {
+               itemId:"bef8a372-0d81-43de-afa9-dfe5e93b2dcd",
+               price:100.00
+            },
+            {
+               itemId:"1683cae1-d4b6-4432-8728-a3c0d867a697",
+               price:100.00
+            },
+            {
+               itemId:"a8772fe4-3816-4aa4-8e73-7510f6046ce8",
+               price:100.00
+            },
+            {
+               itemId:"144fe042-dd20-4f96-a73e-58c596e18adb",
+               price:100.00
+            },
+            {
+               itemId:"4a0d4a14-c828-4bb4-831f-e2a3299bb3c6",
+               price:100.00
+            },
+            {
+               itemId:"afcc1325-adaf-492e-a82c-58bf95a11c32",
+               price:100.00
+            },
+            {
+               itemId:"842c5168-ed2e-419a-934f-84457f12de5f",
+               price:100.00
+            },
+            {
+               itemId:"cbfc0aa6-6822-4add-878d-465058b4d879",
+               price:100.00
+            },
+            {
+               itemId:"0d2c6a22-0d1a-4c53-8d91-5c0eba8adc6a",
+               price:100.00
+            },
+            {
+               itemId:"9b4e2b28-670b-4df3-9d4c-f2b0c73f3984",
+               price:100.00
+            },
+            {
+               itemId:"eeacd251-b33a-4a06-98a7-f74b6fb985cd",
+               price:100.00
+            },
+            {
+               itemId:"0f49da93-ceee-4861-9957-dab6f9d0e033",
+               price:100.00
+            },
+            {
+               itemId:"f8973b1e-5251-452b-916c-df5f32d53a10",
+               price:100.00
+            },
+            {
+               itemId:"8c084f21-ab7f-4fa8-b7de-2fa1cd982670",
+               price:100.00
+            },
+            {
+               itemId:"5836cb77-4210-4d1b-980f-f46e09f826e9",
+               price:100.00
+            },
+            {
+               itemId:"1335d640-09f8-46bc-bf28-66027844e48c",
+               price:100.00
+            },
+            {
+               itemId:"af00fab9-c203-44b8-9dd0-b22c0168b628",
+               price:100.00
+            },
+            {
+               itemId:"3abcc180-0add-428b-ad65-8480bc6260d9",
+               price:100.00
+            },
+            {
+               itemId:"b187e6a4-92d4-4607-a8b7-c59e4030aeb3",
+               price:100.00
+            },
+            {
+               itemId:"d9e16c30-337c-480a-90c9-214981d8962c",
+               price:100.00
+            },
+            {
+               itemId:"134820c4-af79-4c89-a18f-192fc2929a8b",
+               price:100.00
+            },
+            {
+               itemId:"c4d875fd-1080-4b1d-8e4d-9f97beaee3e6",
+               price:100.00
+            },
+            {
+               itemId:"4becea17-639f-42f0-933d-23c43b486de2",
+               price:100.00
+            },
+            {
+               itemId:"254396f3-bedb-4c33-bd6d-d989eb78a99e",
+               price:100.00
+            },
+            {
+               itemId:"d690e57d-5747-415b-b5d3-73ca12f10b38",
+               price:100.00
+            },
+            {
+               itemId:"dd46518e-8cbd-40d8-ae18-724e2f281113",
+               price:100.00
+            },
+            {
+               itemId:"1a7cb60b-8e95-4a87-aceb-c7acb59488c7",
+               price:100.00
+            },
+            {
+               itemId:"2805fe14-3ea7-45a6-87ae-f6e6ae108a8f",
+               price:100.00
+            },
+            {
+               itemId:"7e0bdf31-6ebd-4f9c-8cd2-dd3189aba749",
+               price:100.00
+            },
+            {
+               itemId:"ead83b93-af66-4885-a1f4-03995050a899",
+               price:100.00
+            },
+            {
+               itemId:"bb0a87b9-08dc-4ce4-afbf-bc71d0ff86db",
+               price:100.00
+            },
+            {
+               itemId:"51794bd8-bd16-4b37-9966-eee871618b80",
+               price:100.00
+            },
+            {
+               itemId:"88f39604-e5ff-4b83-a2d5-6bbfbce8196a",
+               price:100.00
+            },
+            {
+               itemId:"a4916655-321b-4b3c-bf58-61edf63a9662",
+               price:100.00
+            },
+            {
+               itemId:"14b87dec-9fa1-4838-8589-fbeaea8ededf",
+               price:100.00
+            },
+            {
+               itemId:"c92a16e1-8de8-4f1e-a1b8-d2d9bd3cd97f",
+               price:100.00
+            },
+            {
+               itemId:"91141e5f-f174-4448-b3c3-39db7f050ed4",
+               price:100.00
+            },
+            {
+               itemId:"e97a0129-49db-46f4-9af9-ff4ade86fd9f",
+               price:100.00
+            },
+            {
+               itemId:"cd3c1ac9-a207-4d9f-ab6c-80572326fbe0",
+               price:100.00
+            },
+            {
+               itemId:"d92607bc-6326-49df-a31b-8f8b402945cc",
+               price:100.00
+            },
+            {
+               itemId:"b0acc130-36a5-4c1c-b420-068293eadf2b",
+               price:100.00
+            },
+            {
+               itemId:"e9502ec2-c441-4651-8cc0-afbb10b031e5",
+               price:100.00
+            },
+            {
+               itemId:"72a5d083-7a6c-40ba-aa65-55d97956973f",
+               price:100.00
+            },
+            {
+               itemId:"21bd6ea4-01bb-468f-a990-77d02c839978",
+               price:100.00
+            },
+            {
+               itemId:"a229afe3-9dd1-41a2-8f3c-2c110a33836c",
+               price:100.00
+            },
+            {
+               itemId:"303a2018-872b-4328-ab3f-7dbccadb1e72",
+               price:100.00
+            },
+            {
+               itemId:"45432abd-5b03-42de-bf26-c5c42f0c235f",
+               price:100.00
+            },
+            {
+               itemId:"225c5325-dfd5-4570-8898-8e6608a25e95",
+               price:100.00
+            },
+            {
+               itemId:"b61f4f44-5865-41f8-84e7-11d898d40c3d",
+               price:100.00
+            },
+            {
+               itemId:"a6af7e1e-eac3-40bc-8d2b-b1eaaeea1240",
+               price:100.00
+            },
+            {
+               itemId:"ef500c95-b9d9-4bb8-abf7-b11867de5c92",
+               price:100.00
+            },
+            {
+               itemId:"2cb20a67-dae0-4870-ba7a-90333e5c0168",
+               price:100.00
+            },
+            {
+               itemId:"58c6886f-46f6-42b6-9a73-0cfdaf6723bf",
+               price:100.00
+            },
+            {
+               itemId:"56f6e2e8-d08c-4689-a3a5-b3fec924a0b3",
+               price:100.00
+            },
+            {
+               itemId:"a1f0cdfa-23d9-45a0-aaf7-158234c171f4",
+               price:100.00
+            },
+            {
+               itemId:"0b9e3312-a580-4da8-b0fe-fa9c3f0f00e0",
+               price:100.00
+            },
+            {
+               itemId:"9affaafd-db9e-47ab-aeb4-6c0207de598a",
+               price:100.00
+            },
+            {
+               itemId:"36f03e07-f793-4819-98cc-90551657972c",
+               price:100.00
+            },
+            {
+               itemId:"795b1ea2-306f-4058-9113-46be2c232100",
+               price:100.00
+            },
+            {
+               itemId:"9642a659-3fbe-4cef-b4b0-181058f04240",
+               price:100.00
+            },
+            {
+               itemId:"72c03912-e862-488c-863b-49fc9cf95d59",
+               price:100.00
+            },
+            {
+               itemId:"3045d778-df1c-4f17-b2c2-4cfbfea862d9",
+               price:100.00
+            },
+            {
+               itemId:"22185679-37ae-4b79-8650-bcfb4586eff8",
+               price:100.00
+            },
+            {
+               itemId:"a7f14fc7-85ae-4fdd-87ed-52f5552169bc",
+               price:100.00
+            },
+            {
+               itemId:"ec5f859c-68ff-4b8f-b43b-650eb92733d9",
+               price:100.00
+            },
+            {
+               itemId:"ca3f59d7-de89-43bc-ba74-98a47b955f1b",
+               price:100.00
+            },
+            {
+               itemId:"58770df5-8d03-4cbd-98f6-fa87ad8309f8",
+               price:100.00
+            },
+            {
+               itemId:"1e67d45b-cae6-421a-b2b7-79d1b8c6acfc",
+               price:100.00
+            },
+            {
+               itemId:"f1d72cb3-89f2-4156-b3eb-8bb892bffd40",
+               price:100.00
+            },
+            {
+               itemId:"c405280b-93a9-4f3a-9ff7-b2b61ad8aac8",
+               price:100.00
+            },
+            {
+               itemId:"60b6f04f-1f30-49b3-9226-c818dd5da699",
+               price:100.00
+            },
+            {
+               itemId:"fd59800b-8961-46af-9d3d-1b8515f2e2ce",
+               price:100.00
+            },
+            {
+               itemId:"b75163c2-b4ce-4025-94ae-a70fafd7af76",
+               price:100.00
+            },
+            {
+               itemId:"f6ec77e1-2edf-4b45-b6a8-7d086ec0384d",
+               price:100.00
+            },
+            {
+               itemId:"7baecadd-bc18-4de7-92c6-d56ce7b5bf83",
+               price:100.00
+            },
+            {
+               itemId:"12be852b-32ff-4b28-97c7-2f496e495068",
+               price:100.00
+            },
+            {
+               itemId:"297c55d9-7160-460c-acdc-0978153098c1",
+               price:100.00
+            },
+            {
+               itemId:"bd8e3535-3230-42d4-93ce-15b62228cb3c",
+               price:100.00
+            },
+            {
+               itemId:"1621af6e-1eec-4d08-980a-c56f4a65d0de",
+               price:100.00
+            },
+            {
+               itemId:"87d4b113-4fe4-43d6-a602-ee9b803c1a85",
+               price:100.00
+            },
+            {
+               itemId:"b411c686-241c-466a-be7b-e76837fb8f60",
+               price:100.00
+            },
+            {
+               itemId:"7f6301b1-94b2-4429-9c81-ecf352eb956d",
+               price:100.00
+            },
+            {
+               itemId:"57c0c9df-e499-4d4f-ae7d-73f77d509dcb",
+               price:100.00
+            },
+            {
+               itemId:"6e04ddbe-7084-42c0-858d-14ed15f17b31",
+               price:100.00
+            },
+            {
+               itemId:"172e1207-1742-45ea-876c-a31f59586d07",
+               price:100.00
+            },
+            {
+               itemId:"9c1e7ca9-6e29-4bd7-8859-2bd0975970f1",
+               price:100.00
+            },
+            {
+               itemId:"f5ecdb61-16b5-4345-850d-43abee2a3ab0",
+               price:100.00
+            },
+            {
+               itemId:"c7bff2e9-fa27-47e4-8d0d-c1c2d425d6b2",
+               price:100.00
+            },
+            {
+               itemId:"b590b62e-d994-4e13-a839-17103221cfba",
+               price:100.00
+            },
+            {
+               itemId:"4591dde7-ce82-4ede-a899-d15c1bbcd658",
+               price:100.00
+            },
+            {
+               itemId:"0986b664-41db-4587-8698-2fc9ef33536c",
+               price:100.00
+            },
+            {
+               itemId:"4718bb31-574c-481d-800f-82177eec75f2",
+               price:100.00
+            },
+            {
+               itemId:"2ee8b336-f2b7-4f63-9c8b-7262f0631ef6",
+               price:100.00
+            },
+            {
+               itemId:"fe66aa08-1b48-449d-9ace-ceb11a7bc9b6",
+               price:100.00
+            },
+            {
+               itemId:"dd236a10-ae24-4fdb-b91d-2d991cba2902",
+               price:100.00
+            },
+            {
+               itemId:"22b57eeb-6597-41cf-a754-fa04f5e10b8d",
+               price:100.00
+            },
+            {
+               itemId:"cc9863cc-afef-4228-832d-b9c94b4272ec",
+               price:100.00
+            },
+            {
+               itemId:"38445b09-51a4-45f0-b263-b4cd2c8519e0",
+               price:100.00
+            },
+            {
+               itemId:"4643238d-a0a8-45e7-9088-0ac506b1b033",
+               price:100.00
+            },
+            {
+               itemId:"5445b926-19a7-4e9c-819d-03d0cda94776",
+               price:100.00
+            },
+            {
+               itemId:"c5355382-ff5c-4efd-b466-e386156fb248",
+               price:100.00
+            },
+            {
+               itemId:"ee812381-154d-48b2-9bd3-f135c888a546",
+               price:100.00
+            },
+            {
+               itemId:"3b092d4b-7c41-4441-8cca-6df66788900f",               
+			   price:100.00
+            },
+            {
+               itemId:"c1e65b43-078b-4bcb-b267-ff0352e82672",
+               price:100.00
+            },
+            {
+               itemId:"9c1d41e7-b425-4746-a0db-66b6134694ab",
+               price:100.00
+            },
+            {
+               itemId:"430562b4-b7fb-40a1-a8d2-daec6fcb5fe3",
+               price:100.00
+            },
+            {
+               itemId:"e4d30c24-f17a-423b-a256-f28404c72737",
+               price:100.00
+            },
+            {
+               itemId:"62d22435-b5f3-4bc3-bdcb-715537b9e46e",
+               price:100.00
+            },
+			{
+			    itemId: "5c078eff-f3db-4d8c-829b-536079a0a927",
+				price:100.00
+			}
+         ]
+      }
+   ]
+}</con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase><con:properties/><con:reportParameters/></con:testSuite><con:testSuite id="cabdb930-cf78-4df5-9aeb-56d5680767be" name="RegisterInvoiceData_No_DiscountItems"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="84802e52-3594-47fa-b0b0-fe3340369788" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="datagen" name="DataGen" id="f55c8089-bf40-4bd1-b5b6-b1fcd94afb46"><con:settings/><con:config xsi:type="con:DataGeneratorStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:property type="Script"><con:configuration><script>import static java.util.UUID.randomUUID  
+return randomUUID();</script></con:configuration><con:name>getRandomUUID</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+Calendar cal = Calendar.getInstance()
+return sdf.format(cal.getTime())</script></con:configuration><con:name>getCurrentDate</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+Calendar cal = Calendar.getInstance()
+cal.setTime(cal.getTime())
+cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1 + new java.util.Random().nextInt(12))
+return sdf.format(cal.getTime())</script></con:configuration><con:name>getRandomTimeOnCurrentDate</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script><![CDATA[StringBuffer itemList = new StringBuffer();
+int count = Math.abs(new Random().nextInt()) % 20 + 1
+Set<String> itemSet = new HashSet<String>();
+1.upto(count, {
+  def itemId = context.expand('${DataGen#getItemIdFromStore}');
+  if (!itemSet.contains(itemId)) {
+  	itemList.append("<urn2:itemList><urn2:itemId>"+itemId+"</urn2:itemId><urn2:description>Test item-"+itemSet.size()+"</urn2:description><urn2:qty>"+context.expand('${DataGen#getRandomNumber}')+"</urn2:qty></urn2:itemList>");
+  	itemSet.add(itemId);
+  }
+})
+return itemList.toString();
+
+	]]></script></con:configuration><con:name>getItemListAsXML</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>import groovy.sql.Sql
+import com.mysql.jdbc.Driver
+import groovy.json.JsonBuilder
+
+//See Project Custom Properties
+def db_connection_string = context.expand( '${#Project#db_connection_string}' )
+def db_username = context.expand( '${#Project#db_username}' )
+def db_password = context.expand( '${#Project#db_password}' )
+def db_driver = context.expand( '${#Project#db_driver}' )
+
+//Connection
+def sql = Sql.newInstance(db_connection_string, db_username, db_password, db_driver)
+
+Object result = sql.rows("Select id, supplier_id, supplier_name, service_code From invoice_data_pricelist WHERE supplier_id='" + context.expand('${DataGen#getTestSupplierID}')+"'");
+return new JsonBuilder(result.get(0));
+
+</script></con:configuration><con:name>getSupplierFromDB</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>import groovy.sql.Sql
+import com.mysql.jdbc.Driver
+
+
+//See Project Custom Properties
+def db_connection_string = context.expand( '${#Project#db_connection_string}' )
+def db_username = context.expand( '${#Project#db_username}' )
+def db_password = context.expand( '${#Project#db_password}' )
+def db_driver = context.expand( '${#Project#db_driver}' )
+
+//Connection
+//Map&lt;String, String> priceListMap = new HashMap&lt;String, String>();
+List&lt;String> priceList = new ArrayList&lt;String>();
+def sql = Sql.newInstance(db_connection_string, db_username, db_password, db_driver)
+//def query = "Select item_id From invoice_data_pricelist_item WHERE price_list_id=" + context.expand('${DataGen#getPriceIdForSupplier}') + " ORDER BY RAND() LIMIT 1";
+def query = "Select item_id From invoice_data_pricelist_item WHERE price_list_id=" + context.expand('${DataGen#getPriceIdForSupplier}');
+//def result = sql.rows(query);
+
+sql.eachRow(query) { row -> 
+	//priceListMap.put(row.item_id, row.price_list_id);	
+	priceList.add(row.item_id);
+} 
+//iterate it over n over
+return priceList
+
+
+
+</script></con:configuration><con:name>getItemIdAsList</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>import groovy.json.JsonSlurper
+
+Object result = new JsonSlurper().parseText(context.expand('${DataGen#getSupplierFromDB}'));
+result.id;</script></con:configuration><con:name>getPriceIdForSupplier</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>return 'TEST_556482-8654'</script></con:configuration><con:name>getTestSupplierID</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>import groovy.json.JsonSlurper
+
+Object result = new JsonSlurper().parseText(context.expand('${DataGen#getSupplierFromDB}'));
+result.supplier_name;</script></con:configuration><con:name>getSupplierNameForSupplier</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>def index = Math.abs(new Random().nextInt() % 120 + 0)
+Object obj = context.expand('${DataGen#getItemIdAsList}')
+def itemList = obj.split(',').collect{it as String}
+itemList.get(index).trim()
+
+</script></con:configuration><con:name>getItemIdFromStore</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>Math.abs(new Random().nextInt() % 11) + 1</script></con:configuration><con:name>getRandomNumber</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property></con:config></con:testStep><con:testStep type="request" id="b6f6a63d-35f8-408b-a0ac-cd0070b3fee6" name="RegisterInvoiceData_No_DiscountItems"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>RegisterInvoiceDataProducerServiceSoapBinding</con:interface><con:operation>RegisterInvoiceData</con:operation><con:request name="RegisterInvoiceData_No_DiscountItems" id="2f3b3074-3f97-4073-aa4d-165b973326c5" defaultOutgoingWss="" defaultIncomingWss=""><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>TEST_SYSTEM</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>${DataGen#getRandomUUID}</urn2:eventId>
+         <urn2:supplierId>${DataGen#getTestSupplierID}</urn2:supplierId>
+         <urn2:healthcareFacility>HSF</urn2:healthcareFacility>
+         <urn2:refContractId>${DataGen#getRandomUUID}</urn2:refContractId>
+         <urn2:supplierName>${DataGen#getTestSupplierID}</urn2:supplierName>
+         <urn2:serviceCode>01</urn2:serviceCode>
+         <urn2:paymentResponsible>TEST_HSF</urn2:paymentResponsible>
+         <urn2:healthCareCommission>TEST_TEST</urn2:healthCareCommission>
+         <urn2:acknowledgementId>${DataGen#getRandomUUID}</urn2:acknowledgementId>
+         <urn2:acknowledgedBy>${DataGen#getTestSupplierID}</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>${DataGen#getCurrentDate}</urn2:acknowledgedTime>
+         <urn2:startTime>${DataGen#getCurrentDate}</urn2:startTime>
+         <urn2:endTime>${DataGen#getRandomTimeOnCurrentDate}</urn2:endTime>
+         <!--1 or more repetitions:-->
+         ${DataGen#getItemListAsXML}     
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:wsaConfig action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/><con:reportParameters/><con:breakPoints><con:testStepId>f55c8089-bf40-4bd1-b5b6-b1fcd94afb46</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:properties/><con:reportParameters/></con:testSuite><con:testSuite id="afc576f2-9773-4e82-b9f3-9aa2eeb38e33" name="RegisterInvoiceDataProducerService_With_Discount_Item"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="cafbf76f-57d9-4adc-b4f2-1e23b7b403be" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="groovy" name="getRandomUUID" id="49631445-9d10-47ef-abde-e2cda3022d58"><con:settings/><con:config><script>import static java.util.UUID.randomUUID  
+return randomUUID();</script></con:config></con:testStep><con:testStep type="groovy" name="getCurrentDate" id="b5aa94df-2fba-4deb-a9f8-b348305e1fab"><con:settings/><con:config><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+Calendar cal = Calendar.getInstance()
+return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="groovy" name="getRandomTimeOnCurrentDate" id="fe9121cb-924c-4402-bc81-4c1201cc7f91"><con:settings/><con:config><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+Calendar cal = Calendar.getInstance()
+cal.setTime(cal.getTime())
+cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1 + new java.util.Random().nextInt(12))
+return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="datagen" name="DataGen" id="8e089736-f2fa-4ef9-9430-21b4a784c3f5"><con:settings/><con:config xsi:type="con:DataGeneratorStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:property type="Script"><con:configuration><script>import static java.util.UUID.randomUUID  
+return randomUUID();</script></con:configuration><con:name>getRandomUUID</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+Calendar cal = Calendar.getInstance()
+return sdf.format(cal.getTime())</script></con:configuration><con:name>getCurrentDate</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+Calendar cal = Calendar.getInstance()
+cal.setTime(cal.getTime())
+cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1 + new java.util.Random().nextInt(12))
+return sdf.format(cal.getTime())</script></con:configuration><con:name>getRandomTimeOnCurrentDate</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script><![CDATA[StringBuffer itemList = new StringBuffer();
+
+Object input = context.expand('${DataGen#getUniqueItemIdList}')
+def removedTags = input.substring(1, input.lastIndexOf("]"))
+def uniqueItemList = removedTags.split(',').collect{it as String}
+
+uniqueItemList.eachWithIndex {item, index ->
+	itemList.append("<urn2:itemList>");
+	itemList.append("<urn2:itemId>"+item.trim()+"</urn2:itemId>");
+	itemList.append("<urn2:description>Test item-"+index+"</urn2:description>");
+	itemList.append("<urn2:qty>"+context.expand('${DataGen#getRandomNumber}')+"</urn2:qty>");
+	itemList.append("</urn2:itemList>");	
+}
+return itemList.toString();]]></script></con:configuration><con:name>getItemListAsXML</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>import groovy.sql.Sql
+import com.mysql.jdbc.Driver
+import groovy.json.JsonBuilder
+
+//See Project Custom Properties
+def db_connection_string = context.expand( '${#Project#db_connection_string}' )
+def db_username = context.expand( '${#Project#db_username}' )
+def db_password = context.expand( '${#Project#db_password}' )
+def db_driver = context.expand( '${#Project#db_driver}' )
+
+//Connection
+def sql = Sql.newInstance(db_connection_string, db_username, db_password, db_driver)
+
+Object result = sql.rows("Select id, supplier_id, supplier_name, service_code From invoice_data_pricelist WHERE supplier_id='" + context.expand('${DataGen#getTestSupplierID}')+"'");
+return new JsonBuilder(result.get(0));
+
+</script></con:configuration><con:name>getSupplierFromDB</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>import groovy.sql.Sql
+import com.mysql.jdbc.Driver
+
+
+//See Project Custom Properties
+def db_connection_string = context.expand( '${#Project#db_connection_string}' )
+def db_username = context.expand( '${#Project#db_username}' )
+def db_password = context.expand( '${#Project#db_password}' )
+def db_driver = context.expand( '${#Project#db_driver}' )
+
+//Connection
+//Map&lt;String, String> priceListMap = new HashMap&lt;String, String>();
+List&lt;String> priceList = new ArrayList&lt;String>();
+def sql = Sql.newInstance(db_connection_string, db_username, db_password, db_driver)
+//def query = "Select item_id From invoice_data_pricelist_item WHERE price_list_id=" + context.expand('${DataGen#getPriceIdForSupplier}') + " ORDER BY RAND() LIMIT 1";
+def query = "Select item_id From invoice_data_pricelist_item WHERE price_list_id=" + context.expand('${DataGen#getPriceIdForSupplier}');
+//def result = sql.rows(query);
+
+sql.eachRow(query) { row -> 
+	//priceListMap.put(row.item_id, row.price_list_id);	
+	priceList.add(row.item_id);
+} 
+//iterate it over n over
+return priceList
+
+
+
+</script></con:configuration><con:name>getItemIdAsList</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>import groovy.json.JsonSlurper
+
+Object result = new JsonSlurper().parseText(context.expand('${DataGen#getSupplierFromDB}'));
+result.id;</script></con:configuration><con:name>getPriceIdForSupplier</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>return 'TEST_556482-8654'</script></con:configuration><con:name>getTestSupplierID</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>import groovy.json.JsonSlurper
+
+Object result = new JsonSlurper().parseText(context.expand('${DataGen#getSupplierFromDB}'));
+result.supplier_name;</script></con:configuration><con:name>getSupplierNameForSupplier</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>def index = Math.abs(new Random().nextInt() % 120 + 0)
+Object obj = context.expand('${DataGen#getItemIdAsList}')
+def itemList = obj.split(',').collect{it as String}
+itemList.get(index).trim()
+
+</script></con:configuration><con:name>getItemIdFromStore</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>Math.abs(new Random().nextInt() % 11) + 1</script></con:configuration><con:name>getRandomNumber</con:name><con:mode>READ</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script><![CDATA[StringBuffer discountItemList = new StringBuffer();
+
+Object input = context.expand('${DataGen#getUniqueItemIdList}')
+def removedTags = input.substring(1, input.lastIndexOf("]"))
+def uniqueItemList = removedTags.split(',').collect{it as String}
+
+uniqueItemList.eachWithIndex {item, index ->
+	discountItemList.append("<urn2:discountItemList>");
+	discountItemList.append("<urn2:description>>Test discount item-"+index+"</urn2:description>");
+	discountItemList.append("<urn2:discountInPercentage>"+context.expand('${DataGen#getRandomNumber}')+"</urn2:discountInPercentage>");
+	discountItemList.append("<urn2:orderOfDiscount>"+index+"</urn2:orderOfDiscount>");
+
+	discountItemList.append("<urn2:referenceItemList>");
+	discountItemList.append("<urn2:refItemId>"+item.trim()+"</urn2:refItemId>");
+	discountItemList.append("<urn2:qty>"+context.expand('${DataGen#getRandomNumber}')+"</urn2:qty>");
+	discountItemList.append("</urn2:referenceItemList>");
+	
+	discountItemList.append("</urn2:discountItemList>");	
+}
+return discountItemList.toString();
+	
+/*
+
+            ?
+            <urn2:discountInPercentage>?</urn2:discountInPercentage>
+            <urn2:orderOfDiscount>?</urn2:orderOfDiscount>
+            <!--1 or more repetitions:-->
+            <urn2:referenceItemList>
+               <urn2:refItemId>?</urn2:refItemId>
+               <urn2:qty>?</urn2:qty>
+            </urn2:referenceItemList>
+            <!--Optional:-->
+            <urn2:discountedPrice>?</urn2:discountedPrice>
+         */]]></script></con:configuration><con:name>getDiscountItemAsXML</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property><con:property type="Script"><con:configuration><script>int count = Math.abs(new Random().nextInt()) % 20 + 1
+
+Set&lt;String> itemIdStore = new HashSet&lt;String>();
+1.upto(count, {
+	def itemId = context.expand('${DataGen#getItemIdFromStore}');
+	itemIdStore.add(itemId);	
+})
+
+return itemIdStore;
+
+
+</script></con:configuration><con:name>getUniqueItemIdList</con:name><con:mode>STEP</con:mode><con:shared>false</con:shared></con:property></con:config></con:testStep><con:testStep type="request" id="43d4a8c4-6e8d-4f99-ab02-d869c9ec0215" name="RegisterInvoiceData_With_DiscountItems"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>RegisterInvoiceDataProducerServiceSoapBinding</con:interface><con:operation>RegisterInvoiceData</con:operation><con:request name="RegisterInvoiceData_With_DiscountItems" id="2f3b3074-3f97-4073-aa4d-165b973326c5" defaultOutgoingWss="" defaultIncomingWss=""><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/invoicedata-web-app/ws/registerInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>TEST_SYSTEM</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>${DataGen#getRandomUUID}</urn2:eventId>
+         <urn2:supplierId>${DataGen#getTestSupplierID}</urn2:supplierId>
+         <urn2:healthcareFacility>HSF</urn2:healthcareFacility>
+         <urn2:refContractId>${DataGen#getRandomUUID}</urn2:refContractId>
+         <urn2:supplierName>${DataGen#getTestSupplierID}</urn2:supplierName>
+         <urn2:serviceCode>01</urn2:serviceCode>
+         <urn2:paymentResponsible>TEST_HSF</urn2:paymentResponsible>
+         <urn2:healthCareCommission>TEST_TEST</urn2:healthCareCommission>
+         <urn2:acknowledgementId>${DataGen#getRandomUUID}</urn2:acknowledgementId>
+         <urn2:acknowledgedBy>${DataGen#getTestSupplierID}</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>${DataGen#getCurrentDate}</urn2:acknowledgedTime>
+         <urn2:startTime>${DataGen#getCurrentDate}</urn2:startTime>
+         <urn2:endTime>${DataGen#getRandomTimeOnCurrentDate}</urn2:endTime>
+         <!--1 or more repetitions:-->
+         ${DataGen#getItemListAsXML}
+         ${DataGen#getDiscountItemAsXML}
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:wsaConfig action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:testStep type="groovy" name="getItemListAsXML" id="7326270f-dd9a-4957-b505-dba0bc40fa85"><con:settings/><con:config><script><![CDATA[StringBuffer itemList = new StringBuffer();
+
+Object input = context.expand('${DataGen#getUniqueItemIdList}')
+def removedTags = input.substring(1, input.lastIndexOf("]"))
+def uniqueItemList = removedTags.split(',').collect{it as String}
+
+uniqueItemList.eachWithIndex {item, index ->
+	itemList.append("<urn2:itemList>");
+	itemList.append("<urn2:itemId>"+item.trim()+"</urn2:itemId>");
+	itemList.append("<urn2:description>Test item-"+index+"</urn2:description>");
+	itemList.append("<urn2:qty>"+context.expand('${DataGen#getRandomNumber}')+"</urn2:qty>");
+	itemList.append("</urn2:itemList>");	
+}
+return itemList.toString();]]></script></con:config></con:testStep><con:properties/><con:reportParameters/><con:breakPoints><con:testStepId>f55c8089-bf40-4bd1-b5b6-b1fcd94afb46</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>49631445-9d10-47ef-abde-e2cda3022d58</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>b5aa94df-2fba-4deb-a9f8-b348305e1fab</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>fe9121cb-924c-4402-bc81-4c1201cc7f91</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:properties/><con:reportParameters/></con:testSuite><con:requirements/><con:properties><con:property><con:name>db_connection_string</con:name><con:value>jdbc:mysql://localhost:3306/vsfunderlagtestdb</con:value></con:property><con:property><con:name>db_username</con:name><con:value>root</con:value></con:property><con:property><con:name>db_password</con:name><con:value>Abcd123*</con:value></con:property><con:property><con:name>db_driver</con:name><con:value>com.mysql.jdbc.Driver</con:value></con:property></con:properties><con:wssContainer/><con:databaseConnectionContainer><con:databaseConnection><con:name>localhost</con:name><con:driver>com.mysql.jdbc.Driver</con:driver><con:connectionString>jdbc:mysql://127.0.0.1:3306/vsfunderlagtestdb?user=root&amp;password=PASS_VALUE</con:connectionString><con:password>Abcd123*</con:password></con:databaseConnection></con:databaseConnectionContainer><con:oAuth2ProfileContainer/><con:reporting><con:reportTemplates/><con:xmlTemplates/><con:xmlTemplates/><con:parameters/><con:parameters/></con:reporting><con:reporting/><con:authRepository/><con:loadUiTest name="RegisterInvoiceData_TestCase_No_Discount_Items" id="eab2f592-6979-487c-aa48-16fb537a0d84"><con:settings><con:setting id="soapUIObjectSourceId">84802e52-3594-47fa-b0b0-fe3340369788</con:setting><con:setting id="soapUIObjectSourceType">soapUIObjectSourceType_TestCase</con:setting></con:settings><con1:loadui-project id="4554d68e-e523-4117-9c92-9e344085f5b1" label="RegisterInvoiceData_TestCase_No_Discount_Items" xmlns:con1="http://eviware.com/loadui/config"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="CanvasItem.abortOnFinish" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="ModelItem.saveReport" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="ModelItem.reportFolder" type="java.lang.String"/><con1:property propagates="true" key="ModelItem.reportFormat" type="java.lang.String"/><con1:property propagates="true" key="ModelItem.rate" type="java.lang.Long">3</con1:property><con1:property propagates="true" key="ModelItem.loadDistributionType" type="com.smartbear.load.facade.LoadDistributionType">Relative</con1:property><con1:property propagates="true" key="ModelItem.remoteMode" type="java.lang.String"/></con1:properties><con1:attributes><con1:property key="limits">Time=7200;</con1:property></con1:attributes><con1:addons/><con1:scene label="New Scenario" id="aff93328-1004-46d6-a7be-85def08667d6" version="25"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="CanvasItem.abortOnFinish" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="SceneItem.followProject" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="SceneItem.scenarioRatePercentage" type="java.lang.Long">100</con1:property><con1:property propagates="true" key="SceneItem.scenarioRateSpecific" type="java.lang.Long">10</con1:property></con1:properties><con1:attributes><con1:property key="limits">Time=7200;</con1:property></con1:attributes><con1:addons/><con1:component type="com.eviware.loadui.groovy.GroovyComponent" label="Interval 1" id="fe7fd436-7e35-4f8f-a18f-5e80a3a195ab" category="scheduler"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="_script" type="java.lang.String"><![CDATA[// 
+// Copyright 2014 SmartBear Software
+// 
+// Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission - subsequent
+// versions of the EUPL (the "Licence");
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at:
+// 
+// http://ec.europa.eu/idabc/eupl
+// 
+// Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+// distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+// express or implied. See the Licence for the specific language governing permissions and limitations
+// under the Licence.
+// 
+
+/**
+ * Schedules the start and stop of connected components 
+ *
+ * @id com.eviware.Interval
+ * @help http://www.loadui.org/Schedulers/interval-component.html
+ * @category scheduler
+ * @nonBlocking true
+ */
+
+// Schedule the start and stop of a trigger component.
+// On Start starts timer and when StartAt reached send one START message to 
+// attached component. When Duration expires one STOP message is send to each 
+// attached component.
+// Repeat option repeats whole process if counter limit not set.
+// 
+// On Stop it sends a STOP message to attached components and stops timer.
+//
+// On Reset it just resets the timer and stops it.
+
+
+import com.eviware.loadui.api.events.BaseEvent
+import com.eviware.loadui.api.events.PropertyEvent
+import com.eviware.loadui.api.model.CanvasItem
+import com.eviware.loadui.util.layout.IntervalModel
+
+import java.util.concurrent.TimeUnit
+
+createProperty('startAt', Long, 0)
+createProperty('duration', Long, 0)
+createProperty('unit', String, 'Sec')
+createProperty('mode', String, 'Single')
+createProperty('defaultMode', Boolean, true)
+
+long testStartTime = 0
+def canvas = getCanvas()
+
+def startFuture = null
+def stopFuture = null
+def endFuture = null
+
+String lastAction = "Undefined";
+
+updateState = {
+    if (lastAction != "START") {
+        //warn "Aborting update due to $lastAction"
+        return;
+    }
+
+    if (defaultMode.value) {
+        sendEnabled(true)
+
+        //warn "Default mode run"
+        return
+    }
+    //warn "Scheduled mode run"
+
+    long limit = canvas.getLimit(CanvasItem.TIMER_COUNTER) * 1000
+
+    long mult = 1000
+    if (unit.value == 'Min') mult *= 60
+    else if (unit.value == 'Percent' && limit > 0) mult = limit / 100
+
+    long startTime = startAt.value * mult
+    if (limit > 0 && startTime > limit) {
+        startAt.value = limit / mult
+        //warn "Start at updated without affect on the execution "
+        return
+    }
+
+    long stopTime
+    if (duration.value == 0) {
+        stopTime = (limit > 0) ? limit : IntervalModel.INFINITE
+    } else {
+        stopTime = startTime + duration.value * mult
+    }
+
+    if (limit > 0 && stopTime > limit) {
+        long newDuration = limit / mult - startAt.value
+        duration.value = newDuration
+        //warn "Duration updated without affect on the execution "
+        return
+    }
+
+    long currentTime = (System.currentTimeMillis() - testStartTime) % stopTime
+
+    //warn "Current time: $currentTime, Stop time: $stopTime"
+
+    if (currentTime < stopTime) {
+        long stopInterval = stopTime - currentTime
+        //warn "Schedule stopping $stopInterval"
+        stopFuture?.cancel(true)
+        stopFuture = schedule({
+            sendEnabled(false)
+            //warn "Stop exucution"
+            if (mode.value != 'Single') {
+                updateState()
+            }
+        }, stopInterval, TimeUnit.MILLISECONDS)
+    }
+    if (currentTime < startTime) {
+        long startInterval = startTime - currentTime
+        //warn "Schedule START at $startInterval"
+        startFuture?.cancel(true)
+        startFuture = schedule({
+            //warn "Start exucution"
+            sendEnabled(true)
+        }, startInterval, TimeUnit.MILLISECONDS)
+        //warn "Stopping for now"
+        sendEnabled(false)
+    } else if (currentTime < stopTime) {
+        //warn "Start execution right now"
+        sendEnabled(true)
+    }
+}
+
+onAction("RESET_COUNTER_VALUES") {
+    //invoked on PRE_START
+    updateState()
+}
+
+onAction("START") {
+    if (lastAction != "START") {
+        lastAction = "START"
+        cancelAll()
+        testStartTime = System.currentTimeMillis()
+        updateState()
+    }
+}
+
+onAction("STOP") {
+    lastAction = "STOP"
+    sendEnabled(false)
+    cancelAll()
+    updateState()
+}
+
+onAction("RESET") {
+}
+
+addEventListener(PropertyEvent) { event ->
+    if (event.property in [startAt, duration, unit, mode]) {
+        updateState()
+    }
+}
+
+def limitsListener = addEventListener(canvas, BaseEvent) { event ->
+    if (event.key == CanvasItem.LIMITS) {
+        updateState()
+    }
+}
+
+onRelease = {
+    cancelAll()
+    canvas.removeEventListener(BaseEvent, limitsListener)
+}
+
+cancelAll = {
+    startFuture?.cancel(true)
+    startFuture = null
+    stopFuture?.cancel(true)
+    stopFuture = null
+    endFuture?.cancel(true)
+    endFuture = null
+}]]></con1:property><con1:property propagates="true" key="stateProperty" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="startAt" type="java.lang.Long">0</con1:property><con1:property propagates="true" key="duration" type="java.lang.Long">5</con1:property><con1:property propagates="true" key="unit" type="java.lang.String">Sec</con1:property><con1:property propagates="true" key="mode" type="java.lang.String">Single</con1:property><con1:property propagates="true" key="defaultMode" type="java.lang.Boolean">true</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Interval</con1:property><con1:property key="_digest">38ca389ba6d8738962c63839763c4305</con1:property><con1:property key="_id">com.eviware.Interval</con1:property><con1:property key="_classLoader">com.eviware.Interval</con1:property></con1:attributes><con1:addons/></con1:component><con1:component type="com.eviware.loadui.groovy.GroovyComponent" label="Fixed Load 1" id="0629be7b-9438-4cc9-8848-10a420db86e0" category="generators"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="_script" type="java.lang.String">//
+// Copyright 2014 SmartBear Software
+// 
+// Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission - subsequent
+// versions of the EUPL (the "Licence");
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at:
+// 
+// http://ec.europa.eu/idabc/eupl
+// 
+// Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+// distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+// express or implied. See the Licence for the specific language governing permissions and limitations
+// under the Licence.
+// 
+
+/**
+ * Simulates a "classic" fixed load situation
+ *
+ * @id com.eviware.FixedLoad
+ * @help http://www.loadui.org/Generators/fixed-load-component.html
+ * @name Fixed Load
+ * @category generators
+ * @nonBlocking true
+ */
+
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
+
+sampleCount = createInput('Sample Count', 'Currently running feedback', 'Used to receive the number of currently running requests from the triggered Runner.') {
+    it.name == "runningTerminal"
+}
+
+String latestAction = 'NONE'
+AtomicInteger differenceFromTargetLoad = new AtomicInteger(0)
+AtomicInteger currentVus = new AtomicInteger(0)
+Future loadUpdateFuture = null
+
+//Properties
+createProperty('load', Long, 10) { value, prevValue ->
+    if (latestAction == 'START') {
+        differenceFromTargetLoad.set((value - (prevValue ?: 0)).intValue())
+        if (!prevValue) {
+            startup()
+        }
+    }
+}
+createProperty('interval', Long, 0)
+
+calculateLoad = {
+    load.value
+}
+
+def startTime = 0
+
+periodiUpdateVUDiff = {
+    synchronized (differenceFromTargetLoad) {
+        long expiredTime = System.currentTimeMillis() - startTime
+        int targetLoad = calculateLoad(expiredTime) as int
+
+        differenceFromTargetLoad.set(targetLoad - currentVus.get())
+        int current = currentVus.get()
+        int difference = differenceFromTargetLoad.get()
+        //warn "  Checking current VU: $current, difference: $difference"
+
+        // get VUs started again in cases where the load had been 0
+        if (currentVus.get() == 0 &amp;&amp; differenceFromTargetLoad.get() > 0) {
+            //warn "VU correction.... Current VU: $current, difference: $difference"
+            addVusToCorrectLoad()
+        }
+    }
+}
+
+startup = {
+    loadUpdateFuture?.cancel(true)
+    startTime = System.currentTimeMillis()
+    loadUpdateFuture = scheduleAtFixedRate(periodiUpdateVUDiff, 200L, 700L, TimeUnit.MILLISECONDS)
+
+    addVusToCorrectLoad()
+}
+
+startVu = {
+    if (latestAction == 'START' &amp;&amp; stateProperty.value) {
+        currentVus.incrementAndGet()
+        def delay = Math.max(interval.value, 0)
+        trigger(delay ?: null)
+        vuStarted()
+        //warn ".................. Triggering ................"
+    }
+}
+
+addVusToCorrectLoad = {
+    if (stateProperty.value) {
+        synchronized (differenceFromTargetLoad) {
+            if (differenceFromTargetLoad.get() > 0) {
+                differenceFromTargetLoad.times { startVu() }
+                int added = differenceFromTargetLoad.get()
+                //warn "Aded VUs: $added"
+                differenceFromTargetLoad.set(0)
+            }
+        }
+    }
+}
+
+onMessage = { outgoing, incoming, message ->
+
+    if (incoming == sampleCount) {
+        vuFinished();
+        int currentVUCount = currentVus.decrementAndGet()
+
+        synchronized (differenceFromTargetLoad) {
+            long expiredTime = System.currentTimeMillis() - startTime
+            int targetLoad = calculateLoad(expiredTime) as int
+            int runningVUs = currentVus.get()
+            if (runningVUs &lt; 0) {
+                //warn "!!!!current VU amount is negative!!!!"
+                runningVUs = 0
+            }
+            int currentDiff = targetLoad - runningVUs
+            differenceFromTargetLoad.set(currentDiff)
+
+            if (currentDiff == 0) {
+                return;
+            } else if (currentDiff > 0) {
+                //warn "Need to add $currentDiff vu's since we have $runningVUs but need $targetLoad"
+                addVusToCorrectLoad()
+                return
+            } else {
+                //warn "ERROR!!!! Correct VUs: $currentDiff"
+                differenceFromTargetLoad.incrementAndGet()
+            }
+        }
+    }
+}
+
+onAction('START') {
+    synchronized (latestAction) {
+        if (latestAction == 'START') {
+            //warn "Execution was already started"
+            return
+        } else latestAction = 'START'
+        //warn "Starting execution"
+
+        resetVUCount();
+        currentVus.set(0)
+        differenceFromTargetLoad.set(load.value.intValue())
+        startup()
+    }
+}
+
+onAction('STOP') {
+    synchronized (latestAction) {
+        //warn "Stop execution"
+        latestAction = 'STOP'
+        loadUpdateFuture?.cancel(true)
+        loadUpdateFuture = null
+        currentVus.set(0)
+    }
+}
+</con1:property><con1:property propagates="true" key="stateProperty" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="load" type="java.lang.Long">3</con1:property><con1:property propagates="true" key="interval" type="java.lang.Long">100</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Fixed Load</con1:property><con1:property key="_digest">38af2c83c0903e44e9eeceda0ea8461f</con1:property><con1:property key="_id">com.eviware.FixedLoad</con1:property><con1:property key="_classLoader">com.eviware.FixedLoad</con1:property></con1:attributes><con1:addons/></con1:component><con1:component type="com.eviware.loadui.components.soapui.SoapUISamplerComponent" label="RegisterInvoiceDataProducerServiceSoapBinding LoadTestSuite:RegisterInvoiceData TestCase" id="ee125a5e-07a5-4756-a887-c70808feb452" category="Runners"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="concurrentSamples" type="java.lang.Long">1000</con1:property><con1:property propagates="true" key="property_name_is_not_relevant_for_private_property" type="java.lang.Long">9223372036854775807</con1:property><con1:property propagates="true" key="maxQueueSize" type="java.lang.Long">1000</con1:property><con1:property propagates="true" key="countDiscarded" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="disabledTestSteps" type="java.lang.String"/><con1:property propagates="true" key="_thinkTime" type="java.lang.Long">0</con1:property><con1:property propagates="true" key="ReadyApiTestCase" type="com.eviware.soapui.impl.wsdl.testcase.WsdlTestCase">84802e52-3594-47fa-b0b0-fe3340369788</con1:property><con1:property propagates="true" key="raiseError" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="outputTestCaseProperties" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="OutputLevel" type="java.lang.String">TestCase only</con1:property><con1:property propagates="true" key="closeConnectionsAfterRequest" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="disableSoapuiAssertions" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="forceShareDatasources" type="java.lang.Boolean">true</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Ready API TestCase Runner</con1:property></con1:attributes><con1:addons/></con1:component><con1:connection outputTerminalId="fe7fd436-7e35-4f8f-a18f-5e80a3a195ab/outgoingTerminal" inputTerminalId="0629be7b-9438-4cc9-8848-10a420db86e0/stateTerminal"/><con1:connection outputTerminalId="0629be7b-9438-4cc9-8848-10a420db86e0/triggerTerminal" inputTerminalId="ee125a5e-07a5-4756-a887-c70808feb452/triggerTerminal"/><con1:connection outputTerminalId="ee125a5e-07a5-4756-a887-c70808feb452/runningTerminal" inputTerminalId="0629be7b-9438-4cc9-8848-10a420db86e0/Sample Count"/></con1:scene><con1:statistics><con1:page title="DefaultLoadUIStatisticPage"><con1:chartGroup type="com.eviware.loadui.api.statistics.model.chart.line.LineChartView" title="" groupType="Monitors"><con1:attributes/></con1:chartGroup></con1:page></con1:statistics></con1:loadui-project><con:loadUITestScenario projectId="4554d68e-e523-4117-9c92-9e344085f5b1" scenarioId="aff93328-1004-46d6-a7be-85def08667d6" name="New Scenario" id="8d6926a7-22e1-4630-9061-b5dc7c3da550"><con:settings/></con:loadUITestScenario></con:loadUiTest><con:loadUiTest name="RegisterInvoiceData_TestCase_With_Discount_Items" id="202ebb84-c1e4-48c2-a3b9-d1b9f6c047ab"><con:settings><con:setting id="soapUIObjectSourceId">cafbf76f-57d9-4adc-b4f2-1e23b7b403be</con:setting><con:setting id="soapUIObjectSourceType">soapUIObjectSourceType_TestCase</con:setting></con:settings><con1:loadui-project id="bb00c541-e9ef-4eac-b67b-f3e2caf3b78f" label="RegisterInvoiceData_TestCase_With_Discount_Items" xmlns:con1="http://eviware.com/loadui/config"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="CanvasItem.abortOnFinish" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="ModelItem.saveReport" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="ModelItem.reportFolder" type="java.lang.String"/><con1:property propagates="true" key="ModelItem.reportFormat" type="java.lang.String"/><con1:property propagates="true" key="ModelItem.rate" type="java.lang.Long">2</con1:property><con1:property propagates="true" key="ModelItem.loadDistributionType" type="com.smartbear.load.facade.LoadDistributionType">Relative</con1:property><con1:property propagates="true" key="ModelItem.remoteMode" type="java.lang.String"/></con1:properties><con1:attributes><con1:property key="limits">Time=7200;</con1:property></con1:attributes><con1:addons/><con1:scene label="New Scenario" id="5adf4732-8337-4e50-9287-927ac755d6dc" version="19"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="CanvasItem.abortOnFinish" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="SceneItem.followProject" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="SceneItem.scenarioRatePercentage" type="java.lang.Long">100</con1:property><con1:property propagates="true" key="SceneItem.scenarioRateSpecific" type="java.lang.Long">10</con1:property></con1:properties><con1:attributes><con1:property key="limits">Time=7200;</con1:property></con1:attributes><con1:addons/><con1:component type="com.eviware.loadui.groovy.GroovyComponent" label="Interval 1" id="92c3f23c-5273-4613-9deb-08b5e02b019c" category="scheduler"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="_script" type="java.lang.String"><![CDATA[// 
+// Copyright 2014 SmartBear Software
+// 
+// Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission - subsequent
+// versions of the EUPL (the "Licence");
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at:
+// 
+// http://ec.europa.eu/idabc/eupl
+// 
+// Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+// distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+// express or implied. See the Licence for the specific language governing permissions and limitations
+// under the Licence.
+// 
+
+/**
+ * Schedules the start and stop of connected components 
+ *
+ * @id com.eviware.Interval
+ * @help http://www.loadui.org/Schedulers/interval-component.html
+ * @category scheduler
+ * @nonBlocking true
+ */
+
+// Schedule the start and stop of a trigger component.
+// On Start starts timer and when StartAt reached send one START message to 
+// attached component. When Duration expires one STOP message is send to each 
+// attached component.
+// Repeat option repeats whole process if counter limit not set.
+// 
+// On Stop it sends a STOP message to attached components and stops timer.
+//
+// On Reset it just resets the timer and stops it.
+
+
+import com.eviware.loadui.api.events.BaseEvent
+import com.eviware.loadui.api.events.PropertyEvent
+import com.eviware.loadui.api.model.CanvasItem
+import com.eviware.loadui.util.layout.IntervalModel
+
+import java.util.concurrent.TimeUnit
+
+createProperty('startAt', Long, 0)
+createProperty('duration', Long, 0)
+createProperty('unit', String, 'Sec')
+createProperty('mode', String, 'Single')
+createProperty('defaultMode', Boolean, true)
+
+long testStartTime = 0
+def canvas = getCanvas()
+
+def startFuture = null
+def stopFuture = null
+def endFuture = null
+
+String lastAction = "Undefined";
+
+updateState = {
+    if (lastAction != "START") {
+        //warn "Aborting update due to $lastAction"
+        return;
+    }
+
+    if (defaultMode.value) {
+        sendEnabled(true)
+
+        //warn "Default mode run"
+        return
+    }
+    //warn "Scheduled mode run"
+
+    long limit = canvas.getLimit(CanvasItem.TIMER_COUNTER) * 1000
+
+    long mult = 1000
+    if (unit.value == 'Min') mult *= 60
+    else if (unit.value == 'Percent' && limit > 0) mult = limit / 100
+
+    long startTime = startAt.value * mult
+    if (limit > 0 && startTime > limit) {
+        startAt.value = limit / mult
+        //warn "Start at updated without affect on the execution "
+        return
+    }
+
+    long stopTime
+    if (duration.value == 0) {
+        stopTime = (limit > 0) ? limit : IntervalModel.INFINITE
+    } else {
+        stopTime = startTime + duration.value * mult
+    }
+
+    if (limit > 0 && stopTime > limit) {
+        long newDuration = limit / mult - startAt.value
+        duration.value = newDuration
+        //warn "Duration updated without affect on the execution "
+        return
+    }
+
+    long currentTime = (System.currentTimeMillis() - testStartTime) % stopTime
+
+    //warn "Current time: $currentTime, Stop time: $stopTime"
+
+    if (currentTime < stopTime) {
+        long stopInterval = stopTime - currentTime
+        //warn "Schedule stopping $stopInterval"
+        stopFuture?.cancel(true)
+        stopFuture = schedule({
+            sendEnabled(false)
+            //warn "Stop exucution"
+            if (mode.value != 'Single') {
+                updateState()
+            }
+        }, stopInterval, TimeUnit.MILLISECONDS)
+    }
+    if (currentTime < startTime) {
+        long startInterval = startTime - currentTime
+        //warn "Schedule START at $startInterval"
+        startFuture?.cancel(true)
+        startFuture = schedule({
+            //warn "Start exucution"
+            sendEnabled(true)
+        }, startInterval, TimeUnit.MILLISECONDS)
+        //warn "Stopping for now"
+        sendEnabled(false)
+    } else if (currentTime < stopTime) {
+        //warn "Start execution right now"
+        sendEnabled(true)
+    }
+}
+
+onAction("RESET_COUNTER_VALUES") {
+    //invoked on PRE_START
+    updateState()
+}
+
+onAction("START") {
+    if (lastAction != "START") {
+        lastAction = "START"
+        cancelAll()
+        testStartTime = System.currentTimeMillis()
+        updateState()
+    }
+}
+
+onAction("STOP") {
+    lastAction = "STOP"
+    sendEnabled(false)
+    cancelAll()
+    updateState()
+}
+
+onAction("RESET") {
+}
+
+addEventListener(PropertyEvent) { event ->
+    if (event.property in [startAt, duration, unit, mode]) {
+        updateState()
+    }
+}
+
+def limitsListener = addEventListener(canvas, BaseEvent) { event ->
+    if (event.key == CanvasItem.LIMITS) {
+        updateState()
+    }
+}
+
+onRelease = {
+    cancelAll()
+    canvas.removeEventListener(BaseEvent, limitsListener)
+}
+
+cancelAll = {
+    startFuture?.cancel(true)
+    startFuture = null
+    stopFuture?.cancel(true)
+    stopFuture = null
+    endFuture?.cancel(true)
+    endFuture = null
+}]]></con1:property><con1:property propagates="true" key="stateProperty" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="startAt" type="java.lang.Long">0</con1:property><con1:property propagates="true" key="duration" type="java.lang.Long">5</con1:property><con1:property propagates="true" key="unit" type="java.lang.String">Sec</con1:property><con1:property propagates="true" key="mode" type="java.lang.String">Single</con1:property><con1:property propagates="true" key="defaultMode" type="java.lang.Boolean">true</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Interval</con1:property><con1:property key="_digest">38ca389ba6d8738962c63839763c4305</con1:property><con1:property key="_id">com.eviware.Interval</con1:property><con1:property key="_classLoader">com.eviware.Interval</con1:property></con1:attributes><con1:addons/></con1:component><con1:component type="com.eviware.loadui.groovy.GroovyComponent" label="Fixed Load 1" id="5c2d7274-2689-4e9e-bf70-56458dcda943" category="generators"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="_script" type="java.lang.String">//
+// Copyright 2014 SmartBear Software
+// 
+// Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission - subsequent
+// versions of the EUPL (the "Licence");
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at:
+// 
+// http://ec.europa.eu/idabc/eupl
+// 
+// Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+// distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+// express or implied. See the Licence for the specific language governing permissions and limitations
+// under the Licence.
+// 
+
+/**
+ * Simulates a "classic" fixed load situation
+ *
+ * @id com.eviware.FixedLoad
+ * @help http://www.loadui.org/Generators/fixed-load-component.html
+ * @name Fixed Load
+ * @category generators
+ * @nonBlocking true
+ */
+
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
+
+sampleCount = createInput('Sample Count', 'Currently running feedback', 'Used to receive the number of currently running requests from the triggered Runner.') {
+    it.name == "runningTerminal"
+}
+
+String latestAction = 'NONE'
+AtomicInteger differenceFromTargetLoad = new AtomicInteger(0)
+AtomicInteger currentVus = new AtomicInteger(0)
+Future loadUpdateFuture = null
+
+//Properties
+createProperty('load', Long, 10) { value, prevValue ->
+    if (latestAction == 'START') {
+        differenceFromTargetLoad.set((value - (prevValue ?: 0)).intValue())
+        if (!prevValue) {
+            startup()
+        }
+    }
+}
+createProperty('interval', Long, 0)
+
+calculateLoad = {
+    load.value
+}
+
+def startTime = 0
+
+periodiUpdateVUDiff = {
+    synchronized (differenceFromTargetLoad) {
+        long expiredTime = System.currentTimeMillis() - startTime
+        int targetLoad = calculateLoad(expiredTime) as int
+
+        differenceFromTargetLoad.set(targetLoad - currentVus.get())
+        int current = currentVus.get()
+        int difference = differenceFromTargetLoad.get()
+        //warn "  Checking current VU: $current, difference: $difference"
+
+        // get VUs started again in cases where the load had been 0
+        if (currentVus.get() == 0 &amp;&amp; differenceFromTargetLoad.get() > 0) {
+            //warn "VU correction.... Current VU: $current, difference: $difference"
+            addVusToCorrectLoad()
+        }
+    }
+}
+
+startup = {
+    loadUpdateFuture?.cancel(true)
+    startTime = System.currentTimeMillis()
+    loadUpdateFuture = scheduleAtFixedRate(periodiUpdateVUDiff, 200L, 700L, TimeUnit.MILLISECONDS)
+
+    addVusToCorrectLoad()
+}
+
+startVu = {
+    if (latestAction == 'START' &amp;&amp; stateProperty.value) {
+        currentVus.incrementAndGet()
+        def delay = Math.max(interval.value, 0)
+        trigger(delay ?: null)
+        vuStarted()
+        //warn ".................. Triggering ................"
+    }
+}
+
+addVusToCorrectLoad = {
+    if (stateProperty.value) {
+        synchronized (differenceFromTargetLoad) {
+            if (differenceFromTargetLoad.get() > 0) {
+                differenceFromTargetLoad.times { startVu() }
+                int added = differenceFromTargetLoad.get()
+                //warn "Aded VUs: $added"
+                differenceFromTargetLoad.set(0)
+            }
+        }
+    }
+}
+
+onMessage = { outgoing, incoming, message ->
+
+    if (incoming == sampleCount) {
+        vuFinished();
+        int currentVUCount = currentVus.decrementAndGet()
+
+        synchronized (differenceFromTargetLoad) {
+            long expiredTime = System.currentTimeMillis() - startTime
+            int targetLoad = calculateLoad(expiredTime) as int
+            int runningVUs = currentVus.get()
+            if (runningVUs &lt; 0) {
+                //warn "!!!!current VU amount is negative!!!!"
+                runningVUs = 0
+            }
+            int currentDiff = targetLoad - runningVUs
+            differenceFromTargetLoad.set(currentDiff)
+
+            if (currentDiff == 0) {
+                return;
+            } else if (currentDiff > 0) {
+                //warn "Need to add $currentDiff vu's since we have $runningVUs but need $targetLoad"
+                addVusToCorrectLoad()
+                return
+            } else {
+                //warn "ERROR!!!! Correct VUs: $currentDiff"
+                differenceFromTargetLoad.incrementAndGet()
+            }
+        }
+    }
+}
+
+onAction('START') {
+    synchronized (latestAction) {
+        if (latestAction == 'START') {
+            //warn "Execution was already started"
+            return
+        } else latestAction = 'START'
+        //warn "Starting execution"
+
+        resetVUCount();
+        currentVus.set(0)
+        differenceFromTargetLoad.set(load.value.intValue())
+        startup()
+    }
+}
+
+onAction('STOP') {
+    synchronized (latestAction) {
+        //warn "Stop execution"
+        latestAction = 'STOP'
+        loadUpdateFuture?.cancel(true)
+        loadUpdateFuture = null
+        currentVus.set(0)
+    }
+}
+</con1:property><con1:property propagates="true" key="stateProperty" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="load" type="java.lang.Long">2</con1:property><con1:property propagates="true" key="interval" type="java.lang.Long">300</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Fixed Load</con1:property><con1:property key="_digest">38af2c83c0903e44e9eeceda0ea8461f</con1:property><con1:property key="_id">com.eviware.FixedLoad</con1:property><con1:property key="_classLoader">com.eviware.FixedLoad</con1:property></con1:attributes><con1:addons/></con1:component><con1:component type="com.eviware.loadui.components.soapui.SoapUISamplerComponent" label="RegisterInvoiceDataProducerService_With_Discount_Item:RegisterInvoiceData TestCase" id="e94fbede-e9e6-4e8e-ad16-62a83f6efa97" category="Runners"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="concurrentSamples" type="java.lang.Long">1000</con1:property><con1:property propagates="true" key="property_name_is_not_relevant_for_private_property" type="java.lang.Long">9223372036854775807</con1:property><con1:property propagates="true" key="maxQueueSize" type="java.lang.Long">1000</con1:property><con1:property propagates="true" key="countDiscarded" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="disabledTestSteps" type="java.lang.String"/><con1:property propagates="true" key="_thinkTime" type="java.lang.Long">0</con1:property><con1:property propagates="true" key="ReadyApiTestCase" type="com.eviware.soapui.impl.wsdl.testcase.WsdlTestCase">cafbf76f-57d9-4adc-b4f2-1e23b7b403be</con1:property><con1:property propagates="true" key="raiseError" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="outputTestCaseProperties" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="OutputLevel" type="java.lang.String">TestCase only</con1:property><con1:property propagates="true" key="closeConnectionsAfterRequest" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="disableSoapuiAssertions" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="forceShareDatasources" type="java.lang.Boolean">true</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Ready API TestCase Runner</con1:property></con1:attributes><con1:addons/></con1:component><con1:connection outputTerminalId="92c3f23c-5273-4613-9deb-08b5e02b019c/outgoingTerminal" inputTerminalId="5c2d7274-2689-4e9e-bf70-56458dcda943/stateTerminal"/><con1:connection outputTerminalId="5c2d7274-2689-4e9e-bf70-56458dcda943/triggerTerminal" inputTerminalId="e94fbede-e9e6-4e8e-ad16-62a83f6efa97/triggerTerminal"/><con1:connection outputTerminalId="e94fbede-e9e6-4e8e-ad16-62a83f6efa97/runningTerminal" inputTerminalId="5c2d7274-2689-4e9e-bf70-56458dcda943/Sample Count"/></con1:scene><con1:statistics><con1:page title="DefaultLoadUIStatisticPage"><con1:chartGroup type="com.eviware.loadui.api.statistics.model.chart.line.LineChartView" title="" groupType="Monitors"><con1:attributes/></con1:chartGroup></con1:page></con1:statistics></con1:loadui-project><con:loadUITestScenario projectId="bb00c541-e9ef-4eac-b67b-f3e2caf3b78f" scenarioId="5adf4732-8337-4e50-9287-927ac755d6dc" name="New Scenario" id="a516a404-8fbd-4f43-90f2-f7bae4d1a026"><con:settings/></con:loadUITestScenario></con:loadUiTest></con:soapui-project>
