@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-workspace name="Projects" soapui-version="6.0.0" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings/>
+  <con:project name="ListInvoiceData">./ListInvoiceData-soapui-project.xml</con:project>
+  <con:project name="GetInvoiceData">./GetInvoiceData-soapui-project.xml</con:project>
+  <con:project name="CreateInvoiceData">./CreateInvoiceData-soapui-project.xml</con:project>
+  <con:project name="ViewInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/ViewInvoiceData-soapui-project.xml</con:project>
+  <con:project name="RegisterInvoiceData">./RegisterInvoiceData-soapui-project.xml</con:project>
+  <con:project name="UpdatePriceList">./UpdatePriceList-soapui-project.xml</con:project>
+  <con:collectInfoForSupport>false</con:collectInfoForSupport>
+  
+</con:soapui-workspace>
