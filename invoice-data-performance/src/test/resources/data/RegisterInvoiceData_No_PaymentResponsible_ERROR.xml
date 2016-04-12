@@ -1,0 +1,24 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1" xmlns:urn2="urn:riv:sll:invoicedata:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>TEST_SYSTEM</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:RegisterInvoiceData>
+         <urn2:eventId>05690b3b-6323-4db6-b505-4a890c678eb3</urn2:eventId>
+         <urn2:supplierId>TEST_556482-8654</urn2:supplierId>
+         <urn2:healthcareFacility>HSF</urn2:healthcareFacility>
+         <urn2:refContractId>05690b3b-6323-4db6-b505-4a890c678eb3</urn2:refContractId>
+         <urn2:supplierName>TEST_556482-8654</urn2:supplierName>
+         <urn2:serviceCode>01</urn2:serviceCode>
+         <urn2:paymentResponsible></urn2:paymentResponsible>
+         <urn2:healthCareCommission>TEST_TEST</urn2:healthCareCommission>
+         <urn2:acknowledgementId>05690b3b-6323-4db6-b505-4a890c678eb3</urn2:acknowledgementId>
+         <urn2:acknowledgedBy>TEST_556482-8654</urn2:acknowledgedBy>
+         <urn2:acknowledgedTime>2016-04-12T12:02:22.653</urn2:acknowledgedTime>
+         <urn2:startTime>2016-04-12T12:02:22.653</urn2:startTime>
+         <urn2:endTime>2016-04-12T17:02:39</urn2:endTime>
+         <!--1 or more repetitions:-->
+         <urn2:itemList><urn2:itemId>58770df5-8d03-4cbd-98f6-fa87ad8309f8</urn2:itemId><urn2:description>Test item-0</urn2:description><urn2:qty>2</urn2:qty></urn2:itemList>     
+      </urn1:RegisterInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>

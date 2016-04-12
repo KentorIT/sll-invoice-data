@@ -1,0 +1,14 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:CreateInvoiceDataResponder:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:CreateInvoiceData>
+         <urn1:supplierId>TEST_556482-8654</urn1:supplierId>
+         <urn1:createdBy>TEST_556482-8654</urn1:createdBy>
+         <urn1:paymentResponsible>TEST_HSF</urn1:paymentResponsible>
+         <!--1 or more repetitions:-->         
+       
+      </urn1:CreateInvoiceData>
+   </soapenv:Body>
+</soapenv:Envelope>

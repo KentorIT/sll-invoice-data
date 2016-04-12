@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-workspace name="Projects" soapui-version="5.2.0" xmlns:con="http://eviware.com/soapui/config">
+  <con:settings/>
+  <con:project name="PingForConfiguration">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/PingForConfiguration-soapui-project.xml</con:project>
+  <con:project name="RegisterInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/RegisterInvoiceData-soapui-project.xml</con:project>
+  <con:project name="ListInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/ListInvoiceData-soapui-project.xml</con:project>
+  <con:project name="ViewInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/ViewInvoiceData-soapui-project.xml</con:project>
+  <con:project name="GetInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/GetInvoiceData-soapui-project.xml</con:project>
+  <con:project name="CreateInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/CreateInvoiceData-soapui-project.xml</con:project>
+  <con:collectInfoForSupport>false</con:collectInfoForSupport>
+</con:soapui-workspace>

@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+        <groupId>se.sll.invoicedata</groupId>
+        <artifactId>invoice-data-system</artifactId>
+        <version>1.5-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+	<artifactId>invoice-data-performance-tests</artifactId>
+
+	<properties>
+		<gatling.version>2.1.2</gatling.version>
+		<gatling-plugin.version>2.1.2</gatling-plugin.version>
+		<baseUrl>http://localhost:8081</baseUrl>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.gatling.highcharts</groupId>
+			<artifactId>gatling-charts-highcharts</artifactId>
+			<version>${gatling.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>io.gatling</groupId>
+				<artifactId>gatling-maven-plugin</artifactId>
+				<version>${gatling-plugin.version}</version>
+                <configuration>
+                  <simulationClass>${simulationClass}</simulationClass>
+                  <jvmArgs>
+                  	<jvmArg>-DnoOfUsers=10</jvmArg>
+                  	<jvmArg>-DbaseUrl=${baseUrl}</jvmArg>
+                  	<jvmArg>-DtestTimeSecs=30</jvmArg>
+                  </jvmArgs>
+                </configuration>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+  <profiles>
+	<profile>	    
+  		<id>PingOkSimulationHttp</id>
+  		<properties>
+  			<simulationClass>se.sll.invoicedata.PingForConfigurationOkSimulation</simulationClass>
+  		</properties>
+  	</profile>
+	<profile>
+	    <!-- Tests all available services in sll invoicedata -->
+  		<id>LoadTestOKSimulation</id>
+  		<properties>
+  			<simulationClass>se.sll.invoicedata.LoadTestInvoicedataServicesOKSimulation</simulationClass>
+  		</properties>
+  	</profile>
+	<profile>	    
+  		<id>LoadTestMixedSimulation</id>
+  		<properties>
+  			<simulationClass>se.sll.invoicedata.LoadTestRegisterInvoiceDataMixedSimulation</simulationClass>
+  		</properties>
+  	</profile>
+	<profile>	    
+  		<id>LoadTestERRORSimulation</id>
+  		<properties>
+  			<simulationClass>se.sll.invoicedata.LoadTestInvoicedataServicesERRORSimulation</simulationClass>
+  		</properties>
+  	</profile>
+  </profiles>
+</project>
