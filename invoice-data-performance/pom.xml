@@ -66,9 +66,33 @@
   		</properties>
   	</profile>
 	<profile>	    
-  		<id>LoadTestMixedSimulation</id>
+  		<id>LoadTestRegisterMixedSimulation</id>
   		<properties>
-  			<simulationClass>se.sll.invoicedata.LoadTestRegisterInvoiceDataMixedSimulation</simulationClass>
+  			<simulationClass>se.sll.invoicedata.LoadTestRegisterInvoicedataMixedSimulation</simulationClass>
+  		</properties>
+  	</profile>
+	<profile>	    
+  		<id>LoadTestCreateMixedSimulation</id>
+  		<properties>
+  			<simulationClass>se.sll.invoicedata.LoadTestCreateInvoicedataMixedSimulation</simulationClass>
+  		</properties>
+  	</profile>
+	<profile>	    
+  		<id>LoadTestGetMixedSimulation</id>
+  		<properties>
+  			<simulationClass>se.sll.invoicedata.LoadTestGetInvoicedataMixedSimulation</simulationClass>
+  		</properties>
+  	</profile>
+	<profile>	    
+  		<id>LoadTestListMixedSimulation</id>
+  		<properties>
+  			<simulationClass>se.sll.invoicedata.LoadTestListInvoicedataMixedSimulation</simulationClass>
+  		</properties>
+  	</profile>
+	<profile>	    
+  		<id>LoadTestViewMixedSimulation</id>
+  		<properties>
+  			<simulationClass>se.sll.invoicedata.LoadTestViewInvoicedataMixedSimulation</simulationClass>
   		</properties>
   	</profile>
 	<profile>	    
