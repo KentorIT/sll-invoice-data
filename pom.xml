@@ -95,6 +95,11 @@
 						<exclude>**/*-workspace.xml/</exclude>
 						<exclude>**/*-soapui-project.xml</exclude>
 						<exclude>**/*.xls</exclude>
+						<exclude>**/*.xml</exclude>
+						<exclude>**/*.pdf</exclude>
+						<exclude>**/*.conf</exclude>
+						<exclude>**/*.gitattributes</exclude>
+						<exclude>soapui/**/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
