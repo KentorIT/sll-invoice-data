@@ -55,7 +55,7 @@ import org.hibernate.annotations.Index;
 @Entity
 @javax.persistence.Table(name = BusinessEventEntity.TABLE_NAME)
 @org.hibernate.annotations.Table(appliesTo=BusinessEventEntity.TABLE_NAME, indexes = { 
-@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ),
+@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PAYMENT_RESPONSIBLE, BusinessEventEntity.PENDING, BusinessEventEntity.START_TIME } ),
 @Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }),
 @Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.ACKNOWLEDGEMENT_ID, BusinessEventEntity.PENDING }), 
 @Index(name=BusinessEventEntity.INDEX_NAME_4, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PAYMENT_RESPONSIBLE, 
@@ -65,11 +65,14 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     static final String TABLE_NAME = "invoice_data_event";
     static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";
     static final String INDEX_NAME_2 = "invoice_data_event_query_ix_2";
+    // Used in CreateInvoice Service
     static final String INDEX_NAME_3 = "invoice_data_event_query_ix_3";
+    // Used in CreateInvoice Service counting/validation
     static final String INDEX_NAME_4 = "invoice_data_event_query_ix_4";
     static final String SUPPLIER_ID = "supplier_id";
     static final String PENDING = "pending";
     static final String EVENT_ID = "event_id";
+    static final String START_TIME = "start_time";
     static final String ACKNOWLEDGEMENT_ID = "acknowledgement_id";
     static final String PAYMENT_RESPONSIBLE = "payment_responsible";
     
@@ -122,7 +125,7 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     private Date acknowledgedTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_time", nullable=false, updatable=false)
+    @Column(name = START_TIME, nullable=false, updatable=false)
     private Date startTime;
 
     @Temporal(TemporalType.TIMESTAMP)

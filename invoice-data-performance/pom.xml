@@ -66,33 +66,33 @@
   		</properties>
   	</profile>
 	<profile>	    
-  		<id>LoadTestRegisterMixedSimulation</id>
+  		<id>LoadTestRegisterOkSimulation</id>
   		<properties>
-  			<simulationClass>se.sll.invoicedata.LoadTestRegisterInvoicedataMixedSimulation</simulationClass>
+  			<simulationClass>se.sll.invoicedata.LoadTestRegisterInvoicedataOkSimulation</simulationClass>
   		</properties>
   	</profile>
 	<profile>	    
-  		<id>LoadTestCreateMixedSimulation</id>
+  		<id>LoadTestCreateOkSimulation</id>
   		<properties>
-  			<simulationClass>se.sll.invoicedata.LoadTestCreateInvoicedataMixedSimulation</simulationClass>
+  			<simulationClass>se.sll.invoicedata.LoadTestCreateInvoicedataOkSimulation</simulationClass>
   		</properties>
   	</profile>
 	<profile>	    
-  		<id>LoadTestGetMixedSimulation</id>
+  		<id>LoadTestGetOkSimulation</id>
   		<properties>
-  			<simulationClass>se.sll.invoicedata.LoadTestGetInvoicedataMixedSimulation</simulationClass>
+  			<simulationClass>se.sll.invoicedata.LoadTestGetInvoicedataOkSimulation</simulationClass>
   		</properties>
   	</profile>
 	<profile>	    
-  		<id>LoadTestListMixedSimulation</id>
+  		<id>LoadTestListOkSimulation</id>
   		<properties>
-  			<simulationClass>se.sll.invoicedata.LoadTestListInvoicedataMixedSimulation</simulationClass>
+  			<simulationClass>se.sll.invoicedata.LoadTestListInvoicedataOkSimulation</simulationClass>
   		</properties>
   	</profile>
 	<profile>	    
-  		<id>LoadTestViewMixedSimulation</id>
+  		<id>LoadTestViewOkSimulation</id>
   		<properties>
-  			<simulationClass>se.sll.invoicedata.LoadTestViewInvoicedataMixedSimulation</simulationClass>
+  			<simulationClass>se.sll.invoicedata.LoadTestViewInvoicedataOkSimulation</simulationClass>
   		</properties>
   	</profile>
 	<profile>	    

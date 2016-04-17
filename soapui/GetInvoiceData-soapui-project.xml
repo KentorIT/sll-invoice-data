@@ -172,6 +172,24 @@
          <!--You may enter ANY elements at this point-->\r
       </urn1:GetInvoiceDataRequest>\r
    </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:GetInvoiceDataResponder:1:GetInvoiceData"/><con:wsrmConfig version="1.2"/></con:call><con:call id="d6473a86-65d8-4f62-8004-1672382c32c1" name="Sample_Request"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/getInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:GetInvoiceDataResponder:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:GetInvoiceDataRequest>
+         <urn1:supplierId>TEST_556482-8654</urn1:supplierId>
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         <urn1:paymentResponsible>TEST_HSF</urn1:paymentResponsible>
+         <urn1:fromDate>2012-01-01T00:00:00</urn1:fromDate>
+         <urn1:toDate>2099-01-01T00:00:00</urn1:toDate>
+         <!--You may enter ANY elements at this point-->
+      </urn1:GetInvoiceDataRequest>
+   </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:GetInvoiceDataResponder:1:GetInvoiceData"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite id="ee402ead-fbf3-4907-ac8d-d94eb3eca641" name="GetInvoiceDataProducerServiceSoapBinding TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="bd964a25-ae83-45c0-9cdd-080783289a2b" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="GetInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="groovy" name="getTestSupplerID" id="fa825500-d2e3-4686-b908-a7dfee9e65ed"><con:settings/><con:config><script>return 'TEST_556482-8654'</script></con:config></con:testStep><con:testStep type="groovy" name="getCurrentDate" id="9078342e-e10d-4066-b004-ec1cc300f849"><con:settings/><con:config><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 Calendar cal = Calendar.getInstance()
 return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="request" id="2a3aeb18-9f77-488c-a71d-996eb80974bf" name="GetInvoiceData"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>GetInvoiceDataProducerServiceSoapBinding</con:interface><con:operation>GetInvoiceData</con:operation><con:request name="GetInvoiceData" id="8b599995-edec-4c46-87f6-e31b0b7d931c" defaultOutgoingWss="" defaultIncomingWss=""><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/getInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:GetInvoiceDataResponder:1">
