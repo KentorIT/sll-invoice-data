@@ -23,11 +23,10 @@
 package se.sll.invoicedata.app.ws;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.List;
+
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -64,19 +63,18 @@ public class CreateInvoiceDataProducerTest extends TestSupport {
         createInvoiceDataResponderInterface = null;
     }
 
-    //
-    void register(String supplierId, String paymentResp, int n) {
+    void register(String supplierId, String paymentResp, String costCenter, int n) {
         for (int i = 0; i < n; i++) {
             Event event1 = createRandomEventData();
             event1.setSupplierId(supplierId);
             event1.setPaymentResponsible(paymentResp);
+            event1.setCostCenter(costCenter);
             RegisterInvoiceDataResponderInterface reg = RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService();
             RegisterInvoiceDataResponse resp = reg.registerInvoiceData(LOGICAL_ADDRESS, event1);
             assertEquals(ResultCodeEnum.OK, resp.getResultCode().getCode());  
         }
     }
 
-    //
     List<RegisteredEvent> events(String supplierId, String paymentResp) {
         GetInvoiceDataResponderInterface get = GetInvoiceDataProducerTest.getGetInvoiceDataService();
         GetInvoiceDataRequest req = new GetInvoiceDataRequest();
@@ -87,48 +85,33 @@ public class CreateInvoiceDataProducerTest extends TestSupport {
         return resp.getRegisteredEventList();
     }
     
-    //
-    CreateInvoiceDataRequest request(String supplierId, String paymentResp) {
-        CreateInvoiceDataRequest req = new CreateInvoiceDataRequest();
-        req.setCreatedBy("test");
-        req.setPaymentResponsible(paymentResp);
-        req.setSupplierId(supplierId);
-        for (RegisteredEvent e : events(supplierId, "HSF")) {
-            req.getAcknowledgementIdList().add(e.getAcknowledgementId());
-        }
-        return req;
-    }
-    
-    
     @Test
-    public void testCreate_success() {
+    public void testCreate_Invoicedata_Pass() {
         final int n = 10;
+        final String costCenter = "cost-center";
+        
         String supplierId1 = genRandomAlphaNData(5);
-        register(supplierId1, "HSF", n);
+        register(supplierId1, "HSF", costCenter, n);
         
         String supplierId2 = genRandomAlphaNData(5);
-        register(supplierId2, "HSF", n);
+        register(supplierId2, "HSF", costCenter,  n);
         
-        CreateInvoiceDataRequest req = request(supplierId1, "HSF");
+        CreateInvoiceDataRequest req = getCreateInvoiceRequest(supplierId1, "HSF", costCenter);
         CreateInvoiceDataResponse resp = createInvoiceDataResponderInterface.createInvoiceData(LOGICAL_ADDRESS, req);
         assertEquals(ResultCodeEnum.INFO, resp.getResultCode().getCode());
     }
     
     @Test
-    public void testCreate_fail() {
+    public void testCreate_Invoicedata_With_Missing_Indata_Fail() {
         final int n = 10;
+        final String costCenter = "cost-center";
         String supplierId1 = genRandomAlphaNData(5);
-        register(supplierId1, "HSF", n);
+        register(supplierId1, "HSF", costCenter, n);
         
-        CreateInvoiceDataRequest req = request(supplierId1, "HSF");
+        thrown.expect(SOAPFaultException.class);
         
-        // make one id invalid
-        req.getAcknowledgementIdList().set(0, "zero");
-
-        CreateInvoiceDataResponse resp = createInvoiceDataResponderInterface.createInvoiceData(LOGICAL_ADDRESS, req);
-        assertFalse(ResultCodeEnum.OK  == resp.getResultCode().getCode());
-        assertNotNull(resp.getResultCode().getMessage());
-        assertNull(resp.getReferenceId());
+        CreateInvoiceDataRequest req = getCreateInvoiceRequest(supplierId1, "HSF", null);
+        createInvoiceDataResponderInterface.createInvoiceData(LOGICAL_ADDRESS, req);
     }
 
 

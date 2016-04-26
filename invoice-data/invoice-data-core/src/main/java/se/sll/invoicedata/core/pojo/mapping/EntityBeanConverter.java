@@ -92,6 +92,7 @@ public class EntityBeanConverter {
 		registeredEvent.setStartTime(CoreUtil.toXMLGregorianCalendar(businessEventEntity.getStartTime()));
 		registeredEvent.setSupplierId(businessEventEntity.getSupplierId());
 		registeredEvent.setSupplierName(businessEventEntity.getSupplierName());
+		registeredEvent.setCostCenter(businessEventEntity.getCostCenter());
 		
 		Map<String, ItemEntity> serviceItemMap = new HashMap<String, ItemEntity>();
 		

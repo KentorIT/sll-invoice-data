@@ -34,6 +34,7 @@ import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
+import se.sll.invoicedata.core.support.ExceptionCodeMatches;
 import se.sll.invoicedata.core.support.TestSupport;
 
 /**
@@ -52,12 +53,9 @@ public class ViewInvoiceDataServiceImplTest extends TestSupport {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
 
-        final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-        createReq.setSupplierId(e.getSupplierId());
-        createReq.setPaymentResponsible(e.getPaymentResponsible());
-        createReq.setCreatedBy("testViewInvoiceDataByReferenceId");
-        createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
-        String referenceId = invoiceDataService.createInvoiceData(createReq);
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        String referenceId= invoiceDataService.createInvoiceData(createReq);
+        assertNotNull(referenceId);
 
         InvoiceData invoiceData = invoiceDataService.getInvoiceDataByReferenceId(referenceId);
 
@@ -66,22 +64,44 @@ public class ViewInvoiceDataServiceImplTest extends TestSupport {
         assertNotNull(invoiceData.getRegisteredEventList().get(0).getItemList().get(0).getItemId());
     }
 
-    @Test (expected = InvoiceDataServiceException.class)
+    @Test
     @Transactional
     @Rollback(true)
     public void testGetInvoiceDataBy_Dummy_ReferenceId() {
         //Valid referenceId
         String referenceId = "supplierId.00000";
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(1002));
+        
         invoiceDataService.getInvoiceDataByReferenceId(referenceId);		
     }
 
-    @Test (expected = InvoiceDataServiceException.class)
+    @Test
     @Transactional
     @Rollback(true)
     public void testGetInvoiceDataBy_Invalid_ReferenceId() {
         //Invalid referenceId
         String referenceId = "supplierId.0000x";
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(1002));
+        
         invoiceDataService.getInvoiceDataByReferenceId(referenceId);		
     }
-
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testGetInvoiceDataBy_Pending_ReferenceId() {
+        //Pending referenceId
+        String referenceId = "1";
+        final Event e = createSampleEvent();
+        invoiceDataService.registerEvent(e);
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        //thrown.expect(new ExceptionCodeMatches(1007));
+        
+        invoiceDataService.getInvoiceDataByReferenceId(referenceId);		
+    }
 }

@@ -40,6 +40,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Index;
+
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 
 /**
  * Persistent invoice data information.
@@ -47,16 +50,37 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author Peter
  */
 @Entity
-@Table(name="invoice_data")
+@Table(name=InvoiceDataEntity.TABLE_NAME)
+@org.hibernate.annotations.Table(appliesTo=InvoiceDataEntity.TABLE_NAME, indexes = { 
+@Index(name=InvoiceDataEntity.INDEX_NAME_1, columnNames = { InvoiceDataEntity.SUPPLIER_ID, InvoiceDataEntity.PAYMENT_RESPONSIBLE, 
+																		InvoiceDataEntity.COST_CENTER, InvoiceDataEntity.PENDING } ),
+@Index(name=InvoiceDataEntity.INDEX_NAME_2, columnNames = { InvoiceDataEntity.SUPPLIER_ID, InvoiceDataEntity.PAYMENT_RESPONSIBLE, 
+																		InvoiceDataEntity.START_DATE, InvoiceDataEntity.END_DATE  })})
 public class InvoiceDataEntity {
+	
+	static final String TABLE_NAME = "invoice_data";
+	static final String INDEX_NAME_1 = "invoice_data_query_ix_1"; //Used when registering an event
+    static final String INDEX_NAME_2 = "invoice_data_query_ix_2"; //Used in view invoice service
+    
+    static final String SUPPLIER_ID = "supplier_id";
+    static final String COST_CENTER = "cost_center";
+    static final String PAYMENT_RESPONSIBLE = "payment_responsible";
+    static final String PENDING = "pending";
+    static final String TOTAL_AMOUNT = "total_amount";
+    static final String START_DATE = "start_date";
+    static final String END_DATE = "end_date";
+    
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-    @Column(name="supplier_id", length=64, nullable=false, updatable=false)
+    @Column(name=SUPPLIER_ID, length=64, nullable=false, updatable=false)
     private String supplierId;
-
-    @Column(name="payment_responsible", length=64, nullable=false, updatable=false)
+    
+    @Column(name=COST_CENTER, length=64, nullable=false, updatable=false)
+    private String costCenter;
+    
+    @Column(name=PAYMENT_RESPONSIBLE, length=64, nullable=false, updatable=false)
     private String paymentResponsible;
 
     @Column(name="created_by", length=64, nullable=false, updatable=false)
@@ -67,19 +91,21 @@ public class InvoiceDataEntity {
     private Date createdTime;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "start_date", nullable=false, updatable=true)
+    @Column(name = START_DATE, nullable=false, updatable=true)
     private Date startDate;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "end_date", nullable=false, updatable=true)
+    @Column(name = END_DATE, nullable=false, updatable=true)
     private Date endDate;
 
-    @Column(name="total_amount", precision=12, scale=2, updatable=true)
+    @Column(name=TOTAL_AMOUNT, precision=12, scale=2, updatable=true)
     private BigDecimal totalAmount;
+    
+    @Column(name=PENDING, nullable=false, updatable=true)
+    private Boolean pending = Boolean.TRUE;
 
     @OneToMany(fetch=FetchType.EAGER, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
     private List<BusinessEventEntity> businessEventEntities = new LinkedList<BusinessEventEntity>();
-
 
     @PrePersist
     void onPrePerist() {
@@ -91,7 +117,10 @@ public class InvoiceDataEntity {
     void onPreUpdate() {
     	setCreatedTime(new Date());
     }
-    
+    /*
+    private void updatePending() {
+        setPending(isInvoiceDataPending() ? Boolean.TRUE : null);        
+    }*/
 
     /**
      * Calculates derived property values, and stores them into database.
@@ -138,7 +167,8 @@ public class InvoiceDataEntity {
      */
     public String getReferenceId() {
         if (getId() == null) {
-            throw new IllegalStateException("A valid reference can only be retrieved after saving invoice data to database");
+        	throw InvoiceDataErrorCodeEnum.ILLEGAL_STATE_INVALID_INVOICEDATA_REFERENCE_ID.
+        		createException("A valid reference can only be retrieved after saving invoice data to database");
         }
         return String.valueOf(getId());
     }
@@ -200,6 +230,14 @@ public class InvoiceDataEntity {
         }
         return false;
     }
+    
+    public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
+    	if (getSupplierId().equals(businessEventEntity.getSupplierId())) {
+            businessEventEntity.setInvoiceData(null);
+            return businessEventEntities.remove(businessEventEntity);
+        }
+        return false;
+    }
 
     public List<BusinessEventEntity> getBusinessEventEntities() {
         Collections.sort(businessEventEntities);
@@ -223,9 +261,28 @@ public class InvoiceDataEntity {
         return totalAmount;
     }
 
-    //
     protected void setTotalAmount(final BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+    
+    public boolean isPending() {
+        return (pending == Boolean.TRUE);
+    }
+
+    public void setPending(Boolean pending) {
+        this.pending = pending;
+        
+        for (BusinessEventEntity e : this.getBusinessEventEntities()) {
+        	e.setPending(null);
+        }
+    }
+    
+    public String getCostCenter() {
+        return costCenter;
+    }
+
+    public void setCostCenter(String costCenter) {
+        this.costCenter = costCenter;
     }
 
     @Override

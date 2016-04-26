@@ -31,7 +31,12 @@ public enum InvoiceDataErrorCodeEnum {
     LIMIT_ERROR(1004, "Reached maximum limit %d: %s"),
     SERVICE_AUTHORIZATION_ERROR(1005, "Requesting system has no access to the given operation: %s"),
     SUPPLIER_AUTHORIZATION_ERROR(1006, "Requesting supplier has no access to the given operation: %s"),
-    SYSTEM_BUSY_WITH_CREATE_INVOICE_REQUEST(1007, "System is busy with Create Invoice Data request: %s");
+    EXPECTING_CREATE_INVOICE_REQUEST_BEFORE_FETCHING(1007, "Expecting Create Invoice Data request for this supplier, payment responsible and cost center: %s"),
+    ILLEGAL_STATE_DUPLICATE_DRAFT_VERSIONS_OF_INVOICES(1008, "Illegal state, system has two draft versions of Invoices for given consumer: %s"),
+    NO_PENDING_INVOICES_TO_BE_GENERATED(1009, "System has no pending invoices on this supplier, payment responsible and costcenter. Register an event first: %s"),
+	ILLEGAL_STATE_NO_REGISTERED_EVENTS_ON_THIS_INVOICE(1010, "Illegal state, system has not registered any events for this supplier, payment responsible and costcenter: %s"),
+    ILLEGAL_STATE_EVENT_ID_OR_EVENT_CANNOT_BE_NULL(1011, "Illegal state, system cannot handle a null event or eventId at this stage: %s"),
+    ILLEGAL_STATE_INVALID_INVOICEDATA_REFERENCE_ID(1012, "Illegal state, invalid invoicedata referenceId: %s");
     
     
     private final int code;

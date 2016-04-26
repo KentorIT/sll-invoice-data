@@ -1,4 +1,6 @@
 /**
++
++
  * Copyright (c) 2013 SLL. <http://sll.se>
  *
  * This file is part of Invoice-Data.
@@ -37,6 +39,7 @@ import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
+import se.sll.invoicedata.core.support.ExceptionCodeMatches;
 import se.sll.invoicedata.core.support.TestSupport;
 
 /**
@@ -56,12 +59,7 @@ public class GetInvoiceDataServiceImplTest extends TestSupport {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
 
-        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
-        getIDRequest.setSupplierId(e.getSupplierId());
-        getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-
-        final List<RegisteredEvent> regEventList = invoiceDataService
-                .getAllUnprocessedBusinessEvents(getIDRequest);
+        final List<RegisteredEvent> regEventList = getRegisteredEventList(e);
 
         assertNotNull(regEventList);
         assertEquals(1, regEventList.size());
@@ -72,39 +70,115 @@ public class GetInvoiceDataServiceImplTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testGetInvoiceData() {
+    public void testGetAllUnprocessedEvents_By_Only_Supplier_Id() {
 
         final Event e = createSampleEvent();
+        e.setEventId("event-id-1");
+        e.setPaymentResponsible("payment-responsible-1");
+        invoiceDataService.registerEvent(e);
+        
+        e.setEventId("event-id-2");
+        e.setPaymentResponsible("payment-responsible-2");
+        invoiceDataService.registerEvent(e);
+        
+        //Registered 2 events with same supplierid and different payment responsible
+
+        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+        getIDRequest.setSupplierId(e.getSupplierId());
+        
+        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        assertEquals (2, allUnprocessedEvents.size());
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testGetAllUnprocessedEvents_Filter_By_SupplierId_And_PaymentResponsible() {
+
+        final Event e = createSampleEvent();
+        e.setEventId("event-id-1");
+        e.setPaymentResponsible("payment-responsible-1");
+        invoiceDataService.registerEvent(e);
+        
+        e.setEventId("event-id-2");
+        e.setPaymentResponsible("payment-responsible-2");
+        invoiceDataService.registerEvent(e);
+        
+        //Registered 2 events with same supplierid and different payment responsible
+        //But fetch by only one payment responsible
+        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+        getIDRequest.setSupplierId(e.getSupplierId());
+        getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+        
+        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        assertEquals (1, allUnprocessedEvents.size());
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testGetAllUnprocessedEvents_Filter_By_SupplierId_And_CostCenter() {
+
+        final Event e = createSampleEvent();
+        e.setEventId("event-id-1");
+        e.setCostCenter("cost-center-1");
+        invoiceDataService.registerEvent(e);
+        
+        e.setEventId("event-id-2");
+        e.setCostCenter("cost-center-2");
+        invoiceDataService.registerEvent(e);
+        
+        //Registered 2 events with same supplier id and different cost center's
+        //But fetch by only one cost center
+        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+        getIDRequest.setSupplierId(e.getSupplierId());
+        getIDRequest.setCostCenter(e.getCostCenter());
+        
+        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        assertEquals (1, allUnprocessedEvents.size());
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testGetAllUnprocessedBusinessEvents_By_SupplierId_PaymentResponsible_And_CostCenter() {
+
+        final Event e = createSampleEvent();
+        e.setCostCenter("cost-center-1");
         invoiceDataService.registerEvent(e);
 
         GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
         getIDRequest.setSupplierId(e.getSupplierId());
         getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-        final List<RegisteredEvent> l = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
-        final RegisteredEvent f = l.get(0);
+        getIDRequest.setCostCenter(e.getCostCenter());
+        
+        final List<RegisteredEvent> regEventList = invoiceDataService
+                .getAllUnprocessedBusinessEvents(getIDRequest);
 
-        assertEquals(e.getEventId(), f.getEventId());
-        assertEquals(e.getSupplierName(), f.getSupplierName());
-        assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
+        assertNotNull(regEventList);
+        assertEquals(1, regEventList.size());
+        assertEquals(e.getSupplierName(), regEventList.get(0).getSupplierName());
+        assertEquals(e.getAcknowledgedBy(), regEventList.get(0).getAcknowledgedBy());
+        assertEquals(e.getPaymentResponsible(), regEventList.get(0).getPaymentResponsible());
+        assertEquals(e.getCostCenter(), regEventList.get(0).getCostCenter());
     }
-    
 
-    @Test(expected = InvoiceDataServiceException.class)
+    @Test
     @Transactional
     @Rollback(true)
-    public void testGetInvoiceData_Over_Size_Limit() {
-
-        final int max = invoiceDataService.getEventMaxFindResultSize();
+    public void testGetAllUnprocessedEvents_Over_Size_Limit() {
+    	final int max = invoiceDataService.getEventMaxFindResultSize();
         final Event e = createSampleEvent();
         for (int i = 0; i < max; i++) {
             e.setEventId("eventtest." + i);
             invoiceDataService.registerEvent(e);
         }
-
-        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
-        getIDRequest.setSupplierId(e.getSupplierId());
-        getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-        invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(1004));
+        
+        final List<RegisteredEvent> regEventList = getRegisteredEventList(e);
+        assertNotNull(regEventList);
     }
 
 }

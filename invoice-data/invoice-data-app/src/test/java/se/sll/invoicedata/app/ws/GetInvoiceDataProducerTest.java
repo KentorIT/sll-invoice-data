@@ -19,9 +19,9 @@
 
 package se.sll.invoicedata.app.ws;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
+import javax.xml.ws.soap.SOAPFaultException;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -31,13 +31,10 @@ import org.junit.Test;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata._1.ResultCodeEnum;
-import riv.sll.invoicedata.createinvoicedata._1.rivtabp21.CreateInvoiceDataResponderInterface;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
-import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
-import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import se.sll.invoicedata.app.TestSupport;
 
 /**
@@ -145,82 +142,33 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 				.getInvoiceData(LOGICAL_ADDRESS, request);
 		
 		Assert.assertNotNull(response);
-		Assert.assertTrue(response.getRegisteredEventList().size() >= 1);
-		
-		//Registered and fetched an invoice data; 
-		//Getting acknowledgement id from the registered event
-		List<RegisteredEvent> regEventList = response.getRegisteredEventList();
-
-		List<String> ackIdList = new ArrayList<String>();
-		for (RegisteredEvent regEvent : regEventList) {
-			ackIdList.add(regEvent.getAcknowledgementId());
-		}
+		Assert.assertEquals(1, response.getRegisteredEventList().size());
 		
 		//Create the invoice
-		CreateInvoiceDataRequest invoiceDataRequest = new CreateInvoiceDataRequest();
-		invoiceDataRequest.setSupplierId(event.getSupplierId());
-		invoiceDataRequest.setPaymentResponsible(event.getPaymentResponsible());
-		invoiceDataRequest.setCreatedBy(getClass().getName());
-		invoiceDataRequest.getAcknowledgementIdList().addAll(ackIdList);
+		CreateInvoiceDataRequest invoiceDataRequest = getCreateInvoiceRequest(
+				event.getSupplierId(), event.getPaymentResponsible(), event.getCostCenter());
 
 		CreateInvoiceDataProducerTest.getCreateInvoiceDataService()
 				.createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
 		
-		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode().getCode());			
+		Assert.assertEquals(ResultCodeEnum.OK, response.getResultCode().getCode());
+		
+		GetInvoiceDataResponse response2 = getIDRInterface
+				.getInvoiceData(LOGICAL_ADDRESS, request);
+		
+		Assert.assertNotNull(response2);
+		Assert.assertEquals(1, response2.getRegisteredEventList().size());
     }
 
 	@Test
-	public void get_InvoiceData_Before_And_After_CreateInvoiceData_Multiple_Success() {
+	public void get_InvoiceData_With_Empty_Indata_Fail() {
+		//Fetches the registered event 
+		GetInvoiceDataRequest request = new GetInvoiceDataRequest();
 		
-		Event event = createRandomEventData();		
-		RegisterInvoiceDataResponderInterface registerIDRInterface = 
-				RegisterInvoiceDataProducerTest.getRegisterInvoiceDataService();
+		thrown.expect(SOAPFaultException.class);
 		
-		//Registering two events; same supplier id
-		registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
-		event.setEventId(genRandomAlphaNData(5));
-		event.setAcknowledgementId(UUID.randomUUID().toString());
-		registerIDRInterface.registerInvoiceData(LOGICAL_ADDRESS, event);
-
-		GetInvoiceDataRequest getInvoiceReq = new GetInvoiceDataRequest();
-		getInvoiceReq.setSupplierId(event.getSupplierId());
-		getInvoiceReq.setPaymentResponsible(event.getPaymentResponsible());
-
-		GetInvoiceDataResponse getInvoiceResp = getIDRInterface
-				.getInvoiceData(LOGICAL_ADDRESS, getInvoiceReq);
-		
-		Assert.assertNotNull(getInvoiceResp);
-		//Two registered events back in response
-		Assert.assertTrue(getInvoiceResp.getRegisteredEventList().size() >= 2);
-		
-		List<RegisteredEvent> regEventList = getInvoiceResp.getRegisteredEventList();
-		List<String> eventRefList = new ArrayList<String>();
-		for (RegisteredEvent regEvent : regEventList) {
-			eventRefList.add(regEvent.getAcknowledgementId());
-		}
-		//Removing one item; generating only one invoice
-		eventRefList.remove(0);  
-		
-		CreateInvoiceDataRequest invoiceDataRequest = new CreateInvoiceDataRequest();
-		invoiceDataRequest.setSupplierId(event.getSupplierId());
-		invoiceDataRequest.setPaymentResponsible(event.getPaymentResponsible());
-		invoiceDataRequest.setCreatedBy(getClass().getName());
-		invoiceDataRequest.getAcknowledgementIdList().addAll(eventRefList);
-
-		CreateInvoiceDataResponderInterface createIDResp = CreateInvoiceDataProducerTest.getCreateInvoiceDataService();
-		CreateInvoiceDataResponse createResp = createIDResp.createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
-
-		Assert.assertNotNull(createResp);
-		Assert.assertEquals(ResultCodeEnum.OK, getInvoiceResp.getResultCode().getCode());	
-		Assert.assertNotNull(createResp.getReferenceId());
-		
-		getInvoiceResp = getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, getInvoiceReq);
-		Assert.assertNotNull(getInvoiceResp);
-		//One invoiced data back in response and othe the registedEvent which is not invoiced!
-		Assert.assertNotNull(getInvoiceResp.getRegisteredEventList());
-	}
-	
-	
+		getIDRInterface.getInvoiceData(LOGICAL_ADDRESS, request);
+    }
 	
 	public static GetInvoiceDataResponderInterface getGetInvoiceDataService() {
 	    if (getIDRInterface == null) {

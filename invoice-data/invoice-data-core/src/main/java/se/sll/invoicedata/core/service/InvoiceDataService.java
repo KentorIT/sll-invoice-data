@@ -44,7 +44,7 @@ public interface InvoiceDataService {
 	 *            
 	 */
 	void registerEvent(Event event);
-		
+	
 	/**
 	 * Returns all unprocessed events for a particular supplier.
 	 * @param request
@@ -54,6 +54,14 @@ public interface InvoiceDataService {
 	List<RegisteredEvent> getAllUnprocessedBusinessEvents(
 			GetInvoiceDataRequest request);
 
+	/**
+	 * Creates an invoice data object.
+	 * 
+	 * @param createInvoiceDataRequest
+	 * @return the invoice data reference id.
+	 */
+    //String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest);
+    
 	/**
 	 * Creates an invoice data object.
 	 * 

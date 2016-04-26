@@ -213,6 +213,18 @@ public class CoreUtil {
     	return (data == null) || data.isEmpty();  
     }
     
+    public static boolean isNotEmpty(String data) {
+    	return !isEmpty(data);
+    }
+    
+    public static boolean notEqualsToIgnoreCase(String item1, String item2) {
+    	return !item1.equalsIgnoreCase(item2);
+    }
+    
+    public static boolean equalsToIgnoreCase(String item1, String item2) {
+    	return item1.equalsIgnoreCase(item2);
+    }
+    
     public static XMLGregorianCalendar getCustomDate(int month, int date) {
     	Calendar cal = Calendar.getInstance();
     	cal.set(Calendar.MONDAY, month);

@@ -43,14 +43,14 @@
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
 	</jaxws:endpoint>
-	
+	<!-- 
 	<jaxws:endpoint id="registerInvoiceData-v2"
 		implementor="se.sll.invoicedata.app.ws.RegisterInvoiceDataProducerV2"
 		address="/ws/registerInvoiceData/v2">
 		<jaxws:properties>
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
-	</jaxws:endpoint>
+	</jaxws:endpoint> -->
 
 	<jaxws:endpoint id="createInvoiceData"
 		implementor="se.sll.invoicedata.app.ws.CreateInvoiceDataProducer"

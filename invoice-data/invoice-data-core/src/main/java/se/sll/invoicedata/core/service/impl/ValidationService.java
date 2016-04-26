@@ -92,6 +92,7 @@ public class ValidationService {
         mandatory(businessEventEntity.getSupplierName(), "event.supplierName");
         mandatory(businessEventEntity.getServiceCode(), "event.serviceCode");        
         mandatory(businessEventEntity.getPaymentResponsible(), "event.paymentResponsible");
+        mandatory(businessEventEntity.getCostCenter(), "event.costCenter");
         mandatory(businessEventEntity.getHealthCareCommission(), "event.healthCareCommission");
         mandatory(businessEventEntity.getAcknowledgedBy(), "event.acknowledgedBy");
         mandatory(businessEventEntity.getAcknowledgedTime(), "event.acknowledgedTime");
@@ -110,12 +111,19 @@ public class ValidationService {
 
         return businessEventEntity;
     }
-    
+    /*
     void validate(final CreateInvoiceDataRequest createInvoiceDataRequest) {
     	mandatory(createInvoiceDataRequest.getSupplierId(), "supplierId");
     	mandatory(createInvoiceDataRequest.getPaymentResponsible(), "paymentResponsible");
     	mandatory(createInvoiceDataRequest.getCreatedBy(), "createdBy");
     	mandatory(createInvoiceDataRequest.getAcknowledgementIdList(), "acknowledgementIdList");
+    }*/
+    
+    void validate(final CreateInvoiceDataRequest createInvoiceDataRequest) {
+    	mandatory(createInvoiceDataRequest.getSupplierId(), "supplierId");
+    	mandatory(createInvoiceDataRequest.getCostCenter(), "costCenter");
+    	mandatory(createInvoiceDataRequest.getPaymentResponsible(), "paymentResponsible");
+    	mandatory(createInvoiceDataRequest.getCreatedBy(), "createdBy");
     }
     
     private void validateItemListForNullOrEmpty(final List<ItemEntity> items) {
@@ -154,9 +162,10 @@ public class ValidationService {
     InvoiceDataEntity validate(InvoiceDataEntity invoiceDataEntity) {
         mandatory(invoiceDataEntity.getCreatedBy(), "invoiceData.createdBy");
         mandatory(invoiceDataEntity.getPaymentResponsible(), "invoiceData.paymentResponsible");
+        mandatory(invoiceDataEntity.getCostCenter(), "invoiceData.costCenter");
         mandatory(invoiceDataEntity.getSupplierId(), "invoiceData.supplierId");
         if (invoiceDataEntity.getBusinessEventEntities().size() == 0) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("invoiceData.events");            
+            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("invoiceData.events list is empty");            
         }
 
         return invoiceDataEntity;

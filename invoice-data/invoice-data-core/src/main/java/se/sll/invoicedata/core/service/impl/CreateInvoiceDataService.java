@@ -22,11 +22,7 @@
  */
 package se.sll.invoicedata.core.service.impl;
 
-import static se.sll.invoicedata.core.pojo.mapping.LocalMapper.copyToInvoiceDataEntity;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.jmx.StatusBean;
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
@@ -66,7 +61,7 @@ public class CreateInvoiceDataService extends ValidationService {
     private int maxListSize;
 	
 	private ThreadGroup threadGroup = new ThreadGroup("CREATE_INVOICE_DATA");
-	
+	/*
 	public boolean isBatchRequest(final CreateInvoiceDataRequest createInvoiceDataRequest) {
 		boolean isBatch = (createInvoiceDataRequest.getAcknowledgementIdList().size() > maxListSize);
 		TX_LOG.debug("@createInvoiceData: Is it a batch request?" + isBatch);
@@ -88,7 +83,7 @@ public class CreateInvoiceDataService extends ValidationService {
 	synchronized String createInvoiceDataInBatch(final CreateInvoiceDataRequest createInvoiceDataRequest) {
 		 TX_LOG.debug("@CreateInvoiceData: Active threads: " + threadGroup.activeCount());
 		 if (threadGroup.activeCount() > 0) {
-			 throw InvoiceDataErrorCodeEnum.SYSTEM_BUSY_WITH_CREATE_INVOICE_REQUEST.createException("Requested to try again later");
+			 throw InvoiceDataErrorCodeEnum.EXPECTING_CREATE_INVOICE_REQUEST_BEFORE_FETCHING.createException("Requested to try again later");
 		 }
 		 
 		 final InvoiceDataEntity saved  = createInvoiceWithoutAmount(createInvoiceDataRequest);           
@@ -134,14 +129,14 @@ public class CreateInvoiceDataService extends ValidationService {
         	
         	while (fromIndex != ackIdList.size()) {
         		toIndex += getNextBatch(ackIdList.size(), fromIndex, toIndex);
-        		count += businessEventRepository.countBySupplierIdAndPaymentResponsibleAndAckIdAndPendingIsTrue(createInvoiceDataRequest.getSupplierId(), createInvoiceDataRequest.getPaymentResponsible(), ackIdList.subList(fromIndex, toIndex));
+        		count += 0;//businessEventRepository.countBySupplierIdAndPaymentResponsibleAndAckIdAndPendingIsTrue(createInvoiceDataRequest.getSupplierId(), createInvoiceDataRequest.getPaymentResponsible(), ackIdList.subList(fromIndex, toIndex));
         		fromIndex = toIndex;
         	}        	
         	return count;
         } finally {
             statusBean.stop();
         }
-    }
+    }*/
     
     private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
         statusBean.start("InvoiceDataService.save()");
@@ -153,7 +148,7 @@ public class CreateInvoiceDataService extends ValidationService {
             statusBean.stop();  
         }
     }
-    
+    /*
     private InvoiceDataEntity update(InvoiceDataEntity invoiceDataEntity) {
         statusBean.start("InvoiceDataService.update()");
         try {
@@ -175,7 +170,7 @@ public class CreateInvoiceDataService extends ValidationService {
         	int toIndex = 0;
         	while (fromIndex != list.size()) {
         		toIndex += getNextBatch(list.size(), fromIndex, toIndex);
-        		bEventEntityList.addAll(businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(list.subList(fromIndex, toIndex)));
+        		bEventEntityList.addAll(null);//businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(list.subList(fromIndex, toIndex)));
         		fromIndex = toIndex;
         	}
             return bEventEntityList;
@@ -203,6 +198,26 @@ public class CreateInvoiceDataService extends ValidationService {
 		}
 		
 		return validate(invoiceDataEntity);
-	}
-
+	}*/
+    
+    public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
+    	List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(
+    			createInvoiceDataRequest.getSupplierId(), createInvoiceDataRequest.getPaymentResponsible(), createInvoiceDataRequest.getCostCenter());
+    	
+    	if (invoiceDataEntityList.size() > 1) {
+			throw InvoiceDataErrorCodeEnum.ILLEGAL_STATE_DUPLICATE_DRAFT_VERSIONS_OF_INVOICES.createException("Contact system administrator");
+		} else if (invoiceDataEntityList.isEmpty()) {
+			throw InvoiceDataErrorCodeEnum.NO_PENDING_INVOICES_TO_BE_GENERATED.createException(
+					createInvoiceDataRequest.getSupplierId(), createInvoiceDataRequest.getPaymentResponsible(), createInvoiceDataRequest.getCostCenter());
+		}
+    	
+    	InvoiceDataEntity invoiceDataEntity = invoiceDataEntityList.get(0);
+		invoiceDataEntity.setCreatedBy(createInvoiceDataRequest.getCreatedBy());
+		invoiceDataEntity.setPending(Boolean.FALSE);
+		
+		validate(invoiceDataEntity);		
+        final InvoiceDataEntity saved  = save(invoiceDataEntity);
+        return saved.getReferenceId();
+    }
+    
 }

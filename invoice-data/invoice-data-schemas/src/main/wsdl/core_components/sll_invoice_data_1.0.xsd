@@ -80,7 +80,7 @@
 			<xs:element name="refContractId" type="xs:string" />
 			<xs:element name="supplierName" type="xs:string"/>
 			<xs:element name="serviceCode" type="xs:string"/>
-			<xs:element name="costCenter" type="xs:string" minOccurs="0" />
+			<xs:element name="costCenter" type="xs:string" minOccurs="0" maxOccurs="1" />
 			<xs:element name="paymentResponsible" type="xs:string" />
 			<xs:element name="healthCareCommission" type="xs:string" />
 			<xs:element name="acknowledgementId" type="xs:string" />
@@ -127,7 +127,7 @@
 		<xs:sequence>
 			<xs:element name="referenceId" type="xs:string"/>
 			<xs:element name="supplierId" type="xs:string"/>
-			<xs:element name="costCenter" type="xs:string" minOccurs="0" />
+			<xs:element name="costCenter" type="xs:string" minOccurs="0" maxOccurs="1" />
 			<xs:element name="paymentResponsible" type="xs:string" />
 			<xs:element name="createdBy" type="xs:string"/>			
 			<xs:element name="createdTime" type="xs:dateTime"/>

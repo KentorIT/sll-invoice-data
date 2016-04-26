@@ -25,12 +25,9 @@
 		<xs:sequence>
 			<xs:element name="supplierId" type="xs:string" />
 			<xs:element name="createdBy" type="xs:string" />
-			<xs:element name="paymentResponsible" type="xs:string" />			
-			<xs:element name="acknowledgementIdList" type="xs:string" minOccurs="1" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>Acknowledgement id is provided by the client (t.ex: Tolkportalen) </xs:documentation>
-				</xs:annotation>
-			</xs:element>
+			<xs:element name="costCenter" type="xs:string"/>
+			<xs:element name="paymentResponsible" type="xs:string" />
+
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
@@ -40,7 +37,7 @@
 		<xs:sequence>
 			<xs:element name='resultCode' type='core:ResultCode'
 				maxOccurs="1" minOccurs="1" />
-			<xs:element name="referenceId" type="xs:string" minOccurs="0" />
+			<xs:element name="referenceId" type="xs:string" minOccurs="0" maxOccurs="1" />
 			<xs:any namespace="##other" processContents="lax" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>

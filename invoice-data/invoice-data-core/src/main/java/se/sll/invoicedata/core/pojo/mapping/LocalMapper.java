@@ -22,6 +22,7 @@
  */
 package se.sll.invoicedata.core.pojo.mapping;
 
+import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
@@ -37,6 +38,16 @@ public class LocalMapper {
 		invoiceDataEntity.setPaymentResponsible(inData.getPaymentResponsible());
 		invoiceDataEntity.setSupplierId(inData.getSupplierId());
 		
+		return invoiceDataEntity;
+		
+	}
+	
+	public static InvoiceDataEntity copyToInvoiceDataEntity(Event inData) {
+		InvoiceDataEntity invoiceDataEntity = new InvoiceDataEntity();
+		invoiceDataEntity.setCreatedBy("System"); //Not yet ready to create final invoice
+		invoiceDataEntity.setPaymentResponsible(inData.getPaymentResponsible());
+		invoiceDataEntity.setSupplierId(inData.getSupplierId());
+		invoiceDataEntity.setCostCenter(inData.getCostCenter());
 		return invoiceDataEntity;
 		
 	}

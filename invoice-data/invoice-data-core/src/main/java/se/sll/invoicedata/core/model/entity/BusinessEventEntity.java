@@ -114,6 +114,9 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     @Column(name="acknowledged_by", length=64, nullable=false, updatable=false)
     private String acknowledgedBy;
     
+    @Column(name="cost_center", length=64, nullable=true, updatable=false)
+    private String costCenter;
+    
     @Column(name="payment_responsible", length=64, nullable=false, updatable=false)
     private String paymentResponsible;
     
@@ -166,7 +169,7 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
      * Updates the pending value (derived).
      */
     private void updatePending() {
-        setPending((getInvoiceData() == null) ? Boolean.TRUE : null);        
+        setPending(isInvoiceDataPending() ? Boolean.TRUE : null);        
     }
 
     public Long getId() {
@@ -225,107 +228,73 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         return supplierName;
     }
 
-
-
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
     }
-
 
     public String getAcknowledgementId() {
         return acknowledgementId;
     }
 
-
-
     public void setAcknowledgementId(String acknowledgementId) {
         this.acknowledgementId = acknowledgementId;
     }
     
-    
-
     public String getAcknowledgedBy() {
         return acknowledgedBy;
     }
-
-
 
     public void setAcknowledgedBy(String acknowledgedBy) {
         this.acknowledgedBy = acknowledgedBy;
     }
 
-
-
     public Date getCreatedTimestamp() {
         return createdTimestamp;
     }
-
-
 
     protected void setCreatedTimestamp(Date createdTimestamp) {
         this.createdTimestamp = createdTimestamp;
     }
 
-
-
     public String getSupplierId() {
         return supplierId;
     }
-
-
 
     public void setSupplierId(String supplierId) {
         this.supplierId = supplierId;
     }
 
-
-
     public String getServiceCode() {
         return serviceCode;
     }
-
-
 
     public void setServiceCode(String serviceCode) {
         this.serviceCode = serviceCode;
     }
 
-
-
     public Date getAcknowledgedTime() {
         return acknowledgedTime;
     }
-
-
 
     public void setAcknowledgedTime(Date acknowledgedTime) {
         this.acknowledgedTime = acknowledgedTime;
     }
 
-
-
     public Date getStartTime() {
         return startTime;
     }
-
-
 
     public void setStartTime(Date startTimestamp) {
         this.startTime = startTimestamp;
     }
 
-
-
     public Date getEndTime() {
         return endTime;
     }
 
-
-
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
-
 
     public boolean removeItemEntity(ItemEntity itemEntity) {
         if (this.equals(itemEntity.getEvent())) {
@@ -365,6 +334,14 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
 
     public void setInvoiceData(InvoiceDataEntity invoiceData) {
         this.invoiceData = invoiceData;
+    }
+    
+    public String getCostCenter() {
+        return costCenter;
+    }
+
+    public void setCostCenter(String costCenter) {
+        this.costCenter = costCenter;
     }
     
     public String getPaymentResponsible() {
@@ -409,6 +386,10 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         }        
         amount = amount.setScale(2, RoundingMode.HALF_UP);
         return amount;
+    }
+    
+    public boolean isInvoiceDataPending() {
+    	return (invoiceData == null || invoiceData.isPending());
     }
 
     @Override

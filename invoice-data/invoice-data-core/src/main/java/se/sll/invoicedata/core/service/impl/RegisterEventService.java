@@ -19,6 +19,7 @@
 
 package se.sll.invoicedata.core.service.impl;
 
+import static se.sll.invoicedata.core.pojo.mapping.LocalMapper.copyToInvoiceDataEntity;
 import static se.sll.invoicedata.core.util.CoreUtil.copyProperties;
 
 import java.math.BigDecimal;
@@ -36,11 +37,15 @@ import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.ReferenceItem;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.DiscountItemEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.entity.ReferenceItemEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
+import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.pojo.mapping.EntityBeanConverter;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.RatingService;
+import se.sll.invoicedata.core.service.impl.register.BusinessEventEntityState;
 import se.sll.invoicedata.core.util.CoreUtil;
 
 @Service
@@ -56,32 +61,88 @@ public class RegisterEventService extends ValidationService {
 	@Autowired
     private BusinessEventRepository businessEventRepository;
 	
-	public void registerEventAsBusinessEntity(Event event) {
+	@Autowired
+    private InvoiceDataRepository invoiceDataRepository;
+	
+	
+	
+	/**
+	 * Used by RegisterEvent /v1 and /v2 (v2 calls v1)
+	 * @param event
+	 * @return
+	 */
+	public synchronized String registerEventAsBusinessEntity(Event event) {
 		validateForAnyDuplicateDiscountItems(event);
     	final BusinessEventEntity businessEventEntity = EntityBeanConverter.toBusinessEventEntity(event);
+    	validateBusinessEventWithItemList(businessEventEntity);
     	addDiscountItemsToBusinessEventEntity(businessEventEntity, event.getDiscountItemList());
-        registerBusinessEvent(businessEventEntity, event.getDiscountItemList());
+    	
+    	final BusinessEventEntityState entityState = processRequestForEventRegistration(businessEventEntity);
+        registerBusinessEvent(entityState, event.getDiscountItemList());
+        InvoiceDataEntity invoiceDataEntity = getExistingInvoiceIfAvailableOrCreateNew(event);
+		invoiceDataEntity.addBusinessEventEntity(businessEventEntity);
+		
+		if (entityState.hasCreditEntity()) {
+			BusinessEventEntity creditEntity = getPreviouslyProcessedEntityAsCreditEntity(entityState);
+			invoiceDataEntity.addBusinessEventEntity(creditEntity);
+		}
+		
+		final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
+        invoiceDataRepository.flush();
+        return saved.getReferenceId();
 	}
 	
-	private void registerBusinessEvent(final BusinessEventEntity newEntity, List<DiscountItem> discountItemList) {
-        rate(validateBusinessEventWithItemList(newEntity), discountItemList);
+	private BusinessEventEntityState processRequestForEventRegistration(final BusinessEventEntity businessEventEntity) {
+		BusinessEventEntityState entityState = new BusinessEventEntityState(businessEventEntity.getEventId());
+		entityState.setNewRegisteredEntity(businessEventEntity);
+		entityState.setExistingRegisteredEntity(businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(entityState.getEventId()));
+		entityState.setExistingProcessedRegisteredEntity(businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(entityState.getEventId()));
+		
+		return entityState;
+	}
+	
+	private InvoiceDataEntity getExistingInvoiceIfAvailableOrCreateNew(final Event event) {
+		
+		List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.
+				findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(event.getSupplierId(), event.getPaymentResponsible(), event.getCostCenter());
+		
+		InvoiceDataEntity invoiceDataEntity = null;
+		
+		if (invoiceDataEntityList.size() == 1) {
+			invoiceDataEntity = invoiceDataEntityList.get(0);
+		} else if (invoiceDataEntityList.isEmpty()) {
+			invoiceDataEntity = copyToInvoiceDataEntity(event);
+		} else if (invoiceDataEntityList.size() > 1) {
+			throw InvoiceDataErrorCodeEnum.ILLEGAL_STATE_DUPLICATE_DRAFT_VERSIONS_OF_INVOICES.createException("Contact system administrator");
+		}
+		return invoiceDataEntity;
+	}
+	
+	private void registerBusinessEvent(final BusinessEventEntityState entityState, List<DiscountItem> discountItemList) {
+        rate(entityState.getNewRegisteredEntity(), discountItemList);
 
-        final BusinessEventEntity oldEntity = businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(newEntity.getEventId());
-        final BusinessEventEntity creditCandidate = businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(newEntity.getEventId());
-
-        if (oldEntity != null) {
-            TX_LOG.info("Deleting previous event(id:" + oldEntity.getEventId() + "), acknowledgementId: " + oldEntity.getAcknowledgementId() 
-                    + " to register the updated event with acknowledgementId:" + newEntity.getAcknowledgementId());
-            delete(oldEntity);
+        if (entityState.getExistingRegisteredEntity() != null) {
+            TX_LOG.info("Deleting previous event(id:" + entityState.getEventId() + "), acknowledgementId: " + 
+            		entityState.getExistingRegisteredEntity().getAcknowledgementId() 
+                    + " to register the updated event with acknowledgementId:" + entityState.getNewRegisteredEntity().getAcknowledgementId());
+            entityState.getExistingRegisteredEntity().getInvoiceData().removeBusinessEventEntity(entityState.getExistingRegisteredEntity());
+            delete(entityState.getExistingRegisteredEntity());
         }
-        TX_LOG.info("Registered an event(id:" + newEntity.getEventId() + "), acknowledgementId:" + newEntity.getAcknowledgementId());
-        save(newEntity);
-
-        if (creditCandidate != null) {
-            TX_LOG.info("Event already exists! A credit/debit will be triggered on the invoiced data");
-            save(creditCandidate, createCreditEntity(creditCandidate));
-        }
+        TX_LOG.info("Registered an event(id:" + entityState.getEventId() + "), acknowledgementId:" + entityState.getNewRegisteredEntity().getAcknowledgementId());
+        save(entityState.getNewRegisteredEntity());
     }
+	
+	private BusinessEventEntity getPreviouslyProcessedEntityAsCreditEntity(final BusinessEventEntityState entityState) {
+		BusinessEventEntity creditEntity = null;
+		
+		if (entityState.getExistingProcessedRegisteredEntity() != null) {
+            TX_LOG.info("Event already exists! A credit/debit will be triggered on the invoiced data");
+            creditEntity = createCreditEntity(entityState.getExistingProcessedRegisteredEntity());
+            save(entityState.getExistingProcessedRegisteredEntity(), creditEntity);
+        }
+		
+		return creditEntity;
+	}
 	
 	/**
      * Rates all items of a {@link BusinessEventEntity} <p>
@@ -93,7 +154,7 @@ public class RegisterEventService extends ValidationService {
      * @return the rated business event, i.e. price has been set to all items.
      */
     private BusinessEventEntity rate(BusinessEventEntity businessEventEntity, List<DiscountItem> discountItemList) {
-        for (ItemEntity itemEntity : validateBusinessEventWithItemList(businessEventEntity).getItemEntities()) {
+        for (ItemEntity itemEntity : businessEventEntity.getItemEntities()) {
         	
         	if (itemEntity.getPrice() == null) {
         		BigDecimal calculatedPrice = ratingService.rate(itemEntity);
@@ -117,6 +178,13 @@ public class RegisterEventService extends ValidationService {
     	}
     }
     
+    /**
+     * Step 1: Copy properties from the old entity which is already invoiced
+     * Step 2: Mark it as to be credit (see InvoiceData calcDerviedValues())
+     * Step 3: Set credited to true on old entity
+     * @param creditCandidate
+     * @return
+     */
     BusinessEventEntity createCreditEntity(
 			final BusinessEventEntity creditCandidate) {
 		final BusinessEventEntity creditEntity = copyProperties(creditCandidate, BusinessEventEntity.class);

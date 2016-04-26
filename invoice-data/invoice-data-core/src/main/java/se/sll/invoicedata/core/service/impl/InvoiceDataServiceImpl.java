@@ -98,7 +98,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             GetInvoiceDataRequest request) {
     	return listInvoiceDataService.getAllUnprocessedBusinessEvents(request);
     }
-    
+    /*
 	@Override
     public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
 
@@ -122,6 +122,26 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             statusBean.stop();
         }
 		return referenceId; 
+    }*/
+	
+	@Override
+    public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
+
+		TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")");
+		createInvoiceDataService.validate(createInvoiceDataRequest);
+		
+		String lockId = createInvoiceDataRequest.getPaymentResponsible()+createInvoiceDataRequest.getSupplierId()+createInvoiceDataRequest.getCostCenter();
+		
+		if (!lock.acquire(lockId)) {
+            throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Invoicedata for this particular supplierId,paymentResponsible and costcenter is currently being updated by another user");
+        }
+        statusBean.start("InvoiceDataService.createInvoiceData()");
+        try {            
+        	return createInvoiceDataService.createInvoiceData(createInvoiceDataRequest);
+        } finally {
+            lock.release(lockId);
+            statusBean.stop();
+        }
     }
 	
     @Override
@@ -155,17 +175,16 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
     	Long id = listInvoiceDataService.extractId(referenceId);
         InvoiceData invoiceData = getInvoiceData(referenceId, invoiceDataRepository.findOne(id));
-        
-        if (invoiceData.getTotalAmount() == null || invoiceData.getTotalAmount().intValue() == 0) {
-        	throw InvoiceDataErrorCodeEnum.SYSTEM_BUSY_WITH_CREATE_INVOICE_REQUEST.createException("Invoice is in the process of creation. Requested to try again later");
-        }
-        
         return invoiceData;        
     }
     
     private InvoiceData getInvoiceData(final String referenceId, final InvoiceDataEntity invoiceDataEntity) {
 		if (invoiceDataEntity == null) {
             throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("invoice data", referenceId); 		    
+        } else if (invoiceDataEntity.isPending() || 
+        		invoiceDataEntity.getTotalAmount() == null || 
+        		invoiceDataEntity.getTotalAmount().intValue() == 0) {
+        	throw InvoiceDataErrorCodeEnum.EXPECTING_CREATE_INVOICE_REQUEST_BEFORE_FETCHING.createException("Check indata");
         }
 
         final InvoiceData invoiceData = EntityBeanConverter.fromInvoiceDataEntityToInvoiceData(invoiceDataEntity);

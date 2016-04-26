@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -68,7 +70,10 @@ public abstract class TestSupport {
     
 	@Autowired
     private InvoiceDataService invoiceDataService;
-
+	
+	@Rule 
+    public ExpectedException thrown = ExpectedException.none();
+	
     protected BusinessEventRepository getBusinessEventRepository() {
         return businessEventRepository;
     }
@@ -125,6 +130,7 @@ public abstract class TestSupport {
         e.setHealthCareCommission("BVC");
         e.setServiceCode("XYZ");
         e.setPaymentResponsible("HSF");
+        e.setCostCenter("cost-center");
         e.setSupplierId("12342");
         e.setStartTime(new Date());
         e.setEndTime(new Date());
@@ -138,7 +144,21 @@ public abstract class TestSupport {
         e.setSupplierId("supplierId");
         e.setCreatedBy("createdBy");
         e.setPaymentResponsible("HSF");
+        e.setCostCenter("cost-center");
+        e.setPending(false);
+        
+        return e;
+    }
     
+    protected InvoiceDataEntity createSamplePendingInvoiceDataEntity() {
+        final InvoiceDataEntity e = new InvoiceDataEntity();
+        
+        e.setSupplierId("supplierId");
+        e.setCreatedBy("createdBy");
+        e.setPaymentResponsible("HSF");
+        e.setCostCenter("cost-center");
+        e.setPending(true);
+        
         return e;
     }
     
@@ -164,24 +184,15 @@ public abstract class TestSupport {
                 "event-2", "event-3" });
 
         registerEvents(supplierId, ids);
-
+        
+        final BusinessEventEntity e = createSampleBusinessEventEntity();
         final CreateInvoiceDataRequest ie = new CreateInvoiceDataRequest();
         ie.setSupplierId(supplierId);
-        ie.setPaymentResponsible("HSF");
+        ie.setPaymentResponsible(e.getPaymentResponsible());
+        ie.setCostCenter(e.getCostCenter());
         ie.setCreatedBy("test-auto");
 
-        GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
-        getIDRequest.setSupplierId(supplierId);
-
-        final List<RegisteredEvent> l = invoiceDataService
-                .getAllUnprocessedBusinessEvents(getIDRequest);
-
-        for (final RegisteredEvent e : l) {
-            ie.getAcknowledgementIdList().add(e.getAcknowledgementId());
-        }
-
         invoiceDataService.createInvoiceData(ie);
-
         return ie;
     }
     
@@ -193,6 +204,22 @@ public abstract class TestSupport {
 
             invoiceDataService.registerEvent(e);
         }
+    }
+    
+    public CreateInvoiceDataRequest getCreateInvoiceDataRequestFromPassedEvent(final Event e) {
+        final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
+        createReq.setSupplierId(e.getSupplierId());
+        createReq.setPaymentResponsible(e.getPaymentResponsible());
+        createReq.setCostCenter(e.getCostCenter());
+        createReq.setCreatedBy("getCreateInvoiceDataRequestFromPassedEvent");
+        return createReq;        
+    }
+    
+    protected List<RegisteredEvent> getRegisteredEventList(Event e) {
+    	GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+        getIDRequest.setSupplierId(e.getSupplierId());
+        getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+        return invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
     }
 
 }

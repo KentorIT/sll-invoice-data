@@ -22,10 +22,12 @@ package se.sll.invoicedata.core.model.repository;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
 /**
@@ -45,10 +47,11 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
 	 * @param toDate can also be null then the max valid date i.e 31 December 9999 is set
 	 * @return List<InvoiceDataEntity> the resulting list, might be empty.
      */
+	/*
 	@Query("FROM InvoiceDataEntity WHERE supplierId = :supplierId "
             + "AND ((startDate BETWEEN :fromDate AND :toDate) OR (endDate BETWEEN :fromDate AND :toDate))")
 	List<InvoiceDataEntity> getInvoiceDataBySupplierIdBetweenDates(@Param("supplierId") String supplierId, 
-            @Param("fromDate") Date fromDate, @Param("toDate") Date toDate);
+            @Param("fromDate") Date fromDate, @Param("toDate") Date toDate);*/
 	
 	/**
 	 * Returns InvoiceData with matching paymentResponsible within date range!
@@ -58,10 +61,11 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
 	 * @param toDate can also be null then the max valid date i.e 31 December 9999 is set
      * @return List<InvoiceDataEntity> the resulting list, might be empty.
 	 */
+	/*
 	@Query("FROM InvoiceDataEntity WHERE paymentResponsible = :paymentResponsible "
             + "AND ((startDate BETWEEN :fromDate AND :toDate) OR (endDate BETWEEN :fromDate AND :toDate))")
 	List<InvoiceDataEntity> getInvoiceDataByPaymentResponsibleBetweenDates(@Param("paymentResponsible") String paymentResponsible, 
-            @Param("fromDate") Date fromDate, @Param("toDate") Date toDate);
+            @Param("fromDate") Date fromDate, @Param("toDate") Date toDate);*/
 
 	/**
 	 * Returns InvoiceData with matching supplierId and payment responsible within date range!
@@ -72,12 +76,13 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
 	 * @param toDate can also be null then the max valid date i.e 31 December 9999 is set
      * @return List<InvoiceDataEntity> the resulting list, might be empty.
 	 */
+	/*
 	@Query("FROM InvoiceDataEntity WHERE supplierId = :supplierId AND paymentResponsible = :paymentResponsible "
             + "AND ((startDate BETWEEN :fromDate AND :toDate) OR (endDate BETWEEN :fromDate AND :toDate))")
 	List<InvoiceDataEntity> getInvoiceDataBySupplierIdAndPaymentResponsibleBetweenDates(@Param("supplierId") String supplierId,
             @Param("paymentResponsible") String paymentResponsible, 
             @Param("fromDate") Date fromDate, 
-            @Param("toDate") Date toDate);
+            @Param("toDate") Date toDate);*/
 
 	/**
 	 * Returns invoice data items of a certain age.
@@ -85,4 +90,12 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
 	 * @param maxDate the maximum end date.
 	 */
 	List<InvoiceDataEntity> findByEndDateLessThan(Date maxDate);
+	
+	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(String supplierId, String paymentResponsible, String costCenter);
+	
+	List<InvoiceDataEntity> findBySupplierIdAndStartDateBetween(String supplierId, Date startDate, Date endDate, Pageable pageable);
+	
+	List<InvoiceDataEntity> findBySupplierIdAndPendingIsFalseAndStartDateBetween(String supplierId, Date startDate, Date endDate);
+	
+	List<InvoiceDataEntity> findByPaymentResponsibleAndPendingIsFalseAndStartDateBetween(String supplierId, Date startDate, Date endDate);
 }

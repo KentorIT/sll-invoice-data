@@ -24,6 +24,7 @@ package se.sll.invoicedata.core.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ import se.sll.invoicedata.core.util.CoreUtil;
 @Transactional
 public class ListInvoiceDataService extends ValidationService {
 	
-	private static final Logger log = LoggerFactory.getLogger(ListInvoiceDataService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ListInvoiceDataService.class);
 	
 	@Autowired
     private StatusBean statusBean;
@@ -67,7 +68,7 @@ public class ListInvoiceDataService extends ValidationService {
 
 	@Value("${event.maxFindResultSize:30000}")
     private int eventMaxFindResultSize;
-	
+	/*
 	public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
             GetInvoiceDataRequest request) {
 
@@ -99,7 +100,54 @@ public class ListInvoiceDataService extends ValidationService {
         
         //No requirement to fetch list sorted by date
         return EntityBeanConverter.processBusinessEventEntitiesToRegisteredEvent(bEEntityList);
+    }*/
+	
+	public List<RegisteredEvent> getAllUnprocessedBusinessEvents(GetInvoiceDataRequest request) {
+
+        mandatory(request.getSupplierId(), "supplierId");
+
+        LOG.debug(request.getSupplierId() + " from: " + request.getFromDate() + " to: " + request.getToDate());
+
+        List<BusinessEventEntity> bEEntityList = fetchAndFilterBusinessEvents(request);
+      
+        if (bEEntityList.size() >= eventMaxFindResultSize) {
+            throw InvoiceDataErrorCodeEnum.LIMIT_ERROR.createException(eventMaxFindResultSize, "please narrow down search criterias");
+        }
+        
+        //No requirement to fetch list sorted by date
+        return EntityBeanConverter.processBusinessEventEntitiesToRegisteredEvent(bEEntityList);
     }
+	
+	private List<BusinessEventEntity> fetchAndFilterBusinessEvents(final GetInvoiceDataRequest request) {
+		// max size
+        final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
+        
+        final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
+        final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
+        
+		List<InvoiceDataEntity> invoiceEntityList = invoiceDataRepository.findBySupplierIdAndStartDateBetween(
+        		request.getSupplierId(), dateFrom, dateTo, pageRequest);
+		
+		Iterator<InvoiceDataEntity> iterator = invoiceEntityList.iterator();
+		List<BusinessEventEntity> bEEntityList = new ArrayList<BusinessEventEntity>();
+		
+		while (iterator.hasNext()) {
+			InvoiceDataEntity entity = iterator.next();
+			if (CoreUtil.isNotEmpty(request.getPaymentResponsible()) && 
+					CoreUtil.notEqualsToIgnoreCase(entity.getPaymentResponsible(), request.getPaymentResponsible())) {
+				iterator.remove();
+			} else if (CoreUtil.isNotEmpty(request.getCostCenter()) && 
+					CoreUtil.notEqualsToIgnoreCase(entity.getCostCenter(), request.getCostCenter())) {
+				iterator.remove();
+			}
+		}
+			
+		for (InvoiceDataEntity entity : invoiceEntityList) {			
+			bEEntityList.addAll(entity.getBusinessEventEntities());
+		}
+		
+		return bEEntityList;
+	}
 	
 	/**
      * Finds by criteria: supplierId, paymentResponsible or date range
@@ -108,6 +156,48 @@ public class ListInvoiceDataService extends ValidationService {
      * @param request
      * @return List<InvoiceDataEntity>
      */
+	public List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
+
+        statusBean.start("InvoiceDataService.findByCriteria()");
+        try {
+        	List<InvoiceDataEntity> invoiceDataEntityList = getBySupplierIdOrPaymentResponsible(request);
+        	Iterator<InvoiceDataEntity> iterator = invoiceDataEntityList.iterator();
+        	while (iterator.hasNext()) {
+        		InvoiceDataEntity entity = iterator.next();
+        		if (CoreUtil.isNotEmpty(request.getSupplierId()) && 
+        				CoreUtil.notEqualsToIgnoreCase(entity.getSupplierId(), request.getSupplierId())) {
+        			iterator.remove();
+        		} else if (CoreUtil.isNotEmpty(request.getPaymentResponsible()) && 
+        				CoreUtil.notEqualsToIgnoreCase(entity.getPaymentResponsible(), request.getPaymentResponsible())) {
+        			iterator.remove();
+        		} else if (CoreUtil.isNotEmpty(request.getCostCenter()) && 
+        				CoreUtil.notEqualsToIgnoreCase(entity.getCostCenter(), request.getCostCenter())) {
+        			iterator.remove();
+        		}
+        	}
+        	return invoiceDataEntityList;
+        } finally {
+            statusBean.stop();
+        }
+    }
+	
+	private List<InvoiceDataEntity> getBySupplierIdOrPaymentResponsible(ListInvoiceDataRequest request) {
+		final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
+        final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
+        
+        List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
+        
+        if (CoreUtil.isNotEmpty(request.getSupplierId())) {
+        	invoiceDataEntityList = invoiceDataRepository.findAll();
+        	invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPendingIsFalseAndStartDateBetween(
+        			request.getSupplierId(), dateFrom, dateTo);
+        } else if (CoreUtil.isNotEmpty(request.getPaymentResponsible())) {
+        	invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndPendingIsFalseAndStartDateBetween(
+        			request.getPaymentResponsible(), dateFrom, dateTo);
+        }
+        return invoiceDataEntityList;
+	}
+	/*
     public List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
 
         statusBean.start("InvoiceDataService.findByCriteria()");
@@ -135,7 +225,7 @@ public class ListInvoiceDataService extends ValidationService {
         } finally {
             statusBean.stop();
         }
-    }
+    }*/
     
     Long extractId(final String referenceId) {
 		Long id = Long.MIN_VALUE;
