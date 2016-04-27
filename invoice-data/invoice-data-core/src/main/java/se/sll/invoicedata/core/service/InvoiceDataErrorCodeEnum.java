@@ -25,6 +25,7 @@ package se.sll.invoicedata.core.service;
  * @author Peter
  */
 public enum InvoiceDataErrorCodeEnum {
+	
     TECHNICAL_ERROR(1001, "Encountered a technical error: %s"),
     VALIDATION_ERROR(1002, "Invalid or missing input data: %s"),
     NOTFOUND_ERROR(1003, "No such %s found: %s"),
@@ -38,11 +39,9 @@ public enum InvoiceDataErrorCodeEnum {
     ILLEGAL_STATE_EVENT_ID_OR_EVENT_CANNOT_BE_NULL(1011, "Illegal state, system cannot handle a null event or eventId at this stage: %s"),
     ILLEGAL_STATE_INVALID_INVOICEDATA_REFERENCE_ID(1012, "Illegal state, invalid invoicedata referenceId: %s");
     
-    
     private final int code;
     private final String messageFormat;
     
-    //
     private InvoiceDataErrorCodeEnum(int code, String messageFormat) {
         this.code = code;
         this.messageFormat = messageFormat;

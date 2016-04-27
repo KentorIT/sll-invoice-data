@@ -64,14 +64,14 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     private StatusBean statusBean;
     
     @Autowired
-    private RegisterEventService registerEventService;
-    
+    private RegisterEventService registerEventService;    
     @Autowired
     private InvoiceDataRepository invoiceDataRepository;
     
     @Autowired
-    private ListInvoiceDataService listInvoiceDataService;
-    
+    private ListEventsService listEventsService;    
+    @Autowired
+    private ListInvoiceDataService listInvoiceDataService;    
     @Autowired
     private CreateInvoiceDataService createInvoiceDataService;
     
@@ -94,10 +94,11 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      * Consumers uses this service to dry run before creating actual invoice
      */
     @Override
-    public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
+    public List<RegisteredEvent> getAllPendingBusinessEvents(
             GetInvoiceDataRequest request) {
-    	return listInvoiceDataService.getAllUnprocessedBusinessEvents(request);
+    	return listEventsService.getAllPendingBusinessEvents(request);
     }
+    
     @Override
     public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
 
@@ -132,13 +133,10 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
     
     private List<InvoiceDataHeader> getInvoiceDataHeader(List<InvoiceDataEntity> invoiceDataEntityList) {
-		
 		final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
-		
 		for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
 		    invoiceDataList.add(CoreUtil.copyProperties(iDataEntity, InvoiceDataHeader.class));
 		}
-
 		return invoiceDataList;
 	}
     
@@ -148,8 +146,12 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Override
     public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
     	Long id = listInvoiceDataService.extractId(referenceId);
-        InvoiceData invoiceData = getInvoiceData(referenceId, invoiceDataRepository.findOne(id));
-        return invoiceData;        
+    	statusBean.start("InvoiceDataService.getInvoiceDataByReferenceId()");
+        try {
+        	return getInvoiceData(referenceId, invoiceDataRepository.findOne(id));
+        } finally {
+            statusBean.stop();
+        }
     }
     
     private InvoiceData getInvoiceData(final String referenceId, final InvoiceDataEntity invoiceDataEntity) {
@@ -171,7 +173,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 	}
     
     public List<InvoiceDataHeader> getAllPendingInvoiceData() {
-    	statusBean.start("InvoiceDataService.listAllInvoiceData()");
+    	statusBean.start("InvoiceDataService.getAllPendingInvoiceData()");
         try {
             return getInvoiceDataHeader(listInvoiceDataService.getAllPendingInvoiceData());
         } finally {
@@ -181,7 +183,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     
     @Override
     public int getEventMaxFindResultSize() {
-        return listInvoiceDataService.getEventMaxFindResultSize();
+        return listEventsService.getEventMaxFindResultSize();
     }
     
 }

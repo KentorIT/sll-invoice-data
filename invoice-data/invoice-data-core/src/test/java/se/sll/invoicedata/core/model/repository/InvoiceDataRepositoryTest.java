@@ -159,7 +159,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getInvoiceDataRepository().save(ie);
         getInvoiceDataRepository().flush();
         
-        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndStartDateBetween(ie.getSupplierId(), CoreUtil.MIN_DATE, new Date(), new PageRequest(0, 10)); 
+        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndStartDateBetween(ie.getSupplierId(), CoreUtil.MIN_DATE, new Date()); 
         
         assertEquals(1, l.size());        
         assertEquals(1, l.get(0).getBusinessEventEntities().size());

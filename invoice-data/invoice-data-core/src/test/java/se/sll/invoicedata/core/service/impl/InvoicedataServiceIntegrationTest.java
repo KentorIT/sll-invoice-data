@@ -94,7 +94,7 @@ public class InvoicedataServiceIntegrationTest extends TestSupport {
         getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
 
         final List<RegisteredEvent> regEventList = invoiceDataService
-                .getAllUnprocessedBusinessEvents(getIDRequest);
+                .getAllPendingBusinessEvents(getIDRequest);
         //One with credit:true (700) other with credit:false (350) and old one remains untouched
         assertEquals(2+1, regEventList.size());
         

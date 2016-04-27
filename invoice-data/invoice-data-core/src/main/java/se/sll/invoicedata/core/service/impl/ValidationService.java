@@ -159,7 +159,7 @@ public class ValidationService {
 		});		
 	}
 
-    InvoiceDataEntity validate(InvoiceDataEntity invoiceDataEntity) {
+    InvoiceDataEntity validateGeneratedInvoice(InvoiceDataEntity invoiceDataEntity) {
         mandatory(invoiceDataEntity.getCreatedBy(), "invoiceData.createdBy");
         mandatory(invoiceDataEntity.getPaymentResponsible(), "invoiceData.paymentResponsible");
         mandatory(invoiceDataEntity.getCostCenter(), "invoiceData.costCenter");

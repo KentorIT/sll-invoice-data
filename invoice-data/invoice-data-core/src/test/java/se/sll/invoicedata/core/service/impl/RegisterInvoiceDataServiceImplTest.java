@@ -276,7 +276,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         getIDRequest.setSupplierId(supplierId);
         
         final List<RegisteredEvent> registeredEventList = invoiceDataService
-                .getAllUnprocessedBusinessEvents(getIDRequest);
+                .getAllPendingBusinessEvents(getIDRequest);
         
         // one credit event shall be created for each new
         int credits = 0;

@@ -54,152 +54,6 @@ public class CreateInvoiceDataService extends ValidationService {
 	@Autowired
     private InvoiceDataRepository invoiceDataRepository;
 	
-	@Autowired
-    private BusinessEventRepository businessEventRepository;
-	
-	@Value("${createInvoice.batch.items:2000}")
-    private int maxListSize;
-	
-	private ThreadGroup threadGroup = new ThreadGroup("CREATE_INVOICE_DATA");
-	/*
-	public boolean isBatchRequest(final CreateInvoiceDataRequest createInvoiceDataRequest) {
-		boolean isBatch = (createInvoiceDataRequest.getAcknowledgementIdList().size() > maxListSize);
-		TX_LOG.debug("@createInvoiceData: Is it a batch request?" + isBatch);
-		return isBatch;
-	}
-	
-	String createInvoiceWithAmount(final CreateInvoiceDataRequest createInvoiceDataRequest) {
-		final InvoiceDataEntity invoiceDataEntity = copyToInvoiceDataEntity(createInvoiceDataRequest);
-        final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());
-
-        getValidInvoiceDataEntity(createInvoiceDataRequest, invoiceDataEntity, entities);
-
-        final InvoiceDataEntity saved  = save(invoiceDataEntity);
-
-        return saved.getReferenceId();
-	}
-	
-	
-	synchronized String createInvoiceDataInBatch(final CreateInvoiceDataRequest createInvoiceDataRequest) {
-		 TX_LOG.debug("@CreateInvoiceData: Active threads: " + threadGroup.activeCount());
-		 if (threadGroup.activeCount() > 0) {
-			 throw InvoiceDataErrorCodeEnum.EXPECTING_CREATE_INVOICE_REQUEST_BEFORE_FETCHING.createException("Requested to try again later");
-		 }
-		 
-		 final InvoiceDataEntity saved  = createInvoiceWithoutAmount(createInvoiceDataRequest);           
-         
-         Thread thread = new Thread(threadGroup, UUID.randomUUID().toString()) {
-             public void run() {
-             	createFinalInvoice(createInvoiceDataRequest, saved.getId());
-             }
-         };
-         
-         thread.start();            
-         return saved.getReferenceId();		
-	}
-	
-	public InvoiceDataEntity createInvoiceWithoutAmount(CreateInvoiceDataRequest createInvoiceDataRequest) {
-    	final InvoiceDataEntity invoiceDataEntity = copyToInvoiceDataEntity(createInvoiceDataRequest);
-        Long actual = countBySupplierIdAndPaymentResponsibleAndAckIdAndPendingIsTrue(createInvoiceDataRequest);
-        int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
-        
-        if (actual != expected) {
-        	String msg = "given event list doesn't match database state! entities available: " + actual + ", request contains: " + expected + 
-        			". Check supplierId and make sure acknowledgementId contains items which were not processed earlier";
-		    throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException(msg); 
-		}            
-        return save(invoiceDataEntity); 
-    }
-    
-    public void createFinalInvoice(CreateInvoiceDataRequest createInvoiceDataRequest, Long id) {
-    	final List<BusinessEventEntity> entities = findByAcknowledgementIdInAndPendingIsTrue(createInvoiceDataRequest.getAcknowledgementIdList());            		
-		InvoiceDataEntity invoiceDataEntity = invoiceDataRepository.findOne(id);            
-        getValidInvoiceDataEntity(createInvoiceDataRequest, invoiceDataEntity, entities);                    
-        update(invoiceDataEntity);                    
-        TX_LOG.info("@processCreateInvoiceData: Successfully thread cycle completed : Invoice generated for supplier " + invoiceDataEntity.getSupplierId());
-    }
-    
-    private Long countBySupplierIdAndPaymentResponsibleAndAckIdAndPendingIsTrue(CreateInvoiceDataRequest createInvoiceDataRequest) {
-        statusBean.start("InvoiceDataService.countByAcknowledgementIdInAndPendingIsTrue()");
-        try {
-        	Long count = 0L;
-        	int fromIndex = 0;
-        	int toIndex = 0;
-        	List<String> ackIdList = createInvoiceDataRequest.getAcknowledgementIdList();
-        	
-        	while (fromIndex != ackIdList.size()) {
-        		toIndex += getNextBatch(ackIdList.size(), fromIndex, toIndex);
-        		count += 0;//businessEventRepository.countBySupplierIdAndPaymentResponsibleAndAckIdAndPendingIsTrue(createInvoiceDataRequest.getSupplierId(), createInvoiceDataRequest.getPaymentResponsible(), ackIdList.subList(fromIndex, toIndex));
-        		fromIndex = toIndex;
-        	}        	
-        	return count;
-        } finally {
-            statusBean.stop();
-        }
-    }*/
-    
-    private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
-        statusBean.start("InvoiceDataService.save()");
-        try {
-            final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
-            invoiceDataRepository.flush();
-            return saved;
-        } finally {
-            statusBean.stop();  
-        }
-    }
-    /*
-    private InvoiceDataEntity update(InvoiceDataEntity invoiceDataEntity) {
-        statusBean.start("InvoiceDataService.update()");
-        try {
-        	TX_LOG.info("BusinessEventEntity items: " + invoiceDataEntity.getBusinessEventEntities().size());
-        	invoiceDataEntity.calcDerivedValues();
-            final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
-            invoiceDataRepository.flush();
-            return saved;
-        } finally {
-            statusBean.stop();  
-        }
-    }
-    
-    private List<BusinessEventEntity> findByAcknowledgementIdInAndPendingIsTrue(final List<String> list) {
-        statusBean.start("InvoiceDataService.findByAcknowledgementIdInAndPendingIsTrue()");
-        try {
-        	List<BusinessEventEntity> bEventEntityList = new ArrayList<BusinessEventEntity>();
-        	int fromIndex = 0;
-        	int toIndex = 0;
-        	while (fromIndex != list.size()) {
-        		toIndex += getNextBatch(list.size(), fromIndex, toIndex);
-        		bEventEntityList.addAll(null);//businessEventRepository.findByAcknowledgementIdInAndPendingIsTrue(list.subList(fromIndex, toIndex)));
-        		fromIndex = toIndex;
-        	}
-            return bEventEntityList;
-        } finally {
-            statusBean.stop();
-        }
-    }
-    
-    private int getNextBatch(int itemsInList, int fromIndex, int toIndex) {
-    	return (maxListSize < (itemsInList - fromIndex)) ? (maxListSize) : (itemsInList - toIndex);
-    }
-    
-    InvoiceDataEntity getValidInvoiceDataEntity(
-			CreateInvoiceDataRequest createInvoiceDataRequest,
-			final InvoiceDataEntity invoiceDataEntity,
-			final List<BusinessEventEntity> entities) {
-		int actual = 0;
-		for (final BusinessEventEntity entity : entities) {        	
-		    invoiceDataEntity.addBusinessEventEntity(validate(entity, createInvoiceDataRequest));
-		    actual++;
-		}
-		final int expected = createInvoiceDataRequest.getAcknowledgementIdList().size();
-		if (expected != actual) {
-		    throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("given event list doesn't match database state! entities available: " + actual + ", request contains: " + expected); 
-		}
-		
-		return validate(invoiceDataEntity);
-	}*/
-    
     public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
     	List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(
     			createInvoiceDataRequest.getSupplierId(), createInvoiceDataRequest.getPaymentResponsible(), createInvoiceDataRequest.getCostCenter());
@@ -215,9 +69,21 @@ public class CreateInvoiceDataService extends ValidationService {
 		invoiceDataEntity.setCreatedBy(createInvoiceDataRequest.getCreatedBy());
 		invoiceDataEntity.setPending(Boolean.FALSE);
 		
-		validate(invoiceDataEntity);		
-        final InvoiceDataEntity saved  = save(invoiceDataEntity);
+		validateGeneratedInvoice(invoiceDataEntity);		
+        final InvoiceDataEntity saved = save(invoiceDataEntity);
+        TX_LOG.info("Invoice created by: " + saved.getCreatedBy() + ", createdTime: " + saved.getCreatedTime() + ", referenceId: " + saved.getReferenceId());
         return saved.getReferenceId();
+    }
+    
+    private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
+        statusBean.start("InvoiceDataService.save()");
+        try {
+            final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
+            invoiceDataRepository.flush();
+            return saved;
+        } finally {
+            statusBean.stop();  
+        }
     }
     
 }

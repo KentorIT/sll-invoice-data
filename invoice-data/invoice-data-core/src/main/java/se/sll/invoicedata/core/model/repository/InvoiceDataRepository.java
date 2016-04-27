@@ -95,7 +95,7 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
 	
 	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(String supplierId, String paymentResponsible, String costCenter);
 	
-	List<InvoiceDataEntity> findBySupplierIdAndStartDateBetween(String supplierId, Date startDate, Date endDate, Pageable pageable);
+	List<InvoiceDataEntity> findBySupplierIdAndStartDateBetween(String supplierId, Date startDate, Date endDate);
 	
 	List<InvoiceDataEntity> findBySupplierIdAndPendingIsFalseAndStartDateBetween(String supplierId, Date startDate, Date endDate);
 	

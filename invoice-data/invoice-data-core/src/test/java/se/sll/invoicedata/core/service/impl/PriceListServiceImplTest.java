@@ -181,7 +181,7 @@ public class PriceListServiceImplTest extends TestSupport {
     	GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
 	    getIDRequest.setSupplierId(e.getSupplierId());
 	    getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-	    RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+	    RegisteredEvent rE = invoiceDataService.getAllPendingBusinessEvents(getIDRequest).get(0);
 	
 	    //item x qty
 	    assertEquals(pris, rE.getTotalAmount().intValue());
@@ -204,7 +204,7 @@ public class PriceListServiceImplTest extends TestSupport {
 		GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
 		getIDRequest.setSupplierId(e.getSupplierId());
 		getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-		return invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+		return invoiceDataService.getAllPendingBusinessEvents(getIDRequest).get(0);
     }
     
     
@@ -230,7 +230,7 @@ public class PriceListServiceImplTest extends TestSupport {
 	    GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
 	    getIDRequest.setSupplierId(e.getSupplierId());
 	    getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-	    RegisteredEvent rE = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest).get(0);
+	    RegisteredEvent rE = invoiceDataService.getAllPendingBusinessEvents(getIDRequest).get(0);
 	
 	    //650 * 3 = 1950
 	    assertEquals(1950, rE.getTotalAmount().intValue());

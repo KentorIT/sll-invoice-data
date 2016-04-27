@@ -219,7 +219,7 @@ public abstract class TestSupport {
     	GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
         getIDRequest.setSupplierId(e.getSupplierId());
         getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-        return invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        return invoiceDataService.getAllPendingBusinessEvents(getIDRequest);
     }
 
 }

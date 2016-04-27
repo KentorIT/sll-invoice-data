@@ -19,13 +19,18 @@
 
 package se.sll.invoicedata.core.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Invoice data service layer exception.
  * 
  * @author Peter
  */
 public class InvoiceDataServiceException extends RuntimeException {
-    private static final long serialVersionUID = 1L;   
+    private static final long serialVersionUID = 1L;
+    
+    private static final Logger LOG = LoggerFactory.getLogger(InvoiceDataServiceException.class);
 
     private InvoiceDataErrorCodeEnum code;
     /**
@@ -36,6 +41,7 @@ public class InvoiceDataServiceException extends RuntimeException {
     protected InvoiceDataServiceException(InvoiceDataErrorCodeEnum code, String message) {
         super(message);
         this.code = code;
+        LOG.error(message + ", type: " + code + ", code: " + code.getCode());
     }
     
     /**

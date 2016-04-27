@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +40,6 @@ import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
-import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.pojo.mapping.EntityBeanConverter;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
@@ -61,93 +59,9 @@ public class ListInvoiceDataService extends ValidationService {
     private StatusBean statusBean;
 	
 	@Autowired
-    private BusinessEventRepository businessEventRepository;
-	
-	@Autowired
     private InvoiceDataRepository invoiceDataRepository;
 
-	@Value("${event.maxFindResultSize:30000}")
-    private int eventMaxFindResultSize;
-	/*
-	public List<RegisteredEvent> getAllUnprocessedBusinessEvents(
-            GetInvoiceDataRequest request) {
-
-        mandatory(request.getSupplierId(), "supplierId");
-
-        List<BusinessEventEntity> bEEntityList;
-        
-        log.debug(request.getSupplierId() + " from: " + request.getFromDate() + " to: " + request.getToDate());
-
-        final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
-        final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
-
-       // max size
-        final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
-
-        if (CoreUtil.isEmpty(request.getPaymentResponsible())) {
-            bEEntityList = businessEventRepository.findBySupplierIdAndPendingIsTrueAndStartTimeBetween(
-                    request.getSupplierId(), dateFrom, dateTo, pageRequest);
-        } else {
-            bEEntityList = businessEventRepository.
-                    findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(
-                            request.getSupplierId(), request.getPaymentResponsible(),
-                            dateFrom, dateTo, pageRequest);
-        }
-        
-        if (bEEntityList.size() >= eventMaxFindResultSize) {
-            throw InvoiceDataErrorCodeEnum.LIMIT_ERROR.createException(eventMaxFindResultSize, "please narrow down search criterias");
-        }
-        
-        //No requirement to fetch list sorted by date
-        return EntityBeanConverter.processBusinessEventEntitiesToRegisteredEvent(bEEntityList);
-    }*/
 	
-	public List<RegisteredEvent> getAllUnprocessedBusinessEvents(GetInvoiceDataRequest request) {
-
-        mandatory(request.getSupplierId(), "supplierId");
-
-        LOG.debug(request.getSupplierId() + " from: " + request.getFromDate() + " to: " + request.getToDate());
-
-        List<BusinessEventEntity> bEEntityList = fetchAndFilterBusinessEvents(request);
-      
-        if (bEEntityList.size() >= eventMaxFindResultSize) {
-            throw InvoiceDataErrorCodeEnum.LIMIT_ERROR.createException(eventMaxFindResultSize, "please narrow down search criterias");
-        }
-        
-        //No requirement to fetch list sorted by date
-        return EntityBeanConverter.processBusinessEventEntitiesToRegisteredEvent(bEEntityList);
-    }
-	
-	private List<BusinessEventEntity> fetchAndFilterBusinessEvents(final GetInvoiceDataRequest request) {
-		// max size
-        final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
-        
-        final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
-        final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
-        
-		List<InvoiceDataEntity> invoiceEntityList = invoiceDataRepository.findBySupplierIdAndStartDateBetween(
-        		request.getSupplierId(), dateFrom, dateTo, pageRequest);
-		
-		Iterator<InvoiceDataEntity> iterator = invoiceEntityList.iterator();
-		List<BusinessEventEntity> bEEntityList = new ArrayList<BusinessEventEntity>();
-		
-		while (iterator.hasNext()) {
-			InvoiceDataEntity entity = iterator.next();
-			if (CoreUtil.isNotEmpty(request.getPaymentResponsible()) && 
-					CoreUtil.notEqualsToIgnoreCase(entity.getPaymentResponsible(), request.getPaymentResponsible())) {
-				iterator.remove();
-			} else if (CoreUtil.isNotEmpty(request.getCostCenter()) && 
-					CoreUtil.notEqualsToIgnoreCase(entity.getCostCenter(), request.getCostCenter())) {
-				iterator.remove();
-			}
-		}
-			
-		for (InvoiceDataEntity entity : invoiceEntityList) {			
-			bEEntityList.addAll(entity.getBusinessEventEntities());
-		}
-		
-		return bEEntityList;
-	}
 	
 	/**
      * Finds by criteria: supplierId, paymentResponsible or date range
@@ -201,36 +115,7 @@ public class ListInvoiceDataService extends ValidationService {
 	protected List<InvoiceDataEntity> getAllPendingInvoiceData() {
         return invoiceDataRepository.findByPendingIsTrue();
 	}
-	/*
-    public List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
-
-        statusBean.start("InvoiceDataService.findByCriteria()");
-        try {
-            final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
-            final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
-            
-            List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
-
-            if (request.getSupplierId() != null && request.getPaymentResponsible() != null) {            	
-                invoiceDataEntityList = invoiceDataRepository.getInvoiceDataBySupplierIdAndPaymentResponsibleBetweenDates(
-                        request.getSupplierId(),
-                        request.getPaymentResponsible(),
-                        dateFrom, dateTo);
-            } else  if (request.getSupplierId() != null) {            	
-                invoiceDataEntityList = invoiceDataRepository.getInvoiceDataBySupplierIdBetweenDates(
-                        request.getSupplierId(),
-                        dateFrom, dateTo);
-            } else if (request.getPaymentResponsible() != null) {
-                invoiceDataEntityList = invoiceDataRepository.getInvoiceDataByPaymentResponsibleBetweenDates(
-                        request.getPaymentResponsible(),
-                        dateFrom, dateTo);
-            }
-            return invoiceDataEntityList;
-        } finally {
-            statusBean.stop();
-        }
-    }*/
-    
+	
     Long extractId(final String referenceId) {
 		Long id = Long.MIN_VALUE;
         try {
@@ -242,7 +127,5 @@ public class ListInvoiceDataService extends ValidationService {
 		return id;
 	}
     
-    public int getEventMaxFindResultSize() {
-        return eventMaxFindResultSize;
-    }
+    
 }

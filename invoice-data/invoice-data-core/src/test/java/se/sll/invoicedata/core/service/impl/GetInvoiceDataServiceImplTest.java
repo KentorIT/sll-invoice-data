@@ -86,7 +86,7 @@ public class GetInvoiceDataServiceImplTest extends TestSupport {
         GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
         getIDRequest.setSupplierId(e.getSupplierId());
         
-        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllPendingBusinessEvents(getIDRequest);
         assertEquals (2, allUnprocessedEvents.size());
     }
     
@@ -110,7 +110,7 @@ public class GetInvoiceDataServiceImplTest extends TestSupport {
         getIDRequest.setSupplierId(e.getSupplierId());
         getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
         
-        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllPendingBusinessEvents(getIDRequest);
         assertEquals (1, allUnprocessedEvents.size());
     }
     
@@ -134,7 +134,7 @@ public class GetInvoiceDataServiceImplTest extends TestSupport {
         getIDRequest.setSupplierId(e.getSupplierId());
         getIDRequest.setCostCenter(e.getCostCenter());
         
-        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllUnprocessedBusinessEvents(getIDRequest);
+        final List<RegisteredEvent> allUnprocessedEvents = invoiceDataService.getAllPendingBusinessEvents(getIDRequest);
         assertEquals (1, allUnprocessedEvents.size());
     }
     
@@ -153,7 +153,7 @@ public class GetInvoiceDataServiceImplTest extends TestSupport {
         getIDRequest.setCostCenter(e.getCostCenter());
         
         final List<RegisteredEvent> regEventList = invoiceDataService
-                .getAllUnprocessedBusinessEvents(getIDRequest);
+                .getAllPendingBusinessEvents(getIDRequest);
 
         assertNotNull(regEventList);
         assertEquals(1, regEventList.size());
