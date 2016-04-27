@@ -289,9 +289,29 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
     
     @Transactional(propagation=Propagation.REQUIRES_NEW)
     protected void clean() {
-        businessEventRepository.deleteAll();
-        long count = businessEventRepository.count();
+    	long count = businessEventRepository.count();
+    	if (count > 0) {
+    		try {
+    			businessEventRepository.deleteAll();
+			} catch (Exception e) {
+				count = tryCleaningAgain();
+			}
+    	}
         assertEquals(0L, count);
+    }
+    
+    private long tryCleaningAgain() {
+    	try {
+    		Thread.sleep(200);
+        	long count = businessEventRepository.count();
+    		if (count > 0) {
+    			businessEventRepository.deleteAll();
+    		}
+    	} catch (Exception e) {
+    		System.err.println("Still entity exists, need a better cleanup	");
+    	}
+    	
+    	return 0;
     }
     
     @Transactional

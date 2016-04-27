@@ -77,14 +77,15 @@ public class RegisterEventService extends ValidationService {
     	validateBusinessEventWithItemList(businessEventEntity);
     	addDiscountItemsToBusinessEventEntity(businessEventEntity, event.getDiscountItemList());
     	
-    	final BusinessEventEntityState entityState = processRequestForEventRegistration(businessEventEntity);
-        registerBusinessEvent(entityState, event.getDiscountItemList());
+    	BusinessEventEntityState entityState = processRequestForEventRegistration(businessEventEntity);
+    	rate(entityState.getNewRegisteredEntity(), event.getDiscountItemList());
+        registerBusinessEvent(entityState);
         InvoiceDataEntity invoiceDataEntity = getExistingInvoiceIfAvailableOrCreateNew(event);
 		invoiceDataEntity.addBusinessEventEntity(businessEventEntity);
 		
 		if (entityState.hasCreditEntity()) {
-			BusinessEventEntity creditEntity = getPreviouslyProcessedEntityAsCreditEntity(entityState);
-			invoiceDataEntity.addBusinessEventEntity(creditEntity);
+			entityState = getPreviouslyProcessedEntityAsCreditEntity(entityState);
+			invoiceDataEntity.addBusinessEventEntity(entityState.getNewCreditEntityFromProcessedEntity());
 		}
 		
 		final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
@@ -118,10 +119,9 @@ public class RegisterEventService extends ValidationService {
 		return invoiceDataEntity;
 	}
 	
-	private void registerBusinessEvent(final BusinessEventEntityState entityState, List<DiscountItem> discountItemList) {
-        rate(entityState.getNewRegisteredEntity(), discountItemList);
-
-        if (entityState.getExistingRegisteredEntity() != null) {
+	private void registerBusinessEvent(final BusinessEventEntityState entityState) {
+        
+        if (entityState.hasExistingRegisteredEvent()) {
             TX_LOG.info("Deleting previous event(id:" + entityState.getEventId() + "), acknowledgementId: " + 
             		entityState.getExistingRegisteredEntity().getAcknowledgementId() 
                     + " to register the updated event with acknowledgementId:" + entityState.getNewRegisteredEntity().getAcknowledgementId());
@@ -132,16 +132,16 @@ public class RegisterEventService extends ValidationService {
         save(entityState.getNewRegisteredEntity());
     }
 	
-	private BusinessEventEntity getPreviouslyProcessedEntityAsCreditEntity(final BusinessEventEntityState entityState) {
-		BusinessEventEntity creditEntity = null;
+	private BusinessEventEntityState getPreviouslyProcessedEntityAsCreditEntity(final BusinessEventEntityState entityState) {
 		
 		if (entityState.getExistingProcessedRegisteredEntity() != null) {
             TX_LOG.info("Event already exists! A credit/debit will be triggered on the invoiced data");
-            creditEntity = createCreditEntity(entityState.getExistingProcessedRegisteredEntity());
+            BusinessEventEntity creditEntity = createCreditEntity(entityState.getExistingProcessedRegisteredEntity());
             save(entityState.getExistingProcessedRegisteredEntity(), creditEntity);
+            entityState.setNewCreditEntityFromProcessedEntity(creditEntity);
         }
 		
-		return creditEntity;
+		return entityState;
 	}
 	
 	/**
