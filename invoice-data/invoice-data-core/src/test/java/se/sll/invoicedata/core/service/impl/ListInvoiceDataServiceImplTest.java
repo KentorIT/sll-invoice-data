@@ -28,6 +28,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -55,6 +56,11 @@ public class ListInvoiceDataServiceImplTest extends TestSupport {
 	
 	@Autowired
     private InvoiceDataRepository invoiceDataRepository;
+	
+	@After
+	public void tearDown() {
+		invoiceDataRepository.deleteAll();
+	}
 	
 	@Test (expected=InvoiceDataServiceException.class)
     @Transactional
@@ -261,13 +267,25 @@ public class ListInvoiceDataServiceImplTest extends TestSupport {
     }
     
     private void create_And_Assert_Invoice_Data(Event e) {
-    	final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-        createReq.setSupplierId(e.getSupplierId());
-        createReq.setPaymentResponsible(e.getPaymentResponsible());
-        createReq.setCostCenter(e.getCostCenter());
-        createReq.setCreatedBy("testListAllInvoiceData_Between_Dates");
-        
+    	final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         assertNotNull(invoiceDataService.createInvoiceData(createReq));
     }
     
+    @Test
+    public void testGetAllPendingInvoiceData_Basic_Success() {
+    	final InvoiceDataEntity ie = createSamplePendingInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
+		
+		List<InvoiceDataHeader> invoiceDataList = invoiceDataService.getAllPendingInvoiceData();
+        assertEquals(1, invoiceDataList.size());
+    }
+    
+    @Test
+    public void testGetAllPendingInvoiceData_Without_Pending_Entity_Fail() {
+    	final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
+		
+		List<InvoiceDataHeader> invoiceDataList = invoiceDataService.getAllPendingInvoiceData();
+        assertEquals(0, invoiceDataList.size());
+    }
 }

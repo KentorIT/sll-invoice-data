@@ -51,17 +51,8 @@ public interface InvoiceDataService {
 	 * 
 	 * @return the result list, might be empty if no none events found.
 	 */
-	List<RegisteredEvent> getAllUnprocessedBusinessEvents(
-			GetInvoiceDataRequest request);
+	List<RegisteredEvent> getAllUnprocessedBusinessEvents(GetInvoiceDataRequest request);
 
-	/**
-	 * Creates an invoice data object.
-	 * 
-	 * @param createInvoiceDataRequest
-	 * @return the invoice data reference id.
-	 */
-    //String createInvoiceData(CreateInvoiceDataRequest createInvoiceDataRequest);
-    
 	/**
 	 * Creates an invoice data object.
 	 * 
@@ -93,4 +84,13 @@ public interface InvoiceDataService {
      * @return the limit.
      */
     int getEventMaxFindResultSize();
+    
+    /**
+	 * Returns all unprocessed events for a particular supplier.
+	 * @param request
+	 * 
+	 * @return the result list, might be empty if no none events found.
+	 */
+	List<InvoiceDataHeader> getAllPendingInvoiceData();
+
 }

@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -65,6 +66,11 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
 	
     @Autowired
     private BusinessEventRepository businessEventRepository;
+    
+    @After
+	public void tearDown() {
+		invoiceDataRepository.deleteAll();
+	}
 	
     @Test
     @Transactional
@@ -286,33 +292,13 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
     protected void registerEvent(final Event e) {
         invoiceDataService.registerEvent(e);
     }
-    
+    /*
     @Transactional(propagation=Propagation.REQUIRES_NEW)
     protected void clean() {
     	long count = businessEventRepository.count();
-    	if (count > 0) {
-    		try {
-    			businessEventRepository.deleteAll();
-			} catch (Exception e) {
-				count = tryCleaningAgain();
-			}
-    	}
+ 		businessEventRepository.deleteAll();
         assertEquals(0L, count);
-    }
-    
-    private long tryCleaningAgain() {
-    	try {
-    		Thread.sleep(200);
-        	long count = businessEventRepository.count();
-    		if (count > 0) {
-    			businessEventRepository.deleteAll();
-    		}
-    	} catch (Exception e) {
-    		System.err.println("Still entity exists, need a better cleanup	");
-    	}
-    	
-    	return 0;
-    }
+    }*/
     
     @Transactional
     protected BusinessEventEntity getEvent(final String eventId) {
@@ -321,7 +307,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
 
     @Test
     public void testRegisterEvent_concurrency() {        
-    	clean();
+    	//clean();
     	final Event e = createSampleEvent();
 
         final Thread[] threads = new Thread[5];

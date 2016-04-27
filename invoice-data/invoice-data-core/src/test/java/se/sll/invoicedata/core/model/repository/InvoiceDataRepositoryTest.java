@@ -28,12 +28,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import riv.sll.invoicedata._1.Event;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
+import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.ExceptionCodeMatches;
 import se.sll.invoicedata.core.support.TestSupport;
@@ -46,7 +49,9 @@ import se.sll.invoicedata.core.util.CoreUtil;
  *
  */
 public class InvoiceDataRepositoryTest extends TestSupport {
-
+	
+	@Autowired
+    private InvoiceDataService invoiceDataService;
     
     @Test
     @Transactional
@@ -161,5 +166,41 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         
         // should be one pending left
         assertNotNull(getBusinessEventRepository().findByEventIdAndPendingIsTrueAndCreditIsNull(bePending.getEventId()));
-    }    
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testDelete_From_Repository_Delete_From_InvoiceDataRepo_First() {
+	    final Event e = createSampleEvent();
+	    invoiceDataService.registerEvent(e);
+	    
+	    assertEquals(1, getInvoiceDataRepository().findAll().size());
+	    assertEquals(1, getBusinessEventRepository().findAll().size());
+	    
+	    getInvoiceDataRepository().deleteAll();
+	    
+	    assertEquals(0, getInvoiceDataRepository().findAll().size());
+	    assertEquals(0, getBusinessEventRepository().findAll().size());
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testDelete_From_Repository_Delete_From_BusinessEventRepo_First() {
+	    final Event e = createSampleEvent();
+	    invoiceDataService.registerEvent(e);
+	    
+	    assertEquals(1, getInvoiceDataRepository().findAll().size());
+	    assertEquals(1, getBusinessEventRepository().findAll().size());
+	    
+	    InvoiceDataEntity invoiceDataEntity = getInvoiceDataRepository().findAll().get(0);
+	    invoiceDataEntity.getBusinessEventEntities().get(0).setInvoiceData(null);
+	    invoiceDataEntity.getBusinessEventEntities().clear();
+	    
+	    getBusinessEventRepository().deleteAll();
+	    
+	    assertEquals(1, getInvoiceDataRepository().findAll().size());
+	    assertEquals(0, getBusinessEventRepository().findAll().size());
+    }
 }

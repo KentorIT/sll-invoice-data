@@ -197,6 +197,10 @@ public class ListInvoiceDataService extends ValidationService {
         }
         return invoiceDataEntityList;
 	}
+	
+	protected List<InvoiceDataEntity> getAllPendingInvoiceData() {
+        return invoiceDataRepository.findByPendingIsTrue();
+	}
 	/*
     public List<InvoiceDataEntity> findByCriteria(ListInvoiceDataRequest request) {
 

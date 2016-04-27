@@ -98,33 +98,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             GetInvoiceDataRequest request) {
     	return listInvoiceDataService.getAllUnprocessedBusinessEvents(request);
     }
-    /*
-	@Override
-    public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
-
-		TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")"
-                + ", acknowledgementIdList size:" + createInvoiceDataRequest.getAcknowledgementIdList().size());
-		createInvoiceDataService.validate(createInvoiceDataRequest);
-		final List<String> idList = createInvoiceDataRequest.getAcknowledgementIdList();
-		if (!lock.acquire(idList)) {
-            throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Events \"" + idList + "\" currently is updated by another user");
-        }
-        statusBean.start("InvoiceDataService.createInvoiceData()");
-        String referenceId = null;
-        try {            
-        	if (createInvoiceDataService.isBatchRequest(createInvoiceDataRequest)) {        		
-        		referenceId = createInvoiceDataService.createInvoiceDataInBatch(createInvoiceDataRequest);
-        	} else {
-        		referenceId = createInvoiceDataService.createInvoiceWithAmount(createInvoiceDataRequest);
-        	}
-        } finally {
-            lock.release(idList);
-            statusBean.stop();
-        }
-		return referenceId; 
-    }*/
-	
-	@Override
+    @Override
     public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
 
 		TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")");
@@ -195,6 +169,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         
 		return invoiceData;
 	}
+    
+    public List<InvoiceDataHeader> getAllPendingInvoiceData() {
+    	statusBean.start("InvoiceDataService.listAllInvoiceData()");
+        try {
+            return getInvoiceDataHeader(listInvoiceDataService.getAllPendingInvoiceData());
+        } finally {
+            statusBean.stop();
+        }
+    }
     
     @Override
     public int getEventMaxFindResultSize() {
