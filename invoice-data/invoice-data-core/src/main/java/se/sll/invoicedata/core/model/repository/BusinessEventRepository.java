@@ -19,13 +19,7 @@
 
 package se.sll.invoicedata.core.model.repository;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 
@@ -56,9 +50,6 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      */
     BusinessEventEntity findByEventIdAndPendingIsTrueAndCreditIsNull(String eventId);
     
-    BusinessEventEntity findByEventIdAndPendingIsTrueAndCreditIsTrue(String eventId);
-
-
     /**
      * Returns a non-pending, non-credit, non-credited event by eventId. <p>
      *

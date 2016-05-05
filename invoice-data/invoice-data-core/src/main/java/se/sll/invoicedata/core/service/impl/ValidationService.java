@@ -77,12 +77,6 @@ public class ValidationService {
 		}
 	}
        
-    /**
-     * Validates business entity.
-     * 
-     * @param businessEventEntity the entity.
-     * @return the same entity reference as passed as argument.
-     */
     BusinessEventEntity validateBusinessEventWithItemList(final BusinessEventEntity businessEventEntity) {
 
         // mandatory fields according to schema
@@ -111,13 +105,6 @@ public class ValidationService {
 
         return businessEventEntity;
     }
-    /*
-    void validate(final CreateInvoiceDataRequest createInvoiceDataRequest) {
-    	mandatory(createInvoiceDataRequest.getSupplierId(), "supplierId");
-    	mandatory(createInvoiceDataRequest.getPaymentResponsible(), "paymentResponsible");
-    	mandatory(createInvoiceDataRequest.getCreatedBy(), "createdBy");
-    	mandatory(createInvoiceDataRequest.getAcknowledgementIdList(), "acknowledgementIdList");
-    }*/
     
     void validate(final CreateInvoiceDataRequest createInvoiceDataRequest) {
     	mandatory(createInvoiceDataRequest.getSupplierId(), "supplierId");
@@ -169,16 +156,6 @@ public class ValidationService {
         }
 
         return invoiceDataEntity;
-    }
-    
-    BusinessEventEntity validate(BusinessEventEntity entity, CreateInvoiceDataRequest createInvoiceDataRequest) {
-        if (!entity.getSupplierId().equalsIgnoreCase(createInvoiceDataRequest.getSupplierId())) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same supplier: " + createInvoiceDataRequest.getSupplierId());
-        } else if (!entity.getPaymentResponsible().equalsIgnoreCase(createInvoiceDataRequest.getPaymentResponsible())) {
-            throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("acknowledgementId is not a part of the same paymentResponsible: " + createInvoiceDataRequest.getPaymentResponsible());
-        }
-
-        return entity;
     }
     
 }

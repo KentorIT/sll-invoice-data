@@ -30,18 +30,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import riv.sll.invoicedata._1.RegisteredEvent;
-import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.jmx.StatusBean;
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
-import se.sll.invoicedata.core.pojo.mapping.EntityBeanConverter;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.util.CoreUtil;
 
@@ -60,8 +55,6 @@ public class ListInvoiceDataService extends ValidationService {
 	
 	@Autowired
     private InvoiceDataRepository invoiceDataRepository;
-
-	
 	
 	/**
      * Finds by criteria: supplierId, paymentResponsible or date range

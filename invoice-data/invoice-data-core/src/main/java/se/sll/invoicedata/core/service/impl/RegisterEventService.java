@@ -53,21 +53,20 @@ import se.sll.invoicedata.core.util.CoreUtil;
 public class RegisterEventService extends ValidationService {
 	
 	private static final Logger TX_LOG = LoggerFactory.getLogger("TX-API");
-	private static final Logger log = LoggerFactory.getLogger(RegisterEventService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RegisterEventService.class);
 	
 	@Autowired
     private RatingService ratingService;
 	
 	@Autowired
-    private BusinessEventRepository businessEventRepository;
-	
+    private BusinessEventRepository businessEventRepository;	
 	@Autowired
     private InvoiceDataRepository invoiceDataRepository;
 	
-	
-	
 	/**
-	 * Used by RegisterEvent /v1 and /v2 (v2 calls v1)
+	 * Registers an event as BusinessEntity
+	 * validates the indata - DiscountItem, Item
+	 * rate and handle different states of an Event
 	 * @param event
 	 * @return
 	 */
@@ -103,7 +102,6 @@ public class RegisterEventService extends ValidationService {
 	}
 	
 	private InvoiceDataEntity getExistingInvoiceIfAvailableOrCreateNew(final Event event) {
-		
 		List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.
 				findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(event.getSupplierId(), event.getPaymentResponsible(), event.getCostCenter());
 		
@@ -202,11 +200,11 @@ public class RegisterEventService extends ValidationService {
     
     private void delete(BusinessEventEntity... entities) {
         businessEventRepository.delete(Arrays.asList(entities));
-        log.debug("deleted = {}", entities);
+        LOG.debug("deleted = {}", entities);
     }
     
     private void save(BusinessEventEntity... entities) {
         businessEventRepository.save(Arrays.asList(entities));
-        log.debug("saved = {}", entities);
+        LOG.debug("saved = {}", entities);
     }
 }

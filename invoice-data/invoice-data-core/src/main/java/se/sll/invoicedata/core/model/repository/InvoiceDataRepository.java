@@ -22,12 +22,8 @@ package se.sll.invoicedata.core.model.repository;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
 /**
@@ -84,20 +80,16 @@ public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, 
             @Param("fromDate") Date fromDate, 
             @Param("toDate") Date toDate);*/
 
-	/**
-	 * Returns invoice data items of a certain age.
-	 * 
-	 * @param maxDate the maximum end date.
-	 */
-	List<InvoiceDataEntity> findByEndDateLessThan(Date maxDate);
 	
 	List<InvoiceDataEntity> findByPendingIsTrue();
 	
-	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(String supplierId, String paymentResponsible, String costCenter);
+	List<InvoiceDataEntity> findByEndDateLessThan(Date maxDate);
 	
 	List<InvoiceDataEntity> findBySupplierIdAndStartDateBetween(String supplierId, Date startDate, Date endDate);
 	
 	List<InvoiceDataEntity> findBySupplierIdAndPendingIsFalseAndStartDateBetween(String supplierId, Date startDate, Date endDate);
 	
 	List<InvoiceDataEntity> findByPaymentResponsibleAndPendingIsFalseAndStartDateBetween(String supplierId, Date startDate, Date endDate);
+	
+	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(String supplierId, String paymentResponsible, String costCenter);
 }
