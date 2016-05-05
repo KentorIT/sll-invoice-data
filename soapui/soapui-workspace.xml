@@ -7,5 +7,6 @@
   <con:project name="ViewInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/ViewInvoiceData-soapui-project.xml</con:project>
   <con:project name="GetInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/GetInvoiceData-soapui-project.xml</con:project>
   <con:project name="CreateInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/CreateInvoiceData-soapui-project.xml</con:project>
+  <con:project name="GetPendingInvoiceData">C:/Dev/Projects/GitHub_sll-invoice-data/KentorIT/sll-invoice-data/soapui/GetPendingInvoiceData-soapui-project.xml</con:project>
   <con:collectInfoForSupport>false</con:collectInfoForSupport>
 </con:soapui-workspace>

@@ -19,7 +19,7 @@
 
 package se.sll.invoicedata.core.service.impl;
 
-import static se.sll.invoicedata.core.pojo.mapping.LocalMapper.copyToInvoiceDataEntity;
+import static se.sll.invoicedata.core.pojo.mapping.LocalMapper.createDraftVersionOfInvoiceData;
 import static se.sll.invoicedata.core.util.CoreUtil.copyProperties;
 
 import java.math.BigDecimal;
@@ -110,7 +110,7 @@ public class RegisterEventService extends ValidationService {
 		if (invoiceDataEntityList.size() == 1) {
 			invoiceDataEntity = invoiceDataEntityList.get(0);
 		} else if (invoiceDataEntityList.isEmpty()) {
-			invoiceDataEntity = copyToInvoiceDataEntity(event);
+			invoiceDataEntity = createDraftVersionOfInvoiceData(event);
 		} else if (invoiceDataEntityList.size() > 1) {
 			throw InvoiceDataErrorCodeEnum.ILLEGAL_STATE_DUPLICATE_DRAFT_VERSIONS_OF_INVOICES.createException("Contact system administrator");
 		}

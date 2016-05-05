@@ -19,6 +19,8 @@
 
 package se.sll.invoicedata.core.model.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
@@ -115,4 +117,5 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      */
     //List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndPaymentResponsibleAndStartTimeBetween(String supplierId, String paymentResponsible, Date startTime, Date endTime, Pageable pageable);
     
+    List<BusinessEventEntity> findByPendingIsTrueAndCreditIsNull();
 }

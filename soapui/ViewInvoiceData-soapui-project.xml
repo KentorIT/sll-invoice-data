@@ -186,7 +186,7 @@ def db_driver = context.expand( '${#Project#db_driver}' )
 //Connection
 def sql = Sql.newInstance(db_connection_string, db_username, db_password, db_driver)
 
-Object result = sql.rows("select id from invoice_data ORDER BY RAND() LIMIT 1");
+Object result = sql.rows("select id from invoice_data where pending=false ORDER BY RAND() LIMIT 1");
 return new JsonBuilder(result.get(0).id);</script></con:config></con:testStep><con:testStep type="request" id="3f68182d-57ea-4f74-bd3c-11e61d5b7e31" name="ViewInvoiceData"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ViewInvoiceDataProducerServiceSoapBinding</con:interface><con:operation>ViewInvoiceData</con:operation><con:request name="ViewInvoiceData" id="26b56b84-288a-4d14-a10a-eefbf6edb6f8" defaultOutgoingWss="" defaultIncomingWss=""><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/viewInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:ViewInvoiceDataResponder:1">
    <soapenv:Header>
       <urn:LogicalAddress>?</urn:LogicalAddress>

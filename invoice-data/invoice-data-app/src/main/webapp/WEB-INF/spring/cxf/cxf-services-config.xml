@@ -43,14 +43,6 @@
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
 	</jaxws:endpoint>
-	<!-- 
-	<jaxws:endpoint id="registerInvoiceData-v2"
-		implementor="se.sll.invoicedata.app.ws.RegisterInvoiceDataProducerV2"
-		address="/ws/registerInvoiceData/v2">
-		<jaxws:properties>
-			<entry key="schema-validation-enabled" value="true" />
-		</jaxws:properties>
-	</jaxws:endpoint> -->
 
 	<jaxws:endpoint id="createInvoiceData"
 		implementor="se.sll.invoicedata.app.ws.CreateInvoiceDataProducer"
@@ -63,6 +55,14 @@
 	<jaxws:endpoint id="getInvoiceData"
 		implementor="se.sll.invoicedata.app.ws.GetInvoiceDataProducer"
 		address="/ws/getInvoiceData/v1">
+		<jaxws:properties>
+			<entry key="schema-validation-enabled" value="true" />
+		</jaxws:properties>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="getPendingInvoiceData"
+		implementor="se.sll.invoicedata.app.ws.GetPendingInvoiceDataProducer"
+		address="/ws/getPendingInvoiceData/v1">
 		<jaxws:properties>
 			<entry key="schema-validation-enabled" value="true" />
 		</jaxws:properties>
@@ -98,7 +98,14 @@
 			<ref bean="priceListBean" />
 		</jaxrs:serviceBeans>
 	</jaxrs:server>
-
+	
+	<jaxrs:server id="migrate" address="/v2">
+		<jaxrs:serviceBeans>
+			<ref bean="migrateToV2Bean" />
+		</jaxrs:serviceBeans>
+	</jaxrs:server>
+	
 	<bean id="priceListBean" class="se.sll.invoicedata.app.rs.impl.PriceListProducerImpl" />
+	<bean id="migrateToV2Bean" class="se.sll.invoicedata.app.rs.impl.AggregatePendingEventsProducerImpl" />
 
 </beans>

@@ -22,9 +22,16 @@
  */
 package se.sll.invoicedata.core.pojo.mapping;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * @author muqkha
@@ -42,15 +49,29 @@ public class LocalMapper {
 		
 	}
 	
-	public static InvoiceDataEntity copyToInvoiceDataEntity(Event inData) {
+	public static InvoiceDataEntity createDraftVersionOfInvoiceData(Event inData) {
 		InvoiceDataEntity invoiceDataEntity = new InvoiceDataEntity();
 		invoiceDataEntity.setCreatedBy("System"); //Not yet ready to create final invoice
 		invoiceDataEntity.setPaymentResponsible(inData.getPaymentResponsible());
 		invoiceDataEntity.setSupplierId(inData.getSupplierId());
 		invoiceDataEntity.setCostCenter(inData.getCostCenter());
 		return invoiceDataEntity;
-		
 	}
 	
-
+	public static InvoiceDataEntity createDraftVersionOfInvoiceData(BusinessEventEntity inData) {
+		Event event = new Event();
+		event.setPaymentResponsible(inData.getPaymentResponsible());
+		event.setSupplierId(inData.getSupplierId());
+		event.setCostCenter(inData.getCostCenter());
+		
+		return createDraftVersionOfInvoiceData(event);
+	}
+	
+	public static List<InvoiceDataHeader> getInvoiceDataHeader(List<InvoiceDataEntity> invoiceDataEntityList) {
+		final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
+		for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
+		    invoiceDataList.add(CoreUtil.copyProperties(iDataEntity, InvoiceDataHeader.class));
+		}
+		return invoiceDataList;
+	}
 }

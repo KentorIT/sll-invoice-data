@@ -307,4 +307,8 @@ public class InvoiceDataEntity {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+    
+    public String logInfo() {
+    	return new StringBuilder().append(supplierId).append("-").append(paymentResponsible).append("-").append(costCenter).toString();
+    }
 }

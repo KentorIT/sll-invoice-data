@@ -200,6 +200,7 @@
          <urn2:refContractId>05690b3b-6323-4db6-b505-4a890c678eb3</urn2:refContractId>
          <urn2:supplierName>TEST_556482-8654</urn2:supplierName>
          <urn2:serviceCode>01</urn2:serviceCode>
+         <urn2:costCenter>01</urn2:costCenter>
          <urn2:paymentResponsible>TEST_HSF</urn2:paymentResponsible>
          <urn2:healthCareCommission>TEST_TEST</urn2:healthCareCommission>
          <urn2:acknowledgementId>05690b3b-6323-4db6-b505-4a890c678eb3</urn2:acknowledgementId>
@@ -208,10 +209,10 @@
          <urn2:startTime>2016-04-12T12:02:22.653</urn2:startTime>
          <urn2:endTime>2016-04-12T17:02:39</urn2:endTime>
          <!--1 or more repetitions:-->
-         <urn2:itemList><urn2:itemId>58770df5-8d03-4cbd-98f6-fa87ad8309f8</urn2:itemId><urn2:description>Test item-0</urn2:description><urn2:qty>2</urn2:qty></urn2:itemList>     
+         <urn2:itemList><urn2:itemId>58770df5-8d03-4cbd-98f6-fa87ad8309f8</urn2:itemId><urn2:description>Test item-0</urn2:description><urn2:qty>2</urn2:qty><urn2:price>200</urn2:price></urn2:itemList>     
       </urn1:RegisterInvoiceData>
    </soapenv:Body>
-</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite id="fdec1912-ec76-4d80-a20b-e421c0153650" name="SetUp"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="7be8f7e1-593c-4480-8025-feb3a2ed7fd7" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="httprequest" name="Create data to run tests" id="4d75fdcd-fcca-4d2e-b0ae-5f264a43e1a8"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" id="d6e72d93-3457-461e-ac1c-f998dedd5e0d" name="Create data to run tests" postQueryString="false" mediaType="application/json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/invoicedata-web-app/admin/pricelists</con:endpoint><con:request>{
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1:RegisterInvoiceData"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite id="fdec1912-ec76-4d80-a20b-e421c0153650" name="SetUp"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="7be8f7e1-593c-4480-8025-feb3a2ed7fd7" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="httprequest" name="Create data to run tests" id="4d75fdcd-fcca-4d2e-b0ae-5f264a43e1a8"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" id="d6e72d93-3457-461e-ac1c-f998dedd5e0d" name="Create data to run tests" postQueryString="false" mediaType="application/json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8081/invoicedata-web-app/admin/pricelists</con:endpoint><con:request>{
    priceList:[
       {
          supplierId:"TEST_556482-8654",
@@ -2714,14 +2715,14 @@
          ]
       }
    ]
-}</con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:parameters/></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase><con:properties/><con:reportParameters/></con:testSuite><con:testSuite id="cabdb930-cf78-4df5-9aeb-56d5680767be" name="RegisterInvoiceData_No_DiscountItems"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="84802e52-3594-47fa-b0b0-fe3340369788" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="groovy" name="getCurrentDate" id="92d6957c-a2e2-4dc8-b156-1f0a98980cfd"><con:settings/><con:config><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+}</con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase><con:properties/><con:reportParameters/></con:testSuite><con:testSuite id="cabdb930-cf78-4df5-9aeb-56d5680767be" name="RegisterInvoiceData_No_DiscountItems"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="84802e52-3594-47fa-b0b0-fe3340369788" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="groovy" name="getCurrentDate" id="92d6957c-a2e2-4dc8-b156-1f0a98980cfd"><con:settings/><con:config><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 Calendar cal = Calendar.getInstance()
 return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="groovy" name="getRandomNumber" id="cc9e6bbb-0be2-49c6-86ce-dca5f74a3c59"><con:settings/><con:config><script>Math.abs(new Random().nextInt() % 11) + 1</script></con:config></con:testStep><con:testStep type="groovy" name="getRandomUUID" id="53b34b76-00c6-4da5-b6fe-41038b266a57"><con:settings/><con:config><script>import static java.util.UUID.randomUUID  
 return randomUUID();</script></con:config></con:testStep><con:testStep type="groovy" name="getRandomTimeOnCurrentDate" id="c14478e1-721e-481a-a6a8-a506b51aa3f6"><con:settings/><con:config><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 Calendar cal = Calendar.getInstance()
 cal.setTime(cal.getTime())
 cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1 + new java.util.Random().nextInt(12))
-return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="groovy" name="getTestSupplierID" id="f91cd294-904c-4345-a64b-4107b0dd23f4"><con:settings/><con:config><script>return 'TEST_556482-8654'</script></con:config></con:testStep><con:testStep type="groovy" name="getSupplierFromDB" id="c2199b81-d052-41fa-b522-31a406f1785d"><con:settings/><con:config><script>import groovy.sql.Sql
+return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="groovy" name="getTestSupplierID" id="f91cd294-904c-4345-a64b-4107b0dd23f4"><con:settings/><con:config><script>return 'TEST_556482-8654'</script></con:config></con:testStep><con:testStep type="groovy" name="getTestCostCenter" id="bdbfcdee-b87a-428c-82cd-ce6d79dc2e44"><con:settings/><con:config><script>return 'TEST_HSF_CC'</script></con:config></con:testStep><con:testStep type="groovy" name="getSupplierFromDB" id="c2199b81-d052-41fa-b522-31a406f1785d"><con:settings/><con:config><script>import groovy.sql.Sql
 import com.mysql.jdbc.Driver
 import groovy.json.JsonBuilder
 
@@ -2734,7 +2735,7 @@ def db_driver = context.expand( '${#Project#db_driver}' )
 //Connection
 def sql = Sql.newInstance(db_connection_string, db_username, db_password, db_driver)
 
-Object result = sql.rows("Select id, supplier_id, supplier_name, service_code From invoice_data_pricelist WHERE supplier_id='" + context.expand('${getTestSupplierID#result}')+"'");
+Object result = sql.rows("Select id, supplier_id, supplier_name, service_code From invoice_data_pricelist WHERE supplier_id='" + context.expand('${getTestSupplierID#result}')+"' order by valid_from desc");
 return new JsonBuilder(result.get(0));</script></con:config></con:testStep><con:testStep type="groovy" name="getSupplierNameForSupplier" id="6b88bb95-be41-4d9d-b44d-6c49cef935e3"><con:settings/><con:config><script>import groovy.json.JsonSlurper
 
 Object result = new JsonSlurper().parseText(context.expand('${getSupplierFromDB#result}'));
@@ -2764,9 +2765,9 @@ sql.eachRow(query) { row ->
 	priceList.add(row.item_id);
 } 
 //iterate it over n over
-return priceList</script></con:config></con:testStep><con:testStep type="groovy" name="getItemIdFromStore" id="52a3c924-9a28-4f75-b165-1b273d5462bf"><con:settings/><con:config><script>def index = Math.abs(new Random().nextInt() % 120 + 0)
-Object obj = context.expand('${getItemIdAsList#result}')
+return priceList</script></con:config></con:testStep><con:testStep type="groovy" name="getItemIdFromStore" id="52a3c924-9a28-4f75-b165-1b273d5462bf"><con:settings/><con:config><script>Object obj = context.expand('${getItemIdAsList#result}')
 def itemList = obj.split(',').collect{it as String}
+def index = Math.abs(new Random().nextInt() % itemList.size() + 0)
 itemList.get(index).trim()</script></con:config></con:testStep><con:testStep type="groovy" name="getUniqueItemIdList" id="633d9537-8313-4154-81de-8eaa07510eae"><con:settings/><con:config><script>int count = Math.abs(new Random().nextInt()) % 20 + 1
 
 Set&lt;String> itemIdStore = new HashSet&lt;String>();
@@ -2819,6 +2820,7 @@ return discountItemList.toString();]]></script></con:config></con:testStep><con:
          <urn2:refContractId>${getRandomUUID#result}</urn2:refContractId>
          <urn2:supplierName>${getTestSupplierID#result}</urn2:supplierName>
          <urn2:serviceCode>01</urn2:serviceCode>
+         <urn2:costCenter>${getTestCostCenter#result}</urn2:costCenter>
          <urn2:paymentResponsible>TEST_HSF</urn2:paymentResponsible>
          <urn2:healthCareCommission>TEST_TEST</urn2:healthCareCommission>
          <urn2:acknowledgementId>${getRandomUUID#result}</urn2:acknowledgementId>
@@ -2837,7 +2839,7 @@ return randomUUID();</script></con:config></con:testStep><con:testStep type="gro
 Calendar cal = Calendar.getInstance()
 cal.setTime(cal.getTime())
 cal.set(Calendar.HOUR, cal.get(Calendar.HOUR) + 1 + new java.util.Random().nextInt(12))
-return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="groovy" name="getTestSupplierID" id="2eca63cd-2537-414e-8ad5-2ef468b3b940"><con:settings/><con:config><script>return 'TEST_556482-8654'</script></con:config></con:testStep><con:testStep type="groovy" name="getSupplierFromDB" id="b19f9a9d-c873-441c-9259-abf48f0d74d0"><con:settings/><con:config><script>import groovy.sql.Sql
+return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="groovy" name="getTestSupplierID" id="2eca63cd-2537-414e-8ad5-2ef468b3b940"><con:settings/><con:config><script>return 'TEST_556482-8654'</script></con:config></con:testStep><con:testStep type="groovy" name="getTestCostCenter" id="0d2def68-4c73-4857-9e72-23e2c6c83f1d"><con:settings/><con:config><script>return 'TEST_HSF_CC'</script></con:config></con:testStep><con:testStep type="groovy" name="getSupplierFromDB" id="b19f9a9d-c873-441c-9259-abf48f0d74d0"><con:settings/><con:config><script>import groovy.sql.Sql
 import com.mysql.jdbc.Driver
 import groovy.json.JsonBuilder
 
@@ -2850,7 +2852,7 @@ def db_driver = context.expand( '${#Project#db_driver}' )
 //Connection
 def sql = Sql.newInstance(db_connection_string, db_username, db_password, db_driver)
 
-Object result = sql.rows("Select id, supplier_id, supplier_name, service_code From invoice_data_pricelist WHERE supplier_id='" + context.expand('${getTestSupplierID#result}')+"'");
+Object result = sql.rows("Select id, supplier_id, supplier_name, service_code From invoice_data_pricelist WHERE supplier_id='" + context.expand('${getTestSupplierID#result}')+"' order by valid_from desc");
 return new JsonBuilder(result.get(0));</script></con:config></con:testStep><con:testStep type="groovy" name="getSupplierNameForSupplier" id="c96a2a9a-7373-4886-8315-252b77abafd8"><con:settings/><con:config><script>import groovy.json.JsonSlurper
 
 Object result = new JsonSlurper().parseText(context.expand('${getSupplierFromDB#result}'));
@@ -2880,9 +2882,9 @@ sql.eachRow(query) { row ->
 	priceList.add(row.item_id);
 } 
 //iterate it over n over
-return priceList</script></con:config></con:testStep><con:testStep type="groovy" name="getItemIdFromStore" id="6ca6fdbf-d33c-4cf5-ab35-53c804320e44"><con:settings/><con:config><script>def index = Math.abs(new Random().nextInt() % 120 + 0)
-Object obj = context.expand('${getItemIdAsList#result}')
+return priceList</script></con:config></con:testStep><con:testStep type="groovy" name="getItemIdFromStore" id="6ca6fdbf-d33c-4cf5-ab35-53c804320e44"><con:settings/><con:config><script>Object obj = context.expand('${getItemIdAsList#result}')
 def itemList = obj.split(',').collect{it as String}
+def index = Math.abs(new Random().nextInt() % itemList.size() + 0)
 itemList.get(index).trim()</script></con:config></con:testStep><con:testStep type="groovy" name="getUniqueItemIdList" id="24b47163-f4dd-4993-a6e9-6a5b6758fef3"><con:settings/><con:config><script>int count = Math.abs(new Random().nextInt()) % 20 + 1
 
 Set&lt;String> itemIdStore = new HashSet&lt;String>();
@@ -2935,6 +2937,7 @@ return discountItemList.toString();]]></script></con:config></con:testStep><con:
          <urn2:refContractId>${getRandomUUID#result}</urn2:refContractId>
          <urn2:supplierName>${getTestSupplierID#result}</urn2:supplierName>
          <urn2:serviceCode>01</urn2:serviceCode>
+         <urn2:costCenter>${getTestCostCenter#result}</urn2:costCenter>
          <urn2:paymentResponsible>TEST_HSF</urn2:paymentResponsible>
          <urn2:healthCareCommission>TEST_TEST</urn2:healthCareCommission>
          <urn2:acknowledgementId>${getRandomUUID#result}</urn2:acknowledgementId>

@@ -19,7 +19,6 @@
 
 package se.sll.invoicedata.core.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -45,6 +44,7 @@ import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.util.CoreUtil;
 import se.sll.invoicedata.core.util.LockService;
 
+import static se.sll.invoicedata.core.pojo.mapping.LocalMapper.getInvoiceDataHeader;
 /**
  * Implements invoice data service.
  * 
@@ -131,14 +131,6 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             statusBean.stop();
         }
     }
-    
-    private List<InvoiceDataHeader> getInvoiceDataHeader(List<InvoiceDataEntity> invoiceDataEntityList) {
-		final List<InvoiceDataHeader> invoiceDataList = new ArrayList<InvoiceDataHeader>(invoiceDataEntityList.size());
-		for (final InvoiceDataEntity iDataEntity : invoiceDataEntityList) {
-		    invoiceDataList.add(CoreUtil.copyProperties(iDataEntity, InvoiceDataHeader.class));
-		}
-		return invoiceDataList;
-	}
     
     /**
      * Service name - ViewInvoiceData

@@ -58,9 +58,7 @@ public class CreateInvoiceDataProducer extends AbstractProducer implements Creat
     
     ResultCode setResultCode() {
     	ResultCode rc = new ResultCode();
-    	rc.setCode(ResultCodeEnum.INFO);
-    	rc.setApplicationStatusCode(InvoiceDataErrorCodeEnum.EXPECTING_CREATE_INVOICE_REQUEST_BEFORE_FETCHING.getCode());
-    	rc.setMessage("Request received, invoice is in the process of generation");
+    	rc.setCode(ResultCodeEnum.OK);
     	return rc;
     }
 }
