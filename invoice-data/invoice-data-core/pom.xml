@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>se.sll.invoicedata</groupId>
 			<artifactId>invoice-data-schemas</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		
 		<!-- Spring -->
