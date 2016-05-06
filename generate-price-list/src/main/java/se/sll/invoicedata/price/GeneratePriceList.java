@@ -63,11 +63,11 @@ public class GeneratePriceList {
 		 System.out.println("Enter the input file name ex:(Indata//NewPrice.xls):");
 		 String indataFile = in.nextLine();
 		 
-		 System.out.println("Enter start row number (row starts from 0):");
-		 int startRow = in.nextInt();
+		 System.out.println("Enter start row number (row number from excel file):");
+		 int startRow = in.nextInt() - 1;//starts from 0
 		 
-		 System.out.println("Enter start column number (column start from 0):");
-		 int startColumn = in.nextInt();
+		 System.out.println("Enter start column number (column number from excel file):");
+		 int startColumn = in.nextInt() - 1;//starts from 0
 		 
 		 System.out.println("Enter valid from date (yyyy-mm-dd):");
 		 String validFrom = in.nextLine();
@@ -75,6 +75,7 @@ public class GeneratePriceList {
 		 
 		 if (!validFrom.isEmpty()) {
 			 GeneratePriceList generatePriceList = new GeneratePriceList();
+			 generatePriceList.createOutputDir();
 			 HSSFSheet sheet = generatePriceList.read(indataFile);
 			 generatePriceList.processSheet(sheet, validFrom, startRow, startColumn);
 		 } else {
@@ -84,6 +85,13 @@ public class GeneratePriceList {
 		 
 		 System.out.println("Verify that the first and the last row guid matches that in the excel file");
 		 in.close();
+	}
+	
+	private void createOutputDir() {
+		File file = new File(OUTFILE_DIRECTORY);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
 	}
 	
 	public HSSFSheet read(String fileName) throws IOException {
@@ -107,11 +115,12 @@ public class GeneratePriceList {
 		
 		/* See the order in the database matches with the order in the generated file */
 		priceList.add(getTransVoice(sheet, guidList, validFrom, startRow, startColumn+1));
-		priceList.add(getSprakService(sheet, guidList, validFrom, startRow, startColumn+2));		
+		priceList.add(getSprakService(sheet, guidList, validFrom, startRow, startColumn+2));
+		priceList.add(getEquator(sheet, guidList, validFrom, startRow, startColumn+3));
 		priceList.add(getTolkJouren(sheet, guidList, validFrom, startRow, startColumn+4));
 		priceList.add(getJarva(sheet, guidList, validFrom, startRow, startColumn+5));
 		//priceList.add(getBotkryka(sheet, guidList));
-		priceList.add(getEquator(sheet, guidList, validFrom, startRow, startColumn+3));
+		
 		
 		System.out.println("Items in list: " + guidList.size() + ". State OK");
 		getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(OUTFILE_DIRECTORY + "PriceList.json"), priceList);
@@ -285,6 +294,7 @@ public class GeneratePriceList {
 		for (int i = startRow; i < sheet.getPhysicalNumberOfRows(); i++) {
 			Cell cell = sheet.getRow(i).getCell(startColumn);		
 			
+			System.out.println("GUID: " + i + ": " + cell);
 			if (!guids.contains(cell.getStringCellValue())) {
 				guids.add(cell.getStringCellValue());
 			} else {

@@ -25,9 +25,9 @@ import scala.concurrent.duration._
 import se.sll.invoicedata.utils.Conf
 import se.sll.invoicedata.utils.Headers
 
-class LoadTestGetInvoicedataOkSimulation extends Simulation {
+class LoadTestGetPendingInvoicedataOkSimulation extends Simulation {
 
     setUp(
-		Scenarios.scn_GetInvoiceData_OK_Http.inject(rampUsers(Conf.noOfUsers) over (Scenarios.rampUpTimeSecs seconds)).protocols(Conf.httpConf)
+		Scenarios.scn_GetPendingInvoiceData_OK_Http.inject(rampUsers(Conf.noOfUsers) over (Scenarios.rampUpTimeSecs seconds)).protocols(Conf.httpConf)
 	)
 }

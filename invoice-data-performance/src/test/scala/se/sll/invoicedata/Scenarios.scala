@@ -213,6 +213,21 @@ object Scenarios {
 	    .pause(minWaitMs, maxWaitMs)
 	}
 	
+	// GetPendingInvoiceData OK scenario
+	val scn_GetPendingInvoiceData_OK_Http = scenario("GetPendingInvoiceData OK scenario")
+	  .during(Conf.testTimeSecs) { 		
+	    exec(
+	      http("GetPendingInvoiceData")
+	        .post("/invoicedata-web-app/ws/getPendingInvoiceData/v1")
+			 .headers(Headers.getPendingInvoiceData_Http_Headers)
+		     .body(RawFileBody("data/GetPendingInvoiceData_OK.xml")).asXML
+	  		 .check(status.is(200))
+	         .check(xpath("soap:Envelope", List("soap" -> "http://schemas.xmlsoap.org/soap/envelope/")).exists)
+	         .check(xpath("//pr:GetPendingInvoiceDataResponse", List("pr" -> "urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1")).count.is(1))
+	      )
+	    .pause(minWaitMs, maxWaitMs)
+	}
+	
 	// GetInvoiceData ERROR scenario
 	val scn_GetInvoiceData_ERROR_Http = scenario("GetInvoiceData ERROR scenario")
 	  .during(Conf.testTimeSecs) { 		

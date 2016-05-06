@@ -57,4 +57,9 @@ object Headers {
 	  "SOAPAction" -> "urn:riv:sll:invoicedata:GetInvoiceDataResponder:1:GetInvoiceData",
 	  "Keep-Alive" -> "115")
 	
+	val getPendingInvoiceData_Http_Headers = Map(
+	  "Accept-Encoding" -> "gzip,deflate",
+	  "Content-Type" -> "text/xml;charset=UTF-8",
+	  "SOAPAction" -> "urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1:GetPendingInvoiceData",
+	  "Keep-Alive" -> "115")
   }

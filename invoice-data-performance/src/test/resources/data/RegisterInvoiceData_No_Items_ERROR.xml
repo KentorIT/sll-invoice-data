@@ -10,6 +10,7 @@
          <urn2:refContractId>05690b3b-6323-4db6-b505-4a890c678eb3</urn2:refContractId>
          <urn2:supplierName>TEST_556482-8654</urn2:supplierName>
          <urn2:serviceCode>01</urn2:serviceCode>
+		 <urn2:costCenter>TEST_HSF</urn2:costCenter>
          <urn2:paymentResponsible>TEST_HSF</urn2:paymentResponsible>
          <urn2:healthCareCommission>TEST_TEST</urn2:healthCareCommission>
          <urn2:acknowledgementId>05690b3b-6323-4db6-b505-4a890c678eb3</urn2:acknowledgementId>

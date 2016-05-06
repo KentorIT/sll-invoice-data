@@ -28,6 +28,7 @@ import se.sll.invoicedata.utils.Headers
 class LoadTestRegisterInvoicedataOkSimulation extends Simulation {
 
     setUp(
-		Scenarios.scn_RegisterInvoiceData_No_DiscountItem_OK_Http.inject(rampUsers(Conf.noOfUsers) over (Scenarios.rampUpTimeSecs seconds)).protocols(Conf.httpConf)
+		Scenarios.scn_RegisterInvoiceData_No_DiscountItem_OK_Http.inject(rampUsers(Conf.noOfUsers) over (Scenarios.rampUpTimeSecs seconds)).protocols(Conf.httpConf),
+		Scenarios.scn_RegisterInvoiceData_With_DiscountItem_OK_Http.inject(rampUsers(Conf.noOfUsers) over (Scenarios.rampUpTimeSecs seconds)).protocols(Conf.httpConf)
 	)
 }

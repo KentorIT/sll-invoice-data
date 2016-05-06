@@ -10,6 +10,7 @@
          <urn2:refContractId>1664c45f-67e9-48a4-b2e5-2602d3375102</urn2:refContractId>
          <urn2:supplierName>TEST_556482-8654</urn2:supplierName>
          <urn2:serviceCode>01</urn2:serviceCode>
+		 <urn2:costCenter>TEST_HSF</urn2:costCenter>
          <urn2:paymentResponsible>TEST_HSF</urn2:paymentResponsible>
          <urn2:healthCareCommission>TEST_TEST</urn2:healthCareCommission>
          <urn2:acknowledgementId>1664c45f-67e9-48a4-b2e5-2602d3375102</urn2:acknowledgementId>
@@ -18,7 +19,7 @@
          <urn2:startTime>2016-04-12T12:19:31.462</urn2:startTime>
          <urn2:endTime>2016-04-12T20:19:31</urn2:endTime>
          <!--1 or more repetitions:-->
-         <urn2:itemList><urn2:itemId>bd8e3535-3230-42d4-93ce-15b62228cb3c</urn2:itemId><urn2:description>Test item-0</urn2:description><urn2:qty>6</urn2:qty></urn2:itemList>
+         <urn2:itemList><urn2:itemId>bd8e3535-3230-42d4-93ce-15b62228cb3c</urn2:itemId><urn2:description>Test item-0</urn2:description><urn2:qty>6</urn2:qty><urn2:price>200</urn2:price></urn2:itemList>
          <urn2:discountItemList><urn2:description>>Test discount item-0</urn2:description><urn2:discountInPercentage>6</urn2:discountInPercentage><urn2:orderOfDiscount>0</urn2:orderOfDiscount><urn2:referenceItemList><urn2:refItemId>bd8e3535-3230-42d4-93ce-15b62228cb3c</urn2:refItemId><urn2:qty>6</urn2:qty></urn2:referenceItemList></urn2:discountItemList>
       </urn1:RegisterInvoiceData>
    </soapenv:Body>

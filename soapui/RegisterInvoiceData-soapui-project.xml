@@ -2715,6 +2715,1913 @@
          ]
       }
    ]
+}</con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:testStep type="httprequest" name="UpdatePriceList" id="78f38ec2-2ba0-4dbf-a692-f14dfdfe1533"><con:settings/><con:config method="POST" xsi:type="con:HttpRequest" id="d6e72d93-3457-461e-ac1c-f998dedd5e0d" name="UpdatePriceList" postQueryString="false" mediaType="application/json" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://ttolk01.sll.se/invoicedata-web-app/admin/pricelists</con:endpoint><con:request>{
+  priceList : [ {
+    supplierId : "556482-8654",
+    supplierName : "Transvoice",
+    serviceCode : "01",
+    validFrom : "2016-01-01",
+    prices : [ {
+      itemId : "e18031da-f4ed-4af1-bd57-3da14791165f",
+      price : 11.00
+    }, {
+      itemId : "24dea6ef-cb9a-472f-ae89-004917c1ec95",
+      price : 12.00
+    }, {
+      itemId : "c7ac002d-658f-448d-ac1a-c1805b093f84",
+      price : 13.00
+    }, {
+      itemId : "ec5ec38d-ce84-436a-965d-12d9448791ac",
+      price : 14.00
+    }, {
+      itemId : "d05ff784-21eb-45e6-b79d-db89fdeda0a4",
+      price : 275.00
+    }, {
+      itemId : "81b735b7-9fac-4bd5-b672-4537fb403684",
+      price : 1001.00
+    }, {
+      itemId : "e0c7ebbf-27d0-4412-8af2-85a69cff1d1c",
+      price : 1002.00
+    }, {
+      itemId : "7ff382e3-b167-46de-9f71-368e8f531f8a",
+      price : 0.00
+    }, {
+      itemId : "08a8bbd5-9e85-4cd5-89fc-685c3cb6779c",
+      price : 1004.00
+    }, {
+      itemId : "b566c2ef-e35f-40ee-adab-64ad8b84caaf",
+      price : 0.00
+    }, {
+      itemId : "11c8d580-4bd9-4b7f-8972-1494e4cef391",
+      price : 1006.00
+    }, {
+      itemId : "2368d13d-4dbf-4db2-83e0-4e6310c981ed",
+      price : 1007.00
+    }, {
+      itemId : "620787b4-0fd6-4f3d-bf60-1324dbad1d74",
+      price : 1008.00
+    }, {
+      itemId : "58922b6a-fd03-4c65-be0e-c4733e6ba664",
+      price : 0.00
+    }, {
+      itemId : "7c32da0c-60b1-449f-b8bc-73ab6e658623",
+      price : 1010.00
+    }, {
+      itemId : "28db7ea7-c4cc-456d-b375-45c48548e53f",
+      price : 0.00
+    }, {
+      itemId : "bb716bde-4108-4fb6-b374-784c7700ae2d",
+      price : 1012.00
+    }, {
+      itemId : "485068e5-4859-4173-b07d-072bb581ec01",
+      price : 1013.00
+    }, {
+      itemId : "56c17560-5299-4cd2-bd2b-1cf7dd17fdb4",
+      price : 1014.00
+    }, {
+      itemId : "501b4aba-a933-4450-aa3b-815a12ec5b59",
+      price : 0.00
+    }, {
+      itemId : "36ced99d-43d3-4a78-a804-a6f347fab0aa",
+      price : 1016.00
+    }, {
+      itemId : "1f808767-54c5-4d5f-b3c7-9e8af29bfddd",
+      price : 0.00
+    }, {
+      itemId : "5b9b7992-6a4d-4548-8770-4795196f15e9",
+      price : 1018.00
+    }, {
+      itemId : "5fd7d88a-e989-42d7-822b-9127837bc931",
+      price : 1019.00
+    }, {
+      itemId : "c28f77ee-8857-4d69-a2d4-1850f646a598",
+      price : 1020.00
+    }, {
+      itemId : "68862c76-c569-44d3-b0d7-703ace903abe",
+      price : 0.00
+    }, {
+      itemId : "be86bc7e-905e-4279-8274-e7dcdb8102c0",
+      price : 1022.00
+    }, {
+      itemId : "57fb8d87-b5a4-4491-98fa-ba06ba2659e1",
+      price : 0.00
+    }, {
+      itemId : "02bb43c2-50c1-4cc6-99f0-8cf4e1d45a44",
+      price : 1024.00
+    }, {
+      itemId : "4516acb4-3003-42f6-9b11-4dab6405cc2e",
+      price : 1025.00
+    }, {
+      itemId : "f739f0a9-e8cb-45fc-a744-57b005778bdd",
+      price : 1026.00
+    }, {
+      itemId : "626b71c1-0d7b-40f9-b3ec-1afa3b1799b4",
+      price : 0.00
+    }, {
+      itemId : "bbacea56-d05f-4119-ab22-2403dd7adff2",
+      price : 1028.00
+    }, {
+      itemId : "be86b1d5-caa2-4537-bd63-63a14be545b2",
+      price : 0.00
+    }, {
+      itemId : "7d32a4f1-620c-435b-afc5-c363ed7287c7",
+      price : 1030.00
+    }, {
+      itemId : "72b186b6-0ff0-4dc9-9d2e-ba8a03283b9f",
+      price : 1031.00
+    }, {
+      itemId : "90fd57a3-fa3d-44ee-adc1-038c5e51b3da",
+      price : 1032.00
+    }, {
+      itemId : "ed3562a3-00db-43eb-bc17-eb8c9aa8594b",
+      price : 0.00
+    }, {
+      itemId : "5018a604-406d-4da3-be26-86e0d3c2a445",
+      price : 1034.00
+    }, {
+      itemId : "4b2c6fd7-2c50-482e-921d-75ca1283ab08",
+      price : 0.00
+    }, {
+      itemId : "08a5d46d-5fe8-4df8-8309-2da699b201bf",
+      price : 1036.00
+    }, {
+      itemId : "fc9f8d86-818a-4786-9c12-4901da44ab3d",
+      price : 1037.00
+    }, {
+      itemId : "f419e686-a778-49ac-81fb-3b5e58f92c74",
+      price : 1038.00
+    }, {
+      itemId : "be420cd6-0e2a-4cb2-a5de-cbaffb74fcfc",
+      price : 0.00
+    }, {
+      itemId : "514fa2aa-924a-424d-a4eb-c66828ae4593",
+      price : 1040.00
+    }, {
+      itemId : "5875edf6-83d4-402a-adc5-34ff25e337a0",
+      price : 0.00
+    }, {
+      itemId : "479e67e3-5205-4a7e-abb2-2e32dbba5f92",
+      price : 1042.00
+    }, {
+      itemId : "38e18759-d86b-4ab6-b8a6-69b0564f59f6",
+      price : 1043.00
+    }, {
+      itemId : "9331c70c-5a71-4c66-85fe-ce8df592439c",
+      price : 1044.00
+    }, {
+      itemId : "25ae97ab-6923-4d36-9562-987d95529a43",
+      price : 0.00
+    }, {
+      itemId : "a8ede50f-8b42-4f0d-9a29-b495c03855d6",
+      price : 1046.00
+    }, {
+      itemId : "99460c1d-86b2-46b9-883d-6232284eae53",
+      price : 0.00
+    }, {
+      itemId : "b398562d-c56a-49d2-95fd-5c4f71b46a8b",
+      price : 1048.00
+    }, {
+      itemId : "62bb48f8-28a9-41ec-a821-c0d9a9127767",
+      price : 1049.00
+    }, {
+      itemId : "365f5649-08c1-45de-9ab7-80b1157240ee",
+      price : 1050.00
+    }, {
+      itemId : "0ad7cd70-c1cc-4b81-be34-c9c97068abb8",
+      price : 0.00
+    }, {
+      itemId : "33907f47-ba59-495f-9b0e-2acceee8eb65",
+      price : 1052.00
+    }, {
+      itemId : "4fbf61b2-4e6d-43f0-bf56-9f3046c90273",
+      price : 0.00
+    }, {
+      itemId : "847c977a-5865-4e4a-874e-b31a7656d1a5",
+      price : 1054.00
+    }, {
+      itemId : "8c014fd6-6e59-450a-81e9-0d54a4530dac",
+      price : 1055.00
+    }, {
+      itemId : "f6a23863-1983-4b27-98c1-2e6af2c1eeb3",
+      price : 1056.00
+    }, {
+      itemId : "0623192b-bb59-49e9-9c22-6d58423faa76",
+      price : 0.00
+    }, {
+      itemId : "118d2f39-60f6-4571-a138-df76a6ad7b3a",
+      price : 1058.00
+    }, {
+      itemId : "3c8a4ba3-c504-45c7-8462-ab15686636f8",
+      price : 0.00
+    }, {
+      itemId : "2283366f-3266-4f14-85e7-b919366a8948",
+      price : 1060.00
+    }, {
+      itemId : "95f522d5-a043-483b-b7e3-6540cca88d02",
+      price : 1061.00
+    }, {
+      itemId : "a5a081f0-9115-4f30-aded-fcbf45e45be2",
+      price : 1062.00
+    }, {
+      itemId : "00fa048d-ab6c-4fc4-af11-1ed1c573ce95",
+      price : 0.00
+    }, {
+      itemId : "cc2c5e7b-dddc-456d-bb2a-8fb323917781",
+      price : 1064.00
+    }, {
+      itemId : "39df2851-5428-483e-809e-d9607b1735d4",
+      price : 0.00
+    }, {
+      itemId : "80a6f907-dea4-41af-9065-056afb5f442c",
+      price : 1066.00
+    }, {
+      itemId : "148ab73a-1c61-4924-b250-5fbee4a0bb0a",
+      price : 1067.00
+    }, {
+      itemId : "1ebd13ba-7054-4694-9eb0-3474387ed1ed",
+      price : 1068.00
+    }, {
+      itemId : "0359ccdc-4122-4942-afbc-1e17359d61fb",
+      price : 0.00
+    }, {
+      itemId : "68e97b19-fe8b-4d18-9b39-9cdb8be9382c",
+      price : 1070.00
+    }, {
+      itemId : "ece7093e-beee-4c79-8059-aa4b438aa0d0",
+      price : 0.00
+    }, {
+      itemId : "984447d6-c717-4e67-853c-61adf206383d",
+      price : 1072.00
+    }, {
+      itemId : "65900052-787f-4add-9eda-1377ec857551",
+      price : 1073.00
+    }, {
+      itemId : "a6ae21b0-0cd3-4629-90bf-69fa863f0a6a",
+      price : 1074.00
+    }, {
+      itemId : "a564ba22-59f7-404d-8966-6ee6d1bfc061",
+      price : 0.00
+    }, {
+      itemId : "1b04cfce-d4b6-4ecf-85a1-84109f049c9b",
+      price : 1076.00
+    }, {
+      itemId : "ad95d27f-e493-4fc8-a4e4-91b582f0aa6a",
+      price : 0.00
+    }, {
+      itemId : "db2a15e8-da14-401e-9142-5e02ad124931",
+      price : 1078.00
+    }, {
+      itemId : "7d150251-3ebf-4e51-8868-0b8d4c91e943",
+      price : 1079.00
+    }, {
+      itemId : "d2467654-1d80-422d-8058-91823b94336b",
+      price : 1080.00
+    }, {
+      itemId : "f97f7726-0a99-4f29-ae0b-01ad110e7cf2",
+      price : 0.00
+    }, {
+      itemId : "9ec00245-a598-43ad-aec8-6af8d925cf13",
+      price : 1082.00
+    }, {
+      itemId : "c25f8bfe-9da5-4168-a881-76232f81c6f1",
+      price : 0.00
+    }, {
+      itemId : "1affd265-ff90-489a-8075-121d23f8e566",
+      price : 1084.00
+    }, {
+      itemId : "049b0f5f-403d-43e8-b5bb-af5008a7e3a7",
+      price : 1085.00
+    }, {
+      itemId : "57d0e1a4-2799-4be3-9fdc-75f369de7bfe",
+      price : 1086.00
+    }, {
+      itemId : "4c8495be-5ff9-4953-a841-66b8dfd7f98e",
+      price : 0.00
+    }, {
+      itemId : "c9f5d047-762f-4dc5-a74c-c54e9e4b6b98",
+      price : 1088.00
+    }, {
+      itemId : "ff83ff28-0691-4021-883c-69a8cddbbe23",
+      price : 0.00
+    }, {
+      itemId : "e2ed7857-62a9-48d3-8b75-b2a372fc1605",
+      price : 1090.00
+    }, {
+      itemId : "a765c923-a54b-4198-9815-592d3a90926b",
+      price : 1091.00
+    }, {
+      itemId : "40218439-ba1a-4e37-a327-c28af50065fe",
+      price : 1092.00
+    }, {
+      itemId : "483ba540-1ce3-40de-8afa-f0c188d1afd3",
+      price : 0.00
+    }, {
+      itemId : "e94808c7-adfe-4979-a919-24e844130357",
+      price : 1094.00
+    }, {
+      itemId : "69415746-4549-46e4-9048-baac029f996a",
+      price : 0.00
+    }, {
+      itemId : "4e0ecfe4-6d17-472d-ae1f-8a1504dbfbff",
+      price : 1096.00
+    }, {
+      itemId : "42c88ed8-cdc3-4eee-8eed-6329567e64fe",
+      price : 1097.00
+    }, {
+      itemId : "215d39e5-48f1-449f-9152-26f83576a823",
+      price : 1098.00
+    }, {
+      itemId : "58441684-efc2-43d4-abea-06a28d085cf6",
+      price : 0.00
+    }, {
+      itemId : "e1fce840-8c1b-436c-bc37-77f475f46356",
+      price : 1100.00
+    }, {
+      itemId : "f0242db1-5833-422b-aae0-dd90b2e14fc1",
+      price : 0.00
+    }, {
+      itemId : "0aa04cba-be8f-415b-bc55-7f9d8c4cce74",
+      price : 1102.00
+    }, {
+      itemId : "5437bccf-3fc5-4a64-9b6c-1e4d989b56b5",
+      price : 1103.00
+    }, {
+      itemId : "3efee530-2892-48c8-99d3-9036846f2e4e",
+      price : 1104.00
+    }, {
+      itemId : "025e0a5e-1cdf-4076-ad7a-3c7f7224e2ce",
+      price : 0.00
+    }, {
+      itemId : "60ad73bc-b469-4d18-80a4-278209bc5b90",
+      price : 1106.00
+    }, {
+      itemId : "b16f645e-0eaf-49f0-8cf9-9cfc73e44bb3",
+      price : 0.00
+    }, {
+      itemId : "267ebd01-54c8-46c9-be23-d99e156869ea",
+      price : 1108.00
+    }, {
+      itemId : "271e706e-b4fc-4216-8a37-4a183374146f",
+      price : 1109.00
+    }, {
+      itemId : "0ac4264b-a548-4c2d-84a5-9492aaf8151d",
+      price : 1110.00
+    }, {
+      itemId : "4b9adabd-6c0b-435b-a03b-940132b81b35",
+      price : 0.00
+    }, {
+      itemId : "44ac53b7-0749-4171-a515-97b1f9bb5ccf",
+      price : 1112.00
+    }, {
+      itemId : "41a51f47-3097-41ea-87f1-1fc64d770571",
+      price : 0.00
+    }, {
+      itemId : "b2a79a5c-bbe2-4ada-9ff8-3d7006f34ec7",
+      price : 1114.00
+    }, {
+      itemId : "4ef800de-9893-49b1-949b-4fdfd8fda4e0",
+      price : 1115.00
+    }, {
+      itemId : "8d5ccaf8-5f27-411f-b54e-58afe29a9738",
+      price : 1116.00
+    }, {
+      itemId : "519cf90a-39d0-4982-bea9-c142c411b8c0",
+      price : 0.00
+    }, {
+      itemId : "176d32ff-b6fc-4481-afa1-9f79a9f59e61",
+      price : 1118.00
+    }, {
+      itemId : "3e23e4be-0bea-4e95-9005-71a198a29565",
+      price : 0.00
+    }, {
+      itemId : "57ffa3f3-0d92-4c9b-bcef-fdf662e618ed",
+      price : 1120.00
+    } ]
+  }, {
+    supplierId : "556629-1513",
+    supplierName : "Språkservice",
+    serviceCode : "01",
+    validFrom : "2016-01-01",
+    prices : [ {
+      itemId : "e18031da-f4ed-4af1-bd57-3da14791165f",
+      price : 15.00
+    }, {
+      itemId : "24dea6ef-cb9a-472f-ae89-004917c1ec95",
+      price : 16.00
+    }, {
+      itemId : "c7ac002d-658f-448d-ac1a-c1805b093f84",
+      price : 17.00
+    }, {
+      itemId : "ec5ec38d-ce84-436a-965d-12d9448791ac",
+      price : 18.00
+    }, {
+      itemId : "d05ff784-21eb-45e6-b79d-db89fdeda0a4",
+      price : 275.00
+    }, {
+      itemId : "81b735b7-9fac-4bd5-b672-4537fb403684",
+      price : 1031.00
+    }, {
+      itemId : "e0c7ebbf-27d0-4412-8af2-85a69cff1d1c",
+      price : 1032.00
+    }, {
+      itemId : "7ff382e3-b167-46de-9f71-368e8f531f8a",
+      price : 0.00
+    }, {
+      itemId : "08a8bbd5-9e85-4cd5-89fc-685c3cb6779c",
+      price : 1034.00
+    }, {
+      itemId : "b566c2ef-e35f-40ee-adab-64ad8b84caaf",
+      price : 0.00
+    }, {
+      itemId : "11c8d580-4bd9-4b7f-8972-1494e4cef391",
+      price : 1036.00
+    }, {
+      itemId : "2368d13d-4dbf-4db2-83e0-4e6310c981ed",
+      price : 1037.00
+    }, {
+      itemId : "620787b4-0fd6-4f3d-bf60-1324dbad1d74",
+      price : 1038.00
+    }, {
+      itemId : "58922b6a-fd03-4c65-be0e-c4733e6ba664",
+      price : 0.00
+    }, {
+      itemId : "7c32da0c-60b1-449f-b8bc-73ab6e658623",
+      price : 1040.00
+    }, {
+      itemId : "28db7ea7-c4cc-456d-b375-45c48548e53f",
+      price : 0.00
+    }, {
+      itemId : "bb716bde-4108-4fb6-b374-784c7700ae2d",
+      price : 1042.00
+    }, {
+      itemId : "485068e5-4859-4173-b07d-072bb581ec01",
+      price : 1043.00
+    }, {
+      itemId : "56c17560-5299-4cd2-bd2b-1cf7dd17fdb4",
+      price : 1044.00
+    }, {
+      itemId : "501b4aba-a933-4450-aa3b-815a12ec5b59",
+      price : 0.00
+    }, {
+      itemId : "36ced99d-43d3-4a78-a804-a6f347fab0aa",
+      price : 1046.00
+    }, {
+      itemId : "1f808767-54c5-4d5f-b3c7-9e8af29bfddd",
+      price : 0.00
+    }, {
+      itemId : "5b9b7992-6a4d-4548-8770-4795196f15e9",
+      price : 1048.00
+    }, {
+      itemId : "5fd7d88a-e989-42d7-822b-9127837bc931",
+      price : 1049.00
+    }, {
+      itemId : "c28f77ee-8857-4d69-a2d4-1850f646a598",
+      price : 1050.00
+    }, {
+      itemId : "68862c76-c569-44d3-b0d7-703ace903abe",
+      price : 0.00
+    }, {
+      itemId : "be86bc7e-905e-4279-8274-e7dcdb8102c0",
+      price : 1052.00
+    }, {
+      itemId : "57fb8d87-b5a4-4491-98fa-ba06ba2659e1",
+      price : 0.00
+    }, {
+      itemId : "02bb43c2-50c1-4cc6-99f0-8cf4e1d45a44",
+      price : 1054.00
+    }, {
+      itemId : "4516acb4-3003-42f6-9b11-4dab6405cc2e",
+      price : 1055.00
+    }, {
+      itemId : "f739f0a9-e8cb-45fc-a744-57b005778bdd",
+      price : 1056.00
+    }, {
+      itemId : "626b71c1-0d7b-40f9-b3ec-1afa3b1799b4",
+      price : 0.00
+    }, {
+      itemId : "bbacea56-d05f-4119-ab22-2403dd7adff2",
+      price : 1058.00
+    }, {
+      itemId : "be86b1d5-caa2-4537-bd63-63a14be545b2",
+      price : 0.00
+    }, {
+      itemId : "7d32a4f1-620c-435b-afc5-c363ed7287c7",
+      price : 1060.00
+    }, {
+      itemId : "72b186b6-0ff0-4dc9-9d2e-ba8a03283b9f",
+      price : 1061.00
+    }, {
+      itemId : "90fd57a3-fa3d-44ee-adc1-038c5e51b3da",
+      price : 1062.00
+    }, {
+      itemId : "ed3562a3-00db-43eb-bc17-eb8c9aa8594b",
+      price : 0.00
+    }, {
+      itemId : "5018a604-406d-4da3-be26-86e0d3c2a445",
+      price : 1064.00
+    }, {
+      itemId : "4b2c6fd7-2c50-482e-921d-75ca1283ab08",
+      price : 0.00
+    }, {
+      itemId : "08a5d46d-5fe8-4df8-8309-2da699b201bf",
+      price : 1066.00
+    }, {
+      itemId : "fc9f8d86-818a-4786-9c12-4901da44ab3d",
+      price : 1067.00
+    }, {
+      itemId : "f419e686-a778-49ac-81fb-3b5e58f92c74",
+      price : 1068.00
+    }, {
+      itemId : "be420cd6-0e2a-4cb2-a5de-cbaffb74fcfc",
+      price : 0.00
+    }, {
+      itemId : "514fa2aa-924a-424d-a4eb-c66828ae4593",
+      price : 1070.00
+    }, {
+      itemId : "5875edf6-83d4-402a-adc5-34ff25e337a0",
+      price : 0.00
+    }, {
+      itemId : "479e67e3-5205-4a7e-abb2-2e32dbba5f92",
+      price : 1072.00
+    }, {
+      itemId : "38e18759-d86b-4ab6-b8a6-69b0564f59f6",
+      price : 1073.00
+    }, {
+      itemId : "9331c70c-5a71-4c66-85fe-ce8df592439c",
+      price : 1074.00
+    }, {
+      itemId : "25ae97ab-6923-4d36-9562-987d95529a43",
+      price : 0.00
+    }, {
+      itemId : "a8ede50f-8b42-4f0d-9a29-b495c03855d6",
+      price : 1076.00
+    }, {
+      itemId : "99460c1d-86b2-46b9-883d-6232284eae53",
+      price : 0.00
+    }, {
+      itemId : "b398562d-c56a-49d2-95fd-5c4f71b46a8b",
+      price : 1078.00
+    }, {
+      itemId : "62bb48f8-28a9-41ec-a821-c0d9a9127767",
+      price : 1079.00
+    }, {
+      itemId : "365f5649-08c1-45de-9ab7-80b1157240ee",
+      price : 1080.00
+    }, {
+      itemId : "0ad7cd70-c1cc-4b81-be34-c9c97068abb8",
+      price : 0.00
+    }, {
+      itemId : "33907f47-ba59-495f-9b0e-2acceee8eb65",
+      price : 1082.00
+    }, {
+      itemId : "4fbf61b2-4e6d-43f0-bf56-9f3046c90273",
+      price : 0.00
+    }, {
+      itemId : "847c977a-5865-4e4a-874e-b31a7656d1a5",
+      price : 1084.00
+    }, {
+      itemId : "8c014fd6-6e59-450a-81e9-0d54a4530dac",
+      price : 1085.00
+    }, {
+      itemId : "f6a23863-1983-4b27-98c1-2e6af2c1eeb3",
+      price : 1086.00
+    }, {
+      itemId : "0623192b-bb59-49e9-9c22-6d58423faa76",
+      price : 0.00
+    }, {
+      itemId : "118d2f39-60f6-4571-a138-df76a6ad7b3a",
+      price : 1088.00
+    }, {
+      itemId : "3c8a4ba3-c504-45c7-8462-ab15686636f8",
+      price : 0.00
+    }, {
+      itemId : "2283366f-3266-4f14-85e7-b919366a8948",
+      price : 1090.00
+    }, {
+      itemId : "95f522d5-a043-483b-b7e3-6540cca88d02",
+      price : 1091.00
+    }, {
+      itemId : "a5a081f0-9115-4f30-aded-fcbf45e45be2",
+      price : 1092.00
+    }, {
+      itemId : "00fa048d-ab6c-4fc4-af11-1ed1c573ce95",
+      price : 0.00
+    }, {
+      itemId : "cc2c5e7b-dddc-456d-bb2a-8fb323917781",
+      price : 1094.00
+    }, {
+      itemId : "39df2851-5428-483e-809e-d9607b1735d4",
+      price : 0.00
+    }, {
+      itemId : "80a6f907-dea4-41af-9065-056afb5f442c",
+      price : 1096.00
+    }, {
+      itemId : "148ab73a-1c61-4924-b250-5fbee4a0bb0a",
+      price : 1097.00
+    }, {
+      itemId : "1ebd13ba-7054-4694-9eb0-3474387ed1ed",
+      price : 1098.00
+    }, {
+      itemId : "0359ccdc-4122-4942-afbc-1e17359d61fb",
+      price : 0.00
+    }, {
+      itemId : "68e97b19-fe8b-4d18-9b39-9cdb8be9382c",
+      price : 1100.00
+    }, {
+      itemId : "ece7093e-beee-4c79-8059-aa4b438aa0d0",
+      price : 0.00
+    }, {
+      itemId : "984447d6-c717-4e67-853c-61adf206383d",
+      price : 1102.00
+    }, {
+      itemId : "65900052-787f-4add-9eda-1377ec857551",
+      price : 1103.00
+    }, {
+      itemId : "a6ae21b0-0cd3-4629-90bf-69fa863f0a6a",
+      price : 1104.00
+    }, {
+      itemId : "a564ba22-59f7-404d-8966-6ee6d1bfc061",
+      price : 0.00
+    }, {
+      itemId : "1b04cfce-d4b6-4ecf-85a1-84109f049c9b",
+      price : 1106.00
+    }, {
+      itemId : "ad95d27f-e493-4fc8-a4e4-91b582f0aa6a",
+      price : 0.00
+    }, {
+      itemId : "db2a15e8-da14-401e-9142-5e02ad124931",
+      price : 1108.00
+    }, {
+      itemId : "7d150251-3ebf-4e51-8868-0b8d4c91e943",
+      price : 1109.00
+    }, {
+      itemId : "d2467654-1d80-422d-8058-91823b94336b",
+      price : 1110.00
+    }, {
+      itemId : "f97f7726-0a99-4f29-ae0b-01ad110e7cf2",
+      price : 0.00
+    }, {
+      itemId : "9ec00245-a598-43ad-aec8-6af8d925cf13",
+      price : 1112.00
+    }, {
+      itemId : "c25f8bfe-9da5-4168-a881-76232f81c6f1",
+      price : 0.00
+    }, {
+      itemId : "1affd265-ff90-489a-8075-121d23f8e566",
+      price : 1114.00
+    }, {
+      itemId : "049b0f5f-403d-43e8-b5bb-af5008a7e3a7",
+      price : 1115.00
+    }, {
+      itemId : "57d0e1a4-2799-4be3-9fdc-75f369de7bfe",
+      price : 1116.00
+    }, {
+      itemId : "4c8495be-5ff9-4953-a841-66b8dfd7f98e",
+      price : 0.00
+    }, {
+      itemId : "c9f5d047-762f-4dc5-a74c-c54e9e4b6b98",
+      price : 1118.00
+    }, {
+      itemId : "ff83ff28-0691-4021-883c-69a8cddbbe23",
+      price : 0.00
+    }, {
+      itemId : "e2ed7857-62a9-48d3-8b75-b2a372fc1605",
+      price : 1120.00
+    }, {
+      itemId : "a765c923-a54b-4198-9815-592d3a90926b",
+      price : 1121.00
+    }, {
+      itemId : "40218439-ba1a-4e37-a327-c28af50065fe",
+      price : 1122.00
+    }, {
+      itemId : "483ba540-1ce3-40de-8afa-f0c188d1afd3",
+      price : 0.00
+    }, {
+      itemId : "e94808c7-adfe-4979-a919-24e844130357",
+      price : 1124.00
+    }, {
+      itemId : "69415746-4549-46e4-9048-baac029f996a",
+      price : 0.00
+    }, {
+      itemId : "4e0ecfe4-6d17-472d-ae1f-8a1504dbfbff",
+      price : 1126.00
+    }, {
+      itemId : "42c88ed8-cdc3-4eee-8eed-6329567e64fe",
+      price : 1127.00
+    }, {
+      itemId : "215d39e5-48f1-449f-9152-26f83576a823",
+      price : 1128.00
+    }, {
+      itemId : "58441684-efc2-43d4-abea-06a28d085cf6",
+      price : 0.00
+    }, {
+      itemId : "e1fce840-8c1b-436c-bc37-77f475f46356",
+      price : 1130.00
+    }, {
+      itemId : "f0242db1-5833-422b-aae0-dd90b2e14fc1",
+      price : 0.00
+    }, {
+      itemId : "0aa04cba-be8f-415b-bc55-7f9d8c4cce74",
+      price : 1132.00
+    }, {
+      itemId : "5437bccf-3fc5-4a64-9b6c-1e4d989b56b5",
+      price : 1133.00
+    }, {
+      itemId : "3efee530-2892-48c8-99d3-9036846f2e4e",
+      price : 1134.00
+    }, {
+      itemId : "025e0a5e-1cdf-4076-ad7a-3c7f7224e2ce",
+      price : 0.00
+    }, {
+      itemId : "60ad73bc-b469-4d18-80a4-278209bc5b90",
+      price : 1136.00
+    }, {
+      itemId : "b16f645e-0eaf-49f0-8cf9-9cfc73e44bb3",
+      price : 0.00
+    }, {
+      itemId : "267ebd01-54c8-46c9-be23-d99e156869ea",
+      price : 1138.00
+    }, {
+      itemId : "271e706e-b4fc-4216-8a37-4a183374146f",
+      price : 1139.00
+    }, {
+      itemId : "0ac4264b-a548-4c2d-84a5-9492aaf8151d",
+      price : 1140.00
+    }, {
+      itemId : "4b9adabd-6c0b-435b-a03b-940132b81b35",
+      price : 1141.00
+    }, {
+      itemId : "44ac53b7-0749-4171-a515-97b1f9bb5ccf",
+      price : 1142.00
+    }, {
+      itemId : "41a51f47-3097-41ea-87f1-1fc64d770571",
+      price : 0.00
+    }, {
+      itemId : "b2a79a5c-bbe2-4ada-9ff8-3d7006f34ec7",
+      price : 1144.00
+    }, {
+      itemId : "4ef800de-9893-49b1-949b-4fdfd8fda4e0",
+      price : 1145.00
+    }, {
+      itemId : "8d5ccaf8-5f27-411f-b54e-58afe29a9738",
+      price : 1146.00
+    }, {
+      itemId : "519cf90a-39d0-4982-bea9-c142c411b8c0",
+      price : 0.00
+    }, {
+      itemId : "176d32ff-b6fc-4481-afa1-9f79a9f59e61",
+      price : 1148.00
+    }, {
+      itemId : "3e23e4be-0bea-4e95-9005-71a198a29565",
+      price : 0.00
+    }, {
+      itemId : "57ffa3f3-0d92-4c9b-bcef-fdf662e618ed",
+      price : 1150.00
+    } ]
+  }, {
+    supplierId : "556560-0854",
+    supplierName : "Semantix Equator",
+    serviceCode : "01",
+    validFrom : "2016-01-01",
+    prices : [ {
+      itemId : "e18031da-f4ed-4af1-bd57-3da14791165f",
+      price : 0.00
+    }, {
+      itemId : "24dea6ef-cb9a-472f-ae89-004917c1ec95",
+      price : 0.00
+    }, {
+      itemId : "c7ac002d-658f-448d-ac1a-c1805b093f84",
+      price : 0.00
+    }, {
+      itemId : "ec5ec38d-ce84-436a-965d-12d9448791ac",
+      price : 0.00
+    }, {
+      itemId : "d05ff784-21eb-45e6-b79d-db89fdeda0a4",
+      price : 0.00
+    }, {
+      itemId : "81b735b7-9fac-4bd5-b672-4537fb403684",
+      price : 0.00
+    }, {
+      itemId : "e0c7ebbf-27d0-4412-8af2-85a69cff1d1c",
+      price : 0.00
+    }, {
+      itemId : "7ff382e3-b167-46de-9f71-368e8f531f8a",
+      price : 0.00
+    }, {
+      itemId : "08a8bbd5-9e85-4cd5-89fc-685c3cb6779c",
+      price : 0.00
+    }, {
+      itemId : "b566c2ef-e35f-40ee-adab-64ad8b84caaf",
+      price : 0.00
+    }, {
+      itemId : "11c8d580-4bd9-4b7f-8972-1494e4cef391",
+      price : 0.00
+    }, {
+      itemId : "2368d13d-4dbf-4db2-83e0-4e6310c981ed",
+      price : 0.00
+    }, {
+      itemId : "620787b4-0fd6-4f3d-bf60-1324dbad1d74",
+      price : 0.00
+    }, {
+      itemId : "58922b6a-fd03-4c65-be0e-c4733e6ba664",
+      price : 0.00
+    }, {
+      itemId : "7c32da0c-60b1-449f-b8bc-73ab6e658623",
+      price : 0.00
+    }, {
+      itemId : "28db7ea7-c4cc-456d-b375-45c48548e53f",
+      price : 0.00
+    }, {
+      itemId : "bb716bde-4108-4fb6-b374-784c7700ae2d",
+      price : 0.00
+    }, {
+      itemId : "485068e5-4859-4173-b07d-072bb581ec01",
+      price : 0.00
+    }, {
+      itemId : "56c17560-5299-4cd2-bd2b-1cf7dd17fdb4",
+      price : 0.00
+    }, {
+      itemId : "501b4aba-a933-4450-aa3b-815a12ec5b59",
+      price : 0.00
+    }, {
+      itemId : "36ced99d-43d3-4a78-a804-a6f347fab0aa",
+      price : 0.00
+    }, {
+      itemId : "1f808767-54c5-4d5f-b3c7-9e8af29bfddd",
+      price : 0.00
+    }, {
+      itemId : "5b9b7992-6a4d-4548-8770-4795196f15e9",
+      price : 0.00
+    }, {
+      itemId : "5fd7d88a-e989-42d7-822b-9127837bc931",
+      price : 0.00
+    }, {
+      itemId : "c28f77ee-8857-4d69-a2d4-1850f646a598",
+      price : 0.00
+    }, {
+      itemId : "68862c76-c569-44d3-b0d7-703ace903abe",
+      price : 0.00
+    }, {
+      itemId : "be86bc7e-905e-4279-8274-e7dcdb8102c0",
+      price : 0.00
+    }, {
+      itemId : "57fb8d87-b5a4-4491-98fa-ba06ba2659e1",
+      price : 0.00
+    }, {
+      itemId : "02bb43c2-50c1-4cc6-99f0-8cf4e1d45a44",
+      price : 0.00
+    }, {
+      itemId : "4516acb4-3003-42f6-9b11-4dab6405cc2e",
+      price : 0.00
+    }, {
+      itemId : "f739f0a9-e8cb-45fc-a744-57b005778bdd",
+      price : 0.00
+    }, {
+      itemId : "626b71c1-0d7b-40f9-b3ec-1afa3b1799b4",
+      price : 0.00
+    }, {
+      itemId : "bbacea56-d05f-4119-ab22-2403dd7adff2",
+      price : 0.00
+    }, {
+      itemId : "be86b1d5-caa2-4537-bd63-63a14be545b2",
+      price : 0.00
+    }, {
+      itemId : "7d32a4f1-620c-435b-afc5-c363ed7287c7",
+      price : 0.00
+    }, {
+      itemId : "72b186b6-0ff0-4dc9-9d2e-ba8a03283b9f",
+      price : 0.00
+    }, {
+      itemId : "90fd57a3-fa3d-44ee-adc1-038c5e51b3da",
+      price : 0.00
+    }, {
+      itemId : "ed3562a3-00db-43eb-bc17-eb8c9aa8594b",
+      price : 0.00
+    }, {
+      itemId : "5018a604-406d-4da3-be26-86e0d3c2a445",
+      price : 0.00
+    }, {
+      itemId : "4b2c6fd7-2c50-482e-921d-75ca1283ab08",
+      price : 0.00
+    }, {
+      itemId : "08a5d46d-5fe8-4df8-8309-2da699b201bf",
+      price : 0.00
+    }, {
+      itemId : "fc9f8d86-818a-4786-9c12-4901da44ab3d",
+      price : 0.00
+    }, {
+      itemId : "f419e686-a778-49ac-81fb-3b5e58f92c74",
+      price : 0.00
+    }, {
+      itemId : "be420cd6-0e2a-4cb2-a5de-cbaffb74fcfc",
+      price : 0.00
+    }, {
+      itemId : "514fa2aa-924a-424d-a4eb-c66828ae4593",
+      price : 0.00
+    }, {
+      itemId : "5875edf6-83d4-402a-adc5-34ff25e337a0",
+      price : 0.00
+    }, {
+      itemId : "479e67e3-5205-4a7e-abb2-2e32dbba5f92",
+      price : 0.00
+    }, {
+      itemId : "38e18759-d86b-4ab6-b8a6-69b0564f59f6",
+      price : 0.00
+    }, {
+      itemId : "9331c70c-5a71-4c66-85fe-ce8df592439c",
+      price : 0.00
+    }, {
+      itemId : "25ae97ab-6923-4d36-9562-987d95529a43",
+      price : 0.00
+    }, {
+      itemId : "a8ede50f-8b42-4f0d-9a29-b495c03855d6",
+      price : 0.00
+    }, {
+      itemId : "99460c1d-86b2-46b9-883d-6232284eae53",
+      price : 0.00
+    }, {
+      itemId : "b398562d-c56a-49d2-95fd-5c4f71b46a8b",
+      price : 0.00
+    }, {
+      itemId : "62bb48f8-28a9-41ec-a821-c0d9a9127767",
+      price : 0.00
+    }, {
+      itemId : "365f5649-08c1-45de-9ab7-80b1157240ee",
+      price : 0.00
+    }, {
+      itemId : "0ad7cd70-c1cc-4b81-be34-c9c97068abb8",
+      price : 0.00
+    }, {
+      itemId : "33907f47-ba59-495f-9b0e-2acceee8eb65",
+      price : 0.00
+    }, {
+      itemId : "4fbf61b2-4e6d-43f0-bf56-9f3046c90273",
+      price : 0.00
+    }, {
+      itemId : "847c977a-5865-4e4a-874e-b31a7656d1a5",
+      price : 0.00
+    }, {
+      itemId : "8c014fd6-6e59-450a-81e9-0d54a4530dac",
+      price : 0.00
+    }, {
+      itemId : "f6a23863-1983-4b27-98c1-2e6af2c1eeb3",
+      price : 0.00
+    }, {
+      itemId : "0623192b-bb59-49e9-9c22-6d58423faa76",
+      price : 0.00
+    }, {
+      itemId : "118d2f39-60f6-4571-a138-df76a6ad7b3a",
+      price : 0.00
+    }, {
+      itemId : "3c8a4ba3-c504-45c7-8462-ab15686636f8",
+      price : 0.00
+    }, {
+      itemId : "2283366f-3266-4f14-85e7-b919366a8948",
+      price : 0.00
+    }, {
+      itemId : "95f522d5-a043-483b-b7e3-6540cca88d02",
+      price : 0.00
+    }, {
+      itemId : "a5a081f0-9115-4f30-aded-fcbf45e45be2",
+      price : 0.00
+    }, {
+      itemId : "00fa048d-ab6c-4fc4-af11-1ed1c573ce95",
+      price : 0.00
+    }, {
+      itemId : "cc2c5e7b-dddc-456d-bb2a-8fb323917781",
+      price : 0.00
+    }, {
+      itemId : "39df2851-5428-483e-809e-d9607b1735d4",
+      price : 0.00
+    }, {
+      itemId : "80a6f907-dea4-41af-9065-056afb5f442c",
+      price : 0.00
+    }, {
+      itemId : "148ab73a-1c61-4924-b250-5fbee4a0bb0a",
+      price : 0.00
+    }, {
+      itemId : "1ebd13ba-7054-4694-9eb0-3474387ed1ed",
+      price : 0.00
+    }, {
+      itemId : "0359ccdc-4122-4942-afbc-1e17359d61fb",
+      price : 0.00
+    }, {
+      itemId : "68e97b19-fe8b-4d18-9b39-9cdb8be9382c",
+      price : 0.00
+    }, {
+      itemId : "ece7093e-beee-4c79-8059-aa4b438aa0d0",
+      price : 0.00
+    }, {
+      itemId : "984447d6-c717-4e67-853c-61adf206383d",
+      price : 0.00
+    }, {
+      itemId : "65900052-787f-4add-9eda-1377ec857551",
+      price : 0.00
+    }, {
+      itemId : "a6ae21b0-0cd3-4629-90bf-69fa863f0a6a",
+      price : 0.00
+    }, {
+      itemId : "a564ba22-59f7-404d-8966-6ee6d1bfc061",
+      price : 0.00
+    }, {
+      itemId : "1b04cfce-d4b6-4ecf-85a1-84109f049c9b",
+      price : 0.00
+    }, {
+      itemId : "ad95d27f-e493-4fc8-a4e4-91b582f0aa6a",
+      price : 0.00
+    }, {
+      itemId : "db2a15e8-da14-401e-9142-5e02ad124931",
+      price : 0.00
+    }, {
+      itemId : "7d150251-3ebf-4e51-8868-0b8d4c91e943",
+      price : 0.00
+    }, {
+      itemId : "d2467654-1d80-422d-8058-91823b94336b",
+      price : 0.00
+    }, {
+      itemId : "f97f7726-0a99-4f29-ae0b-01ad110e7cf2",
+      price : 0.00
+    }, {
+      itemId : "9ec00245-a598-43ad-aec8-6af8d925cf13",
+      price : 0.00
+    }, {
+      itemId : "c25f8bfe-9da5-4168-a881-76232f81c6f1",
+      price : 0.00
+    }, {
+      itemId : "1affd265-ff90-489a-8075-121d23f8e566",
+      price : 0.00
+    }, {
+      itemId : "049b0f5f-403d-43e8-b5bb-af5008a7e3a7",
+      price : 0.00
+    }, {
+      itemId : "57d0e1a4-2799-4be3-9fdc-75f369de7bfe",
+      price : 0.00
+    }, {
+      itemId : "4c8495be-5ff9-4953-a841-66b8dfd7f98e",
+      price : 0.00
+    }, {
+      itemId : "c9f5d047-762f-4dc5-a74c-c54e9e4b6b98",
+      price : 0.00
+    }, {
+      itemId : "ff83ff28-0691-4021-883c-69a8cddbbe23",
+      price : 0.00
+    }, {
+      itemId : "e2ed7857-62a9-48d3-8b75-b2a372fc1605",
+      price : 0.00
+    }, {
+      itemId : "a765c923-a54b-4198-9815-592d3a90926b",
+      price : 0.00
+    }, {
+      itemId : "40218439-ba1a-4e37-a327-c28af50065fe",
+      price : 0.00
+    }, {
+      itemId : "483ba540-1ce3-40de-8afa-f0c188d1afd3",
+      price : 0.00
+    }, {
+      itemId : "e94808c7-adfe-4979-a919-24e844130357",
+      price : 0.00
+    }, {
+      itemId : "69415746-4549-46e4-9048-baac029f996a",
+      price : 0.00
+    }, {
+      itemId : "4e0ecfe4-6d17-472d-ae1f-8a1504dbfbff",
+      price : 0.00
+    }, {
+      itemId : "42c88ed8-cdc3-4eee-8eed-6329567e64fe",
+      price : 0.00
+    }, {
+      itemId : "215d39e5-48f1-449f-9152-26f83576a823",
+      price : 0.00
+    }, {
+      itemId : "58441684-efc2-43d4-abea-06a28d085cf6",
+      price : 0.00
+    }, {
+      itemId : "e1fce840-8c1b-436c-bc37-77f475f46356",
+      price : 0.00
+    }, {
+      itemId : "f0242db1-5833-422b-aae0-dd90b2e14fc1",
+      price : 0.00
+    }, {
+      itemId : "0aa04cba-be8f-415b-bc55-7f9d8c4cce74",
+      price : 0.00
+    }, {
+      itemId : "5437bccf-3fc5-4a64-9b6c-1e4d989b56b5",
+      price : 0.00
+    }, {
+      itemId : "3efee530-2892-48c8-99d3-9036846f2e4e",
+      price : 0.00
+    }, {
+      itemId : "025e0a5e-1cdf-4076-ad7a-3c7f7224e2ce",
+      price : 0.00
+    }, {
+      itemId : "60ad73bc-b469-4d18-80a4-278209bc5b90",
+      price : 0.00
+    }, {
+      itemId : "b16f645e-0eaf-49f0-8cf9-9cfc73e44bb3",
+      price : 0.00
+    }, {
+      itemId : "267ebd01-54c8-46c9-be23-d99e156869ea",
+      price : 0.00
+    }, {
+      itemId : "271e706e-b4fc-4216-8a37-4a183374146f",
+      price : 0.00
+    }, {
+      itemId : "0ac4264b-a548-4c2d-84a5-9492aaf8151d",
+      price : 0.00
+    }, {
+      itemId : "4b9adabd-6c0b-435b-a03b-940132b81b35",
+      price : 0.00
+    }, {
+      itemId : "44ac53b7-0749-4171-a515-97b1f9bb5ccf",
+      price : 0.00
+    }, {
+      itemId : "41a51f47-3097-41ea-87f1-1fc64d770571",
+      price : 0.00
+    }, {
+      itemId : "b2a79a5c-bbe2-4ada-9ff8-3d7006f34ec7",
+      price : 0.00
+    }, {
+      itemId : "4ef800de-9893-49b1-949b-4fdfd8fda4e0",
+      price : 0.00
+    }, {
+      itemId : "8d5ccaf8-5f27-411f-b54e-58afe29a9738",
+      price : 0.00
+    }, {
+      itemId : "519cf90a-39d0-4982-bea9-c142c411b8c0",
+      price : 0.00
+    }, {
+      itemId : "176d32ff-b6fc-4481-afa1-9f79a9f59e61",
+      price : 0.00
+    }, {
+      itemId : "3e23e4be-0bea-4e95-9005-71a198a29565",
+      price : 0.00
+    }, {
+      itemId : "57ffa3f3-0d92-4c9b-bcef-fdf662e618ed",
+      price : 0.00
+    } ]
+  }, {
+    supplierId : "556526-2630",
+    supplierName : "Semantix Tolkjouren",
+    serviceCode : "01",
+    validFrom : "2016-01-01",
+    prices : [ {
+      itemId : "e18031da-f4ed-4af1-bd57-3da14791165f",
+      price : 0.00
+    }, {
+      itemId : "24dea6ef-cb9a-472f-ae89-004917c1ec95",
+      price : 0.00
+    }, {
+      itemId : "c7ac002d-658f-448d-ac1a-c1805b093f84",
+      price : 0.00
+    }, {
+      itemId : "ec5ec38d-ce84-436a-965d-12d9448791ac",
+      price : 0.00
+    }, {
+      itemId : "d05ff784-21eb-45e6-b79d-db89fdeda0a4",
+      price : 0.00
+    }, {
+      itemId : "81b735b7-9fac-4bd5-b672-4537fb403684",
+      price : 0.00
+    }, {
+      itemId : "e0c7ebbf-27d0-4412-8af2-85a69cff1d1c",
+      price : 0.00
+    }, {
+      itemId : "7ff382e3-b167-46de-9f71-368e8f531f8a",
+      price : 0.00
+    }, {
+      itemId : "08a8bbd5-9e85-4cd5-89fc-685c3cb6779c",
+      price : 0.00
+    }, {
+      itemId : "b566c2ef-e35f-40ee-adab-64ad8b84caaf",
+      price : 0.00
+    }, {
+      itemId : "11c8d580-4bd9-4b7f-8972-1494e4cef391",
+      price : 0.00
+    }, {
+      itemId : "2368d13d-4dbf-4db2-83e0-4e6310c981ed",
+      price : 0.00
+    }, {
+      itemId : "620787b4-0fd6-4f3d-bf60-1324dbad1d74",
+      price : 0.00
+    }, {
+      itemId : "58922b6a-fd03-4c65-be0e-c4733e6ba664",
+      price : 0.00
+    }, {
+      itemId : "7c32da0c-60b1-449f-b8bc-73ab6e658623",
+      price : 0.00
+    }, {
+      itemId : "28db7ea7-c4cc-456d-b375-45c48548e53f",
+      price : 0.00
+    }, {
+      itemId : "bb716bde-4108-4fb6-b374-784c7700ae2d",
+      price : 0.00
+    }, {
+      itemId : "485068e5-4859-4173-b07d-072bb581ec01",
+      price : 0.00
+    }, {
+      itemId : "56c17560-5299-4cd2-bd2b-1cf7dd17fdb4",
+      price : 0.00
+    }, {
+      itemId : "501b4aba-a933-4450-aa3b-815a12ec5b59",
+      price : 0.00
+    }, {
+      itemId : "36ced99d-43d3-4a78-a804-a6f347fab0aa",
+      price : 0.00
+    }, {
+      itemId : "1f808767-54c5-4d5f-b3c7-9e8af29bfddd",
+      price : 0.00
+    }, {
+      itemId : "5b9b7992-6a4d-4548-8770-4795196f15e9",
+      price : 0.00
+    }, {
+      itemId : "5fd7d88a-e989-42d7-822b-9127837bc931",
+      price : 0.00
+    }, {
+      itemId : "c28f77ee-8857-4d69-a2d4-1850f646a598",
+      price : 0.00
+    }, {
+      itemId : "68862c76-c569-44d3-b0d7-703ace903abe",
+      price : 0.00
+    }, {
+      itemId : "be86bc7e-905e-4279-8274-e7dcdb8102c0",
+      price : 0.00
+    }, {
+      itemId : "57fb8d87-b5a4-4491-98fa-ba06ba2659e1",
+      price : 0.00
+    }, {
+      itemId : "02bb43c2-50c1-4cc6-99f0-8cf4e1d45a44",
+      price : 0.00
+    }, {
+      itemId : "4516acb4-3003-42f6-9b11-4dab6405cc2e",
+      price : 0.00
+    }, {
+      itemId : "f739f0a9-e8cb-45fc-a744-57b005778bdd",
+      price : 0.00
+    }, {
+      itemId : "626b71c1-0d7b-40f9-b3ec-1afa3b1799b4",
+      price : 0.00
+    }, {
+      itemId : "bbacea56-d05f-4119-ab22-2403dd7adff2",
+      price : 0.00
+    }, {
+      itemId : "be86b1d5-caa2-4537-bd63-63a14be545b2",
+      price : 0.00
+    }, {
+      itemId : "7d32a4f1-620c-435b-afc5-c363ed7287c7",
+      price : 0.00
+    }, {
+      itemId : "72b186b6-0ff0-4dc9-9d2e-ba8a03283b9f",
+      price : 0.00
+    }, {
+      itemId : "90fd57a3-fa3d-44ee-adc1-038c5e51b3da",
+      price : 0.00
+    }, {
+      itemId : "ed3562a3-00db-43eb-bc17-eb8c9aa8594b",
+      price : 0.00
+    }, {
+      itemId : "5018a604-406d-4da3-be26-86e0d3c2a445",
+      price : 0.00
+    }, {
+      itemId : "4b2c6fd7-2c50-482e-921d-75ca1283ab08",
+      price : 0.00
+    }, {
+      itemId : "08a5d46d-5fe8-4df8-8309-2da699b201bf",
+      price : 0.00
+    }, {
+      itemId : "fc9f8d86-818a-4786-9c12-4901da44ab3d",
+      price : 0.00
+    }, {
+      itemId : "f419e686-a778-49ac-81fb-3b5e58f92c74",
+      price : 0.00
+    }, {
+      itemId : "be420cd6-0e2a-4cb2-a5de-cbaffb74fcfc",
+      price : 0.00
+    }, {
+      itemId : "514fa2aa-924a-424d-a4eb-c66828ae4593",
+      price : 0.00
+    }, {
+      itemId : "5875edf6-83d4-402a-adc5-34ff25e337a0",
+      price : 0.00
+    }, {
+      itemId : "479e67e3-5205-4a7e-abb2-2e32dbba5f92",
+      price : 0.00
+    }, {
+      itemId : "38e18759-d86b-4ab6-b8a6-69b0564f59f6",
+      price : 0.00
+    }, {
+      itemId : "9331c70c-5a71-4c66-85fe-ce8df592439c",
+      price : 0.00
+    }, {
+      itemId : "25ae97ab-6923-4d36-9562-987d95529a43",
+      price : 0.00
+    }, {
+      itemId : "a8ede50f-8b42-4f0d-9a29-b495c03855d6",
+      price : 0.00
+    }, {
+      itemId : "99460c1d-86b2-46b9-883d-6232284eae53",
+      price : 0.00
+    }, {
+      itemId : "b398562d-c56a-49d2-95fd-5c4f71b46a8b",
+      price : 0.00
+    }, {
+      itemId : "62bb48f8-28a9-41ec-a821-c0d9a9127767",
+      price : 0.00
+    }, {
+      itemId : "365f5649-08c1-45de-9ab7-80b1157240ee",
+      price : 0.00
+    }, {
+      itemId : "0ad7cd70-c1cc-4b81-be34-c9c97068abb8",
+      price : 0.00
+    }, {
+      itemId : "33907f47-ba59-495f-9b0e-2acceee8eb65",
+      price : 0.00
+    }, {
+      itemId : "4fbf61b2-4e6d-43f0-bf56-9f3046c90273",
+      price : 0.00
+    }, {
+      itemId : "847c977a-5865-4e4a-874e-b31a7656d1a5",
+      price : 0.00
+    }, {
+      itemId : "8c014fd6-6e59-450a-81e9-0d54a4530dac",
+      price : 0.00
+    }, {
+      itemId : "f6a23863-1983-4b27-98c1-2e6af2c1eeb3",
+      price : 0.00
+    }, {
+      itemId : "0623192b-bb59-49e9-9c22-6d58423faa76",
+      price : 0.00
+    }, {
+      itemId : "118d2f39-60f6-4571-a138-df76a6ad7b3a",
+      price : 0.00
+    }, {
+      itemId : "3c8a4ba3-c504-45c7-8462-ab15686636f8",
+      price : 0.00
+    }, {
+      itemId : "2283366f-3266-4f14-85e7-b919366a8948",
+      price : 0.00
+    }, {
+      itemId : "95f522d5-a043-483b-b7e3-6540cca88d02",
+      price : 0.00
+    }, {
+      itemId : "a5a081f0-9115-4f30-aded-fcbf45e45be2",
+      price : 0.00
+    }, {
+      itemId : "00fa048d-ab6c-4fc4-af11-1ed1c573ce95",
+      price : 0.00
+    }, {
+      itemId : "cc2c5e7b-dddc-456d-bb2a-8fb323917781",
+      price : 0.00
+    }, {
+      itemId : "39df2851-5428-483e-809e-d9607b1735d4",
+      price : 0.00
+    }, {
+      itemId : "80a6f907-dea4-41af-9065-056afb5f442c",
+      price : 0.00
+    }, {
+      itemId : "148ab73a-1c61-4924-b250-5fbee4a0bb0a",
+      price : 0.00
+    }, {
+      itemId : "1ebd13ba-7054-4694-9eb0-3474387ed1ed",
+      price : 0.00
+    }, {
+      itemId : "0359ccdc-4122-4942-afbc-1e17359d61fb",
+      price : 0.00
+    }, {
+      itemId : "68e97b19-fe8b-4d18-9b39-9cdb8be9382c",
+      price : 0.00
+    }, {
+      itemId : "ece7093e-beee-4c79-8059-aa4b438aa0d0",
+      price : 0.00
+    }, {
+      itemId : "984447d6-c717-4e67-853c-61adf206383d",
+      price : 0.00
+    }, {
+      itemId : "65900052-787f-4add-9eda-1377ec857551",
+      price : 0.00
+    }, {
+      itemId : "a6ae21b0-0cd3-4629-90bf-69fa863f0a6a",
+      price : 0.00
+    }, {
+      itemId : "a564ba22-59f7-404d-8966-6ee6d1bfc061",
+      price : 0.00
+    }, {
+      itemId : "1b04cfce-d4b6-4ecf-85a1-84109f049c9b",
+      price : 0.00
+    }, {
+      itemId : "ad95d27f-e493-4fc8-a4e4-91b582f0aa6a",
+      price : 0.00
+    }, {
+      itemId : "db2a15e8-da14-401e-9142-5e02ad124931",
+      price : 0.00
+    }, {
+      itemId : "7d150251-3ebf-4e51-8868-0b8d4c91e943",
+      price : 0.00
+    }, {
+      itemId : "d2467654-1d80-422d-8058-91823b94336b",
+      price : 0.00
+    }, {
+      itemId : "f97f7726-0a99-4f29-ae0b-01ad110e7cf2",
+      price : 0.00
+    }, {
+      itemId : "9ec00245-a598-43ad-aec8-6af8d925cf13",
+      price : 0.00
+    }, {
+      itemId : "c25f8bfe-9da5-4168-a881-76232f81c6f1",
+      price : 0.00
+    }, {
+      itemId : "1affd265-ff90-489a-8075-121d23f8e566",
+      price : 0.00
+    }, {
+      itemId : "049b0f5f-403d-43e8-b5bb-af5008a7e3a7",
+      price : 0.00
+    }, {
+      itemId : "57d0e1a4-2799-4be3-9fdc-75f369de7bfe",
+      price : 0.00
+    }, {
+      itemId : "4c8495be-5ff9-4953-a841-66b8dfd7f98e",
+      price : 0.00
+    }, {
+      itemId : "c9f5d047-762f-4dc5-a74c-c54e9e4b6b98",
+      price : 0.00
+    }, {
+      itemId : "ff83ff28-0691-4021-883c-69a8cddbbe23",
+      price : 0.00
+    }, {
+      itemId : "e2ed7857-62a9-48d3-8b75-b2a372fc1605",
+      price : 0.00
+    }, {
+      itemId : "a765c923-a54b-4198-9815-592d3a90926b",
+      price : 0.00
+    }, {
+      itemId : "40218439-ba1a-4e37-a327-c28af50065fe",
+      price : 0.00
+    }, {
+      itemId : "483ba540-1ce3-40de-8afa-f0c188d1afd3",
+      price : 0.00
+    }, {
+      itemId : "e94808c7-adfe-4979-a919-24e844130357",
+      price : 0.00
+    }, {
+      itemId : "69415746-4549-46e4-9048-baac029f996a",
+      price : 0.00
+    }, {
+      itemId : "4e0ecfe4-6d17-472d-ae1f-8a1504dbfbff",
+      price : 0.00
+    }, {
+      itemId : "42c88ed8-cdc3-4eee-8eed-6329567e64fe",
+      price : 0.00
+    }, {
+      itemId : "215d39e5-48f1-449f-9152-26f83576a823",
+      price : 0.00
+    }, {
+      itemId : "58441684-efc2-43d4-abea-06a28d085cf6",
+      price : 0.00
+    }, {
+      itemId : "e1fce840-8c1b-436c-bc37-77f475f46356",
+      price : 0.00
+    }, {
+      itemId : "f0242db1-5833-422b-aae0-dd90b2e14fc1",
+      price : 0.00
+    }, {
+      itemId : "0aa04cba-be8f-415b-bc55-7f9d8c4cce74",
+      price : 0.00
+    }, {
+      itemId : "5437bccf-3fc5-4a64-9b6c-1e4d989b56b5",
+      price : 0.00
+    }, {
+      itemId : "3efee530-2892-48c8-99d3-9036846f2e4e",
+      price : 0.00
+    }, {
+      itemId : "025e0a5e-1cdf-4076-ad7a-3c7f7224e2ce",
+      price : 0.00
+    }, {
+      itemId : "60ad73bc-b469-4d18-80a4-278209bc5b90",
+      price : 0.00
+    }, {
+      itemId : "b16f645e-0eaf-49f0-8cf9-9cfc73e44bb3",
+      price : 0.00
+    }, {
+      itemId : "267ebd01-54c8-46c9-be23-d99e156869ea",
+      price : 0.00
+    }, {
+      itemId : "271e706e-b4fc-4216-8a37-4a183374146f",
+      price : 0.00
+    }, {
+      itemId : "0ac4264b-a548-4c2d-84a5-9492aaf8151d",
+      price : 0.00
+    }, {
+      itemId : "4b9adabd-6c0b-435b-a03b-940132b81b35",
+      price : 0.00
+    }, {
+      itemId : "44ac53b7-0749-4171-a515-97b1f9bb5ccf",
+      price : 0.00
+    }, {
+      itemId : "41a51f47-3097-41ea-87f1-1fc64d770571",
+      price : 0.00
+    }, {
+      itemId : "b2a79a5c-bbe2-4ada-9ff8-3d7006f34ec7",
+      price : 0.00
+    }, {
+      itemId : "4ef800de-9893-49b1-949b-4fdfd8fda4e0",
+      price : 0.00
+    }, {
+      itemId : "8d5ccaf8-5f27-411f-b54e-58afe29a9738",
+      price : 0.00
+    }, {
+      itemId : "519cf90a-39d0-4982-bea9-c142c411b8c0",
+      price : 0.00
+    }, {
+      itemId : "176d32ff-b6fc-4481-afa1-9f79a9f59e61",
+      price : 0.00
+    }, {
+      itemId : "3e23e4be-0bea-4e95-9005-71a198a29565",
+      price : 0.00
+    }, {
+      itemId : "57ffa3f3-0d92-4c9b-bcef-fdf662e618ed",
+      price : 0.00
+    } ]
+  }, {
+    supplierId : "556613-1792",
+    supplierName : "Järva",
+    serviceCode : "01",
+    validFrom : "2016-01-01",
+    prices : [ {
+      itemId : "e18031da-f4ed-4af1-bd57-3da14791165f",
+      price : 19.00
+    }, {
+      itemId : "24dea6ef-cb9a-472f-ae89-004917c1ec95",
+      price : 20.00
+    }, {
+      itemId : "c7ac002d-658f-448d-ac1a-c1805b093f84",
+      price : 21.00
+    }, {
+      itemId : "ec5ec38d-ce84-436a-965d-12d9448791ac",
+      price : 22.00
+    }, {
+      itemId : "d05ff784-21eb-45e6-b79d-db89fdeda0a4",
+      price : 275.00
+    }, {
+      itemId : "81b735b7-9fac-4bd5-b672-4537fb403684",
+      price : 1061.00
+    }, {
+      itemId : "e0c7ebbf-27d0-4412-8af2-85a69cff1d1c",
+      price : 1062.00
+    }, {
+      itemId : "7ff382e3-b167-46de-9f71-368e8f531f8a",
+      price : 0.00
+    }, {
+      itemId : "08a8bbd5-9e85-4cd5-89fc-685c3cb6779c",
+      price : 1064.00
+    }, {
+      itemId : "b566c2ef-e35f-40ee-adab-64ad8b84caaf",
+      price : 0.00
+    }, {
+      itemId : "11c8d580-4bd9-4b7f-8972-1494e4cef391",
+      price : 1066.00
+    }, {
+      itemId : "2368d13d-4dbf-4db2-83e0-4e6310c981ed",
+      price : 1067.00
+    }, {
+      itemId : "620787b4-0fd6-4f3d-bf60-1324dbad1d74",
+      price : 1068.00
+    }, {
+      itemId : "58922b6a-fd03-4c65-be0e-c4733e6ba664",
+      price : 0.00
+    }, {
+      itemId : "7c32da0c-60b1-449f-b8bc-73ab6e658623",
+      price : 1070.00
+    }, {
+      itemId : "28db7ea7-c4cc-456d-b375-45c48548e53f",
+      price : 0.00
+    }, {
+      itemId : "bb716bde-4108-4fb6-b374-784c7700ae2d",
+      price : 1072.00
+    }, {
+      itemId : "485068e5-4859-4173-b07d-072bb581ec01",
+      price : 1073.00
+    }, {
+      itemId : "56c17560-5299-4cd2-bd2b-1cf7dd17fdb4",
+      price : 1074.00
+    }, {
+      itemId : "501b4aba-a933-4450-aa3b-815a12ec5b59",
+      price : 0.00
+    }, {
+      itemId : "36ced99d-43d3-4a78-a804-a6f347fab0aa",
+      price : 1076.00
+    }, {
+      itemId : "1f808767-54c5-4d5f-b3c7-9e8af29bfddd",
+      price : 0.00
+    }, {
+      itemId : "5b9b7992-6a4d-4548-8770-4795196f15e9",
+      price : 1078.00
+    }, {
+      itemId : "5fd7d88a-e989-42d7-822b-9127837bc931",
+      price : 1079.00
+    }, {
+      itemId : "c28f77ee-8857-4d69-a2d4-1850f646a598",
+      price : 1080.00
+    }, {
+      itemId : "68862c76-c569-44d3-b0d7-703ace903abe",
+      price : 0.00
+    }, {
+      itemId : "be86bc7e-905e-4279-8274-e7dcdb8102c0",
+      price : 1082.00
+    }, {
+      itemId : "57fb8d87-b5a4-4491-98fa-ba06ba2659e1",
+      price : 0.00
+    }, {
+      itemId : "02bb43c2-50c1-4cc6-99f0-8cf4e1d45a44",
+      price : 1084.00
+    }, {
+      itemId : "4516acb4-3003-42f6-9b11-4dab6405cc2e",
+      price : 1085.00
+    }, {
+      itemId : "f739f0a9-e8cb-45fc-a744-57b005778bdd",
+      price : 1086.00
+    }, {
+      itemId : "626b71c1-0d7b-40f9-b3ec-1afa3b1799b4",
+      price : 0.00
+    }, {
+      itemId : "bbacea56-d05f-4119-ab22-2403dd7adff2",
+      price : 1088.00
+    }, {
+      itemId : "be86b1d5-caa2-4537-bd63-63a14be545b2",
+      price : 0.00
+    }, {
+      itemId : "7d32a4f1-620c-435b-afc5-c363ed7287c7",
+      price : 1090.00
+    }, {
+      itemId : "72b186b6-0ff0-4dc9-9d2e-ba8a03283b9f",
+      price : 1091.00
+    }, {
+      itemId : "90fd57a3-fa3d-44ee-adc1-038c5e51b3da",
+      price : 1092.00
+    }, {
+      itemId : "ed3562a3-00db-43eb-bc17-eb8c9aa8594b",
+      price : 0.00
+    }, {
+      itemId : "5018a604-406d-4da3-be26-86e0d3c2a445",
+      price : 1094.00
+    }, {
+      itemId : "4b2c6fd7-2c50-482e-921d-75ca1283ab08",
+      price : 0.00
+    }, {
+      itemId : "08a5d46d-5fe8-4df8-8309-2da699b201bf",
+      price : 1096.00
+    }, {
+      itemId : "fc9f8d86-818a-4786-9c12-4901da44ab3d",
+      price : 1097.00
+    }, {
+      itemId : "f419e686-a778-49ac-81fb-3b5e58f92c74",
+      price : 1098.00
+    }, {
+      itemId : "be420cd6-0e2a-4cb2-a5de-cbaffb74fcfc",
+      price : 0.00
+    }, {
+      itemId : "514fa2aa-924a-424d-a4eb-c66828ae4593",
+      price : 1100.00
+    }, {
+      itemId : "5875edf6-83d4-402a-adc5-34ff25e337a0",
+      price : 0.00
+    }, {
+      itemId : "479e67e3-5205-4a7e-abb2-2e32dbba5f92",
+      price : 1102.00
+    }, {
+      itemId : "38e18759-d86b-4ab6-b8a6-69b0564f59f6",
+      price : 1103.00
+    }, {
+      itemId : "9331c70c-5a71-4c66-85fe-ce8df592439c",
+      price : 1104.00
+    }, {
+      itemId : "25ae97ab-6923-4d36-9562-987d95529a43",
+      price : 0.00
+    }, {
+      itemId : "a8ede50f-8b42-4f0d-9a29-b495c03855d6",
+      price : 1106.00
+    }, {
+      itemId : "99460c1d-86b2-46b9-883d-6232284eae53",
+      price : 0.00
+    }, {
+      itemId : "b398562d-c56a-49d2-95fd-5c4f71b46a8b",
+      price : 1108.00
+    }, {
+      itemId : "62bb48f8-28a9-41ec-a821-c0d9a9127767",
+      price : 1109.00
+    }, {
+      itemId : "365f5649-08c1-45de-9ab7-80b1157240ee",
+      price : 1110.00
+    }, {
+      itemId : "0ad7cd70-c1cc-4b81-be34-c9c97068abb8",
+      price : 0.00
+    }, {
+      itemId : "33907f47-ba59-495f-9b0e-2acceee8eb65",
+      price : 1112.00
+    }, {
+      itemId : "4fbf61b2-4e6d-43f0-bf56-9f3046c90273",
+      price : 0.00
+    }, {
+      itemId : "847c977a-5865-4e4a-874e-b31a7656d1a5",
+      price : 1114.00
+    }, {
+      itemId : "8c014fd6-6e59-450a-81e9-0d54a4530dac",
+      price : 1115.00
+    }, {
+      itemId : "f6a23863-1983-4b27-98c1-2e6af2c1eeb3",
+      price : 1116.00
+    }, {
+      itemId : "0623192b-bb59-49e9-9c22-6d58423faa76",
+      price : 0.00
+    }, {
+      itemId : "118d2f39-60f6-4571-a138-df76a6ad7b3a",
+      price : 1118.00
+    }, {
+      itemId : "3c8a4ba3-c504-45c7-8462-ab15686636f8",
+      price : 0.00
+    }, {
+      itemId : "2283366f-3266-4f14-85e7-b919366a8948",
+      price : 1120.00
+    }, {
+      itemId : "95f522d5-a043-483b-b7e3-6540cca88d02",
+      price : 1121.00
+    }, {
+      itemId : "a5a081f0-9115-4f30-aded-fcbf45e45be2",
+      price : 1122.00
+    }, {
+      itemId : "00fa048d-ab6c-4fc4-af11-1ed1c573ce95",
+      price : 0.00
+    }, {
+      itemId : "cc2c5e7b-dddc-456d-bb2a-8fb323917781",
+      price : 1124.00
+    }, {
+      itemId : "39df2851-5428-483e-809e-d9607b1735d4",
+      price : 0.00
+    }, {
+      itemId : "80a6f907-dea4-41af-9065-056afb5f442c",
+      price : 1126.00
+    }, {
+      itemId : "148ab73a-1c61-4924-b250-5fbee4a0bb0a",
+      price : 1127.00
+    }, {
+      itemId : "1ebd13ba-7054-4694-9eb0-3474387ed1ed",
+      price : 1128.00
+    }, {
+      itemId : "0359ccdc-4122-4942-afbc-1e17359d61fb",
+      price : 0.00
+    }, {
+      itemId : "68e97b19-fe8b-4d18-9b39-9cdb8be9382c",
+      price : 1130.00
+    }, {
+      itemId : "ece7093e-beee-4c79-8059-aa4b438aa0d0",
+      price : 0.00
+    }, {
+      itemId : "984447d6-c717-4e67-853c-61adf206383d",
+      price : 1132.00
+    }, {
+      itemId : "65900052-787f-4add-9eda-1377ec857551",
+      price : 1133.00
+    }, {
+      itemId : "a6ae21b0-0cd3-4629-90bf-69fa863f0a6a",
+      price : 1134.00
+    }, {
+      itemId : "a564ba22-59f7-404d-8966-6ee6d1bfc061",
+      price : 0.00
+    }, {
+      itemId : "1b04cfce-d4b6-4ecf-85a1-84109f049c9b",
+      price : 1136.00
+    }, {
+      itemId : "ad95d27f-e493-4fc8-a4e4-91b582f0aa6a",
+      price : 0.00
+    }, {
+      itemId : "db2a15e8-da14-401e-9142-5e02ad124931",
+      price : 1138.00
+    }, {
+      itemId : "7d150251-3ebf-4e51-8868-0b8d4c91e943",
+      price : 1139.00
+    }, {
+      itemId : "d2467654-1d80-422d-8058-91823b94336b",
+      price : 1140.00
+    }, {
+      itemId : "f97f7726-0a99-4f29-ae0b-01ad110e7cf2",
+      price : 0.00
+    }, {
+      itemId : "9ec00245-a598-43ad-aec8-6af8d925cf13",
+      price : 1142.00
+    }, {
+      itemId : "c25f8bfe-9da5-4168-a881-76232f81c6f1",
+      price : 0.00
+    }, {
+      itemId : "1affd265-ff90-489a-8075-121d23f8e566",
+      price : 1144.00
+    }, {
+      itemId : "049b0f5f-403d-43e8-b5bb-af5008a7e3a7",
+      price : 1145.00
+    }, {
+      itemId : "57d0e1a4-2799-4be3-9fdc-75f369de7bfe",
+      price : 1146.00
+    }, {
+      itemId : "4c8495be-5ff9-4953-a841-66b8dfd7f98e",
+      price : 0.00
+    }, {
+      itemId : "c9f5d047-762f-4dc5-a74c-c54e9e4b6b98",
+      price : 1148.00
+    }, {
+      itemId : "ff83ff28-0691-4021-883c-69a8cddbbe23",
+      price : 0.00
+    }, {
+      itemId : "e2ed7857-62a9-48d3-8b75-b2a372fc1605",
+      price : 1150.00
+    }, {
+      itemId : "a765c923-a54b-4198-9815-592d3a90926b",
+      price : 1151.00
+    }, {
+      itemId : "40218439-ba1a-4e37-a327-c28af50065fe",
+      price : 1152.00
+    }, {
+      itemId : "483ba540-1ce3-40de-8afa-f0c188d1afd3",
+      price : 0.00
+    }, {
+      itemId : "e94808c7-adfe-4979-a919-24e844130357",
+      price : 1154.00
+    }, {
+      itemId : "69415746-4549-46e4-9048-baac029f996a",
+      price : 0.00
+    }, {
+      itemId : "4e0ecfe4-6d17-472d-ae1f-8a1504dbfbff",
+      price : 1156.00
+    }, {
+      itemId : "42c88ed8-cdc3-4eee-8eed-6329567e64fe",
+      price : 1157.00
+    }, {
+      itemId : "215d39e5-48f1-449f-9152-26f83576a823",
+      price : 1158.00
+    }, {
+      itemId : "58441684-efc2-43d4-abea-06a28d085cf6",
+      price : 0.00
+    }, {
+      itemId : "e1fce840-8c1b-436c-bc37-77f475f46356",
+      price : 1160.00
+    }, {
+      itemId : "f0242db1-5833-422b-aae0-dd90b2e14fc1",
+      price : 0.00
+    }, {
+      itemId : "0aa04cba-be8f-415b-bc55-7f9d8c4cce74",
+      price : 1162.00
+    }, {
+      itemId : "5437bccf-3fc5-4a64-9b6c-1e4d989b56b5",
+      price : 1163.00
+    }, {
+      itemId : "3efee530-2892-48c8-99d3-9036846f2e4e",
+      price : 1164.00
+    }, {
+      itemId : "025e0a5e-1cdf-4076-ad7a-3c7f7224e2ce",
+      price : 0.00
+    }, {
+      itemId : "60ad73bc-b469-4d18-80a4-278209bc5b90",
+      price : 1166.00
+    }, {
+      itemId : "b16f645e-0eaf-49f0-8cf9-9cfc73e44bb3",
+      price : 0.00
+    }, {
+      itemId : "267ebd01-54c8-46c9-be23-d99e156869ea",
+      price : 1168.00
+    }, {
+      itemId : "271e706e-b4fc-4216-8a37-4a183374146f",
+      price : 1169.00
+    }, {
+      itemId : "0ac4264b-a548-4c2d-84a5-9492aaf8151d",
+      price : 1170.00
+    }, {
+      itemId : "4b9adabd-6c0b-435b-a03b-940132b81b35",
+      price : 1171.00
+    }, {
+      itemId : "44ac53b7-0749-4171-a515-97b1f9bb5ccf",
+      price : 1172.00
+    }, {
+      itemId : "41a51f47-3097-41ea-87f1-1fc64d770571",
+      price : 0.00
+    }, {
+      itemId : "b2a79a5c-bbe2-4ada-9ff8-3d7006f34ec7",
+      price : 1174.00
+    }, {
+      itemId : "4ef800de-9893-49b1-949b-4fdfd8fda4e0",
+      price : 1175.00
+    }, {
+      itemId : "8d5ccaf8-5f27-411f-b54e-58afe29a9738",
+      price : 1176.00
+    }, {
+      itemId : "519cf90a-39d0-4982-bea9-c142c411b8c0",
+      price : 0.00
+    }, {
+      itemId : "176d32ff-b6fc-4481-afa1-9f79a9f59e61",
+      price : 1178.00
+    }, {
+      itemId : "3e23e4be-0bea-4e95-9005-71a198a29565",
+      price : 0.00
+    }, {
+      itemId : "57ffa3f3-0d92-4c9b-bcef-fdf662e618ed",
+      price : 1180.00
+    } ]
+  } ]
 }</con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:config></con:testStep><con:properties/><con:reportParameters/></con:testCase><con:properties/><con:reportParameters/></con:testSuite><con:testSuite id="cabdb930-cf78-4df5-9aeb-56d5680767be" name="RegisterInvoiceData_No_DiscountItems"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="84802e52-3594-47fa-b0b0-fe3340369788" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="RegisterInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="groovy" name="getCurrentDate" id="92d6957c-a2e2-4dc8-b156-1f0a98980cfd"><con:settings/><con:config><script>def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 Calendar cal = Calendar.getInstance()
 return sdf.format(cal.getTime())</script></con:config></con:testStep><con:testStep type="groovy" name="getRandomNumber" id="cc9e6bbb-0be2-49c6-86ce-dca5f74a3c59"><con:settings/><con:config><script>Math.abs(new Random().nextInt() % 11) + 1</script></con:config></con:testStep><con:testStep type="groovy" name="getRandomUUID" id="53b34b76-00c6-4da5-b6fe-41038b266a57"><con:settings/><con:config><script>import static java.util.UUID.randomUUID  
