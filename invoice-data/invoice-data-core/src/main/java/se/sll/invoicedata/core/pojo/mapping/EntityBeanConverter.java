@@ -36,13 +36,13 @@ import riv.sll.invoicedata._1.DiscountItem;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata._1.Item;
+import riv.sll.invoicedata._1.ReferenceItem;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.DiscountItemEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.model.entity.ReferenceItemEntity;
-import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * @author muqkha
@@ -76,50 +76,27 @@ public class EntityBeanConverter {
 	 * @return RegisteredEvent
 	 */
 	public static RegisteredEvent fromBusinessEventEntityToRegisteredEvent(final BusinessEventEntity businessEventEntity) {
-		final RegisteredEvent registeredEvent = new RegisteredEvent();
-		registeredEvent.setAcknowledgedBy(businessEventEntity.getAcknowledgedBy());
-		registeredEvent.setAcknowledgedTime(CoreUtil.toXMLGregorianCalendar(businessEventEntity.getAcknowledgedTime()));
-		registeredEvent.setAcknowledgementId(businessEventEntity.getAcknowledgementId());
-		registeredEvent.setCredit(getValue(businessEventEntity.getCredit()));
-		registeredEvent.setEndTime(CoreUtil.toXMLGregorianCalendar(businessEventEntity.getEndTime()));
-		registeredEvent.setEventId(businessEventEntity.getEventId());
-		registeredEvent.setHealthCareCommission(businessEventEntity.getHealthCareCommission());
-		registeredEvent.setHealthcareFacility(businessEventEntity.getHealthcareFacility());
-		registeredEvent.setId(businessEventEntity.getId());
-		registeredEvent.setPaymentResponsible(businessEventEntity.getPaymentResponsible());
-		registeredEvent.setRefContractId(businessEventEntity.getRefContractId());
-		registeredEvent.setServiceCode(businessEventEntity.getServiceCode());
-		registeredEvent.setStartTime(CoreUtil.toXMLGregorianCalendar(businessEventEntity.getStartTime()));
-		registeredEvent.setSupplierId(businessEventEntity.getSupplierId());
-		registeredEvent.setSupplierName(businessEventEntity.getSupplierName());
-		registeredEvent.setCostCenter(businessEventEntity.getCostCenter());
+		final RegisteredEvent registeredEvent = copyProperties(businessEventEntity, RegisteredEvent.class);
 		
 		Map<String, ItemEntity> serviceItemMap = new HashMap<String, ItemEntity>();
 		
 		BigDecimal amount = BigDecimal.valueOf(0.0);
 		for (ItemEntity itemEntity : businessEventEntity.getItemEntities()) {
-			Item item = new Item();
-			item.setDescription(itemEntity.getDescription());
-			item.setItemId(itemEntity.getItemId());
-			item.setPrice(itemEntity.getPrice());
-			item.setQty(itemEntity.getQty());
-			
+			final Item item = copyProperties(itemEntity, Item.class);
 			amount = amount.add(itemEntity.getPrice().multiply(itemEntity.getQty()));
-			
 			serviceItemMap.put(itemEntity.getItemId(), itemEntity);
 			registeredEvent.getItemList().add(item);
 		}
 		
 		TreeSet<DiscountItemEntity> discountItemSet = new TreeSet<DiscountItemEntity>(businessEventEntity.getDiscountItemEntities());
 		for (DiscountItemEntity discountItemEntity : discountItemSet) {
-			DiscountItem discountItem = new DiscountItem();
-			discountItem.setDescription(discountItemEntity.getDescription());
-			discountItem.setDiscountInPercentage(discountItemEntity.getDiscountInPercentage());
-			discountItem.setOrderOfDiscount(discountItemEntity.getOrderOfDiscount());
+			final DiscountItem discountItem = copyProperties(discountItemEntity, DiscountItem.class);
 			
 			BigDecimal discountAmount = BigDecimal.valueOf(0.0);
 			
 			for (ReferenceItemEntity referenceItemEntity : discountItemEntity.getReferenceItemEntities()) {
+				final ReferenceItem referenceItem = copyProperties(referenceItemEntity, ReferenceItem.class);
+				discountItem.getReferenceItemList().add(referenceItem);
 	    		ItemEntity itemEntity = serviceItemMap.get(referenceItemEntity.getRefItemId());
 	    		BigDecimal priceBeforeDiscount = itemEntity.getPrice().multiply(new BigDecimal(referenceItemEntity.getQty()));
 	    		BigDecimal priceAfterDiscount = (priceBeforeDiscount.multiply(new BigDecimal(discountItemEntity.getDiscountInPercentage()))).divide(new BigDecimal(100));
