@@ -230,6 +230,8 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         
         List<RegisteredEvent> registeredEventList = getRegisteredEventList(e);
         assertEquals(1, registeredEventList.size());
+        assertEquals(1, registeredEventList.get(0).getItemList().size());
+        assertEquals(1, registeredEventList.get(0).getDiscountItemList().size());
         assertEquals(525, registeredEventList.get(0).getTotalAmount().intValue());
     }
     

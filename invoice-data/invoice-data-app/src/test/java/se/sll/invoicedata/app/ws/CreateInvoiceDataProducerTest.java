@@ -98,7 +98,7 @@ public class CreateInvoiceDataProducerTest extends TestSupport {
         
         CreateInvoiceDataRequest req = getCreateInvoiceRequest(supplierId1, "HSF", costCenter);
         CreateInvoiceDataResponse resp = createInvoiceDataResponderInterface.createInvoiceData(LOGICAL_ADDRESS, req);
-        assertEquals(ResultCodeEnum.INFO, resp.getResultCode().getCode());
+        assertEquals(ResultCodeEnum.OK, resp.getResultCode().getCode());
     }
     
     @Test

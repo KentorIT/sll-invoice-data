@@ -43,6 +43,7 @@ import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.service.PriceListService;
 import se.sll.invoicedata.core.service.dto.Price;
 import se.sll.invoicedata.core.service.dto.PriceList;
+import se.sll.invoicedata.core.support.ExceptionCodeMatches;
 import se.sll.invoicedata.core.support.TestSupport;
 import se.sll.invoicedata.core.util.CoreUtil;
 
@@ -175,6 +176,58 @@ public class PriceListServiceImplTest extends TestSupport {
     	assertPrice(e, 465);
     }
     
+    @Test
+	@Transactional
+	@Rollback(true)
+    public void test_Two_Set_Of_Prices_During_Different_Periods() {
+    	Calendar cal = Calendar.getInstance();
+    	//Price is valid from year 2014
+    	cal.set(Calendar.YEAR, 2014);    	
+    	final PriceList priceList2014 = createAdvancePriceList(cal);
+    	priceListService.savePriceLists(Collections.singletonList(priceList2014));
+    	
+    	cal.set(Calendar.YEAR, 2016);    	
+    	final PriceList priceList2016 = createAdvancePriceList(cal);
+    	priceList2016.getPrices().get(0).setPrice(BigDecimal.valueOf(155));
+    	priceListService.savePriceLists(Collections.singletonList(priceList2016));
+    	
+    	//Event is created in 2015
+		cal.set(Calendar.YEAR, 2015);
+		
+    	final Event e = createSampleEvent();
+    	e.setEventId("event-1");
+    	e.setServiceCode(priceList2014.getServiceCode());
+    	e.setSupplierId(priceList2014.getSupplierId());
+    	e.setStartTime(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
+    	e.setEndTime(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
+    	e.getItemList().clear(); //Remove all items and add new ones
+    	
+    	Item i1 = new Item();
+		i1.setDescription("Test item");
+		i1.setItemId("item.1");
+		i1.setQty(BigDecimal.valueOf(3));
+		e.getItemList().add(i1);
+		
+		assertPrice(e, 1950);
+		
+		//Event is created in 2016
+		cal.set(Calendar.YEAR, 2016);
+		e.setEventId("event-2");
+    	e.setServiceCode(priceList2016.getServiceCode());
+    	e.setSupplierId(priceList2016.getSupplierId());
+    	e.setStartTime(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
+    	e.setEndTime(CoreUtil.toXMLGregorianCalendar(cal.getTime()));
+    	
+    	invoiceDataService.registerEvent(e);
+    	
+    	GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+	    getIDRequest.setSupplierId(e.getSupplierId());
+	    getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+	    List<RegisteredEvent> regEventsList = invoiceDataService.getAllPendingBusinessEvents(getIDRequest);
+	    assertEquals(1950, regEventsList.get(0).getTotalAmount().intValue());
+	    assertEquals(465, regEventsList.get(1).getTotalAmount().intValue());
+    }
+    
     private void assertPrice(Event e, long pris) {
     	invoiceDataService.registerEvent(e);
     	
@@ -207,9 +260,7 @@ public class PriceListServiceImplTest extends TestSupport {
 		return invoiceDataService.getAllPendingBusinessEvents(getIDRequest).get(0);
     }
     
-    
-    
-    @Test (expected = InvoiceDataServiceException.class)
+    @Test
    	@Transactional
    	@Rollback(true)
     public void testPrice_With_Invalid_Servicecode_Fail() {
@@ -225,15 +276,11 @@ public class PriceListServiceImplTest extends TestSupport {
 	    i1.setItemId("item.1");
 	    i1.setQty(BigDecimal.valueOf(3));
 	    e.getItemList().add(i1);
+	    
+	    thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(1003));
+        
 	    invoiceDataService.registerEvent(e);
-	
-	    GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
-	    getIDRequest.setSupplierId(e.getSupplierId());
-	    getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-	    RegisteredEvent rE = invoiceDataService.getAllPendingBusinessEvents(getIDRequest).get(0);
-	
-	    //650 * 3 = 1950
-	    assertEquals(1950, rE.getTotalAmount().intValue());
     }
     
     @Test(expected = DataIntegrityViolationException.class)
@@ -260,7 +307,7 @@ public class PriceListServiceImplTest extends TestSupport {
         
         priceList.setSupplierId("Tolk.001");
         priceList.setValidFrom(cal.getTime());
-        priceList.setServiceCode("Spr�ktolk");
+        priceList.setServiceCode("Språktolk");
         
         Price p1 = new Price();
         p1.setItemId("item.1");

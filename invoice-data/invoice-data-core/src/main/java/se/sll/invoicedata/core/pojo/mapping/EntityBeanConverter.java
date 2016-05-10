@@ -128,6 +128,7 @@ public class EntityBeanConverter {
 			
 			discountItem.setDiscountedPrice(discountAmount);
 			amount = amount.subtract(discountAmount);
+			registeredEvent.getDiscountItemList().add(discountItem);
 		}
 		amount = amount.setScale(2, RoundingMode.HALF_UP);
 		registeredEvent.setTotalAmount(amount);
