@@ -27,8 +27,10 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -51,11 +53,15 @@ import se.sll.invoicedata.price.json.Service;
  */
 public class GeneratePriceList {
 	
-	private final char NUMERIC_SUFFIX = '0';	
+	private final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.00");
 	private final String SERVICE_CODE = "01";
 	private final String OUTFILE_DIRECTORY = "Outdata\\";
 	
 	public static void main(String input[]) throws IOException {
+		
+		 Locale.setDefault(Locale.US);
+		 System.out.println("Using locale: " + Locale.getDefault());
+		 
 		 Scanner in = new Scanner(System.in);
 		 
 		 System.out.println("Have you checked that the Lev/Leverantör/Supplier column in excel file matches the order in the program (see method processSheet)?");
@@ -314,13 +320,14 @@ public class GeneratePriceList {
 			if (cell != null) {
 				switch(cell.getCellType()) {
 					case Cell.CELL_TYPE_NUMERIC:
-						priceList.add(String.valueOf(cell.getNumericCellValue()) + NUMERIC_SUFFIX);
+						priceList.add(DECIMAL_FORMAT.format(cell.getNumericCellValue()));
 						break;
 					case Cell.CELL_TYPE_FORMULA:
-						priceList.add(formulaEval.evaluate(cell).formatAsString() + NUMERIC_SUFFIX);
+						double d = formulaEval.evaluate(cell).getNumberValue();
+						priceList.add(DECIMAL_FORMAT.format(d));
 						break;
 					case Cell.CELL_TYPE_BLANK:
-						priceList.add("0.0" + NUMERIC_SUFFIX);
+						priceList.add(DECIMAL_FORMAT.format(0));
 						break;
 					default:
 						StringBuffer errorMsg = new StringBuffer("This type of cell is not handled by the program!");
@@ -331,7 +338,7 @@ public class GeneratePriceList {
 						throw new IllegalStateException(errorMsg.toString());						
 				}
 			} else {
-				priceList.add("0.0" + NUMERIC_SUFFIX);
+				priceList.add(DECIMAL_FORMAT.format(0));
 			}
 		}
 		
