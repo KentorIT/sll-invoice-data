@@ -1,0 +1,8 @@
+operation_access_config
+invoice_data_pricelist_item
+invoice_data_event_reference_item
+invoice_data_event_item
+invoice_data_event_discount_item
+invoice_data_event
+invoice_data_pricelist
+invoice_data
