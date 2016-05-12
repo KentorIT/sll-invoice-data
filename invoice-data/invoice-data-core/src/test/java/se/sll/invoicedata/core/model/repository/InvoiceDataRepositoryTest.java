@@ -29,13 +29,13 @@ import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata._1.Event;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.ExceptionCodeMatches;
@@ -85,7 +85,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         final InvoiceDataEntity e = createSampleInvoiceDataEntity();
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1012));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.ILLEGAL_STATE_INVALID_INVOICEDATA_REFERENCE_ID));
         
         e.getReferenceId();
     }

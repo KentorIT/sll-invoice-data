@@ -37,6 +37,9 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser.Feature;
@@ -82,7 +85,8 @@ public class GeneratePriceList {
 		 if (!validFrom.isEmpty()) {
 			 GeneratePriceList generatePriceList = new GeneratePriceList();
 			 generatePriceList.createOutputDir();
-			 HSSFSheet sheet = generatePriceList.read(indataFile);
+			 HSSFSheet sheet = generatePriceList.readOldFormatXLS(indataFile);
+			 //XSSFSheet sheet = generatePriceList.readXLSX(indataFile);
 			 generatePriceList.processSheet(sheet, validFrom, startRow, startColumn);
 		 } else {
 			 in.close();
@@ -100,11 +104,18 @@ public class GeneratePriceList {
 		}
 	}
 	
-	public HSSFSheet read(String fileName) throws IOException {
+	public HSSFSheet readOldFormatXLS(String fileName) throws IOException {
 		FileInputStream file = new FileInputStream(new File(fileName));
 		HSSFWorkbook workbook = new HSSFWorkbook(file);
 		return workbook.getSheetAt(0);
 	}
+	
+	public XSSFSheet readXLSX(String fileName) throws IOException {
+		FileInputStream file = new FileInputStream(new File(fileName));
+		XSSFWorkbook  workbook = new XSSFWorkbook(file);
+		return workbook.getSheetAt(0);
+	}
+	
 	
 	private ObjectMapper getObjectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -113,7 +124,7 @@ public class GeneratePriceList {
 		return mapper;
 	}
 	
-	private void processSheet(HSSFSheet sheet, String validFrom, final int startRow, final int startColumn) throws JsonGenerationException, JsonMappingException, IOException {
+	private void processSheet(Sheet sheet, String validFrom, final int startRow, final int startColumn) throws JsonGenerationException, JsonMappingException, IOException {
 		List<String> guidList = getGuidList(sheet, startRow, startColumn);
 		writeListToFile(guidList, "GUID.txt");
 		
@@ -132,7 +143,7 @@ public class GeneratePriceList {
 		getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(OUTFILE_DIRECTORY + "PriceList.json"), priceList);
 	}
 	
-	private Service getTransVoice(HSSFSheet sheet, List<String> guidList, String validFrom, int startRow, final int startColumn) {
+	private Service getTransVoice(Sheet sheet, List<String> guidList, String validFrom, int startRow, final int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556482-8654");
 		service.setSupplierName("Transvoice");
@@ -156,7 +167,7 @@ public class GeneratePriceList {
 		return service;
 	}
 	
-	private Service getSprakService(HSSFSheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
+	private Service getSprakService(Sheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556629-1513");
 		service.setSupplierName("Språkservice");
@@ -180,7 +191,7 @@ public class GeneratePriceList {
 		return service;
 	}
 	
-	private Service getEquator(HSSFSheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
+	private Service getEquator(Sheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556560-0854");
 		service.setSupplierName("Semantix Equator");
@@ -204,7 +215,7 @@ public class GeneratePriceList {
 		return service;
 	}
 	
-	private Service getTolkJouren(HSSFSheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
+	private Service getTolkJouren(Sheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556526-2630");
 		service.setSupplierName("Semantix Tolkjouren");
@@ -228,7 +239,7 @@ public class GeneratePriceList {
 		return service;
 	}
 	
-	private Service getJarva(HSSFSheet sheet, List<String> guidList, String validFrom, int startRow, int startColumn) {
+	private Service getJarva(Sheet sheet, List<String> guidList, String validFrom, int startRow, int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556613-1792");
 		service.setSupplierName("Järva");
@@ -293,7 +304,7 @@ public class GeneratePriceList {
 		
 	}
 	
-	private List<String> getGuidList(HSSFSheet sheet, int startRow, int startColumn) {
+	private List<String> getGuidList(Sheet sheet, int startRow, int startColumn) {
 		
 		List<String> guids = new ArrayList<String>();
 		
@@ -310,7 +321,7 @@ public class GeneratePriceList {
 		return guids;
 	}
 	
-	private List<String> getServicePrice(HSSFSheet sheet, int startRow, int serviceType) {
+	private List<String> getServicePrice(Sheet sheet, int startRow, int serviceType) {
 		FormulaEvaluator formulaEval = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();		
 		List<String> priceList = new ArrayList<String>();
 		

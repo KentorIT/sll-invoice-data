@@ -38,6 +38,7 @@ import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.service.PriceListService;
@@ -278,7 +279,7 @@ public class PriceListServiceImplTest extends TestSupport {
 	    e.getItemList().add(i1);
 	    
 	    thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1003));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.NOTFOUND_ERROR));
         
 	    invoiceDataService.registerEvent(e);
     }

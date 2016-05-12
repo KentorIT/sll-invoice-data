@@ -22,14 +22,15 @@ package se.sll.invoicedata.core.support;
 import org.hamcrest.Description;
 import org.junit.internal.matchers.TypeSafeMatcher;
 
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 
 public class ExceptionCodeMatches extends TypeSafeMatcher<InvoiceDataServiceException> {
     
 	private int code;
  
-    public ExceptionCodeMatches(int code) {
-        this.code = code;
+    public ExceptionCodeMatches(InvoiceDataErrorCodeEnum e) {
+        this.code = e.getCode();
     }
  
     @Override

@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.ExceptionCodeMatches;
@@ -73,7 +74,7 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
         invoiceDataService.registerEvent(e);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         createReq.setCostCenter(null);
@@ -89,7 +90,7 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
         invoiceDataService.registerEvent(e);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         createReq.setPaymentResponsible(null);
@@ -105,7 +106,7 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
         invoiceDataService.registerEvent(e);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         createReq.setSupplierId(null);
@@ -139,12 +140,12 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_Other_SupplierId() {
+    public void testCreateInvoiceData_With_Other_SupplierId_Should_Throw_Exception() {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1009));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.NO_PENDING_INVOICES_TO_BE_GENERATED));
         
         final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         createReq.setSupplierId(e.getSupplierId() + "_other");
@@ -154,13 +155,12 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_Other_PaymentResponsible() {
+    public void testCreateInvoiceData_With_Other_PaymentResponsible_Should_Throw_Exception() {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
         
         thrown.expect(InvoiceDataServiceException.class);
-        //thrown.expectMessage(JUnitMatchers.containsString("1009"));
-        thrown.expect(new ExceptionCodeMatches(1009));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.NO_PENDING_INVOICES_TO_BE_GENERATED));
         
         final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         createReq.setPaymentResponsible(e.getPaymentResponsible() + "_other");
@@ -170,12 +170,12 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_Other_CostCenter() {
+    public void testCreateInvoiceData_With_Other_CostCenter_Should_Throw_Exception() {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1009));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.NO_PENDING_INVOICES_TO_BE_GENERATED));
         
         final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         createReq.setCostCenter(e.getCostCenter() + "_other");

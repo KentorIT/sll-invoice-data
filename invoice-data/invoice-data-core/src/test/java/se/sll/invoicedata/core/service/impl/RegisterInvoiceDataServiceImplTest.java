@@ -47,6 +47,7 @@ import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.ExceptionCodeMatches;
@@ -93,7 +94,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         e.setSupplierId(null);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.registerEvent(e);
     }
@@ -106,7 +107,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         e.setPaymentResponsible(null);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.registerEvent(e);
     }
@@ -119,7 +120,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         e.setCostCenter(null);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.registerEvent(e);
     }
@@ -201,7 +202,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         e.setItemList(null);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.registerEvent(e);		
     }
@@ -215,7 +216,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         e.getItemList().add(item);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.registerEvent(e);		
     }
@@ -247,7 +248,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         e.getDiscountItemList().add(discountItem);
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.registerEvent(e);		
     }
@@ -260,7 +261,7 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
         e.getItemList().get(0).setQty(new BigDecimal(9999999));
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.registerEvent(e);
     }

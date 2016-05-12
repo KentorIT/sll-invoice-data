@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.ExceptionCodeMatches;
@@ -175,7 +176,7 @@ public class GetInvoiceDataServiceImplTest extends TestSupport {
         }
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1004));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.LIMIT_ERROR));
         
         final List<RegisteredEvent> regEventList = getRegisteredEventList(e);
         assertNotNull(regEventList);

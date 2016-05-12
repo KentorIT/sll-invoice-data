@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceData;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
 import se.sll.invoicedata.core.support.ExceptionCodeMatches;
@@ -72,7 +73,7 @@ public class ViewInvoiceDataServiceImplTest extends TestSupport {
         String referenceId = "supplierId.00000";
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.getInvoiceDataByReferenceId(referenceId);		
     }
@@ -85,7 +86,7 @@ public class ViewInvoiceDataServiceImplTest extends TestSupport {
         String referenceId = "supplierId.0000x";
         
         thrown.expect(InvoiceDataServiceException.class);
-        thrown.expect(new ExceptionCodeMatches(1002));
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
         
         invoiceDataService.getInvoiceDataByReferenceId(referenceId);		
     }
