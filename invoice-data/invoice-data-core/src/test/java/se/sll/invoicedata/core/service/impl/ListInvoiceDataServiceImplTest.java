@@ -40,8 +40,10 @@ import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataReques
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
+import se.sll.invoicedata.core.support.ExceptionCodeMatches;
 import se.sll.invoicedata.core.support.TestSupport;
 import se.sll.invoicedata.core.util.CoreUtil;
 
@@ -62,12 +64,16 @@ public class ListInvoiceDataServiceImplTest extends TestSupport {
 		invoiceDataRepository.deleteAll();
 	}
 	
-	@Test (expected=InvoiceDataServiceException.class)
+	@Test
     @Transactional
     @Rollback(true)	
     public void testListAllInvoiceData_Result_Fail() {
         // Request with empty parameters
         ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
+        
         invoiceDataService.listAllInvoiceData(invoiceListRequest);
     }
 	

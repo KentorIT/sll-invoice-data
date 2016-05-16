@@ -23,7 +23,6 @@
 package se.sll.invoicedata.core.pojo.mapping;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import riv.sll.invoicedata._1.Event;

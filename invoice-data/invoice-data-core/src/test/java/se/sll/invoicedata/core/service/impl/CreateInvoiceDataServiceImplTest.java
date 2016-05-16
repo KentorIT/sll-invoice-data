@@ -46,11 +46,15 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
 	@Autowired
     private InvoiceDataService invoiceDataService;
 	
-    @Test (expected = InvoiceDataServiceException.class)
+    @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_Null_Indata_Result_Fail() {
+    public void testCreateInvoiceData_With_Null_Indata_Should_Throw_Exception() {
         final CreateInvoiceDataRequest ie = new CreateInvoiceDataRequest();
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
+        
         invoiceDataService.createInvoiceData(ie);
     }
     
@@ -69,7 +73,7 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_SupplierId_PaymentResponsible_And_NullCostCenter() {
+    public void testCreateInvoiceData_With_Null_CostCenter_Should_Throw_Exception() {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
         
@@ -85,7 +89,7 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_SupplierId_CostCenter_And_NullPaymentResponsible() {
+    public void testCreateInvoiceData_With_Null_PaymentResponsible_Should_Throw_Exception() {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
         
@@ -101,7 +105,7 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_CostCenter_And_PaymentResponsible_And_NullSupplierId() {
+    public void testCreateInvoiceData_With_Null_SupplierId_Should_Throw_Exception() {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
         
@@ -120,12 +124,12 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
     public void test_CreateInvoiceData_Use_Case_With_Two_Different_CostCenters_But_Same_SupplierId_And_PaymentResponsible() {
         final Event e1 = createSampleEvent();
         e1.setEventId("event-id-1");
-        e1.setCostCenter(e1.getCostCenter() + "-1");
+        e1.setCostCenter("cost-center-1");
         invoiceDataService.registerEvent(e1);
         
         final Event e2 = createSampleEvent();
         e2.setEventId("event-id-2");
-        e2.setCostCenter(e1.getCostCenter() + "-1");
+        e2.setCostCenter("cost-center-2");
         invoiceDataService.registerEvent(e2);
 
         final CreateInvoiceDataRequest createReq_1 = getCreateInvoiceDataRequestFromPassedEvent(e1);

@@ -110,7 +110,7 @@ public class InvoiceDataEntity {
     @PrePersist
     void onPrePerist() {
         setCreatedTime(new Date());
-        calcDerivedValues();
+        handleStartAndEndDateIfBusinessEventEntitiesListIsEmpty();
     }
     
     @PreUpdate
@@ -125,7 +125,7 @@ public class InvoiceDataEntity {
     /**
      * Calculates derived property values, and stores them into database.
      */
-    public void calcDerivedValues() {
+    public void calculateTotalAmount() {
 
         if (businessEventEntities.size() == 0) {
         	setStartDate(new Date());
@@ -155,7 +155,38 @@ public class InvoiceDataEntity {
         setEndDate(end);
         setTotalAmount(amount);
     }
-
+    
+    private void handleStartAndEndDateIfBusinessEventEntitiesListIsEmpty() {
+    	if (businessEventEntities.size() == 0) {
+    		setStartDate(new Date());
+        	setEndDate(new Date());
+        	setTotalAmount(BigDecimal.valueOf(0.0));
+        }
+    }
+    
+    public void calculateTotalAmount(final BusinessEventEntity e) {
+    	if (businessEventEntities.size() == 0) {
+        	setStartDate(new Date(Long.MAX_VALUE));
+        	setEndDate(new Date(0L));
+        	setTotalAmount(BigDecimal.valueOf(0.0));
+        }
+        
+        BigDecimal amount = getTotalAmount();
+        if (e.getStartTime().before(getStartDate())) {
+        	setStartDate(e.getStartTime());
+        }
+        if (e.getEndTime().after(getEndDate())) {
+        	setEndDate(e.getEndTime());
+        }
+        if (e.isCredit()) {
+            amount = amount.subtract(e.calculateTotalAmount());
+        } else {
+            amount = amount.add(e.calculateTotalAmount()); 
+        }
+        
+        setTotalAmount(amount);
+    }
+    
     public Long getId() {
         return id;
     }
@@ -226,6 +257,7 @@ public class InvoiceDataEntity {
     public boolean addBusinessEventEntity(BusinessEventEntity businessEventEntity) {
         if (businessEventEntity.getInvoiceData() == null && getSupplierId().equals(businessEventEntity.getSupplierId())) {
             businessEventEntity.setInvoiceData(this);
+            calculateTotalAmount(businessEventEntity);
             return businessEventEntities.add(businessEventEntity);
         }
         return false;
@@ -234,7 +266,9 @@ public class InvoiceDataEntity {
     public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
     	if (getSupplierId().equals(businessEventEntity.getSupplierId())) {
             businessEventEntity.setInvoiceData(null);
-            return businessEventEntities.remove(businessEventEntity);
+            businessEventEntities.remove(businessEventEntity);
+            calculateTotalAmount();
+            return true;
         }
         return false;
     }

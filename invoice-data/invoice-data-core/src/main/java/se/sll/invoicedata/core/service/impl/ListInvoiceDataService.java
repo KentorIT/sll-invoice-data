@@ -95,7 +95,6 @@ public class ListInvoiceDataService extends ValidationService {
         List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
         
         if (CoreUtil.isNotEmpty(request.getSupplierId())) {
-        	invoiceDataEntityList = invoiceDataRepository.findAll();
         	invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPendingIsFalseAndStartDateBetween(
         			request.getSupplierId(), dateFrom, dateTo);
         } else if (CoreUtil.isNotEmpty(request.getPaymentResponsible())) {
