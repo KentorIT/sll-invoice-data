@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataReques
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.support.TestSupport;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * @author muqkha
@@ -55,12 +57,12 @@ public class InvoicedataServiceIntegrationTest extends TestSupport {
 	 * 1. A event is registered with a single item with an amount 350/- in 2 qty (350*2)
 	 * 2. Then a request for generation of invoice is received by the application
 	 * 3. Invoice generated with id:1 and with an amount of 700/-
-	 * 4. Upon discovering the mistake, the event with the same event-id is recent
-	 * Note: Always send with same event-id is correction is to be made
+	 * 4. Upon discovering the mistake, the event with the same event-id is resent
+	 Note: Always send with same event-id is correction is to be made
 	 * 5. A check is made to see if the old invoice still is not effected.
 	 * 6. Using GetInvoiceData to fetch the pending events
 	 * 7. A check is made to see that two of them exists
-	 * a. With credit:false and b. with credit:true
+	 * a. With a. credit:false and b. with credit:true
 	 * 8. Again a invoice is generated, maybe next month or so.
 	 * 9. Final check is made that the generated invoice is of -350/- (already paid so -)
 	 */
@@ -102,6 +104,100 @@ public class InvoicedataServiceIntegrationTest extends TestSupport {
         invoiceData = invoiceDataService.getInvoiceDataByReferenceId(referenceIdNew);
         assertNotNull(invoiceData);
         assertEquals(-350, invoiceData.getTotalAmount().intValue());
+    }
+	
+	@Test
+    @Transactional
+    @Rollback(true)
+    public void testIntegration_ViewInvoiceData_Check_StartTime_And_EndTime() {
+    	Event e1 = createSampleEvent();
+        e1.setStartTime(CoreUtil.getCustomDate(05, 05));
+        e1.setEndTime(CoreUtil.getCustomDate(05, 06));
+        e1.setEventId(UUID.randomUUID().toString());
+        invoiceDataService.registerEvent(e1);
+        
+        Event e2 = createSampleEvent();
+        e2.setStartTime(CoreUtil.getCustomDate(01, 01));
+        e2.setEndTime(CoreUtil.getCustomDate(01, 02));
+        e2.setEventId(UUID.randomUUID().toString());
+        invoiceDataService.registerEvent(e2);
+        
+        Event e3 = createSampleEvent();
+        e3.setStartTime(CoreUtil.getCustomDate(07, 07));
+        e3.setEndTime(CoreUtil.getCustomDate(07, 07));
+        e3.setEventId(UUID.randomUUID().toString());
+        invoiceDataService.registerEvent(e3);
+        
+        Event e4 = createSampleEvent();
+        e4.setStartTime(CoreUtil.getCustomDate(02, 02));
+        e4.setEndTime(CoreUtil.getCustomDate(02, 07));
+        e4.setEventId(UUID.randomUUID().toString());
+        invoiceDataService.registerEvent(e4);
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e1);
+        String referenceId= invoiceDataService.createInvoiceData(createReq);
+        assertNotNull(referenceId);
+
+        InvoiceData invoiceData = invoiceDataService.getInvoiceDataByReferenceId(referenceId);
+
+        assertNotNull(invoiceData);
+        assertNotNull(invoiceData.getRegisteredEventList());
+        assertEquals(4, invoiceData.getRegisteredEventList().size());
+        assertNotNull(invoiceData.getRegisteredEventList().get(0).getItemList().get(0).getItemId());
+        
+        assertEquals(2800, invoiceData.getTotalAmount().intValue());
+        
+        //check start time and end time
+        assertEquals(e2.getStartTime(), invoiceData.getStartDate());
+        assertEquals(e3.getEndTime(), invoiceData.getEndDate());
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testIntegration_ViewInvoiceData_Register_Update_Events_Check_Total_Amount() {
+    	Event e1 = createSampleEvent();
+        e1.setStartTime(CoreUtil.getCustomDate(05, 05));
+        e1.setEndTime(CoreUtil.getCustomDate(05, 06));
+        e1.setEventId(UUID.randomUUID().toString());
+        invoiceDataService.registerEvent(e1);
+        
+        Event e2 = createSampleEvent();
+        e2.setStartTime(CoreUtil.getCustomDate(01, 01));
+        e2.setEndTime(CoreUtil.getCustomDate(01, 02));
+        e2.setEventId(UUID.randomUUID().toString());
+        invoiceDataService.registerEvent(e2);
+        
+        Event e3 = createSampleEvent();
+        e3.setStartTime(CoreUtil.getCustomDate(07, 07));
+        e3.setEndTime(CoreUtil.getCustomDate(07, 07));
+        //Updating event 2
+        e3.setEventId(e2.getEventId());
+        e3.getItemList().get(0).setPrice(e2.getItemList().get(0).getPrice().multiply(new BigDecimal(10)));
+        invoiceDataService.registerEvent(e3);
+        
+        Event e4 = createSampleEvent();
+        e4.setStartTime(CoreUtil.getCustomDate(02, 02));
+        e4.setEndTime(CoreUtil.getCustomDate(02, 07));
+        e4.setEventId(UUID.randomUUID().toString());
+        invoiceDataService.registerEvent(e4);
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e1);
+        String referenceId= invoiceDataService.createInvoiceData(createReq);
+        assertNotNull(referenceId);
+
+        InvoiceData invoiceData = invoiceDataService.getInvoiceDataByReferenceId(referenceId);
+
+        assertNotNull(invoiceData);
+        assertNotNull(invoiceData.getRegisteredEventList());
+        assertEquals(3, invoiceData.getRegisteredEventList().size());
+        assertNotNull(invoiceData.getRegisteredEventList().get(0).getItemList().get(0).getItemId());
+        
+        assertEquals(1400+7000, invoiceData.getTotalAmount().intValue());
+        
+        //check start time and end time
+        assertEquals(e4.getStartTime(), invoiceData.getStartDate());
+        assertEquals(e3.getEndTime(), invoiceData.getEndDate());
     }
 
 }

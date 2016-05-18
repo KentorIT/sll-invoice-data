@@ -117,44 +117,6 @@ public class InvoiceDataEntity {
     void onPreUpdate() {
     	setCreatedTime(new Date());
     }
-    /*
-    private void updatePending() {
-        setPending(isInvoiceDataPending() ? Boolean.TRUE : null);        
-    }*/
-
-    /**
-     * Calculates derived property values, and stores them into database.
-     */
-    public void calculateTotalAmount() {
-
-        if (businessEventEntities.size() == 0) {
-        	setStartDate(new Date());
-        	setEndDate(new Date());
-            return;
-        }
-
-        Date start = new Date(Long.MAX_VALUE);
-        Date end = new Date(0L);
-        BigDecimal amount = BigDecimal.valueOf(0.0);
-
-        for (final BusinessEventEntity e : businessEventEntities) {
-            if (e.getStartTime().before(start)) {
-                start = e.getStartTime();
-            }
-            if (e.getEndTime().after(end)) {
-                end = e.getEndTime();
-            }
-            if (e.isCredit()) {
-                amount = amount.subtract(e.calculateTotalAmount());
-            } else {
-                amount = amount.add(e.calculateTotalAmount()); 
-            }
-        }
-        
-        setStartDate(start);
-        setEndDate(end);
-        setTotalAmount(amount);
-    }
     
     private void handleStartAndEndDateIfBusinessEventEntitiesListIsEmpty() {
     	if (businessEventEntities.size() == 0) {
@@ -185,6 +147,10 @@ public class InvoiceDataEntity {
         }
         
         setTotalAmount(amount);
+    }
+    
+    public void recalculateTotalAmount(final BusinessEventEntity e) {
+    	setTotalAmount(getTotalAmount().subtract(e.calculateTotalAmount()));
     }
     
     public Long getId() {
@@ -265,10 +231,9 @@ public class InvoiceDataEntity {
     
     public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
     	if (getSupplierId().equals(businessEventEntity.getSupplierId())) {
-            businessEventEntity.setInvoiceData(null);
-            businessEventEntities.remove(businessEventEntity);
-            calculateTotalAmount();
-            return true;
+    		businessEventEntity.setInvoiceData(null);
+    		recalculateTotalAmount(businessEventEntity);
+            return businessEventEntities.remove(businessEventEntity);
         }
         return false;
     }
@@ -306,8 +271,21 @@ public class InvoiceDataEntity {
     public void setPending(Boolean pending) {
         this.pending = pending;
         
-        for (BusinessEventEntity e : this.getBusinessEventEntities()) {
-        	e.setPending(null);
+        if (!isPending()) {       
+	        Date start = new Date(Long.MAX_VALUE);
+	        Date end = new Date(0L);
+	
+	        for (final BusinessEventEntity e : this.getBusinessEventEntities()) {
+	            if (e.getStartTime().before(start)) {
+	                start = e.getStartTime();
+	            }
+	            if (e.getEndTime().after(end)) {
+	                end = e.getEndTime();
+	            }
+	            e.setPending(null);
+	        }        
+	        setStartDate(start);
+	        setEndDate(end);
         }
     }
     
