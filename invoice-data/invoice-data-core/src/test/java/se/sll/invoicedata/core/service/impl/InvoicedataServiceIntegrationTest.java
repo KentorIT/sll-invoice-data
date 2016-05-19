@@ -75,7 +75,8 @@ public class InvoicedataServiceIntegrationTest extends TestSupport {
        
         final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         String referenceId = invoiceDataService.createInvoiceData(createReq);
-
+        assertNotNull(referenceId);
+        
         InvoiceData invoiceData = invoiceDataService.getInvoiceDataByReferenceId(referenceId);
 
         assertNotNull(invoiceData);
@@ -97,8 +98,9 @@ public class InvoicedataServiceIntegrationTest extends TestSupport {
 
         final List<RegisteredEvent> regEventList = invoiceDataService
                 .getAllPendingBusinessEvents(getIDRequest);
-        //One with credit:true (700) other with credit:false (350) and old one remains untouched
-        assertEquals(2+1, regEventList.size());
+        //One with credit:true (700) other with credit:false (350)
+        //Note: first one is not pending. It's already invoiced!!
+        assertEquals(2, regEventList.size());
         
         String referenceIdNew = invoiceDataService.createInvoiceData(createReq);
         invoiceData = invoiceDataService.getInvoiceDataByReferenceId(referenceIdNew);

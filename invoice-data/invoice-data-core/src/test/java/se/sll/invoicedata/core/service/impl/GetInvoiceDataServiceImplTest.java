@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.RegisteredEvent;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
@@ -162,6 +163,27 @@ public class GetInvoiceDataServiceImplTest extends TestSupport {
         assertEquals(e.getAcknowledgedBy(), regEventList.get(0).getAcknowledgedBy());
         assertEquals(e.getPaymentResponsible(), regEventList.get(0).getPaymentResponsible());
         assertEquals(e.getCostCenter(), regEventList.get(0).getCostCenter());
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testGetAllUnprocessedBusinessEvents_After_CreateInvoice() {
+
+        final Event e = createSampleEvent();
+        invoiceDataService.registerEvent(e);
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        String referenceId = invoiceDataService.createInvoiceData(createReq);
+        assertNotNull(referenceId);
+        
+        GetInvoiceDataRequest getIDRequest = getInvoiceDataRequest(e);
+        
+        final List<RegisteredEvent> regEventList = invoiceDataService
+                .getAllPendingBusinessEvents(getIDRequest);
+
+        assertNotNull(regEventList);
+        assertEquals(0, regEventList.size());
     }
 
     @Test

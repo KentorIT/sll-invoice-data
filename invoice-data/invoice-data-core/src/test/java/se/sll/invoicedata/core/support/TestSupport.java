@@ -221,5 +221,13 @@ public abstract class TestSupport {
         getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
         return invoiceDataService.getAllPendingBusinessEvents(getIDRequest);
     }
+    
+    protected GetInvoiceDataRequest getInvoiceDataRequest(final Event e) {
+    	GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
+        getIDRequest.setSupplierId(e.getSupplierId());
+        getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
+        getIDRequest.setCostCenter(e.getCostCenter());
+        return getIDRequest;
+    }
 
 }

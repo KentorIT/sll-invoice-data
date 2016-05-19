@@ -22,7 +22,6 @@
  */
 package se.sll.invoicedata.core.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -31,14 +30,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
-import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
-import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.pojo.mapping.EntityBeanConverter;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.util.CoreUtil;
@@ -57,7 +56,7 @@ public class ListEventsService extends ValidationService {
     private int eventMaxFindResultSize;
 	
 	@Autowired
-    private InvoiceDataRepository invoiceDataRepository;
+    private BusinessEventRepository businessEventRepository;
 	
 	/**
 	 * 
@@ -79,16 +78,16 @@ public class ListEventsService extends ValidationService {
     }
 	
 	private List<BusinessEventEntity> fetchAndFilterBusinessEvents(final GetInvoiceDataRequest request) {
-        final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
+		final Date dateFrom = CoreUtil.floorDate(CoreUtil.toDate(request.getFromDate(), CoreUtil.MIN_DATE));
         final Date dateTo = CoreUtil.ceilDate(CoreUtil.toDate(request.getToDate(), CoreUtil.MAX_DATE));
         
-		List<InvoiceDataEntity> invoiceEntityList = invoiceDataRepository.
-				findBySupplierIdAndStartDateBetween(request.getSupplierId(), dateFrom, dateTo);
-		
-		Iterator<InvoiceDataEntity> iterator = invoiceEntityList.iterator();
-		
-		while (iterator.hasNext()) {
-			InvoiceDataEntity entity = iterator.next();
+        final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
+        List<BusinessEventEntity> businessEventEntityList = businessEventRepository.
+        		findBySupplierIdAndPendingIsTrueAndStartTimeBetween(request.getSupplierId(), dateFrom, dateTo, pageRequest);
+        Iterator<BusinessEventEntity> iterator = businessEventEntityList.iterator();
+        
+        while (iterator.hasNext()) {
+        	BusinessEventEntity entity = iterator.next();
 			if (CoreUtil.isNotEmpty(request.getPaymentResponsible()) && 
 					CoreUtil.notEqualsToIgnoreCase(entity.getPaymentResponsible(), request.getPaymentResponsible())) {
 				iterator.remove();
@@ -97,16 +96,7 @@ public class ListEventsService extends ValidationService {
 				iterator.remove();
 			}
 		}
-		
-		return getBusinessEventsFromInvoiceDataEntity(invoiceEntityList);
-	}
-	
-	private List<BusinessEventEntity> getBusinessEventsFromInvoiceDataEntity(List<InvoiceDataEntity> invoiceEntityList) {
-		List<BusinessEventEntity> businessEventLists = new ArrayList<BusinessEventEntity>();
-		for (InvoiceDataEntity entity : invoiceEntityList) {			
-			businessEventLists.addAll(entity.getBusinessEventEntities());
-		}
-		return businessEventLists;
+        return businessEventEntityList;
 	}
 	
 	public int getEventMaxFindResultSize() {
