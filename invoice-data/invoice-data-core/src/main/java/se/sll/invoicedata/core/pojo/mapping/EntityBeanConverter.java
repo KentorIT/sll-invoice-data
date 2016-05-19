@@ -65,10 +65,6 @@ public class EntityBeanConverter {
 		return businessEventEntity;
 	}
 	
-	private static boolean getValue(Boolean b) {
-		return b == null ? false : b.booleanValue();
-	}
-	
 	/**
 	 * This method was rewritten to gain performance since the DOZER API was inconsistent w.r.t performance   
 	 * Maps BusinessEventEntity to RegisteredEvent object

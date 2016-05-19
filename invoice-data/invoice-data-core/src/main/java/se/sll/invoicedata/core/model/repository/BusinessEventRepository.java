@@ -72,5 +72,5 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * In 2.0 draft invoice is created and all events are connected to an event
      * @return
      */
-    List<BusinessEventEntity> findByPendingIsTrueAndCreditIsNull();
+    List<BusinessEventEntity> findByPendingIsTrue();
 }

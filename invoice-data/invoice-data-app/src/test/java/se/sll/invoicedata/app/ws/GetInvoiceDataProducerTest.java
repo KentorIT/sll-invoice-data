@@ -19,8 +19,6 @@
 
 package se.sll.invoicedata.app.ws;
 
-import java.util.List;
-
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.junit.AfterClass;
@@ -29,7 +27,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import riv.sll.invoicedata._1.Event;
-import riv.sll.invoicedata._1.RegisteredEvent;
 import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
@@ -157,7 +154,7 @@ public class GetInvoiceDataProducerTest extends TestSupport {
 				.getInvoiceData(LOGICAL_ADDRESS, request);
 		
 		Assert.assertNotNull(response2);
-		Assert.assertEquals(1, response2.getRegisteredEventList().size());
+		Assert.assertEquals(0, response2.getRegisteredEventList().size());
     }
 
 	@Test

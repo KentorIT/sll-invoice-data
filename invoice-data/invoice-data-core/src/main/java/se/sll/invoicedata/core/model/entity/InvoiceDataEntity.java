@@ -51,17 +51,23 @@ import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
  */
 @Entity
 @Table(name=InvoiceDataEntity.TABLE_NAME)
-@org.hibernate.annotations.Table(appliesTo=InvoiceDataEntity.TABLE_NAME, indexes = { 
-@Index(name=InvoiceDataEntity.INDEX_NAME_1, columnNames = { InvoiceDataEntity.SUPPLIER_ID, InvoiceDataEntity.PAYMENT_RESPONSIBLE, 
-																		InvoiceDataEntity.COST_CENTER, InvoiceDataEntity.PENDING } ),
-@Index(name=InvoiceDataEntity.INDEX_NAME_2, columnNames = { InvoiceDataEntity.SUPPLIER_ID, InvoiceDataEntity.PAYMENT_RESPONSIBLE, 
-																		InvoiceDataEntity.START_DATE, InvoiceDataEntity.END_DATE  })})
+@org.hibernate.annotations.Table(appliesTo=InvoiceDataEntity.TABLE_NAME, indexes = {
+@Index(name=InvoiceDataEntity.INDEX_NAME_1, columnNames = { InvoiceDataEntity.SUPPLIER_ID, InvoiceDataEntity.PENDING, 
+																							InvoiceDataEntity.START_DATE, InvoiceDataEntity.END_DATE  }),
+@Index(name=InvoiceDataEntity.INDEX_NAME_2, columnNames = { InvoiceDataEntity.PAYMENT_RESPONSIBLE, InvoiceDataEntity.PENDING, 
+																							InvoiceDataEntity.START_DATE, InvoiceDataEntity.END_DATE  }),
+@Index(name=InvoiceDataEntity.INDEX_NAME_3, columnNames = { InvoiceDataEntity.SUPPLIER_ID, InvoiceDataEntity.PAYMENT_RESPONSIBLE, 
+																						InvoiceDataEntity.COST_CENTER, InvoiceDataEntity.PENDING  }) })
 public class InvoiceDataEntity {
 	
 	static final String TABLE_NAME = "invoice_data";
-	static final String INDEX_NAME_1 = "invoice_data_query_ix_1"; //Used when registering an event
-    static final String INDEX_NAME_2 = "invoice_data_query_ix_2"; //Used in view invoice service
-    
+	//Used in ListInvoiceData
+	static final String INDEX_NAME_1 = "invoice_data_query_ix_1"; 
+	//Used in ListInvoiceData
+	static final String INDEX_NAME_2 = "invoice_data_query_ix_2";
+	//Used in RegisterInvoiceData
+	static final String INDEX_NAME_3 = "invoice_data_query_ix_3";
+		
     static final String SUPPLIER_ID = "supplier_id";
     static final String COST_CENTER = "cost_center";
     static final String PAYMENT_RESPONSIBLE = "payment_responsible";

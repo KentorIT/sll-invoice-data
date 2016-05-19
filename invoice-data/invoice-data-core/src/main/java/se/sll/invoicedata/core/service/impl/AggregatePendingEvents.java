@@ -70,7 +70,7 @@ public class AggregatePendingEvents {
 	}
 	
 	private Map<String, InvoiceDataEntity> aggregateEventsToPendingInvoiceData() {
-		List<BusinessEventEntity> existingPendingEvents = businessEventRepository.findByPendingIsTrueAndCreditIsNull();
+		List<BusinessEventEntity> existingPendingEvents = businessEventRepository.findByPendingIsTrue();
 		LOG.info("Found total pending items to be " + existingPendingEvents.size());
 		Map<String, InvoiceDataEntity> eventsMap = new HashMap<String, InvoiceDataEntity>();
 

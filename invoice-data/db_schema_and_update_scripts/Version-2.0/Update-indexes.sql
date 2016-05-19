@@ -19,20 +19,43 @@
 
 # Remove old index och update it with new one
 DROP INDEX invoice_data_event_query_ix_1 ON invoice_data_event;
+DROP INDEX invoice_data_event_query_ix_2 ON invoice_data_event;
 DROP INDEX invoice_data_event_query_ix_3 ON invoice_data_event;
+DROP INDEX invoice_data_event_query_ix_4 ON invoice_data_event;
 
 CREATE INDEX invoice_data_event_query_ix_1 ON invoice_data_event (
-  `supplier_id`,
-  `payment_responsible`,
+  `event_id`,
   `pending`,
-  `start_time`);
+  `credit`);
+  
+CREATE INDEX invoice_data_event_query_ix_2 ON invoice_data_event (
+  `event_id`,
+  `pending`,
+  `credited`,
+  `credit`);
   
 CREATE INDEX invoice_data_event_query_ix_3 ON invoice_data_event (
-  `acknowledgement_id`,
-  `pending`);
+  `supplier_id`,
+  `pending`,
+  `start_time`,
+  `end_time`);
   
-CREATE INDEX invoice_data_event_query_ix_4 ON invoice_data_event (
+--Invoice data indexes--
+CREATE INDEX invoice_data_query_ix_1 ON invoice_data (
+  `supplier_id`,
+  `pending`,
+  `start_date`,
+  `end_date`);
+  
+CREATE INDEX invoice_data_query_ix_2 ON invoice_data (
+  `payment_responsible`,
+  `pending`,
+  `start_date`,
+  `end_date`);
+  
+CREATE INDEX invoice_data_query_ix_3 ON invoice_data (
   `supplier_id`,
   `payment_responsible`,
-  `acknowledgement_id`,
+  `cost_center`,
   `pending`);
+

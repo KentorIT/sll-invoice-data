@@ -30,10 +30,10 @@ import se.sll.invoicedata.core.util.CoreUtil;
  * This class handles 4 possible stages of an BusinessEventEntity
  * 
  * 1. newRegisteredEntity - New Event (Yet to be registered/saved in the database)
- * 2. existingRegisteredEntity - Existing registered event/entity in the database (pending=True)
+ * 2. existingRegisteredEntity - Existing registered entity in the database (pending=True)
  * 3. existingProcessedRegisteredEntity - Registered event which is already processed. (pending=Null)
  * 4. newCreditEntityFromProcessedEntity - Copy of the registered event which is already processed 
- * 											but when resent will be marked as creditEntity (credit=true)
+ * 			but when resent(sent again with same event_id will be marked as creditEntity (credit=true)
  * @author muqkha
  */
 public class BusinessEventEntityState {

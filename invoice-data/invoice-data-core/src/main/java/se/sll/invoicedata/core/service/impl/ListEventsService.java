@@ -65,7 +65,7 @@ public class ListEventsService extends ValidationService {
 	 */
 	public List<RegisteredEvent> getAllPendingBusinessEvents(GetInvoiceDataRequest request) {
         mandatory(request.getSupplierId(), "supplierId");
-        LOG.debug(request.getSupplierId() + " from: " + request.getFromDate() + " to: " + request.getToDate());
+        LOG.info(request.getSupplierId() + " from: " + request.getFromDate() + " to: " + request.getToDate());
 
         List<BusinessEventEntity> businessEventLists = fetchAndFilterBusinessEvents(request);
       
@@ -84,8 +84,9 @@ public class ListEventsService extends ValidationService {
         final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
         List<BusinessEventEntity> businessEventEntityList = businessEventRepository.
         		findBySupplierIdAndPendingIsTrueAndStartTimeBetween(request.getSupplierId(), dateFrom, dateTo, pageRequest);
-        Iterator<BusinessEventEntity> iterator = businessEventEntityList.iterator();
+        LOG.info("@fetchAndFilterBusinessEvents: Items fetched by supplierId and pending" + businessEventEntityList.size());
         
+        Iterator<BusinessEventEntity> iterator = businessEventEntityList.iterator();
         while (iterator.hasNext()) {
         	BusinessEventEntity entity = iterator.next();
 			if (CoreUtil.isNotEmpty(request.getPaymentResponsible()) && 
@@ -96,6 +97,7 @@ public class ListEventsService extends ValidationService {
 				iterator.remove();
 			}
 		}
+        LOG.info("@fetchAndFilterBusinessEvents: Items remaining after filtering: " + businessEventEntityList.size());
         return businessEventEntityList;
 	}
 	

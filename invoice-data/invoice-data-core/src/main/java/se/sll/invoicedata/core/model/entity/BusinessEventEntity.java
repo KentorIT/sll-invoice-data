@@ -55,24 +55,30 @@ import org.hibernate.annotations.Index;
 @Entity
 @javax.persistence.Table(name = BusinessEventEntity.TABLE_NAME)
 @org.hibernate.annotations.Table(appliesTo=BusinessEventEntity.TABLE_NAME, indexes = { 
-@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PAYMENT_RESPONSIBLE, BusinessEventEntity.PENDING, BusinessEventEntity.START_TIME } ),
-@Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }),
-@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.ACKNOWLEDGEMENT_ID, BusinessEventEntity.PENDING }), 
-@Index(name=BusinessEventEntity.INDEX_NAME_4, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PAYMENT_RESPONSIBLE, 
-		BusinessEventEntity.ACKNOWLEDGEMENT_ID, BusinessEventEntity.PENDING })})
+@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.EVENT_ID, BusinessEventEntity.PENDING, BusinessEventEntity.CREDIT }),
+@Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID, BusinessEventEntity.PENDING, BusinessEventEntity.CREDITED, 
+																														BusinessEventEntity.CREDIT }),
+@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING, 
+																						BusinessEventEntity.START_TIME, BusinessEventEntity.END_TIME }) })
 
 public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     static final String TABLE_NAME = "invoice_data_event";
+    // Used in RegisterEvent - 
     static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";
+    // Used in RegisterEvent -
     static final String INDEX_NAME_2 = "invoice_data_event_query_ix_2";
-    // Used in CreateInvoice Service
+    // Used in GetInvoiceData Service
     static final String INDEX_NAME_3 = "invoice_data_event_query_ix_3";
-    // Used in CreateInvoice Service counting/validation
-    static final String INDEX_NAME_4 = "invoice_data_event_query_ix_4";
+    
+    static final String EVENT_ID = "event_id";
     static final String SUPPLIER_ID = "supplier_id";
     static final String PENDING = "pending";
-    static final String EVENT_ID = "event_id";
+    
+    static final String CREDIT = "credit";
+    static final String CREDITED = "credited";
+    
     static final String START_TIME = "start_time";
+    static final String END_TIME = "end_time";
     static final String ACKNOWLEDGEMENT_ID = "acknowledgement_id";
     static final String PAYMENT_RESPONSIBLE = "payment_responsible";
     
@@ -83,10 +89,10 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     @Column(name=EVENT_ID, nullable=false, updatable=false, length=64)
     private String eventId;
     
-    @Column(name="credit", updatable=false, length=64)
+    @Column(name=CREDIT, updatable=false, length=64)
     private Boolean credit;
 
-    @Column(name="credited", updatable=true, length=64)
+    @Column(name=CREDITED, updatable=true, length=64)
     private Boolean credited;
     
     @Temporal(TemporalType.TIMESTAMP)
@@ -132,7 +138,7 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     private Date startTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_time", nullable=false, updatable=false)
+    @Column(name = END_TIME, nullable=false, updatable=false)
     private Date endTime;
     
     @OneToMany(fetch=FetchType.EAGER, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL) 

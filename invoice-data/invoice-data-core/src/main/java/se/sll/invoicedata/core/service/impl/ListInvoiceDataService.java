@@ -68,6 +68,8 @@ public class ListInvoiceDataService extends ValidationService {
         statusBean.start("InvoiceDataService.findByCriteria()");
         try {
         	List<InvoiceDataEntity> invoiceDataEntityList = getBySupplierIdOrPaymentResponsible(request);
+        	LOG.info("@findByCriteria: Total items fetched before filtering: " + invoiceDataEntityList.size());
+
         	Iterator<InvoiceDataEntity> iterator = invoiceDataEntityList.iterator();
         	while (iterator.hasNext()) {
         		InvoiceDataEntity entity = iterator.next();
@@ -82,6 +84,7 @@ public class ListInvoiceDataService extends ValidationService {
         			iterator.remove();
         		}
         	}
+        	LOG.info("@findByCriteria: After filtering items remaining: " + invoiceDataEntityList.size());
         	return invoiceDataEntityList;
         } finally {
             statusBean.stop();
@@ -97,9 +100,11 @@ public class ListInvoiceDataService extends ValidationService {
         if (CoreUtil.isNotEmpty(request.getSupplierId())) {
         	invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPendingIsFalseAndStartDateBetween(
         			request.getSupplierId(), dateFrom, dateTo);
+        	LOG.info("@getBySupplierIdOrPaymentResponsible: Items fetched by SupplierId: " + invoiceDataEntityList.size());
         } else if (CoreUtil.isNotEmpty(request.getPaymentResponsible())) {
         	invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndPendingIsFalseAndStartDateBetween(
         			request.getPaymentResponsible(), dateFrom, dateTo);
+        	LOG.info("@getBySupplierIdOrPaymentResponsible: Items fetched by PaymentResponsible: " + invoiceDataEntityList.size());
         }
         return invoiceDataEntityList;
 	}

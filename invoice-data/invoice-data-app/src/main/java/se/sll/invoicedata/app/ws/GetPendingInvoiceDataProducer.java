@@ -47,11 +47,11 @@ public class GetPendingInvoiceDataProducer extends AbstractProducer implements G
         response.setResultCode(fulfill(new Runnable() {
             @Override
             public void run() {
-            	throwExceptionIfSystemHasNoAccessToOperation(Operation.GET_INVOICE_DATA);
+            	throwExceptionIfSystemHasNoAccessToOperation(Operation.GET_PENDING_INVOICE_DATA);
             	
             	List<InvoiceDataHeader> invoiceList = getInvoiceDataService().getAllPendingInvoiceData();
             	for (InvoiceDataHeader metaData : invoiceList) {
-            		throwExceptionIfSupplierHasNoAccessToOperation(Operation.GET_INVOICE_DATA, metaData.getSupplierId());
+            		throwExceptionIfSupplierHasNoAccessToOperation(Operation.GET_PENDING_INVOICE_DATA, metaData.getSupplierId());
             	}
             	response.getInvoiceDataList().addAll(invoiceList);
                                
