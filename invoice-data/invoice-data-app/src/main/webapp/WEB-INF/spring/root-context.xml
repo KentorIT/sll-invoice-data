@@ -27,6 +27,7 @@
   <import resource="classpath:invoice-data-service.xml" />
 
   <import resource="/cxf/cxf-services-config.xml" />
+  <import resource="/cxf/cxf-logging-config.xml" />
   
   <beans profile="test">
   	<import resource="classpath:none-security.xml" />

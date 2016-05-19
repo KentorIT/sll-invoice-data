@@ -19,6 +19,8 @@
 
 package se.sll.invoicedata.app.ws;
 
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.getinvoicedata._1.rivtabp21.GetInvoiceDataResponderInterface;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
 import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
@@ -49,12 +51,18 @@ public class GetInvoiceDataProducer extends AbstractProducer implements GetInvoi
             	
                 //Fetching unprocessed events with price
                 response.getRegisteredEventList().addAll(getInvoiceDataService()
-                        .getAllUnprocessedBusinessEvents(request));
+                        .getAllPendingBusinessEvents(request));
                                
             }
-        }));
+        }, setResultCode()));
         
         return response;
+    }
+    
+    ResultCode setResultCode() {
+    	ResultCode rc = new ResultCode();
+    	rc.setCode(ResultCodeEnum.OK);
+    	return rc;
     }
 
 }

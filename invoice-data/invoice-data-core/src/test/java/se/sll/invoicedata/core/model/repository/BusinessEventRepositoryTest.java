@@ -92,7 +92,7 @@ public class BusinessEventRepositoryTest extends TestSupport {
         getBusinessEventRepository().save(e);
         getBusinessEventRepository().flush();
         
-        List<BusinessEventEntity> l = getBusinessEventRepository().findBySupplierIdAndPendingIsTrue("12342");
+        List<BusinessEventEntity> l = getBusinessEventRepository().findAll();
         
         assertNotNull(l);
         assertEquals(1, l.size());
@@ -143,7 +143,6 @@ public class BusinessEventRepositoryTest extends TestSupport {
         assertNotNull(f.getItemEntities());
         assertEquals(e.getItemEntities().get(0).getItemId(), 
         		f.getItemEntities().get(0).getItemId());
-       
     }
     
 }

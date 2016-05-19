@@ -22,6 +22,8 @@
  */
 package se.sll.invoicedata.core.service.impl;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -29,8 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
+import se.sll.invoicedata.core.support.ExceptionCodeMatches;
 import se.sll.invoicedata.core.support.TestSupport;
 
 /**
@@ -41,59 +45,144 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
 	
 	@Autowired
     private InvoiceDataService invoiceDataService;
-
-    @Test (expected = InvoiceDataServiceException.class)
+	
+    @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_Result_Fail() {
+    public void testCreateInvoiceData_With_Null_Indata_Should_Throw_Exception() {
         final CreateInvoiceDataRequest ie = new CreateInvoiceDataRequest();
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
+        
         invoiceDataService.createInvoiceData(ie);
     }
-
-    @Test (expected = InvoiceDataServiceException.class)
+    
+    @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_Invalid_Supplier() {
-        final Event e = createSampleEvent();
+    public void testCreateInvoiceData_With_SupplierId_PaymentResponsible_And_CostCenter() {
+        final Event e = createSampleEvent();        
         invoiceDataService.registerEvent(e);
 
-        final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-        createReq.setSupplierId(e.getSupplierId() + "_invalid");
-        createReq.setPaymentResponsible(e.getPaymentResponsible());
-        createReq.setCreatedBy("testCreateInvoiceData_With_Invalid_Supplier");
-        createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
-        invoiceDataService.createInvoiceData(createReq);
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        String referenceId = invoiceDataService.createInvoiceData(createReq);
+        assertNotNull(referenceId);
     }
-
-    @Test (expected = InvoiceDataServiceException.class)
+    
+    @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_With_Invalid_PaymentResponsible() {
+    public void testCreateInvoiceData_With_Null_CostCenter_Should_Throw_Exception() {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
-
-        final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-        createReq.setSupplierId(e.getSupplierId());
-        createReq.setPaymentResponsible(e.getPaymentResponsible() + "_invalid");
-        createReq.setCreatedBy("testCreateInvoiceData_With_Invalid_PaymentResponsible");
-        createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
-        invoiceDataService.createInvoiceData(createReq);
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        createReq.setCostCenter(null);
+        String referenceId = invoiceDataService.createInvoiceData(createReq);
+        assertNotNull(referenceId);
     }
-
-    @Test (expected = InvoiceDataServiceException.class)
+    
+    @Test
     @Transactional
     @Rollback(true)
-    public void testCreateInvoiceData_Duplicate_AckList() {
+    public void testCreateInvoiceData_With_Null_PaymentResponsible_Should_Throw_Exception() {
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        createReq.setPaymentResponsible(null);
+        String referenceId = invoiceDataService.createInvoiceData(createReq);
+        assertNotNull(referenceId);
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testCreateInvoiceData_With_Null_SupplierId_Should_Throw_Exception() {
+        final Event e = createSampleEvent();
+        invoiceDataService.registerEvent(e);
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        createReq.setSupplierId(null);
+        String referenceId = invoiceDataService.createInvoiceData(createReq);
+        assertNotNull(referenceId);
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void test_CreateInvoiceData_Use_Case_With_Two_Different_CostCenters_But_Same_SupplierId_And_PaymentResponsible() {
+        final Event e1 = createSampleEvent();
+        e1.setEventId("event-id-1");
+        e1.setCostCenter("cost-center-1");
+        invoiceDataService.registerEvent(e1);
+        
+        final Event e2 = createSampleEvent();
+        e2.setEventId("event-id-2");
+        e2.setCostCenter("cost-center-2");
+        invoiceDataService.registerEvent(e2);
 
-        final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-        createReq.setSupplierId(e.getSupplierId());
-        createReq.setPaymentResponsible(e.getPaymentResponsible());
-        createReq.setCreatedBy("testCreateInvoiceData_Duplicate_AckList");
-        createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
-        createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
+        final CreateInvoiceDataRequest createReq_1 = getCreateInvoiceDataRequestFromPassedEvent(e1);
+        String referenceId_1 = invoiceDataService.createInvoiceData(createReq_1);
+        assertNotNull(referenceId_1);
+        
+        final CreateInvoiceDataRequest createReq_2 = getCreateInvoiceDataRequestFromPassedEvent(e2);
+        String referenceId_2 = invoiceDataService.createInvoiceData(createReq_2);
+        assertNotNull(referenceId_2);
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testCreateInvoiceData_With_Other_SupplierId_Should_Throw_Exception() {
+        final Event e = createSampleEvent();
+        invoiceDataService.registerEvent(e);
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.NO_PENDING_INVOICES_TO_BE_GENERATED));
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        createReq.setSupplierId(e.getSupplierId() + "_other");
         invoiceDataService.createInvoiceData(createReq);
     }
     
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testCreateInvoiceData_With_Other_PaymentResponsible_Should_Throw_Exception() {
+        final Event e = createSampleEvent();
+        invoiceDataService.registerEvent(e);
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.NO_PENDING_INVOICES_TO_BE_GENERATED));
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        createReq.setPaymentResponsible(e.getPaymentResponsible() + "_other");
+        invoiceDataService.createInvoiceData(createReq);
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testCreateInvoiceData_With_Other_CostCenter_Should_Throw_Exception() {
+        final Event e = createSampleEvent();
+        invoiceDataService.registerEvent(e);
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.NO_PENDING_INVOICES_TO_BE_GENERATED));
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        createReq.setCostCenter(e.getCostCenter() + "_other");
+        invoiceDataService.createInvoiceData(createReq);
+    }
 }

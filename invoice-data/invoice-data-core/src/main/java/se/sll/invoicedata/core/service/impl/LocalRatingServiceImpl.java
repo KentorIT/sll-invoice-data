@@ -65,10 +65,9 @@ public class LocalRatingServiceImpl implements RatingService {
             }
         }
         log.error("No price information (zero) found for item {}", itemEntity);
-        throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("No price information (zero) found for item", itemEntity.getItemId());
+        throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("price information (zero) found for item. ", itemEntity.getItemId());
     }
 
-    //
     protected PriceListEntity lookupPriceList(BusinessEventEntity e) {
         final List<PriceListEntity> l = priceListRepository.findBySupplierIdAndServiceCodeAndValidFromLessThanEqualOrderByValidFromDesc(
                 e.getSupplierId(), 

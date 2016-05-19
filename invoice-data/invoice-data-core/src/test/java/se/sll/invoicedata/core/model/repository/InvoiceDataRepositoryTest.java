@@ -28,13 +28,19 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import riv.sll.invoicedata._1.Event;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
-import se.sll.invoicedata.core.service.impl.CoreUtil;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
+import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.InvoiceDataServiceException;
+import se.sll.invoicedata.core.support.ExceptionCodeMatches;
 import se.sll.invoicedata.core.support.TestSupport;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * Unit tests.
@@ -43,21 +49,27 @@ import se.sll.invoicedata.core.support.TestSupport;
  *
  */
 public class InvoiceDataRepositoryTest extends TestSupport {
-
+	
+	@Autowired
+    private InvoiceDataService invoiceDataService;
     
     @Test
     @Transactional
     @Rollback(true)
     public void testInsertFind_InvocieDataEntity() {
-        final InvoiceDataEntity e = createSampleInvoiceDataEntity();
+        final InvoiceDataEntity e = createSamplePendingInvoiceDataEntity();
         final BusinessEventEntity b = createSampleBusinessEventEntity();
         b.setSupplierId(e.getSupplierId());
+        b.setCostCenter(e.getCostCenter());
+        b.setPaymentResponsible(e.getPaymentResponsible());
         assertTrue(e.addBusinessEventEntity(b));
         
         getInvoiceDataRepository().save(e);
         getInvoiceDataRepository().flush();
         
-        final List<InvoiceDataEntity> l = getInvoiceDataRepository().getInvoiceDataBySupplierIdAndPaymentResponsibleBetweenDates(e.getSupplierId(), e.getPaymentResponsible(), CoreUtil.MIN_DATE, new Date());
+        final List<InvoiceDataEntity> l = getInvoiceDataRepository().
+        		findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(
+        				e.getSupplierId(), e.getPaymentResponsible(), e.getCostCenter());
         
         assertNotNull(l);
         assertEquals(1, l.size());
@@ -66,11 +78,14 @@ public class InvoiceDataRepositoryTest extends TestSupport {
     }
     
     
-    @Test(expected=IllegalStateException.class)
+    @Test
     @Transactional
     @Rollback(true)
-    public void testGetReferenceId_fail() {
+    public void testGetReferenceId_Fail() {
         final InvoiceDataEntity e = createSampleInvoiceDataEntity();
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.ILLEGAL_STATE_INVALID_INVOICEDATA_REFERENCE_ID));
         
         e.getReferenceId();
     }
@@ -79,11 +94,12 @@ public class InvoiceDataRepositoryTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testGetReferenceId_success() {
+    public void testGetReferenceId_Success() {
         final InvoiceDataEntity e = createSampleInvoiceDataEntity();
         final BusinessEventEntity b = createSampleBusinessEventEntity();
         b.setSupplierId(e.getSupplierId());
         assertTrue(e.addBusinessEventEntity(b));
+        
         final InvoiceDataEntity saved = getInvoiceDataRepository().save(e);
         getInvoiceDataRepository().flush();
         
@@ -118,8 +134,8 @@ public class InvoiceDataRepositoryTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testInsertUpdateFind_assign_business_event() {
-        final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+    public void testInsertUpdate_Find_pending_business_event() {
+        final InvoiceDataEntity ie = createSamplePendingInvoiceDataEntity();
         final BusinessEventEntity be = createSampleBusinessEventEntity();
 
         // can only be added if supplierId matches, i.e. returns false at this stage
@@ -131,8 +147,8 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getBusinessEventRepository().save(be);
         getBusinessEventRepository().flush();
         
-        //
-        final BusinessEventEntity beSaved = getBusinessEventRepository().findBySupplierIdAndPendingIsTrue(ie.getSupplierId()).get(0);      
+        //Fetch again after saving
+        final BusinessEventEntity beSaved = getBusinessEventRepository().findByEventIdAndPendingIsTrueAndCreditIsNull(be.getEventId());
         assertTrue(ie.addBusinessEventEntity(beSaved));
         
         final BusinessEventEntity bePending = createSampleBusinessEventEntity();
@@ -143,13 +159,48 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getInvoiceDataRepository().save(ie);
         getInvoiceDataRepository().flush();
         
-        List<InvoiceDataEntity> l = getInvoiceDataRepository().getInvoiceDataBySupplierIdAndPaymentResponsibleBetweenDates(be.getSupplierId(), be.getPaymentResponsible(), CoreUtil.MIN_DATE, new Date());
+        List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndStartDateBetween(ie.getSupplierId(), CoreUtil.MIN_DATE, new Date()); 
         
-        assertEquals(1, l.size());
-        
+        assertEquals(1, l.size());        
         assertEquals(1, l.get(0).getBusinessEventEntities().size());
         
         // should be one pending left
-        assertEquals(1, getBusinessEventRepository().findBySupplierIdAndPendingIsTrue(ie.getSupplierId()).size());
-    }    
+        assertNotNull(getBusinessEventRepository().findByEventIdAndPendingIsTrueAndCreditIsNull(bePending.getEventId()));
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testDelete_From_Repository_Delete_From_InvoiceDataRepo_First() {
+	    final Event e = createSampleEvent();
+	    invoiceDataService.registerEvent(e);
+	    
+	    assertEquals(1, getInvoiceDataRepository().findAll().size());
+	    assertEquals(1, getBusinessEventRepository().findAll().size());
+	    
+	    getInvoiceDataRepository().deleteAll();
+	    
+	    assertEquals(0, getInvoiceDataRepository().findAll().size());
+	    assertEquals(0, getBusinessEventRepository().findAll().size());
+    }
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void testDelete_From_Repository_Delete_From_BusinessEventRepo_First() {
+	    final Event e = createSampleEvent();
+	    invoiceDataService.registerEvent(e);
+	    
+	    assertEquals(1, getInvoiceDataRepository().findAll().size());
+	    assertEquals(1, getBusinessEventRepository().findAll().size());
+	    
+	    InvoiceDataEntity invoiceDataEntity = getInvoiceDataRepository().findAll().get(0);
+	    invoiceDataEntity.getBusinessEventEntities().get(0).setInvoiceData(null);
+	    invoiceDataEntity.getBusinessEventEntities().clear();
+	    
+	    getBusinessEventRepository().deleteAll();
+	    
+	    assertEquals(1, getInvoiceDataRepository().findAll().size());
+	    assertEquals(0, getBusinessEventRepository().findAll().size());
+    }
 }

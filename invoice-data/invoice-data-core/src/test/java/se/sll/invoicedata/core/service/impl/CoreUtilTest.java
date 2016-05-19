@@ -20,8 +20,8 @@
 package se.sll.invoicedata.core.service.impl;
 
 import static org.junit.Assert.*;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyGenericLists;
-import static se.sll.invoicedata.core.service.impl.CoreUtil.copyProperties;
+import static se.sll.invoicedata.core.util.CoreUtil.copyGenericLists;
+import static se.sll.invoicedata.core.util.CoreUtil.copyProperties;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,6 +36,7 @@ import riv.sll.invoicedata._1.RegisteredEvent;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.ItemEntity;
 import se.sll.invoicedata.core.support.TestSupport;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * Unit tests AppUtil.

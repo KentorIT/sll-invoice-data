@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="vsfunderlagtestdbv2" type="MySQL - 5.6.19">
+   <tables>
+      <table name="invoice_data" numRows="9" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT">
+            <child column="invoice_data_id" foreignKey="FKC29022178FF8CD73" implied="false" onDeleteCascade="false" table="invoice_data_event"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="created_by" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="2" name="created_timestamp" nullable="false" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="3" name="end_date" nullable="false" remarks="" size="10" type="DATE"/>
+         <column autoUpdated="false" digits="0" id="4" name="payment_responsible" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="5" name="start_date" nullable="false" remarks="" size="10" type="DATE"/>
+         <column autoUpdated="false" digits="0" id="6" name="supplier_id" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="2" id="7" name="total_amount" nullable="true" remarks="" size="12" type="DECIMAL"/>
+         <column autoUpdated="false" digits="0" id="8" name="cost_center" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" defaultValue="b'1'" digits="0" id="9" name="pending" nullable="true" remarks="" size="1" type="BIT"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="invoice_data_event" numRows="28943" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT">
+            <child column="event_id" foreignKey="FK6C0DF29B8B18D8" implied="false" onDeleteCascade="false" table="invoice_data_event_discount_item"/>
+            <child column="event_id" foreignKey="FK88E0C83BB8B18D8" implied="false" onDeleteCascade="false" table="invoice_data_event_item"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="acknowledged_by" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="2" name="acknowledged_time" nullable="false" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="3" name="acknowledgement_id" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="4" name="created_timestamp" nullable="false" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="5" name="credit" nullable="true" remarks="" size="1" type="BIT"/>
+         <column autoUpdated="false" digits="0" id="6" name="credited" nullable="true" remarks="" size="1" type="BIT"/>
+         <column autoUpdated="false" digits="0" id="7" name="end_time" nullable="false" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="8" name="event_id" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="9" name="healthcare_commission" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="10" name="healthcare_facility" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="11" name="payment_responsible" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="12" name="pending" nullable="true" remarks="" size="1" type="BIT"/>
+         <column autoUpdated="false" digits="0" id="13" name="ref_contract_id" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="14" name="service_code" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="15" name="start_time" nullable="false" remarks="" size="19" type="DATETIME"/>
+         <column autoUpdated="false" digits="0" id="16" name="supplier_id" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="17" name="supplier_name" nullable="false" remarks="" size="2147483647" type="LONGTEXT"/>
+         <column autoUpdated="false" digits="0" id="18" name="invoice_data_id" nullable="true" remarks="" size="19" type="BIGINT">
+            <parent column="id" foreignKey="FKC29022178FF8CD73" implied="false" onDeleteCascade="false" table="invoice_data"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="19" name="cost_center" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="FKC29022178FF8CD73" unique="false">
+            <column ascending="true" name="invoice_data_id"/>
+         </index>
+         <index name="invoice_data_event_query_ix_1" unique="false">
+            <column ascending="true" name="supplier_id"/>
+            <column ascending="true" name="payment_responsible"/>
+            <column ascending="true" name="pending"/>
+            <column ascending="true" name="start_time"/>
+         </index>
+         <index name="invoice_data_event_query_ix_2" unique="false">
+            <column ascending="true" name="event_id"/>
+         </index>
+         <index name="invoice_data_event_query_ix_3" unique="false">
+            <column ascending="true" name="acknowledgement_id"/>
+         </index>
+         <index name="invoice_data_event_query_ix_4" unique="false">
+            <column ascending="true" name="supplier_id"/>
+            <column ascending="true" name="payment_responsible"/>
+            <column ascending="true" name="acknowledgement_id"/>
+            <column ascending="true" name="pending"/>
+         </index>
+      </table>
+      <table name="invoice_data_event_discount_item" numRows="78" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT">
+            <child column="discount_item_id" foreignKey="FK562AC6AF2A7105A5" implied="false" onDeleteCascade="false" table="invoice_data_event_reference_item"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="description" nullable="false" remarks="" size="2147483647" type="LONGTEXT"/>
+         <column autoUpdated="false" digits="0" id="2" name="discount_in_percentage" nullable="false" remarks="" size="10" type="INT"/>
+         <column autoUpdated="false" digits="0" id="3" name="order_of_discount" nullable="false" remarks="" size="10" type="INT"/>
+         <column autoUpdated="false" digits="0" id="4" name="event_id" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="id" foreignKey="FK6C0DF29B8B18D8" implied="false" onDeleteCascade="false" table="invoice_data_event"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="FK6C0DF29B8B18D8" unique="false">
+            <column ascending="true" name="event_id"/>
+         </index>
+      </table>
+      <table name="invoice_data_event_item" numRows="35929" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT"/>
+         <column autoUpdated="false" digits="0" id="1" name="description" nullable="false" remarks="" size="2147483647" type="LONGTEXT"/>
+         <column autoUpdated="false" digits="0" id="2" name="item_id" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="2" id="3" name="price" nullable="true" remarks="" size="8" type="DECIMAL"/>
+         <column autoUpdated="false" digits="2" id="4" name="qty" nullable="true" remarks="" size="8" type="DECIMAL"/>
+         <column autoUpdated="false" digits="0" id="5" name="event_id" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="id" foreignKey="FK88E0C83BB8B18D8" implied="false" onDeleteCascade="false" table="invoice_data_event"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="FK88E0C83BB8B18D8" unique="false">
+            <column ascending="true" name="event_id"/>
+         </index>
+      </table>
+      <table name="invoice_data_event_reference_item" numRows="79" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT"/>
+         <column autoUpdated="false" digits="0" id="1" name="qty" nullable="false" remarks="" size="10" type="INT"/>
+         <column autoUpdated="false" digits="0" id="2" name="reference_item_id" nullable="false" remarks="" size="255" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="3" name="discount_item_id" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="id" foreignKey="FK562AC6AF2A7105A5" implied="false" onDeleteCascade="false" table="invoice_data_event_discount_item"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="FK562AC6AF2A7105A5" unique="false">
+            <column ascending="true" name="discount_item_id"/>
+         </index>
+      </table>
+      <table name="invoice_data_pricelist" numRows="36" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT">
+            <child column="price_list_id" foreignKey="FKED35540EC367E1EB" implied="false" onDeleteCascade="false" table="invoice_data_pricelist_item"/>
+         </column>
+         <column autoUpdated="false" digits="0" id="1" name="service_code" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="2" name="supplier_id" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="3" name="valid_from" nullable="false" remarks="" size="10" type="DATE"/>
+         <column autoUpdated="false" digits="0" id="4" name="supplier_name" nullable="true" remarks="" size="64" type="VARCHAR"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="service_code" unique="true">
+            <column ascending="true" name="service_code"/>
+            <column ascending="true" name="supplier_id"/>
+            <column ascending="true" name="valid_from"/>
+         </index>
+      </table>
+      <table name="invoice_data_pricelist_item" numRows="5848" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT"/>
+         <column autoUpdated="false" digits="0" id="1" name="item_id" nullable="false" remarks="" size="64" type="VARCHAR"/>
+         <column autoUpdated="false" digits="2" id="2" name="price" nullable="false" remarks="" size="8" type="DECIMAL"/>
+         <column autoUpdated="false" digits="0" id="3" name="price_list_id" nullable="false" remarks="" size="19" type="BIGINT">
+            <parent column="id" foreignKey="FKED35540EC367E1EB" implied="false" onDeleteCascade="false" table="invoice_data_pricelist"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="FKED35540EC367E1EB" unique="false">
+            <column ascending="true" name="price_list_id"/>
+         </index>
+         <index name="item_id" unique="true">
+            <column ascending="true" name="item_id"/>
+            <column ascending="true" name="price_list_id"/>
+         </index>
+      </table>
+      <table name="operation_access_config" numRows="10" remarks="" type="TABLE">
+         <column autoUpdated="true" digits="0" id="0" name="id" nullable="false" remarks="" size="19" type="BIGINT"/>
+         <column autoUpdated="false" digits="0" id="1" name="operation_enum" nullable="false" remarks="" size="255" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="2" name="hsa_id" nullable="false" remarks="" size="255" type="VARCHAR"/>
+         <column autoUpdated="false" digits="0" id="3" name="supplier_id_config" nullable="false" remarks="" size="1024" type="VARCHAR"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="PRIMARY" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="operation_enum" unique="true">
+            <column ascending="true" name="operation_enum"/>
+            <column ascending="true" name="hsa_id"/>
+         </index>
+      </table>
+   </tables>
+</database>

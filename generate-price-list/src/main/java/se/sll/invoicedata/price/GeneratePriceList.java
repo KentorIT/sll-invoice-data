@@ -27,14 +27,19 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParser.Feature;
@@ -51,11 +56,15 @@ import se.sll.invoicedata.price.json.Service;
  */
 public class GeneratePriceList {
 	
-	private final char NUMERIC_SUFFIX = '0';	
+	private final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.00");
 	private final String SERVICE_CODE = "01";
 	private final String OUTFILE_DIRECTORY = "Outdata\\";
 	
 	public static void main(String input[]) throws IOException {
+		
+		 Locale.setDefault(Locale.US);
+		 System.out.println("Using locale: " + Locale.getDefault());
+		 
 		 Scanner in = new Scanner(System.in);
 		 
 		 System.out.println("Have you checked that the Lev/Leverantör/Supplier column in excel file matches the order in the program (see method processSheet)?");
@@ -63,11 +72,11 @@ public class GeneratePriceList {
 		 System.out.println("Enter the input file name ex:(Indata//NewPrice.xls):");
 		 String indataFile = in.nextLine();
 		 
-		 System.out.println("Enter start row number (row starts from 0):");
-		 int startRow = in.nextInt();
+		 System.out.println("Enter start row number (row number from excel file):");
+		 int startRow = in.nextInt() - 1;//starts from 0
 		 
-		 System.out.println("Enter start column number (column start from 0):");
-		 int startColumn = in.nextInt();
+		 System.out.println("Enter start column number (column number from excel file):");
+		 int startColumn = in.nextInt() - 1;//starts from 0
 		 
 		 System.out.println("Enter valid from date (yyyy-mm-dd):");
 		 String validFrom = in.nextLine();
@@ -75,7 +84,9 @@ public class GeneratePriceList {
 		 
 		 if (!validFrom.isEmpty()) {
 			 GeneratePriceList generatePriceList = new GeneratePriceList();
-			 HSSFSheet sheet = generatePriceList.read(indataFile);
+			 generatePriceList.createOutputDir();
+			 HSSFSheet sheet = generatePriceList.readOldFormatXLS(indataFile);
+			 //XSSFSheet sheet = generatePriceList.readXLSX(indataFile);
 			 generatePriceList.processSheet(sheet, validFrom, startRow, startColumn);
 		 } else {
 			 in.close();
@@ -86,11 +97,25 @@ public class GeneratePriceList {
 		 in.close();
 	}
 	
-	public HSSFSheet read(String fileName) throws IOException {
+	private void createOutputDir() {
+		File file = new File(OUTFILE_DIRECTORY);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+	}
+	
+	public HSSFSheet readOldFormatXLS(String fileName) throws IOException {
 		FileInputStream file = new FileInputStream(new File(fileName));
 		HSSFWorkbook workbook = new HSSFWorkbook(file);
 		return workbook.getSheetAt(0);
 	}
+	
+	public XSSFSheet readXLSX(String fileName) throws IOException {
+		FileInputStream file = new FileInputStream(new File(fileName));
+		XSSFWorkbook  workbook = new XSSFWorkbook(file);
+		return workbook.getSheetAt(0);
+	}
+	
 	
 	private ObjectMapper getObjectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -99,7 +124,7 @@ public class GeneratePriceList {
 		return mapper;
 	}
 	
-	private void processSheet(HSSFSheet sheet, String validFrom, final int startRow, final int startColumn) throws JsonGenerationException, JsonMappingException, IOException {
+	private void processSheet(Sheet sheet, String validFrom, final int startRow, final int startColumn) throws JsonGenerationException, JsonMappingException, IOException {
 		List<String> guidList = getGuidList(sheet, startRow, startColumn);
 		writeListToFile(guidList, "GUID.txt");
 		
@@ -107,17 +132,18 @@ public class GeneratePriceList {
 		
 		/* See the order in the database matches with the order in the generated file */
 		priceList.add(getTransVoice(sheet, guidList, validFrom, startRow, startColumn+1));
-		priceList.add(getSprakService(sheet, guidList, validFrom, startRow, startColumn+2));		
+		priceList.add(getSprakService(sheet, guidList, validFrom, startRow, startColumn+2));
+		priceList.add(getEquator(sheet, guidList, validFrom, startRow, startColumn+3));
 		priceList.add(getTolkJouren(sheet, guidList, validFrom, startRow, startColumn+4));
 		priceList.add(getJarva(sheet, guidList, validFrom, startRow, startColumn+5));
 		//priceList.add(getBotkryka(sheet, guidList));
-		priceList.add(getEquator(sheet, guidList, validFrom, startRow, startColumn+3));
+		
 		
 		System.out.println("Items in list: " + guidList.size() + ". State OK");
 		getObjectMapper().writerWithDefaultPrettyPrinter().writeValue(new File(OUTFILE_DIRECTORY + "PriceList.json"), priceList);
 	}
 	
-	private Service getTransVoice(HSSFSheet sheet, List<String> guidList, String validFrom, int startRow, final int startColumn) {
+	private Service getTransVoice(Sheet sheet, List<String> guidList, String validFrom, int startRow, final int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556482-8654");
 		service.setSupplierName("Transvoice");
@@ -141,7 +167,7 @@ public class GeneratePriceList {
 		return service;
 	}
 	
-	private Service getSprakService(HSSFSheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
+	private Service getSprakService(Sheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556629-1513");
 		service.setSupplierName("Språkservice");
@@ -165,7 +191,7 @@ public class GeneratePriceList {
 		return service;
 	}
 	
-	private Service getEquator(HSSFSheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
+	private Service getEquator(Sheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556560-0854");
 		service.setSupplierName("Semantix Equator");
@@ -189,7 +215,7 @@ public class GeneratePriceList {
 		return service;
 	}
 	
-	private Service getTolkJouren(HSSFSheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
+	private Service getTolkJouren(Sheet sheet, List<String> guidList, String validFrom,  int startRow, int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556526-2630");
 		service.setSupplierName("Semantix Tolkjouren");
@@ -213,7 +239,7 @@ public class GeneratePriceList {
 		return service;
 	}
 	
-	private Service getJarva(HSSFSheet sheet, List<String> guidList, String validFrom, int startRow, int startColumn) {
+	private Service getJarva(Sheet sheet, List<String> guidList, String validFrom, int startRow, int startColumn) {
 		Service service = new Service();
 		service.setSupplierId("556613-1792");
 		service.setSupplierName("Järva");
@@ -278,13 +304,14 @@ public class GeneratePriceList {
 		
 	}
 	
-	private List<String> getGuidList(HSSFSheet sheet, int startRow, int startColumn) {
+	private List<String> getGuidList(Sheet sheet, int startRow, int startColumn) {
 		
 		List<String> guids = new ArrayList<String>();
 		
 		for (int i = startRow; i < sheet.getPhysicalNumberOfRows(); i++) {
 			Cell cell = sheet.getRow(i).getCell(startColumn);		
 			
+			System.out.println("GUID: " + i + ": " + cell);
 			if (!guids.contains(cell.getStringCellValue())) {
 				guids.add(cell.getStringCellValue());
 			} else {
@@ -294,7 +321,7 @@ public class GeneratePriceList {
 		return guids;
 	}
 	
-	private List<String> getServicePrice(HSSFSheet sheet, int startRow, int serviceType) {
+	private List<String> getServicePrice(Sheet sheet, int startRow, int serviceType) {
 		FormulaEvaluator formulaEval = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();		
 		List<String> priceList = new ArrayList<String>();
 		
@@ -304,13 +331,14 @@ public class GeneratePriceList {
 			if (cell != null) {
 				switch(cell.getCellType()) {
 					case Cell.CELL_TYPE_NUMERIC:
-						priceList.add(String.valueOf(cell.getNumericCellValue()) + NUMERIC_SUFFIX);
+						priceList.add(DECIMAL_FORMAT.format(cell.getNumericCellValue()));
 						break;
 					case Cell.CELL_TYPE_FORMULA:
-						priceList.add(formulaEval.evaluate(cell).formatAsString() + NUMERIC_SUFFIX);
+						double d = formulaEval.evaluate(cell).getNumberValue();
+						priceList.add(DECIMAL_FORMAT.format(d));
 						break;
 					case Cell.CELL_TYPE_BLANK:
-						priceList.add("0.0" + NUMERIC_SUFFIX);
+						priceList.add(DECIMAL_FORMAT.format(0));
 						break;
 					default:
 						StringBuffer errorMsg = new StringBuffer("This type of cell is not handled by the program!");
@@ -321,7 +349,7 @@ public class GeneratePriceList {
 						throw new IllegalStateException(errorMsg.toString());						
 				}
 			} else {
-				priceList.add("0.0" + NUMERIC_SUFFIX);
+				priceList.add(DECIMAL_FORMAT.format(0));
 			}
 		}
 		

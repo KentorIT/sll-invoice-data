@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="92abd2b5-844d-4bb7-8744-e76a30acb8fe" activeEnvironment="Default" name="ListInvoiceData" resourceRoot="" soapui-version="5.2.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="009ae8f6-3c2b-4660-b9d4-6cb5425a53cc" wsaVersion="NONE" name="ListInvoiceDataProducerServiceSoapBinding" type="wsdl" bindingName="{http://ws.app.invoicedata.sll.se/}ListInvoiceDataProducerServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/invoicedata-web-app/ws/listInvoiceData/v1?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/invoicedata-web-app/ws/listInvoiceData/v1?wsdl"><con:part><con:url>http://localhost:8080/invoicedata-web-app/ws/listInvoiceData/v1?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="ListInvoiceDataProducerService" targetNamespace="http://ws.app.invoicedata.sll.se/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.app.invoicedata.sll.se/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns4="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="urn:riv:sll:invoicedata:ListInvoiceData:1:rivtabp21">
+  <wsdl:import location="http://localhost:8080/invoicedata-web-app/ws/listInvoiceData/v1?wsdl=ListInvoiceDataResponderInterface.wsdl" namespace="urn:riv:sll:invoicedata:ListInvoiceData:1:rivtabp21"></wsdl:import>
+  <wsdl:binding name="ListInvoiceDataProducerServiceSoapBinding" type="ns1:ListInvoiceDataResponderInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="ListInvoiceData">
+      <soap:operation soapAction="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1:ListInvoiceData" style="document"/>
+      <wsdl:input name="ListInvoiceData">
+        <soap:header message="ns1:ListInvoiceData" part="LogicalAddress" use="literal"></soap:header>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="ListInvoiceDataResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ListInvoiceDataProducerService">
+    <wsdl:port binding="tns:ListInvoiceDataProducerServiceSoapBinding" name="ListInvoiceDataProducerPort">
+      <soap:address location="http://localhost:8080/invoicedata-web-app/ws/listInvoiceData/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/invoicedata-web-app/ws/listInvoiceData/v1?wsdl=ListInvoiceDataResponderInterface.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="ListInvoiceDataResponderInterface" targetNamespace="urn:riv:sll:invoicedata:ListInvoiceData:1:rivtabp21" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns3="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1" xmlns:ns2="urn:riv:itintegration:registry:1" xmlns:ns1="urn:riv:sll:invoicedata:ListInvoiceData:1:rivtabp21">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1" xmlns:ns1="urn:riv:sll:invoicedata:1">
+      <xs:import namespace="urn:riv:sll:invoicedata:1"/>
+      <xs:element name="ListInvoiceDataRequest" type="tns:ListInvoiceDataRequest"/>
+      <xs:element name="ListInvoiceDataResponse" type="tns:ListInvoiceDataResponse"/>
+      <xs:complexType name="ListInvoiceDataRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="fromDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="toDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="supplierId" type="xs:string"/>
+          <xs:element minOccurs="0" name="paymentResponsible" type="xs:string"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ListInvoiceDataResponse">
+        <xs:sequence>
+          <xs:element name="resultCode" type="ns1:ResultCode"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="invoiceDataList" nillable="true" type="ns1:InvoiceDataHeader"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:1">
+      <xs:complexType name="ResultCode">
+        <xs:sequence>
+          <xs:element name="code" type="tns:ResultCodeEnum"/>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="InvoiceDataHeader">
+        <xs:sequence>
+          <xs:element name="referenceId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="createdBy" type="xs:string"/>
+          <xs:element name="createdTime" type="xs:dateTime"/>
+          <xs:element name="totalAmount" type="xs:decimal"/>
+          <xs:element name="startDate" type="xs:date"/>
+          <xs:element name="endDate" type="xs:date"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="InvoiceData">
+        <xs:complexContent>
+          <xs:extension base="tns:InvoiceDataHeader">
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="registeredEventList" type="tns:RegisteredEvent"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="RegisteredEvent">
+        <xs:complexContent>
+          <xs:extension base="tns:Event">
+            <xs:sequence>
+              <xs:element name="id" type="xs:long"/>
+              <xs:element name="credit" type="xs:boolean"/>
+              <xs:element name="totalAmount" type="xs:decimal"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="Event">
+        <xs:sequence>
+          <xs:element name="eventId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="healthcareFacility" type="xs:string"/>
+          <xs:element name="refContractId" type="xs:string"/>
+          <xs:element name="supplierName" type="xs:string"/>
+          <xs:element name="serviceCode" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="healthCareCommission" type="xs:string"/>
+          <xs:element name="acknowledgementId" type="xs:string"/>
+          <xs:element name="acknowledgedBy" type="xs:string"/>
+          <xs:element name="acknowledgedTime" type="xs:dateTime"/>
+          <xs:element name="startTime" type="xs:dateTime"/>
+          <xs:element name="endTime" type="xs:dateTime"/>
+          <xs:element maxOccurs="unbounded" name="itemList" type="tns:Item"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="discountItemList" nillable="true" type="tns:DiscountItem"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Item">
+        <xs:sequence>
+          <xs:element name="itemId" type="xs:string"/>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="qty" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DiscountItem">
+        <xs:sequence>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="discountInPercentage" type="xs:int"/>
+          <xs:element name="orderOfDiscount" type="xs:int"/>
+          <xs:element maxOccurs="unbounded" name="referenceItemList" type="tns:ReferenceItem"/>
+          <xs:element minOccurs="0" name="discountedPrice" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ReferenceItem">
+        <xs:sequence>
+          <xs:element name="refItemId" type="xs:string"/>
+          <xs:element name="qty" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="ResultCodeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OK"/>
+          <xs:enumeration value="REQUEST_ERROR"/>
+          <xs:enumeration value="NOTFOUND_ERROR"/>
+          <xs:enumeration value="AUTHORIZATION_ERROR"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:itintegration:registry:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:itintegration:registry:1">
+      <xs:element name="LogicalAddress" type="xs:string"/>
+      <xs:element name="ServiceContract" type="tns:ServiceContractType"/>
+      <xs:complexType name="ServiceContractType">
+        <xs:sequence>
+          <xs:element name="ServiceContractNamespace" type="xs:anyURI"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="ListInvoiceDataResponse">
+    <wsdl:part element="ns3:ListInvoiceDataResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ListInvoiceData">
+    <wsdl:part element="ns2:LogicalAddress" name="LogicalAddress"></wsdl:part>
+    <wsdl:part element="ns3:ListInvoiceDataRequest" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ListInvoiceDataResponderInterface">
+    <wsdl:operation name="ListInvoiceData">
+      <wsdl:input message="ns1:ListInvoiceData" name="ListInvoiceData"></wsdl:input>
+      <wsdl:output message="ns1:ListInvoiceDataResponse" name="ListInvoiceDataResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/invoicedata-web-app/ws/listInvoiceData/v1</con:endpoint></con:endpoints><con:operation id="35384ab1-2082-4ef8-824a-04d04ae20cd0" isOneWay="false" action="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1:ListInvoiceData" name="ListInvoiceData" bindingOperationName="ListInvoiceData" type="Request-Response" outputName="ListInvoiceDataResponse" inputName="ListInvoiceData" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="b34ec931-a83c-42c7-aa09-6c965022ef6f" defaultOutgoingWss="" defaultIncomingWss="" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/listInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1">\r
+   <soapenv:Header>\r
+      <urn:LogicalAddress>?</urn:LogicalAddress>\r
+   </soapenv:Header>\r
+   <soapenv:Body>\r
+      <urn1:ListInvoiceDataRequest>\r
+         <!--Optional:-->\r
+         <urn1:fromDate>2012-01-01T00:00:00</urn1:fromDate>
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         <urn1:toDate></urn1:toDate>
+         <!--Optional:-->\r
+         <urn1:supplierId>?</urn1:supplierId>\r
+         <!--Optional:-->\r
+         <urn1:paymentResponsible>?</urn1:paymentResponsible>\r
+         <!--You may enter ANY elements at this point-->\r
+      </urn1:ListInvoiceDataRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1:ListInvoiceData"/><con:wsrmConfig version="1.2"/></con:call><con:call id="7cd69dbd-0300-44ec-b8d0-5318b9d1b102" name="Sample_Request"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/listInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:ListInvoiceDataRequest>
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         <urn1:fromDate>2012-01-01T00:00:00</urn1:fromDate>
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         <urn1:toDate>2099-01-01T00:00:00</urn1:toDate>
+         <urn1:supplierId>TEST_556482-8654</urn1:supplierId>
+         <urn1:paymentResponsible>TEST_HSF</urn1:paymentResponsible>
+         <!--You may enter ANY elements at this point-->
+      </urn1:ListInvoiceDataRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1:ListInvoiceData"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:testSuite id="5c29afc9-b527-411c-8c4b-e6dea48d4f97" name="ListInvoiceDataProducerServiceSoapBinding TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="f1872ba3-8ed4-479e-bb5d-54820ec9f934" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="ListInvoiceData TestCase" searchProperties="true"><con:settings/><con:testStep type="groovy" name="getTestSupplierID" id="14547d59-0c83-4d80-b1f2-e969c1d6ad1b"><con:settings/><con:config><script>return 'TEST_556482-8654'</script></con:config></con:testStep><con:testStep type="request" id="5145d51a-8340-4cd5-9b42-c6b08459c08b" name="ListInvoiceData"><con:settings/><con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:interface>ListInvoiceDataProducerServiceSoapBinding</con:interface><con:operation>ListInvoiceData</con:operation><con:request name="ListInvoiceData" id="9cdb0157-5400-4a1a-a651-9519ebd68c3e" defaultOutgoingWss="" defaultIncomingWss=""><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/listInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:ListInvoiceDataRequest>
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         <urn1:fromDate>2012-01-01T00:00:00</urn1:fromDate>
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         <urn1:toDate>2099-01-01T00:00:00</urn1:toDate>
+         <urn1:supplierId>${getTestSupplierID#result}</urn1:supplierId>
+         <urn1:paymentResponsible>TEST_HSF</urn1:paymentResponsible>
+         <!--You may enter ANY elements at this point-->
+      </urn1:ListInvoiceDataRequest>
+   </soapenv:Body>
+</soapenv:Envelope>]]></con:request><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig action="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1:ListInvoiceData" mustUnderstand="NONE" version="200508"/><con:wsrmConfig version="1.2"/></con:request></con:config></con:testStep><con:properties/><con:reportParameters/><con:breakPoints><con:testStepId>14547d59-0c83-4d80-b1f2-e969c1d6ad1b</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase><con:properties/><con:reportParameters/></con:testSuite><con:requirements/><con:properties><con:property><con:name>db_connection_string</con:name><con:value>jdbc:mysql://localhost:3306/vsfunderlagtestdbv2</con:value></con:property><con:property><con:name>db_username</con:name><con:value>root</con:value></con:property><con:property><con:name>db_password</con:name><con:value>Abcd123*</con:value></con:property><con:property><con:name>db_driver</con:name><con:value>com.mysql.jdbc.Driver</con:value></con:property></con:properties><con:wssContainer/><con:databaseConnectionContainer/><con:oAuth2ProfileContainer/><con:reporting><con:reportTemplates/><con:xmlTemplates/><con:xmlTemplates/><con:parameters/><con:parameters/></con:reporting><con:reporting/><con:authRepository/><con:loadUiTest name="ListInvoiceData LoadTest" id="87e71e5e-b478-44fd-8e0c-e8dc4220de85"><con:settings><con:setting id="soapUIObjectSourceId">f1872ba3-8ed4-479e-bb5d-54820ec9f934</con:setting><con:setting id="soapUIObjectSourceType">soapUIObjectSourceType_RestRequest</con:setting></con:settings><con1:loadui-project id="f3e2ccf0-fb68-4d39-bf89-3ab92cfb3364" label="ListInvoiceData LoadTest" xmlns:con1="http://eviware.com/loadui/config"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="CanvasItem.abortOnFinish" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="ModelItem.saveReport" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="ModelItem.reportFolder" type="java.lang.String"/><con1:property propagates="true" key="ModelItem.reportFormat" type="java.lang.String"/><con1:property propagates="true" key="ModelItem.rate" type="java.lang.Long">1</con1:property><con1:property propagates="true" key="ModelItem.loadDistributionType" type="com.smartbear.load.facade.LoadDistributionType">Relative</con1:property><con1:property propagates="true" key="ModelItem.remoteMode" type="java.lang.String"/></con1:properties><con1:attributes><con1:property key="limits">Samples=1;Time=1;</con1:property></con1:attributes><con1:addons/><con1:scene label="New Scenario" id="4dc29651-601f-4c90-91f2-9fadd8ef7856" version="31"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="CanvasItem.abortOnFinish" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="SceneItem.followProject" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="SceneItem.scenarioRatePercentage" type="java.lang.Long">100</con1:property><con1:property propagates="true" key="SceneItem.scenarioRateSpecific" type="java.lang.Long">10</con1:property></con1:properties><con1:attributes><con1:property key="limits">Time=1;</con1:property></con1:attributes><con1:addons/><con1:component type="com.eviware.loadui.groovy.GroovyComponent" label="Interval 1" id="0a382e7f-97de-49b4-be9c-a966a9c95c6f" category="scheduler"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="_script" type="java.lang.String"><![CDATA[// 
+// Copyright 2014 SmartBear Software
+// 
+// Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission - subsequent
+// versions of the EUPL (the "Licence");
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at:
+// 
+// http://ec.europa.eu/idabc/eupl
+// 
+// Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+// distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+// express or implied. See the Licence for the specific language governing permissions and limitations
+// under the Licence.
+// 
+
+/**
+ * Schedules the start and stop of connected components 
+ *
+ * @id com.eviware.Interval
+ * @help http://www.loadui.org/Schedulers/interval-component.html
+ * @category scheduler
+ * @nonBlocking true
+ */
+
+// Schedule the start and stop of a trigger component.
+// On Start starts timer and when StartAt reached send one START message to 
+// attached component. When Duration expires one STOP message is send to each 
+// attached component.
+// Repeat option repeats whole process if counter limit not set.
+// 
+// On Stop it sends a STOP message to attached components and stops timer.
+//
+// On Reset it just resets the timer and stops it.
+
+
+import com.eviware.loadui.api.events.BaseEvent
+import com.eviware.loadui.api.events.PropertyEvent
+import com.eviware.loadui.api.model.CanvasItem
+import com.eviware.loadui.util.layout.IntervalModel
+
+import java.util.concurrent.TimeUnit
+
+createProperty('startAt', Long, 0)
+createProperty('duration', Long, 0)
+createProperty('unit', String, 'Sec')
+createProperty('mode', String, 'Single')
+createProperty('defaultMode', Boolean, true)
+
+long testStartTime = 0
+def canvas = getCanvas()
+
+def startFuture = null
+def stopFuture = null
+def endFuture = null
+
+String lastAction = "Undefined";
+
+updateState = {
+    if (lastAction != "START") {
+        //warn "Aborting update due to $lastAction"
+        return;
+    }
+
+    if (defaultMode.value) {
+        sendEnabled(true)
+
+        //warn "Default mode run"
+        return
+    }
+    //warn "Scheduled mode run"
+
+    long limit = canvas.getLimit(CanvasItem.TIMER_COUNTER) * 1000
+
+    long mult = 1000
+    if (unit.value == 'Min') mult *= 60
+    else if (unit.value == 'Percent' && limit > 0) mult = limit / 100
+
+    long startTime = startAt.value * mult
+    if (limit > 0 && startTime > limit) {
+        startAt.value = limit / mult
+        //warn "Start at updated without affect on the execution "
+        return
+    }
+
+    long stopTime
+    if (duration.value == 0) {
+        stopTime = (limit > 0) ? limit : IntervalModel.INFINITE
+    } else {
+        stopTime = startTime + duration.value * mult
+    }
+
+    if (limit > 0 && stopTime > limit) {
+        long newDuration = limit / mult - startAt.value
+        duration.value = newDuration
+        //warn "Duration updated without affect on the execution "
+        return
+    }
+
+    long currentTime = (System.currentTimeMillis() - testStartTime) % stopTime
+
+    //warn "Current time: $currentTime, Stop time: $stopTime"
+
+    if (currentTime < stopTime) {
+        long stopInterval = stopTime - currentTime
+        //warn "Schedule stopping $stopInterval"
+        stopFuture?.cancel(true)
+        stopFuture = schedule({
+            sendEnabled(false)
+            //warn "Stop exucution"
+            if (mode.value != 'Single') {
+                updateState()
+            }
+        }, stopInterval, TimeUnit.MILLISECONDS)
+    }
+    if (currentTime < startTime) {
+        long startInterval = startTime - currentTime
+        //warn "Schedule START at $startInterval"
+        startFuture?.cancel(true)
+        startFuture = schedule({
+            //warn "Start exucution"
+            sendEnabled(true)
+        }, startInterval, TimeUnit.MILLISECONDS)
+        //warn "Stopping for now"
+        sendEnabled(false)
+    } else if (currentTime < stopTime) {
+        //warn "Start execution right now"
+        sendEnabled(true)
+    }
+}
+
+onAction("RESET_COUNTER_VALUES") {
+    //invoked on PRE_START
+    updateState()
+}
+
+onAction("START") {
+    if (lastAction != "START") {
+        lastAction = "START"
+        cancelAll()
+        testStartTime = System.currentTimeMillis()
+        updateState()
+    }
+}
+
+onAction("STOP") {
+    lastAction = "STOP"
+    sendEnabled(false)
+    cancelAll()
+    updateState()
+}
+
+onAction("RESET") {
+}
+
+addEventListener(PropertyEvent) { event ->
+    if (event.property in [startAt, duration, unit, mode]) {
+        updateState()
+    }
+}
+
+def limitsListener = addEventListener(canvas, BaseEvent) { event ->
+    if (event.key == CanvasItem.LIMITS) {
+        updateState()
+    }
+}
+
+onRelease = {
+    cancelAll()
+    canvas.removeEventListener(BaseEvent, limitsListener)
+}
+
+cancelAll = {
+    startFuture?.cancel(true)
+    startFuture = null
+    stopFuture?.cancel(true)
+    stopFuture = null
+    endFuture?.cancel(true)
+    endFuture = null
+}]]></con1:property><con1:property propagates="true" key="stateProperty" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="startAt" type="java.lang.Long">0</con1:property><con1:property propagates="true" key="duration" type="java.lang.Long">5</con1:property><con1:property propagates="true" key="unit" type="java.lang.String">Sec</con1:property><con1:property propagates="true" key="mode" type="java.lang.String">Single</con1:property><con1:property propagates="true" key="defaultMode" type="java.lang.Boolean">true</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Interval</con1:property><con1:property key="_digest">38ca389ba6d8738962c63839763c4305</con1:property><con1:property key="_id">com.eviware.Interval</con1:property><con1:property key="_classLoader">com.eviware.Interval</con1:property></con1:attributes><con1:addons/></con1:component><con1:component type="com.eviware.loadui.groovy.GroovyComponent" label="Fixed Load 1" id="3da804cf-e085-4d6d-812a-f233ad8e1d68" category="generators"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="_script" type="java.lang.String">//
+// Copyright 2014 SmartBear Software
+// 
+// Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission - subsequent
+// versions of the EUPL (the "Licence");
+// You may not use this work except in compliance with the Licence.
+// You may obtain a copy of the Licence at:
+// 
+// http://ec.europa.eu/idabc/eupl
+// 
+// Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+// distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+// express or implied. See the Licence for the specific language governing permissions and limitations
+// under the Licence.
+// 
+
+/**
+ * Simulates a "classic" fixed load situation
+ *
+ * @id com.eviware.FixedLoad
+ * @help http://www.loadui.org/Generators/fixed-load-component.html
+ * @name Fixed Load
+ * @category generators
+ * @nonBlocking true
+ */
+
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
+
+sampleCount = createInput('Sample Count', 'Currently running feedback', 'Used to receive the number of currently running requests from the triggered Runner.') {
+    it.name == "runningTerminal"
+}
+
+String latestAction = 'NONE'
+AtomicInteger differenceFromTargetLoad = new AtomicInteger(0)
+AtomicInteger currentVus = new AtomicInteger(0)
+Future loadUpdateFuture = null
+
+//Properties
+createProperty('load', Long, 10) { value, prevValue ->
+    if (latestAction == 'START') {
+        differenceFromTargetLoad.set((value - (prevValue ?: 0)).intValue())
+        if (!prevValue) {
+            startup()
+        }
+    }
+}
+createProperty('interval', Long, 0)
+
+calculateLoad = {
+    load.value
+}
+
+def startTime = 0
+
+periodiUpdateVUDiff = {
+    synchronized (differenceFromTargetLoad) {
+        long expiredTime = System.currentTimeMillis() - startTime
+        int targetLoad = calculateLoad(expiredTime) as int
+
+        differenceFromTargetLoad.set(targetLoad - currentVus.get())
+        int current = currentVus.get()
+        int difference = differenceFromTargetLoad.get()
+        //warn "  Checking current VU: $current, difference: $difference"
+
+        // get VUs started again in cases where the load had been 0
+        if (currentVus.get() == 0 &amp;&amp; differenceFromTargetLoad.get() > 0) {
+            //warn "VU correction.... Current VU: $current, difference: $difference"
+            addVusToCorrectLoad()
+        }
+    }
+}
+
+startup = {
+    loadUpdateFuture?.cancel(true)
+    startTime = System.currentTimeMillis()
+    loadUpdateFuture = scheduleAtFixedRate(periodiUpdateVUDiff, 200L, 700L, TimeUnit.MILLISECONDS)
+
+    addVusToCorrectLoad()
+}
+
+startVu = {
+    if (latestAction == 'START' &amp;&amp; stateProperty.value) {
+        currentVus.incrementAndGet()
+        def delay = Math.max(interval.value, 0)
+        trigger(delay ?: null)
+        vuStarted()
+        //warn ".................. Triggering ................"
+    }
+}
+
+addVusToCorrectLoad = {
+    if (stateProperty.value) {
+        synchronized (differenceFromTargetLoad) {
+            if (differenceFromTargetLoad.get() > 0) {
+                differenceFromTargetLoad.times { startVu() }
+                int added = differenceFromTargetLoad.get()
+                //warn "Aded VUs: $added"
+                differenceFromTargetLoad.set(0)
+            }
+        }
+    }
+}
+
+onMessage = { outgoing, incoming, message ->
+
+    if (incoming == sampleCount) {
+        vuFinished();
+        int currentVUCount = currentVus.decrementAndGet()
+
+        synchronized (differenceFromTargetLoad) {
+            long expiredTime = System.currentTimeMillis() - startTime
+            int targetLoad = calculateLoad(expiredTime) as int
+            int runningVUs = currentVus.get()
+            if (runningVUs &lt; 0) {
+                //warn "!!!!current VU amount is negative!!!!"
+                runningVUs = 0
+            }
+            int currentDiff = targetLoad - runningVUs
+            differenceFromTargetLoad.set(currentDiff)
+
+            if (currentDiff == 0) {
+                return;
+            } else if (currentDiff > 0) {
+                //warn "Need to add $currentDiff vu's since we have $runningVUs but need $targetLoad"
+                addVusToCorrectLoad()
+                return
+            } else {
+                //warn "ERROR!!!! Correct VUs: $currentDiff"
+                differenceFromTargetLoad.incrementAndGet()
+            }
+        }
+    }
+}
+
+onAction('START') {
+    synchronized (latestAction) {
+        if (latestAction == 'START') {
+            //warn "Execution was already started"
+            return
+        } else latestAction = 'START'
+        //warn "Starting execution"
+
+        resetVUCount();
+        currentVus.set(0)
+        differenceFromTargetLoad.set(load.value.intValue())
+        startup()
+    }
+}
+
+onAction('STOP') {
+    synchronized (latestAction) {
+        //warn "Stop execution"
+        latestAction = 'STOP'
+        loadUpdateFuture?.cancel(true)
+        loadUpdateFuture = null
+        currentVus.set(0)
+    }
+}
+</con1:property><con1:property propagates="true" key="stateProperty" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="load" type="java.lang.Long">1</con1:property><con1:property propagates="true" key="interval" type="java.lang.Long">1000</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Fixed Load</con1:property><con1:property key="_digest">38af2c83c0903e44e9eeceda0ea8461f</con1:property><con1:property key="_id">com.eviware.FixedLoad</con1:property><con1:property key="_classLoader">com.eviware.FixedLoad</con1:property></con1:attributes><con1:addons/></con1:component><con1:component type="com.eviware.loadui.components.soapui.SoapUISamplerComponent" label="ListInvoiceDataProducerServiceSoapBinding TestSuite:ListInvoiceData TestCase" id="1ea15d80-374b-4f92-b483-439b8744abbb" category="Runners"><con1:properties><con1:property propagates="true" key="ModelItem.description" type="java.lang.String"/><con1:property propagates="true" key="concurrentSamples" type="java.lang.Long">1000</con1:property><con1:property propagates="true" key="property_name_is_not_relevant_for_private_property" type="java.lang.Long">9223372036854775807</con1:property><con1:property propagates="true" key="maxQueueSize" type="java.lang.Long">1000</con1:property><con1:property propagates="true" key="countDiscarded" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="disabledTestSteps" type="java.lang.String"/><con1:property propagates="true" key="_thinkTime" type="java.lang.Long">0</con1:property><con1:property propagates="true" key="ReadyApiTestCase" type="com.eviware.soapui.impl.wsdl.testcase.WsdlTestCase">f1872ba3-8ed4-479e-bb5d-54820ec9f934</con1:property><con1:property propagates="true" key="raiseError" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="outputTestCaseProperties" type="java.lang.Boolean">true</con1:property><con1:property propagates="true" key="OutputLevel" type="java.lang.String">TestCase only</con1:property><con1:property propagates="true" key="closeConnectionsAfterRequest" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="disableSoapuiAssertions" type="java.lang.Boolean">false</con1:property><con1:property propagates="true" key="forceShareDatasources" type="java.lang.Boolean">true</con1:property></con1:properties><con1:attributes><con1:property key="com.eviware.loadui.api.model.ComponentItem@type">Ready API TestCase Runner</con1:property></con1:attributes><con1:addons/></con1:component><con1:connection outputTerminalId="0a382e7f-97de-49b4-be9c-a966a9c95c6f/outgoingTerminal" inputTerminalId="3da804cf-e085-4d6d-812a-f233ad8e1d68/stateTerminal"/><con1:connection outputTerminalId="3da804cf-e085-4d6d-812a-f233ad8e1d68/triggerTerminal" inputTerminalId="1ea15d80-374b-4f92-b483-439b8744abbb/triggerTerminal"/><con1:connection outputTerminalId="1ea15d80-374b-4f92-b483-439b8744abbb/runningTerminal" inputTerminalId="3da804cf-e085-4d6d-812a-f233ad8e1d68/Sample Count"/></con1:scene><con1:statistics><con1:page title="DefaultLoadUIStatisticPage"><con1:chartGroup type="com.eviware.loadui.api.statistics.model.chart.line.LineChartView" title="" groupType="Monitors"><con1:attributes/></con1:chartGroup></con1:page></con1:statistics></con1:loadui-project><con:loadUITestScenario projectId="f3e2ccf0-fb68-4d39-bf89-3ab92cfb3364" scenarioId="4dc29651-601f-4c90-91f2-9fadd8ef7856" name="New Scenario" id="7348fe9f-9df2-4eff-a75e-13e95a487532"><con:settings/></con:loadUITestScenario></con:loadUiTest></con:soapui-project>

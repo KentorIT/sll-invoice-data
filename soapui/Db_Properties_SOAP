@@ -1,0 +1,4 @@
+db_connection_string=jdbc:mysql://localhost:3306/vsfunderlagtestdb
+db_username=root
+db_password=Abcd123*
+db_driver=com.mysql.jdbc.Driver

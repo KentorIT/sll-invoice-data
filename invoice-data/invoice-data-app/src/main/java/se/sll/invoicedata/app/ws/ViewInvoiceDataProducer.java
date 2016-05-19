@@ -20,6 +20,8 @@
 package se.sll.invoicedata.app.ws;
 
 import riv.sll.invoicedata._1.InvoiceData;
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.viewinvoicedata._1.rivtabp21.ViewInvoiceDataResponderInterface;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.viewinvoicedataresponder._1.ViewInvoiceDataRequest;
@@ -49,11 +51,17 @@ public class ViewInvoiceDataProducer extends AbstractProducer implements ViewInv
         	
         	InvoiceData invoiceData = getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId());
         	throwExceptionIfSupplierHasNoAccessToOperation(Operation.VIEW_INVOICE_DATA, invoiceData.getSupplierId());
-            viewIDataResponse.setInvoiceData(getInvoiceDataService().getInvoiceDataByReferenceId(parameters.getReferenceId()));
+            viewIDataResponse.setInvoiceData(invoiceData);
         }
-    }));
+    	}, setResultCode()));
 	    
-    return viewIDataResponse;
+    	return viewIDataResponse;
+    }
+    
+    ResultCode setResultCode() {
+    	ResultCode rc = new ResultCode();
+    	rc.setCode(ResultCodeEnum.OK);
+    	return rc;
     }
 
 

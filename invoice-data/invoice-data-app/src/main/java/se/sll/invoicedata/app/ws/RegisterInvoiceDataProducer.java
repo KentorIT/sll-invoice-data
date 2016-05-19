@@ -21,6 +21,8 @@ package se.sll.invoicedata.app.ws;
 
 
 import riv.sll.invoicedata._1.Event;
+import riv.sll.invoicedata._1.ResultCode;
+import riv.sll.invoicedata._1.ResultCodeEnum;
 import riv.sll.invoicedata.registerinvoicedata._1.rivtabp21.RegisterInvoiceDataResponderInterface;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.ObjectFactory;
 import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
@@ -47,9 +49,15 @@ public class RegisterInvoiceDataProducer extends AbstractProducer implements Reg
             	throwExceptionIfSupplierHasNoAccessToOperation(Operation.REGISTER_INVOICE_DATA, parameters.getSupplierId());
                 getInvoiceDataService().registerEvent(parameters);
             }
-        }));
+        }, setResultCode()));
         
         return response;
+    }
+    
+    ResultCode setResultCode() {
+    	ResultCode rc = new ResultCode();
+    	rc.setCode(ResultCodeEnum.OK);
+    	return rc;
     }
     
 }

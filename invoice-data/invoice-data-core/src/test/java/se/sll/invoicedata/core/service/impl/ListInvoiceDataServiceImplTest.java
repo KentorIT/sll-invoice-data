@@ -28,6 +28,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -37,9 +38,14 @@ import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.InvoiceDataHeader;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
+import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
+import se.sll.invoicedata.core.support.ExceptionCodeMatches;
 import se.sll.invoicedata.core.support.TestSupport;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 /**
  * @author muqkha
@@ -50,59 +56,140 @@ public class ListInvoiceDataServiceImplTest extends TestSupport {
 	@Autowired
     private InvoiceDataService invoiceDataService;
 	
-	@Test (expected=InvoiceDataServiceException.class)
+	@Autowired
+    private InvoiceDataRepository invoiceDataRepository;
+	
+	@After
+	public void tearDown() {
+		invoiceDataRepository.deleteAll();
+	}
+	
+	@Test
     @Transactional
     @Rollback(true)	
     public void testListAllInvoiceData_Result_Fail() {
         // Request with empty parameters
         ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+        
+        thrown.expect(InvoiceDataServiceException.class);
+        thrown.expect(new ExceptionCodeMatches(InvoiceDataErrorCodeEnum.VALIDATION_ERROR));
+        
         invoiceDataService.listAllInvoiceData(invoiceListRequest);
     }
-
+	
 	@Test
     @Transactional
     @Rollback(true)
-    public void testListAllInvoiceData_With_Alternatives() {
+    public void testListAllInvoiceData_By_SupplierId() {
+		final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
 
-        final Event e = createSampleEvent();
-        invoiceDataService.registerEvent(e);
-
-        final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-        createReq.setSupplierId(e.getSupplierId());
-        createReq.setPaymentResponsible(e.getPaymentResponsible());
-        createReq.setCreatedBy("testListAllInvoiceData_With_Alternatives");
-        createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
-        invoiceDataService.createInvoiceData(createReq);
-
-        // Request with only supplier id
         ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
-        invoiceListRequest.setSupplierId(e.getSupplierId());
+        invoiceListRequest.setSupplierId(ie.getSupplierId());
 
-        assert_InvoiceDataList(invoiceListRequest, e);
-        
-        // Request with only payment responsible
-        invoiceListRequest = new ListInvoiceDataRequest();
-        invoiceListRequest.setPaymentResponsible(e.getPaymentResponsible());
-        
-        assert_InvoiceDataList(invoiceListRequest, e);
-        
-        // Request with supplierId and paymentResponsible
-        invoiceListRequest = new ListInvoiceDataRequest();
-        invoiceListRequest.setSupplierId(e.getSupplierId());
-        invoiceListRequest.setPaymentResponsible(e.getPaymentResponsible());
-
-        assert_InvoiceDataList(invoiceListRequest, e);
-
+        List<InvoiceDataHeader> invoiceDataList = assert_InvoiceDataList(invoiceListRequest, ie);
+        assertEquals(1, invoiceDataList.size());
     }
 	
-	private void assert_InvoiceDataList(ListInvoiceDataRequest inoviceListRequest, Event e) {
+	@Test
+    @Transactional
+    @Rollback(true)
+    public void testListAllInvoiceData_By_PaymentResponsible() {
+		final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
+
+        ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setPaymentResponsible(ie.getPaymentResponsible());
+
+        List<InvoiceDataHeader> invoiceDataList = assert_InvoiceDataList(invoiceListRequest, ie);
+        assertEquals(1, invoiceDataList.size());
+    }
+	
+	@Test
+    @Transactional
+    @Rollback(true)
+    public void testListAllInvoiceData_By_SupplierId_And_PaymentResponsible() {
+		final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
+
+        ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setSupplierId(ie.getSupplierId());
+        invoiceListRequest.setPaymentResponsible(ie.getPaymentResponsible());
+
+        List<InvoiceDataHeader> invoiceDataList = assert_InvoiceDataList(invoiceListRequest, ie);
+        assertEquals(1, invoiceDataList.size());
+    }
+	
+	@Test
+    @Transactional
+    @Rollback(true)
+    public void testListAllInvoiceData_By_SupplierId_And_CostCenter() {
+		final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
+
+        ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setSupplierId(ie.getSupplierId());
+        invoiceListRequest.setCostCenter(ie.getCostCenter());
+
+        List<InvoiceDataHeader> invoiceDataList = assert_InvoiceDataList(invoiceListRequest, ie);
+        assertEquals(1, invoiceDataList.size());
+    }
+	
+	@Test
+    @Transactional
+    @Rollback(true)
+    public void testListAllInvoiceData_By_PaymentResponsible_CostCenter() {
+		final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
+
+        ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setPaymentResponsible(ie.getPaymentResponsible());
+        invoiceListRequest.setCostCenter(ie.getCostCenter());
+
+        List<InvoiceDataHeader> invoiceDataList = assert_InvoiceDataList(invoiceListRequest, ie);
+        assertEquals(1, invoiceDataList.size());
+    }
+	
+	private List<InvoiceDataHeader> assert_InvoiceDataList(ListInvoiceDataRequest inoviceListRequest, InvoiceDataEntity e) {
 		List<InvoiceDataHeader> invoiceDataList = invoiceDataService
                 .listAllInvoiceData(inoviceListRequest);
 
         assertNotNull(invoiceDataList);
         assertEquals(e.getSupplierId(), invoiceDataList.get(0).getSupplierId());
         assertEquals(e.getPaymentResponsible(), invoiceDataList.get(0).getPaymentResponsible());
+        
+        return invoiceDataList;
 	}
+	
+	@Test
+    @Transactional
+    @Rollback(true)
+    public void testListAllInvoiceData_Between_Dates_Single() {
+    	//year-11-12 : year-11-27
+        Event e1 = createSampleEvent();
+        e1.setStartTime(CoreUtil.getCustomDate(10, 12));
+        e1.setEndTime(CoreUtil.getCustomDate(10, 27));
+        e1.setEventId(UUID.randomUUID().toString());
+        e1.setSupplierId("Supplier_101");
+        invoiceDataService.registerEvent(e1);
+        
+        create_And_Assert_Invoice_Data(e1);
+               
+        // Request with only supplier id
+        ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
+        invoiceListRequest.setSupplierId(e1.getSupplierId());
+        invoiceListRequest.setPaymentResponsible(e1.getPaymentResponsible());
+        invoiceListRequest.setFromDate(CoreUtil.getCustomDate(10, 10));
+        invoiceListRequest.setToDate(CoreUtil.getCustomDate(11, 31));
+        
+        List<InvoiceDataHeader> invoiceDataList = invoiceDataService
+                .listAllInvoiceData(invoiceListRequest);
+
+        assertNotNull(invoiceDataList);
+        assertEquals(1, invoiceDataList.size());
+        assertEquals(e1.getPaymentResponsible(), invoiceDataList.get(0)
+                .getPaymentResponsible());
+    }
     
     @Test
     @Transactional
@@ -148,8 +235,6 @@ public class ListInvoiceDataServiceImplTest extends TestSupport {
         e5.setSupplierId("Supplier_105");
         invoiceDataService.registerEvent(e5);
         
-        //assert_GetInvoiceData_Result(e1, 5);
-                
         create_And_Assert_Invoice_Data(e1);
         create_And_Assert_Invoice_Data(e2);
         create_And_Assert_Invoice_Data(e3);
@@ -160,52 +245,53 @@ public class ListInvoiceDataServiceImplTest extends TestSupport {
         ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
         invoiceListRequest.setSupplierId(e1.getSupplierId());
         invoiceListRequest.setPaymentResponsible(e1.getPaymentResponsible());
-        invoiceListRequest.setFromDate(CoreUtil.getCustomDate(10, 25));
+        invoiceListRequest.setFromDate(CoreUtil.getCustomDate(10, 10));
         invoiceListRequest.setToDate(CoreUtil.getCustomDate(11, 31));
         
         List<InvoiceDataHeader> invoiceDataList = invoiceDataService
                 .listAllInvoiceData(invoiceListRequest);
 
         assertNotNull(invoiceDataList);
+        assertEquals(1, invoiceDataList.size());
         assertEquals(e1.getPaymentResponsible(), invoiceDataList.get(0)
                 .getPaymentResponsible());
-        assertEquals(1, invoiceDataList.size());
+        
         
         invoiceListRequest = new ListInvoiceDataRequest();
         invoiceListRequest.setPaymentResponsible(e1.getPaymentResponsible());
-        invoiceListRequest.setFromDate(CoreUtil.getCustomDate(10, 25));
+        invoiceListRequest.setFromDate(CoreUtil.getCustomDate(10, 10));
         invoiceListRequest.setToDate(CoreUtil.getCustomDate(11, 31));
         
         invoiceDataList = invoiceDataService
                 .listAllInvoiceData(invoiceListRequest);
 
         assertNotNull(invoiceDataList);
-        assertEquals(e1.getPaymentResponsible(), invoiceDataList.get(0)
-                .getPaymentResponsible());
-        
         //Created 5 but should return 3 (date range)
         assertEquals(3, invoiceDataList.size());
+        assertEquals(e1.getPaymentResponsible(), invoiceDataList.get(0)
+                .getPaymentResponsible());
     }
     
     private void create_And_Assert_Invoice_Data(Event e) {
-    	final CreateInvoiceDataRequest createReq = new CreateInvoiceDataRequest();
-        createReq.setSupplierId(e.getSupplierId());
-        createReq.setPaymentResponsible(e.getPaymentResponsible());
-        createReq.setCreatedBy("testListAllInvoiceData_Between_Dates");
-        createReq.getAcknowledgementIdList().add(e.getAcknowledgementId());
-        
+    	final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
         assertNotNull(invoiceDataService.createInvoiceData(createReq));
     }
-    /*
-    private void assert_GetInvoiceData_Result(Event e, int size) {
-    	GetInvoiceDataRequest getIDRequest = new GetInvoiceDataRequest();
-        getIDRequest.setPaymentResponsible(e.getPaymentResponsible());
-
-        final List<RegisteredEvent> regEventList = invoiceDataService
-                .getAllUnprocessedBusinessEvents(getIDRequest);
-
-        assertNotNull(regEventList);
-        assertEquals(size, regEventList.size());
-    }*/
     
+    @Test
+    public void testGetAllPendingInvoiceData_Basic_Success() {
+    	final InvoiceDataEntity ie = createSamplePendingInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
+		
+		List<InvoiceDataHeader> invoiceDataList = invoiceDataService.getAllPendingInvoiceData();
+        assertEquals(1, invoiceDataList.size());
+    }
+    
+    @Test
+    public void testGetAllPendingInvoiceData_Without_Pending_Entity_Fail() {
+    	final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
+		invoiceDataRepository.save(ie);
+		
+		List<InvoiceDataHeader> invoiceDataList = invoiceDataService.getAllPendingInvoiceData();
+        assertEquals(0, invoiceDataList.size());
+    }
 }

@@ -1,0 +1,20 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:ListInvoiceDataResponder:1">
+   <soapenv:Header>
+      <urn:LogicalAddress>?</urn:LogicalAddress>
+   </soapenv:Header>
+   <soapenv:Body>
+      <urn1:ListInvoiceDataRequest>
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         <urn1:fromDate>2012-01-01T00:00:00</urn1:fromDate>
+         <!--Optional:-->
+         
+         <!--Optional:-->
+         <urn1:toDate>2099-01-01T00:00:00</urn1:toDate>
+         <urn1:supplierId>TEST_556482-8654</urn1:supplierId>
+         <urn1:paymentResponsible>TEST_HSF</urn1:paymentResponsible>
+         <!--You may enter ANY elements at this point-->
+      </urn1:ListInvoiceDataRequest>
+   </soapenv:Body>
+</soapenv:Envelope>

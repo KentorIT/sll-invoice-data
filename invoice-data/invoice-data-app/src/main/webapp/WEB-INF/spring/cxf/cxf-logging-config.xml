@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2013 SLL. <http://sll.se>
+
+    This file is part of Invoice-Data.
+
+        Invoice-Data is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Lesser General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        Invoice-Data is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Lesser General Public License for more details.
+
+        You should have received a copy of the GNU Lesser General Public License
+        along with Invoice-Data.  If not, see <http://www.gnu.org/licenses/lgpl.txt>.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cxf="http://cxf.apache.org/core"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+    http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
+    
+  <beans profile="test">
+  	<bean id="loggingFeature" class="org.apache.cxf.feature.LoggingFeature">
+		<property name="prettyLogging" value="true" />
+	</bean>
+
+	<cxf:bus>
+   		<cxf:features>
+        	<ref bean="loggingFeature" />
+    	</cxf:features>
+	</cxf:bus>
+  </beans>
+  
+</beans>

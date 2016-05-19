@@ -23,10 +23,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
@@ -45,6 +43,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Index;
 
 /**
@@ -52,22 +52,35 @@ import org.hibernate.annotations.Index;
  *
  * @author Peter
  */
-@Entity(name=BusinessEventEntity.TABLE_NAME)
+@Entity
 @javax.persistence.Table(name = BusinessEventEntity.TABLE_NAME)
 @org.hibernate.annotations.Table(appliesTo=BusinessEventEntity.TABLE_NAME, indexes = { 
-@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING } ),
-@Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID }),
-@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.ACKNOWLEDGEMENT_ID }) })
+@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.EVENT_ID, BusinessEventEntity.PENDING, BusinessEventEntity.CREDIT }),
+@Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID, BusinessEventEntity.PENDING, BusinessEventEntity.CREDITED, 
+																														BusinessEventEntity.CREDIT }),
+@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING, 
+																						BusinessEventEntity.START_TIME, BusinessEventEntity.END_TIME }) })
 
 public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     static final String TABLE_NAME = "invoice_data_event";
+    // Used in RegisterEvent - 
     static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";
+    // Used in RegisterEvent -
     static final String INDEX_NAME_2 = "invoice_data_event_query_ix_2";
+    // Used in GetInvoiceData Service
     static final String INDEX_NAME_3 = "invoice_data_event_query_ix_3";
+    
+    static final String EVENT_ID = "event_id";
     static final String SUPPLIER_ID = "supplier_id";
     static final String PENDING = "pending";
-    static final String EVENT_ID = "event_id";
+    
+    static final String CREDIT = "credit";
+    static final String CREDITED = "credited";
+    
+    static final String START_TIME = "start_time";
+    static final String END_TIME = "end_time";
     static final String ACKNOWLEDGEMENT_ID = "acknowledgement_id";
+    static final String PAYMENT_RESPONSIBLE = "payment_responsible";
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -76,10 +89,10 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     @Column(name=EVENT_ID, nullable=false, updatable=false, length=64)
     private String eventId;
     
-    @Column(name="credit", updatable=false, length=64)
+    @Column(name=CREDIT, updatable=false, length=64)
     private Boolean credit;
 
-    @Column(name="credited", updatable=true, length=64)
+    @Column(name=CREDITED, updatable=true, length=64)
     private Boolean credited;
     
     @Temporal(TemporalType.TIMESTAMP)
@@ -107,6 +120,9 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     @Column(name="acknowledged_by", length=64, nullable=false, updatable=false)
     private String acknowledgedBy;
     
+    @Column(name="cost_center", length=64, nullable=true, updatable=false)
+    private String costCenter;
+    
     @Column(name="payment_responsible", length=64, nullable=false, updatable=false)
     private String paymentResponsible;
     
@@ -118,17 +134,19 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     private Date acknowledgedTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_time", nullable=false, updatable=false)
+    @Column(name = START_TIME, nullable=false, updatable=false)
     private Date startTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_time", nullable=false, updatable=false)
+    @Column(name = END_TIME, nullable=false, updatable=false)
     private Date endTime;
     
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL) 
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<ItemEntity> itemEntities = new LinkedList<ItemEntity>();
     
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.EAGER, mappedBy="event", orphanRemoval=true, cascade=CascadeType.ALL)
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<DiscountItemEntity> discountItemEntities = new LinkedList<DiscountItemEntity>();
 
     @ManyToOne(optional=true)
@@ -157,7 +175,7 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
      * Updates the pending value (derived).
      */
     private void updatePending() {
-        setPending((getInvoiceData() == null) ? Boolean.TRUE : null);        
+        setPending(isInvoiceDataPending() ? Boolean.TRUE : null);        
     }
 
     public Long getId() {
@@ -216,107 +234,73 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         return supplierName;
     }
 
-
-
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
     }
-
 
     public String getAcknowledgementId() {
         return acknowledgementId;
     }
 
-
-
     public void setAcknowledgementId(String acknowledgementId) {
         this.acknowledgementId = acknowledgementId;
     }
     
-    
-
     public String getAcknowledgedBy() {
         return acknowledgedBy;
     }
-
-
 
     public void setAcknowledgedBy(String acknowledgedBy) {
         this.acknowledgedBy = acknowledgedBy;
     }
 
-
-
     public Date getCreatedTimestamp() {
         return createdTimestamp;
     }
-
-
 
     protected void setCreatedTimestamp(Date createdTimestamp) {
         this.createdTimestamp = createdTimestamp;
     }
 
-
-
     public String getSupplierId() {
         return supplierId;
     }
-
-
 
     public void setSupplierId(String supplierId) {
         this.supplierId = supplierId;
     }
 
-
-
     public String getServiceCode() {
         return serviceCode;
     }
-
-
 
     public void setServiceCode(String serviceCode) {
         this.serviceCode = serviceCode;
     }
 
-
-
     public Date getAcknowledgedTime() {
         return acknowledgedTime;
     }
-
-
 
     public void setAcknowledgedTime(Date acknowledgedTime) {
         this.acknowledgedTime = acknowledgedTime;
     }
 
-
-
     public Date getStartTime() {
         return startTime;
     }
-
-
 
     public void setStartTime(Date startTimestamp) {
         this.startTime = startTimestamp;
     }
 
-
-
     public Date getEndTime() {
         return endTime;
     }
 
-
-
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
-
 
     public boolean removeItemEntity(ItemEntity itemEntity) {
         if (this.equals(itemEntity.getEvent())) {
@@ -358,6 +342,14 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         this.invoiceData = invoiceData;
     }
     
+    public String getCostCenter() {
+        return costCenter;
+    }
+
+    public void setCostCenter(String costCenter) {
+        this.costCenter = costCenter;
+    }
+    
     public String getPaymentResponsible() {
         return paymentResponsible;
     }
@@ -387,7 +379,7 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
      * 
      * @return the total amount for all items.
      */
-    public BigDecimal getTotalAmount() {
+    public BigDecimal calculateTotalAmount() {
         BigDecimal amount = BigDecimal.valueOf(0.0);
         
         for (final ItemEntity itemEntity : itemEntities) {
@@ -396,10 +388,14 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         
         TreeSet<DiscountItemEntity> discountItemSet = new TreeSet<DiscountItemEntity>(discountItemEntities);        
         for (final DiscountItemEntity discountItemEntity : discountItemSet) {
-        	amount = amount.subtract(discountItemEntity.getTotalAmount());
+        	amount = amount.subtract(discountItemEntity.calculateDiscountPrice());
         }        
         amount = amount.setScale(2, RoundingMode.HALF_UP);
         return amount;
+    }
+    
+    public boolean isInvoiceDataPending() {
+    	return (invoiceData == null || invoiceData.isPending());
     }
 
     @Override

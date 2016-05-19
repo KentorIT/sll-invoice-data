@@ -39,7 +39,7 @@ import se.sll.invoicedata.core.service.OperationAccessConfigService;
 public class OperationAccessConfigServiceImpl implements
 		OperationAccessConfigService {
 
-	private static final Logger log = LoggerFactory
+	private static final Logger LOG = LoggerFactory
 			.getLogger(OperationAccessConfigServiceImpl.class);
 
 	@Autowired
@@ -72,7 +72,7 @@ public class OperationAccessConfigServiceImpl implements
 	}
 
 	public void reloadOperationAccessConfig() {
-		log.info("OperationAccessConfig loading/reloading operation-hsaId-supplier mapping");
+		LOG.info("OperationAccessConfig loading/reloading operation-hsaId-supplier mapping");
 		List<OperationAccessConfig> operationAccessConfigList = operationAccessConfigRepo
 				.findAll();
 		operationAccessConfigMap = new HashMap<OperationAccessKey, SupplierConfig>();

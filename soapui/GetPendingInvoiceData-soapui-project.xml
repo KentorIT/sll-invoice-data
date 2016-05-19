@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="419a0dca-bf8a-4611-90eb-1032cc355d01" activeEnvironment="Default" name="GetPendingInvoiceData" resourceRoot="" soapui-version="5.2.0" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="7c53b2c0-a65b-468e-b326-4820a8216224" wsaVersion="NONE" name="GetPendingInvoiceDataProducerServiceSoapBinding" type="wsdl" bindingName="{http://ws.app.invoicedata.sll.se/}GetPendingInvoiceDataProducerServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1?wsdl"><con:part><con:url>http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="GetPendingInvoiceDataProducerService" targetNamespace="http://ws.app.invoicedata.sll.se/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ws.app.invoicedata.sll.se/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns4="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="urn:riv:sll:invoicedata:GetPendingInvoiceData:1:rivtabp21">
+  <wsdl:import location="http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1?wsdl=GetPendingInvoiceDataResponderInterface.wsdl" namespace="urn:riv:sll:invoicedata:GetPendingInvoiceData:1:rivtabp21"></wsdl:import>
+  <wsdl:binding name="GetPendingInvoiceDataProducerServiceSoapBinding" type="ns1:GetPendingInvoiceDataResponderInterface">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetPendingInvoiceData">
+      <soap:operation soapAction="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1:GetPendingInvoiceData" style="document"/>
+      <wsdl:input name="GetPendingInvoiceData">
+        <soap:header message="ns1:GetPendingInvoiceData" part="LogicalAddress" use="literal"></soap:header>
+        <soap:body parts="parameters" use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetPendingInvoiceDataResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GetPendingInvoiceDataProducerService">
+    <wsdl:port binding="tns:GetPendingInvoiceDataProducerServiceSoapBinding" name="GetPendingInvoiceDataProducerPort">
+      <soap:address location="http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1?wsdl=GetPendingInvoiceDataResponderInterface.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="GetPendingInvoiceDataResponderInterface" targetNamespace="urn:riv:sll:invoicedata:GetPendingInvoiceData:1:rivtabp21" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns3="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1" xmlns:ns2="urn:riv:itintegration:registry:1" xmlns:ns1="urn:riv:sll:invoicedata:GetPendingInvoiceData:1:rivtabp21">
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1" xmlns:ns1="urn:riv:sll:invoicedata:1">
+      <xs:import namespace="urn:riv:sll:invoicedata:1"/>
+      <xs:element name="GetPendingInvoiceDataRequest" type="xs:anyType"/>
+      <xs:element name="GetPendingInvoiceDataResponse" type="tns:GetPendingInvoiceDataResponse"/>
+      <xs:complexType name="GetPendingInvoiceDataResponse">
+        <xs:sequence>
+          <xs:element name="resultCode" type="ns1:ResultCode"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="invoiceDataList" nillable="true" type="ns1:InvoiceDataHeader"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:sll:invoicedata:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:sll:invoicedata:1">
+      <xs:complexType name="ResultCode">
+        <xs:sequence>
+          <xs:element name="code" type="tns:ResultCodeEnum"/>
+          <xs:element name="applicationStatusCode" type="xs:int"/>
+          <xs:element minOccurs="0" name="message" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="InvoiceDataHeader">
+        <xs:sequence>
+          <xs:element name="referenceId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element minOccurs="0" name="costCenter" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="createdBy" type="xs:string"/>
+          <xs:element name="createdTime" type="xs:dateTime"/>
+          <xs:element name="totalAmount" type="xs:decimal"/>
+          <xs:element name="startDate" type="xs:date"/>
+          <xs:element name="endDate" type="xs:date"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="InvoiceData">
+        <xs:complexContent>
+          <xs:extension base="tns:InvoiceDataHeader">
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="registeredEventList" type="tns:RegisteredEvent"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="RegisteredEvent">
+        <xs:complexContent>
+          <xs:extension base="tns:Event">
+            <xs:sequence>
+              <xs:element name="id" type="xs:long"/>
+              <xs:element name="credit" type="xs:boolean"/>
+              <xs:element name="totalAmount" type="xs:decimal"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="Event">
+        <xs:sequence>
+          <xs:element name="eventId" type="xs:string"/>
+          <xs:element name="supplierId" type="xs:string"/>
+          <xs:element name="healthcareFacility" type="xs:string"/>
+          <xs:element name="refContractId" type="xs:string"/>
+          <xs:element name="supplierName" type="xs:string"/>
+          <xs:element name="serviceCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="costCenter" type="xs:string"/>
+          <xs:element name="paymentResponsible" type="xs:string"/>
+          <xs:element name="healthCareCommission" type="xs:string"/>
+          <xs:element name="acknowledgementId" type="xs:string"/>
+          <xs:element name="acknowledgedBy" type="xs:string"/>
+          <xs:element name="acknowledgedTime" type="xs:dateTime"/>
+          <xs:element name="startTime" type="xs:dateTime"/>
+          <xs:element name="endTime" type="xs:dateTime"/>
+          <xs:element maxOccurs="unbounded" name="itemList" type="tns:Item"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="discountItemList" nillable="true" type="tns:DiscountItem"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Item">
+        <xs:sequence>
+          <xs:element name="itemId" type="xs:string"/>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="qty" type="xs:decimal"/>
+          <xs:element minOccurs="0" name="price" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DiscountItem">
+        <xs:sequence>
+          <xs:element name="description" type="xs:string"/>
+          <xs:element name="discountInPercentage" type="xs:int"/>
+          <xs:element name="orderOfDiscount" type="xs:int"/>
+          <xs:element maxOccurs="unbounded" name="referenceItemList" type="tns:ReferenceItem"/>
+          <xs:element minOccurs="0" name="discountedPrice" type="xs:decimal"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ReferenceItem">
+        <xs:sequence>
+          <xs:element name="refItemId" type="xs:string"/>
+          <xs:element name="qty" type="xs:int"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="ResultCodeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OK"/>
+          <xs:enumeration value="INFO"/>
+          <xs:enumeration value="ERROR"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+    <xs:schema elementFormDefault="qualified" targetNamespace="urn:riv:itintegration:registry:1" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:riv:itintegration:registry:1">
+      <xs:element name="LogicalAddress" type="xs:string"/>
+      <xs:element name="ServiceContract" type="tns:ServiceContractType"/>
+      <xs:complexType name="ServiceContractType">
+        <xs:sequence>
+          <xs:element name="ServiceContractNamespace" type="xs:anyURI"/>
+          <xs:any maxOccurs="unbounded" minOccurs="0" namespace="##other" processContents="lax"/>
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="GetPendingInvoiceData">
+    <wsdl:part element="ns2:LogicalAddress" name="LogicalAddress"></wsdl:part>
+    <wsdl:part element="ns3:GetPendingInvoiceDataRequest" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetPendingInvoiceDataResponse">
+    <wsdl:part element="ns3:GetPendingInvoiceDataResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GetPendingInvoiceDataResponderInterface">
+    <wsdl:operation name="GetPendingInvoiceData">
+      <wsdl:input message="ns1:GetPendingInvoiceData" name="GetPendingInvoiceData"></wsdl:input>
+      <wsdl:output message="ns1:GetPendingInvoiceDataResponse" name="GetPendingInvoiceDataResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1</con:endpoint></con:endpoints><con:operation id="91c31e72-fe0e-4e69-b284-af526071cc61" isOneWay="false" action="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1:GetPendingInvoiceData" name="GetPendingInvoiceData" bindingOperationName="GetPendingInvoiceData" type="Request-Response" outputName="GetPendingInvoiceDataResponse" inputName="GetPendingInvoiceData" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="76319db8-804c-447c-9050-d02c1e88b062" name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1">\r
+   <soapenv:Header>\r
+      <urn:LogicalAddress>?</urn:LogicalAddress>\r
+   </soapenv:Header>\r
+   <soapenv:Body>\r
+      <urn1:GetPendingInvoiceDataRequest>?</urn1:GetPendingInvoiceDataRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1:GetPendingInvoiceData"/><con:wsrmConfig version="1.2"/></con:call><con:call id="0d5dd950-b047-4bd9-8eb3-1c1d5abfdbe4" name="Sample Request"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8081/invoicedata-web-app/ws/getPendingInvoiceData/v1</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:riv:itintegration:registry:1" xmlns:urn1="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1">\r
+   <soapenv:Header>\r
+      <urn:LogicalAddress>?</urn:LogicalAddress>\r
+   </soapenv:Header>\r
+   <soapenv:Body>\r
+      <urn1:GetPendingInvoiceDataRequest>?</urn1:GetPendingInvoiceDataRequest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="urn:riv:sll:invoicedata:GetPendingInvoiceDataResponder:1:GetPendingInvoiceData"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/></con:soapui-project>

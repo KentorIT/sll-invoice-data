@@ -30,9 +30,22 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
+
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata._1.Item;
-import se.sll.invoicedata.core.service.impl.CoreUtil;
+import riv.sll.invoicedata._1.ResultCodeEnum;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataResponse;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataRequest;
+import riv.sll.invoicedata.getinvoicedataresponder._1.GetInvoiceDataResponse;
+import riv.sll.invoicedata.registerinvoicedataresponder._1.RegisterInvoiceDataResponse;
+import se.sll.invoicedata.app.ws.CreateInvoiceDataProducerTest;
+import se.sll.invoicedata.app.ws.GetInvoiceDataProducerTest;
+import se.sll.invoicedata.app.ws.RegisterInvoiceDataProducerTest;
+import se.sll.invoicedata.core.util.CoreUtil;
 
 
 /**
@@ -46,6 +59,10 @@ public abstract class TestSupport extends CoreUtil {
 	public static final String NAMESPACE_URI = "http://ws.app.invoicedata.sll.se/";
 	public static final String LOGICAL_ADDRESS = "loc:TolkPortalen";
 	private static final String[] PAYMENT_RESPONSIBLE = {"HSF", "FSH", "SHF"};
+	private static final String[] COST_CENTER = {"cost-center-1", "cost-center-2", "cost-center-3"};
+	
+	@Rule 
+    public ExpectedException thrown = ExpectedException.none();
 	
 	private enum SUPPLIER {
 		SUPPLIER("Tolk.001");
@@ -104,6 +121,7 @@ public abstract class TestSupport extends CoreUtil {
 		event.setAcknowledgedTime(getCurrentDate());
 		event.setServiceCode("Språktolk");
 		event.setPaymentResponsible(getPayee());
+		event.setCostCenter(getCostCenter());
 		event.setHealthCareCommission("BVC");
 		
 		event.setStartTime(getRandomStartTime());
@@ -123,6 +141,7 @@ public abstract class TestSupport extends CoreUtil {
 		return event;
 	}
 	
+	@SuppressWarnings("unused")
 	private void print(Event event) {
 		System.out.println("AcknowledgementId: " + event.getAcknowledgementId() + ", Event id: " + 
 				event.getEventId() + ", supplierId: " + event.getSupplierId() + ", paymentResponsible: " + 
@@ -171,6 +190,15 @@ public abstract class TestSupport extends CoreUtil {
 		return new Event[] { event1, event2, event3, event4 };				
 	}
 	
+    protected CreateInvoiceDataRequest getCreateInvoiceRequest(String supplierId, String paymentResp, String costCenter) {
+        CreateInvoiceDataRequest req = new CreateInvoiceDataRequest();
+        req.setCreatedBy("test");
+        req.setPaymentResponsible(paymentResp);
+        req.setSupplierId(supplierId);
+        req.setCostCenter(costCenter);
+        
+        return req;
+    }
 	
 	static BigDecimal randomPrice() {
 	    int add = (Math.random() > 0.5d) ? 1 : -1;
@@ -197,6 +225,10 @@ public abstract class TestSupport extends CoreUtil {
 	
 	private static String getPayee() {
 		return PAYMENT_RESPONSIBLE[getRandomInt(0,2)];
+	}
+	
+	private static String getCostCenter() {
+		return COST_CENTER[getRandomInt(0,2)];
 	}
 	
 	  /**
@@ -244,4 +276,53 @@ public abstract class TestSupport extends CoreUtil {
             throw new RuntimeException(e);
         } 
     }
+    
+	/**
+	 * Steps:
+	 * 1. Register event -> Result should be OK
+	 * 2. GetInvoice -> Returns registered event list
+	 * 		The list should not be empty.
+	 * 3. Iterate the list and store RegisteredEventId
+	 * 4. Use RegisteredEventId list to request
+	 * 		CreateInvoice -> Returns a reference id for
+	 * 		the created InvoiceData
+	 */
+	protected String test_PrerequisiteStep_Under_List_And_View_Invoice_data(Event event) {
+		
+		//1. Register event		
+		RegisterInvoiceDataResponse regIDResp = RegisterInvoiceDataProducerTest.
+				getRegisterInvoiceDataService().registerInvoiceData(LOGICAL_ADDRESS, event);
+		
+		// 1. Register event -> Result should be OK 
+		Assert.assertNotNull(regIDResp);
+		Assert.assertEquals(ResultCodeEnum.OK, regIDResp.getResultCode().getCode());
+		
+		//2. GetInvoice		 
+		GetInvoiceDataRequest getIDReq = new GetInvoiceDataRequest();
+		getIDReq.setSupplierId(event.getSupplierId());
+		//getIDReq.setPaymentResponsible(event.getPaymentResponsible());
+		
+		GetInvoiceDataResponse invoiceResp = GetInvoiceDataProducerTest.
+				getGetInvoiceDataService().getInvoiceData(LOGICAL_ADDRESS, getIDReq);
+		
+		//2. GetInvoice -> Returns registered event list
+		//		The list should not be empty.
+		Assert.assertNotNull(invoiceResp);
+		Assert.assertNotNull(invoiceResp.getRegisteredEventList());
+		
+				
+		// 4. Use RegisteredEventId list to request CeateInvoice
+		CreateInvoiceDataRequest invoiceDataRequest = getCreateInvoiceRequest(
+				event.getSupplierId(), event.getPaymentResponsible(), event.getCostCenter());
+
+		CreateInvoiceDataResponse createIDResp = CreateInvoiceDataProducerTest.
+				getCreateInvoiceDataService().createInvoiceData(LOGICAL_ADDRESS, invoiceDataRequest);
+		
+		// 4. Use RegisteredEventId list to request
+		// 		CreateInvoice -> Returns a reference id for the created InvoiceData
+		Assert.assertNotNull(createIDResp.getReferenceId());
+		
+		return createIDResp.getReferenceId();
+	}
+
 }

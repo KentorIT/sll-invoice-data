@@ -25,7 +25,9 @@
 		<xs:sequence>
 			<xs:element name="supplierId" type="xs:string" />
 			<xs:element name="paymentResponsible" type="xs:string"
-				minOccurs="0" maxOccurs="1" />			
+				minOccurs="0" maxOccurs="1" />
+			<xs:element name="costCenter" type="xs:string" 
+				minOccurs="0" maxOccurs="1" />				
 			<xs:element name="fromDate" type="xs:dateTime"
 				minOccurs="0" maxOccurs="1" />
 			<xs:element name="toDate" type="xs:dateTime"
