@@ -8,5 +8,6 @@
   <con:project name="GetInvoiceData">GetInvoiceData-soapui-project.xml</con:project>
   <con:project name="CreateInvoiceData">CreateInvoiceData-soapui-project.xml</con:project>
   <con:project name="GetPendingInvoiceData">GetPendingInvoiceData-soapui-project.xml</con:project>
+  <con:project name="UpdatePriceList">UpdatePriceList-soapui-project.xml</con:project>
   <con:collectInfoForSupport>false</con:collectInfoForSupport>
 </con:soapui-workspace>
