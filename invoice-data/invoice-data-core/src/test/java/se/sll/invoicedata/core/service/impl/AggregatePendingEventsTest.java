@@ -36,6 +36,7 @@ import riv.sll.invoicedata._1.InvoiceDataHeader;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.service.InvoiceDataService;
+import se.sll.invoicedata.core.service.dto.ServiceResponse;
 import se.sll.invoicedata.core.support.TestSupport;
 import se.sll.invoicedata.core.util.CoreUtil;
 
@@ -69,8 +70,16 @@ public class AggregatePendingEventsTest extends TestSupport {
         businessEventRepository.save(e2);
         
         assertEquals(2, businessEventRepository.findAll().size());
-        aggregatePendingEvents.aggregateExistingPendingEventsToInvoiceDataDraftVersion();
+        List<ServiceResponse> response = aggregatePendingEvents.aggregateExistingPendingEventsToInvoiceDataDraftVersion();
+        assertEquals(1, response.size());
+        assertEquals("OK", response.get(0).getStatus());
         List<InvoiceDataHeader> pendingInvoiceDataList = invoiceDataService.getAllPendingInvoiceData();
+        assertEquals(1, pendingInvoiceDataList.size());
+        
+        //Migrate again
+        List<ServiceResponse> response2Time = aggregatePendingEvents.aggregateExistingPendingEventsToInvoiceDataDraftVersion();
+        assertEquals(0, response2Time.size());
+        pendingInvoiceDataList = invoiceDataService.getAllPendingInvoiceData();
         assertEquals(1, pendingInvoiceDataList.size());
     }
 }
