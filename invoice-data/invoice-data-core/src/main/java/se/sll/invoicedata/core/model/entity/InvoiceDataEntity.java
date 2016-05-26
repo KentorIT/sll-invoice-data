@@ -89,7 +89,7 @@ public class InvoiceDataEntity {
     @Column(name=PAYMENT_RESPONSIBLE, length=64, nullable=false, updatable=false)
     private String paymentResponsible;
 
-    @Column(name="created_by", length=64, nullable=false, updatable=false)
+    @Column(name="created_by", length=64, nullable=false, updatable=true)
     private String createdBy;
 
     @Temporal(TemporalType.TIMESTAMP)
