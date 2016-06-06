@@ -150,13 +150,12 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
 		if (invoiceDataEntity == null) {
             throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("invoice data", referenceId); 		    
         } else if (invoiceDataEntity.isPending() || 
-        		invoiceDataEntity.getTotalAmount() == null || 
-        		invoiceDataEntity.getTotalAmount().intValue() == 0) {
+        		invoiceDataEntity.getTotalAmount() == null) {
         	throw InvoiceDataErrorCodeEnum.EXPECTING_CREATE_INVOICE_REQUEST_BEFORE_FETCHING.createException("Check indata");
         }
 
         final InvoiceData invoiceData = EntityBeanConverter.fromInvoiceDataEntityToInvoiceData(invoiceDataEntity);
-        final List<BusinessEventEntity> bEEList = invoiceDataEntity.getBusinessEventEntities();
+        final List<BusinessEventEntity> bEEList = invoiceDataEntity.getSortedBusinessEventEntities();
         for (final BusinessEventEntity businessEventEntity : bEEList) {
             invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromBusinessEventEntityToRegisteredEvent(businessEventEntity));
         }

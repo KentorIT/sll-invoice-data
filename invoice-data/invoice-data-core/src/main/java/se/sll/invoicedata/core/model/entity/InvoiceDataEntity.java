@@ -245,6 +245,10 @@ public class InvoiceDataEntity {
     }
 
     public List<BusinessEventEntity> getBusinessEventEntities() {
+        return businessEventEntities;
+    }
+    
+    public List<BusinessEventEntity> getSortedBusinessEventEntities() {
         Collections.sort(businessEventEntities);
         return businessEventEntities;
     }

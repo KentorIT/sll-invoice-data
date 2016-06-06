@@ -26,10 +26,7 @@ UPDATE `invoice_data` SET `pending`=false;
 UPDATE `invoice_data_event` SET `cost_center`='230' WHERE `payment_responsible`='HSF';
 UPDATE `invoice_data` SET `cost_center`='230' WHERE `payment_responsible`='HSF';
 
---INSERT INTO operation_access_config VALUES(7, 'GET_PENDING_INVOICE_DATA', 'SE2321000016-A27K', '*');
---INSERT INTO operation_access_config VALUES(6, 'GET_PENDING_INVOICE_DATA', 'SE2321000016-7P7D', '*');
-
-
+INSERT INTO operation_access_config VALUES(11, 'GET_PENDING_INVOICE_DATA', 'SE2321000016-7P7D', '*');
 
 
 

@@ -21,7 +21,6 @@
 DROP INDEX invoice_data_event_query_ix_1 ON invoice_data_event;
 DROP INDEX invoice_data_event_query_ix_2 ON invoice_data_event;
 DROP INDEX invoice_data_event_query_ix_3 ON invoice_data_event;
-DROP INDEX invoice_data_event_query_ix_4 ON invoice_data_event;
 
 CREATE INDEX invoice_data_event_query_ix_1 ON invoice_data_event (
   `event_id`,
@@ -40,7 +39,6 @@ CREATE INDEX invoice_data_event_query_ix_3 ON invoice_data_event (
   `start_time`,
   `end_time`);
   
---Invoice data indexes--
 CREATE INDEX invoice_data_query_ix_1 ON invoice_data (
   `supplier_id`,
   `pending`,

@@ -91,7 +91,7 @@ public class AggregatePendingEvents {
 		StringBuffer key = new StringBuffer();
 		key.append(businessEventEntity.getSupplierId()).
 			append(businessEventEntity.getPaymentResponsible()).
-			append(businessEventEntity.getPaymentResponsible());
+			append(businessEventEntity.getCostCenter());
 		return key.toString();
 	}
 	
