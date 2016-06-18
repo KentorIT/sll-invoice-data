@@ -83,13 +83,18 @@ public class ListEventsService extends ValidationService {
         
         final PageRequest pageRequest = new PageRequest(0, eventMaxFindResultSize+1);
         List<BusinessEventEntity> businessEventEntityList = businessEventRepository.
-        		findBySupplierIdAndPendingIsTrueAndStartTimeBetween(request.getSupplierId(), dateFrom, dateTo, pageRequest);
+        		findBySupplierIdAndStartTimeBetween(request.getSupplierId(), dateFrom, dateTo, pageRequest);
+        
         LOG.info("@fetchAndFilterBusinessEvents: Items fetched by supplierId and pending" + businessEventEntityList.size());
         
         Iterator<BusinessEventEntity> iterator = businessEventEntityList.iterator();
         while (iterator.hasNext()) {
         	BusinessEventEntity entity = iterator.next();
-			if (CoreUtil.isNotEmpty(request.getPaymentResponsible()) && 
+        	if (entity.isNotPending()) {
+        		iterator.remove();
+        	} 
+        	
+        	if (CoreUtil.isNotEmpty(request.getPaymentResponsible()) && 
 					CoreUtil.notEqualsToIgnoreCase(entity.getPaymentResponsible(), request.getPaymentResponsible())) {
 				iterator.remove();
 			} else if (CoreUtil.isNotEmpty(request.getCostCenter()) && 

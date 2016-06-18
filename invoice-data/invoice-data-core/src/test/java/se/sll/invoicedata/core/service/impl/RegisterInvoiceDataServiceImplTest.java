@@ -177,8 +177,10 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
     public void testRegister_Duplicate_Events() {		
         final Event e = createSampleEvent();
         invoiceDataService.registerEvent(e);
-
-        performAssert(e);		
+        performAssert(e);
+        
+        e.setAcknowledgementId(UUID.randomUUID().toString());
+        e.setAcknowledgedBy("MK");
         invoiceDataService.registerEvent(e);		
         performAssert(e);		
     }
@@ -271,8 +273,9 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
     @Rollback(true)
     public void testRegisterInvoiceData_From_Pending_And_Credit() {
         final String supplierId = "test-supplier-45";
-        final CreateInvoiceDataRequest ie = createInvoiceData(supplierId);
-
+        //Step 1: Register events. Step 2: CreateInvoice
+        createInvoiceData(supplierId);
+        //Step 3: Re-register with same event id
         registerEvents(supplierId,
                 Arrays.asList(new String[] { "event-1", "event-2", "event-3" }));
 
@@ -306,7 +309,13 @@ public class RegisterInvoiceDataServiceImplTest extends TestSupport {
     
     @Transactional
     protected BusinessEventEntity getEvent(final String eventId) {
-        return businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(eventId);
+        List<BusinessEventEntity> businessEventEntities = businessEventRepository.findByEventIdAndCreditIsNull(eventId);
+        for (BusinessEventEntity entity : businessEventEntities) {
+        	if (entity.isPending()) {
+        		return entity;
+        	}
+        }
+        return null;
     }
 
     @Test

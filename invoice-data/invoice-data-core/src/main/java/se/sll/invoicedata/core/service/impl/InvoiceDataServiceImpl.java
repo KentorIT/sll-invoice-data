@@ -37,6 +37,7 @@ import riv.sll.invoicedata.listinvoicedataresponder._1.ListInvoiceDataRequest;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
+import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
 import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.pojo.mapping.EntityBeanConverter;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
@@ -52,7 +53,6 @@ import static se.sll.invoicedata.core.pojo.mapping.LocalMapper.getInvoiceDataHea
  *
  */
 @Service
-@Transactional
 public class InvoiceDataServiceImpl implements InvoiceDataService {
 
     private static final Logger TX_LOG = LoggerFactory.getLogger("TX-API");
@@ -75,7 +75,11 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     @Autowired
     private CreateInvoiceDataService createInvoiceDataService;
     
+    @Autowired
+    private BusinessEventRepository businessEventRepository;
+    
     @Override
+    //@Transactional
     public void registerEvent(Event event) {
         final String name = event.getEventId();
         
@@ -83,7 +87,9 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
             throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Event \"" + name + "\" currently is updated by another user");
         }
         try {
-        	registerEventService.registerEventAsBusinessEntity(event);
+        	final BusinessEventEntity businessEventEntity = registerEventService.validateAndPrepare(event);
+        	registerEventService.registerEventAsBusinessEntity(event, businessEventEntity);
+        	
         } finally {
             lock.release(name);
         }
@@ -94,14 +100,15 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      * Consumers uses this service to dry run before creating actual invoice
      */
     @Override
+    @Transactional
     public List<RegisteredEvent> getAllPendingBusinessEvents(
             GetInvoiceDataRequest request) {
     	return listEventsService.getAllPendingBusinessEvents(request);
     }
     
     @Override
+    @Transactional
     public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
-
 		TX_LOG.info("Request for CreateInvoice triggeredBy:" + createInvoiceDataRequest.getCreatedBy() + " for supplier(id:" + createInvoiceDataRequest.getSupplierId() + ")");
 		createInvoiceDataService.validate(createInvoiceDataRequest);
 		
@@ -120,6 +127,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
     }
 	
     @Override
+    @Transactional
     public List<InvoiceDataHeader> listAllInvoiceData(ListInvoiceDataRequest request) {
         if (CoreUtil.isEmpty(request.getSupplierId()) && CoreUtil.isEmpty(request.getPaymentResponsible())) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("supplierId or paymentResponsible");
@@ -136,6 +144,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
      * Service name - ViewInvoiceData
      */
     @Override
+    @Transactional
     public InvoiceData getInvoiceDataByReferenceId(final String referenceId) {
     	Long id = listInvoiceDataService.extractId(referenceId);
     	statusBean.start("InvoiceDataService.getInvoiceDataByReferenceId()");
@@ -155,7 +164,7 @@ public class InvoiceDataServiceImpl implements InvoiceDataService {
         }
 
         final InvoiceData invoiceData = EntityBeanConverter.fromInvoiceDataEntityToInvoiceData(invoiceDataEntity);
-        final List<BusinessEventEntity> bEEList = invoiceDataEntity.getSortedBusinessEventEntities();
+        final List<BusinessEventEntity> bEEList = businessEventRepository.findByInvoiceData(invoiceDataEntity);
         for (final BusinessEventEntity businessEventEntity : bEEList) {
             invoiceData.getRegisteredEventList().add(EntityBeanConverter.fromBusinessEventEntityToRegisteredEvent(businessEventEntity));
         }

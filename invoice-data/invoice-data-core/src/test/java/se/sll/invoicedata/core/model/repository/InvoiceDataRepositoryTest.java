@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +57,7 @@ public class InvoiceDataRepositoryTest extends TestSupport {
     @Test
     @Transactional
     @Rollback(true)
-    public void testInsertFind_InvocieDataEntity() {
+    public void testInsertFind_InvoiceDataEntity() {
         final InvoiceDataEntity e = createSamplePendingInvoiceDataEntity();
         final BusinessEventEntity b = createSampleBusinessEventEntity();
         b.setSupplierId(e.getSupplierId());
@@ -73,10 +74,9 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         
         assertNotNull(l);
         assertEquals(1, l.size());
-        assertEquals(l.get(0).getStartDate(), b.getStartTime());
-        assertEquals(l.get(0).getEndDate(), b.getEndTime());
+        assertEquals(b.getStartTime(), l.get(0).getStartDate());
+        assertEquals(b.getEndTime(), l.get(0).getEndDate());
     }
-    
     
     @Test
     @Transactional
@@ -148,7 +148,9 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         getBusinessEventRepository().flush();
         
         //Fetch again after saving
-        final BusinessEventEntity beSaved = getBusinessEventRepository().findByEventIdAndPendingIsTrueAndCreditIsNull(be.getEventId());
+        final List<BusinessEventEntity> all = getBusinessEventRepository().findByEventIdAndCreditIsNull(be.getEventId());
+        assertEquals(1, all.size());
+        final BusinessEventEntity beSaved = all.get(0);
         assertTrue(ie.addBusinessEventEntity(beSaved));
         
         final BusinessEventEntity bePending = createSampleBusinessEventEntity();
@@ -161,11 +163,15 @@ public class InvoiceDataRepositoryTest extends TestSupport {
         
         List<InvoiceDataEntity> l = getInvoiceDataRepository().findBySupplierIdAndStartDateBetween(ie.getSupplierId(), CoreUtil.MIN_DATE, new Date()); 
         
-        assertEquals(1, l.size());        
-        assertEquals(1, l.get(0).getBusinessEventEntities().size());
+        assertEquals(1, l.size());    
+	    //Note: Due to performance issues, using cascade=CascadeType.DETACH
+        assertEquals(0, l.get(0).getBusinessEventEntities().size());
         
-        // should be one pending left
-        assertNotNull(getBusinessEventRepository().findByEventIdAndPendingIsTrueAndCreditIsNull(bePending.getEventId()));
+        // now there must be 2 events left, should be one pending and other attached to Invoicedata
+        List<BusinessEventEntity> all2 = getBusinessEventRepository().findAll();
+        assertEquals(2, all2.size());
+        
+        assertEquals(1, getBusinessEventRepository().findByEventIdAndCreditIsNull(bePending.getEventId()).size());
     }
     
     @Test
@@ -178,6 +184,11 @@ public class InvoiceDataRepositoryTest extends TestSupport {
 	    assertEquals(1, getInvoiceDataRepository().findAll().size());
 	    assertEquals(1, getBusinessEventRepository().findAll().size());
 	    
+	    //Note: Due to performance issues, using cascade=CascadeType.DETACH
+	    
+	    //Will throw a exception
+	    thrown.expect(DataIntegrityViolationException.class);
+        
 	    getInvoiceDataRepository().deleteAll();
 	    
 	    assertEquals(0, getInvoiceDataRepository().findAll().size());
@@ -195,10 +206,16 @@ public class InvoiceDataRepositoryTest extends TestSupport {
 	    assertEquals(1, getBusinessEventRepository().findAll().size());
 	    
 	    InvoiceDataEntity invoiceDataEntity = getInvoiceDataRepository().findAll().get(0);
-	    invoiceDataEntity.getBusinessEventEntities().get(0).setInvoiceData(null);
-	    invoiceDataEntity.getBusinessEventEntities().clear();
+	    //Note: This cannot be done in this implementation, 
+	    // not adding to invoiceDataEntity.businessEvents due to performance issues
+	    //invoiceDataEntity.getBusinessEventEntities().get(0).setInvoiceData(null);
+	    assertNotNull(invoiceDataEntity);
 	    
-	    getBusinessEventRepository().deleteAll();
+	    List<BusinessEventEntity> all = getBusinessEventRepository().findByEventIdAndCreditIsNull(e.getEventId());
+	    assertEquals(1, all.size());
+	    all.get(0).setInvoiceData(null);
+	    
+	    getBusinessEventRepository().delete(all.get(0));
 	    
 	    assertEquals(1, getInvoiceDataRepository().findAll().size());
 	    assertEquals(0, getBusinessEventRepository().findAll().size());

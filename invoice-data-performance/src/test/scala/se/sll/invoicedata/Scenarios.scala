@@ -47,15 +47,16 @@ object Scenarios {
           )
         .pause(minWaitMs, maxWaitMs)
     }
-	
+	def uuid = java.util.UUID.randomUUID.toString
 	// RegisterInvoiceData OK scenario without discount item
 	val scn_RegisterInvoiceData_No_DiscountItem_OK_Http = scenario("RegisterInvoiceData OK scenario without discount item")
 	  .during(Conf.testTimeSecs) { 		
-	    exec(
+	    exec(session => {session.set("uuid", java.util.UUID.randomUUID.toString)})
+		.exec(
 	      http("RegisterInvoiceData_No_DiscountItem")
-	        .post("/invoicedata-web-app/ws/registerInvoiceData/v1")
+	         .post("/invoicedata-web-app/ws/registerInvoiceData/v1")
 			 .headers(Headers.registerInvoiceData_Http_headers)
-		     .body(RawFileBody("data/RegisterInvoiceData_No_DiscountItem_OK.xml")).asXML
+		     .body(ELFileBody("data/RegisterInvoiceData_No_DiscountItem_OK.xml")).asXML
 	  		 .check(status.is(200))
 	         .check(xpath("soap:Envelope", List("soap" -> "http://schemas.xmlsoap.org/soap/envelope/")).exists)
 	         .check(xpath("//pr:RegisterInvoiceDataResponse", List("pr" -> "urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1")).count.is(1))
@@ -66,9 +67,10 @@ object Scenarios {
 	// RegisterInvoiceData OK scenario with discount Item
 	val scn_RegisterInvoiceData_With_DiscountItem_OK_Http = scenario("RegisterInvoiceData OK scenario with discount item")
 	  .during(Conf.testTimeSecs) { 		
-	    exec(
+	    exec(session => {session.set("uuid", java.util.UUID.randomUUID.toString)})
+		.exec(
 	      http("RegisterInvoiceData_With_DiscountItem")
-	        .post("/invoicedata-web-app/ws/registerInvoiceData/v1")
+	         .post("/invoicedata-web-app/ws/registerInvoiceData/v1")
 			 .headers(Headers.registerInvoiceData_Http_headers)
 		     .body(RawFileBody("data/RegisterInvoiceData_With_DiscountItem_OK.xml")).asXML
 	  		 .check(status.is(200))

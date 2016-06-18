@@ -38,8 +38,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Index;
 
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
@@ -79,6 +79,9 @@ public class InvoiceDataEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    
+    @Version
+    private long versionField;
 
     @Column(name=SUPPLIER_ID, length=64, nullable=false, updatable=false)
     private String supplierId;
@@ -110,49 +113,25 @@ public class InvoiceDataEntity {
     @Column(name=PENDING, nullable=false, updatable=true)
     private Boolean pending = Boolean.TRUE;
 
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="invoiceData", orphanRemoval=false, cascade=CascadeType.ALL)    
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=true, cascade=CascadeType.DETACH)    
     private List<BusinessEventEntity> businessEventEntities = new LinkedList<BusinessEventEntity>();
 
     @PrePersist
     void onPrePerist() {
         setCreatedTime(new Date());
-        handleStartAndEndDateIfBusinessEventEntitiesListIsEmpty();
+        setStartAndEndDateOnSavingADraftVersion();
+    }
+    
+    private void setStartAndEndDateOnSavingADraftVersion() {
+    	if (getTotalAmount() == null) {
+        	setStartDate(new Date());
+        	setEndDate(new Date());
+        }
     }
     
     @PreUpdate
     void onPreUpdate() {
     	setCreatedTime(new Date());
-    }
-    
-    private void handleStartAndEndDateIfBusinessEventEntitiesListIsEmpty() {
-    	if (businessEventEntities.size() == 0) {
-    		setStartDate(new Date());
-        	setEndDate(new Date());
-        	setTotalAmount(BigDecimal.valueOf(0.0));
-        }
-    }
-    
-    public void calculateTotalAmount(final BusinessEventEntity e) {
-    	if (businessEventEntities.size() == 0) {
-        	setStartDate(new Date(Long.MAX_VALUE));
-        	setEndDate(new Date(0L));
-        	setTotalAmount(BigDecimal.valueOf(0.0));
-        }
-        
-        BigDecimal amount = getTotalAmount();
-        if (e.getStartTime().before(getStartDate())) {
-        	setStartDate(e.getStartTime());
-        }
-        if (e.getEndTime().after(getEndDate())) {
-        	setEndDate(e.getEndTime());
-        }
-        if (e.isCredit()) {
-            amount = amount.subtract(e.calculateTotalAmount());
-        } else {
-            amount = amount.add(e.calculateTotalAmount()); 
-        }
-        
-        setTotalAmount(amount);
     }
     
     public void recalculateTotalAmount(final BusinessEventEntity e) {
@@ -204,7 +183,6 @@ public class InvoiceDataEntity {
         this.startDate = startDate;
     }
 
-
     public Date getEndDate() {
         return endDate;
     }
@@ -226,24 +204,46 @@ public class InvoiceDataEntity {
      * @param businessEventEntity the entity to add.
      * @return true if added, otherwise false.
      */
-    public boolean addBusinessEventEntity(BusinessEventEntity businessEventEntity) {
-        if (businessEventEntity.getInvoiceData() == null && getSupplierId().equals(businessEventEntity.getSupplierId())) {
-            businessEventEntity.setInvoiceData(this);
-            calculateTotalAmount(businessEventEntity);
-            return businessEventEntities.add(businessEventEntity);
-        }
-        return false;
+    public boolean addBusinessEventEntity(BusinessEventEntity e) {
+        if (e.getInvoiceData() == null && getSupplierId().equals(e.getSupplierId())) {
+    		updateDatesOnRegisteringFirstBusinessEntity();
+	    	BigDecimal amount = getTotalAmount();
+	    	
+	        if (e.getStartTime().before(getStartDate())) {
+	        	setStartDate(e.getStartTime());
+	        }
+	        if (e.getEndTime().after(getEndDate())) {
+	        	setEndDate(e.getEndTime());
+	        }
+	        if (e.isCredit()) {
+	            amount = amount.subtract(e.calculateTotalAmount());
+	        } else {
+	            amount = amount.add(e.calculateTotalAmount()); 
+	        }
+	        setTotalAmount(amount);
+	        e.setInvoiceData(this);
+	        return true;
+    	}
+    	return false;
     }
     
-    public boolean removeBusinessEventEntity(BusinessEventEntity businessEventEntity) {
-    	if (getSupplierId().equals(businessEventEntity.getSupplierId())) {
-    		businessEventEntity.setInvoiceData(null);
-    		recalculateTotalAmount(businessEventEntity);
-            return businessEventEntities.remove(businessEventEntity);
-        }
-        return false;
+    public boolean removeBusinessEventEntity(BusinessEventEntity e) {
+    	if (getSupplierId().equals(e.getSupplierId())) {
+    		recalculateTotalAmount(e);
+    		e.setInvoiceData(null);
+    		return true;
+    	}
+    	return false;
     }
-
+    
+    private void updateDatesOnRegisteringFirstBusinessEntity() {
+    	if (getTotalAmount() == null) {
+    		setTotalAmount(BigDecimal.valueOf(0.0));
+    		setStartDate(new Date(Long.MAX_VALUE));
+    		setEndDate(new Date(0L));
+    	}
+    }
+    
     public List<BusinessEventEntity> getBusinessEventEntities() {
         return businessEventEntities;
     }
@@ -280,23 +280,6 @@ public class InvoiceDataEntity {
 
     public void setPending(Boolean pending) {
         this.pending = pending;
-        
-        if (!isPending()) {       
-	        Date start = new Date(Long.MAX_VALUE);
-	        Date end = new Date(0L);
-	
-	        for (final BusinessEventEntity e : this.getBusinessEventEntities()) {
-	            if (e.getStartTime().before(start)) {
-	                start = e.getStartTime();
-	            }
-	            if (e.getEndTime().after(end)) {
-	                end = e.getEndTime();
-	            }
-	            e.setPending(null);
-	        }        
-	        setStartDate(start);
-	        setEndDate(end);
-        }
     }
     
     public String getCostCenter() {
@@ -306,8 +289,16 @@ public class InvoiceDataEntity {
     public void setCostCenter(String costCenter) {
         this.costCenter = costCenter;
     }
+    
+	public long getVersionField() {
+		return versionField;
+	}
 
-    @Override
+	public void setVersionField(long versionField) {
+		this.versionField = versionField;
+	}
+
+	@Override
     public boolean equals(Object r) {
         if (this == r) {
             return true;
@@ -327,7 +318,14 @@ public class InvoiceDataEntity {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    	return new StringBuilder()
+    			.append("id:").append(id)
+    			.append(", supplierId:").append(supplierId)
+    			.append(", paymentResponsible:").append(paymentResponsible)
+    			.append(", costCenter:").append(costCenter)
+    			.append(", startDate:").append(startDate)
+    			.append(", endDate:").append(endDate)
+    			.append(", createdBy:").append(createdBy).toString();
     }
     
     public String logInfo() {

@@ -53,17 +53,17 @@ public class BusinessEventRepositoryTest extends TestSupport {
         assertNotNull(all);
         assertEquals(1, all.size());
         
-        final BusinessEventEntity f = all.get(0);
+        final BusinessEventEntity entity = all.get(0);
         
-        assertEquals(e.getEventId(), f.getEventId());
-        assertEquals(e.getSupplierName(), f.getSupplierName());
-        assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
-        assertNotNull(f.getCreatedTimestamp());
-        assertEquals(null, f.getCredit());
-        assertEquals(null, f.getCredited());
-        assertEquals(false, f.isCredit());
-        assertEquals(false, f.isCredited());
-        assertEquals(true, f.isPending());
+        assertEquals(e.getEventId(), entity.getEventId());
+        assertEquals(e.getSupplierName(), entity.getSupplierName());
+        assertEquals(e.getAcknowledgedBy(), entity.getAcknowledgedBy());
+        assertNotNull(entity.getCreatedTimestamp());
+        assertEquals(null, entity.getCredit());
+        assertEquals(null, entity.getCredited());
+        assertEquals(false, entity.isCredit());
+        assertEquals(false, entity.isCredited());
+        assertEquals(true, entity.isPending());
     }
     
     @Test
@@ -75,13 +75,15 @@ public class BusinessEventRepositoryTest extends TestSupport {
         getBusinessEventRepository().save(e);
         getBusinessEventRepository().flush();
         
-        final BusinessEventEntity f = getBusinessEventRepository().findByEventIdAndPendingIsTrueAndCreditIsNull("event-123");
-        assertNotNull(f);
+        final List<BusinessEventEntity> businessEventEntities = getBusinessEventRepository().findByEventIdAndCreditIsNull("event-123");
+        assertNotNull(businessEventEntities);
         
-        assertEquals(e.getEventId(), f.getEventId());
-        assertEquals(e.getSupplierName(), f.getSupplierName());
-        assertEquals(e.getAcknowledgedBy(), f.getAcknowledgedBy());
-        assertNotNull(f.getCreatedTimestamp());   
+        assertEquals(1, businessEventEntities.size());
+        BusinessEventEntity entity = businessEventEntities.get(0);
+        assertEquals(e.getEventId(), entity.getEventId());
+        assertEquals(e.getSupplierName(), entity.getSupplierName());
+        assertEquals(e.getAcknowledgedBy(), entity.getAcknowledgedBy());
+        assertNotNull(entity.getCreatedTimestamp());   
     }
 
     @Test

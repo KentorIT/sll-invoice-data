@@ -151,9 +151,12 @@ public class ValidationService {
         mandatory(invoiceDataEntity.getPaymentResponsible(), "invoiceData.paymentResponsible");
         mandatory(invoiceDataEntity.getCostCenter(), "invoiceData.costCenter");
         mandatory(invoiceDataEntity.getSupplierId(), "invoiceData.supplierId");
+        /* 
+         Note: Due to performance issues, using LazyLoade together with cascade=CascadeType.DETACH
+         	   Not applicable now
         if (invoiceDataEntity.getBusinessEventEntities().size() == 0) {
             throw InvoiceDataErrorCodeEnum.VALIDATION_ERROR.createException("invoiceData.events list is empty");            
-        }
+        }*/
 
         return invoiceDataEntity;
     }

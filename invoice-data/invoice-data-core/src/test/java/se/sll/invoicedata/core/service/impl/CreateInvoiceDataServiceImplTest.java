@@ -22,15 +22,24 @@
  */
 package se.sll.invoicedata.core.service.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.List;
+
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata._1.Event;
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
+import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
+import se.sll.invoicedata.core.model.repository.BusinessEventRepository;
+import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 import se.sll.invoicedata.core.service.InvoiceDataService;
 import se.sll.invoicedata.core.service.InvoiceDataServiceException;
@@ -45,6 +54,12 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
 	
 	@Autowired
     private InvoiceDataService invoiceDataService;
+	
+	@Autowired
+    private InvoiceDataRepository invoiceDataRepository;
+	
+    @Autowired
+    private BusinessEventRepository businessEventRepository;
 	
     @Test
     @Transactional
@@ -185,4 +200,151 @@ public class CreateInvoiceDataServiceImplTest extends TestSupport {
         createReq.setCostCenter(e.getCostCenter() + "_other");
         invoiceDataService.createInvoiceData(createReq);
     }
+    
+    private boolean sentCreateRequest;
+    private void markAsSentCreateRequest() {
+    	sentCreateRequest = true;
+    }
+    
+    private int registrationRequestCount;    
+    private synchronized int incrementRegistrationCount() {
+    	return ++registrationRequestCount;
+    }
+    
+    private synchronized int getRegistrationRequestCount() {
+    	return registrationRequestCount;
+    }
+    
+    private final int TOTAL_EXECUTION_ITEMS = 250;
+    private final int SEND_CREATE_REQUEST_AFTER_ITEMS = TOTAL_EXECUTION_ITEMS/2;
+    private final int NO_OF_THREADS = 5;
+    private final int LOOP_ITEMS = (TOTAL_EXECUTION_ITEMS*20)/100;
+    
+    private void createInvoiceInBetweenRegistration(Event e) {
+    	if (getRegistrationRequestCount() == SEND_CREATE_REQUEST_AFTER_ITEMS) {
+    		markAsSentCreateRequest();
+    		final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+            invoiceDataService.createInvoiceData(createReq);
+    	}
+    }
+    
+    @Transactional(propagation=Propagation.REQUIRES_NEW)
+    protected synchronized void registerEvent(final Event e) {
+    	e.setEventId(String.valueOf(incrementRegistrationCount()));
+    	System.err.println("Regisration: " + getRegistrationRequestCount());
+    	invoiceDataService.registerEvent(e);
+    }
+    
+    @Test
+    public void testRegisterEvent_Concurrent_With_CreateInvoiceData() {
+    	cleanRepo();
+    	
+    	final Event e = createSampleEvent();
+    	
+    	registrationRequestCount = 0;
+        final Thread[] threads = new Thread[NO_OF_THREADS];
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int n = 0; n < LOOP_ITEMS; n++) {
+                        try {
+                            registerEvent(e);
+                            createInvoiceInBetweenRegistration(e);
+                        } catch (InvoiceDataServiceException ex) {}
+                    }
+                }
+            });
+            threads[i].start();
+        }
+        
+        for (final Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+        System.out.println("Ran tests with following configurations: "
+        		+ "TOTAL_EXECUTION_ITEMS:" + TOTAL_EXECUTION_ITEMS
+        		+ ", NO_OF_THREADS:" + NO_OF_THREADS + ", LOOP_ITEMS:" + LOOP_ITEMS 
+        		+ ", SEND_CREATE_REQUEST_AFTER_ITEMS:" + SEND_CREATE_REQUEST_AFTER_ITEMS);
+        
+        System.out.println("Total request sent: " + getRegistrationRequestCount() +
+        		" vs items registered:" + businessEventRepository.findAll().size() +
+        		", sentCreateRequest:" + sentCreateRequest);
+        
+        //Important: No events sent should be missing, all must be registered
+        //Although it is important but we cannot be sure of this, due to threads
+        //assertEquals(getRegistrationRequestCount(), businessEventRepository.findAll().size());
+
+        //Important: All events must be tied to an invoice
+        assertEquals(0, businessEventRepository.findByInvoiceDataIsNull().size());
+        if (sentCreateRequest) {
+               //There should be two events 1 pending=true and other pending=false
+               assertEquals(2, invoiceDataRepository.findAll().size());
+               assertEquals(1, invoiceDataRepository.findByPendingIsTrue().size());
+        }
+        cleanRepo();        
+    }
+    
+    @Test
+    public void testRegisterEvent_End_With_CreateInvoiceData() {
+    	cleanRepo();
+    	
+    	final Event e = createSampleEvent();
+    	
+    	registrationRequestCount = 0;
+        final Thread[] threads = new Thread[NO_OF_THREADS];
+        for (int i = 0; i < threads.length; i++) {
+            threads[i] = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int n = 0; n < LOOP_ITEMS; n++) {
+                        try {
+                            registerEvent(e);
+                        } catch (InvoiceDataServiceException ex) {}
+                    }
+                }
+            });
+            threads[i].start();
+        }
+        
+        for (final Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+        System.out.println("Ran tests with following configurations: "
+        		+ "TOTAL_EXECUTION_ITEMS:" + TOTAL_EXECUTION_ITEMS
+        		+ ", NO_OF_THREADS:" + NO_OF_THREADS + ", LOOP_ITEMS:" + LOOP_ITEMS 
+        		+ ", SEND_CREATE_REQUEST_AFTER_ITEMS:" + SEND_CREATE_REQUEST_AFTER_ITEMS);
+        
+        System.out.println("Total request sent: " + getRegistrationRequestCount() +
+        		" vs items registered:" + businessEventRepository.findAll().size());
+        
+        //Important: No events sent should be missing, all must be registered
+        //Although it is important but we cannot be sure of this, due to threads
+        assertEquals(getRegistrationRequestCount(), businessEventRepository.findAll().size());
+        
+        final CreateInvoiceDataRequest createReq = getCreateInvoiceDataRequestFromPassedEvent(e);
+        invoiceDataService.createInvoiceData(createReq);
+        
+        List<InvoiceDataEntity> all = invoiceDataRepository.findAll();
+        assertEquals(1, all.size());
+        assertEquals(getRegistrationRequestCount(), businessEventRepository.findByInvoiceData(all.get(0)).size());
+        assertEquals(0, invoiceDataRepository.findByPendingIsTrue().size());
+        
+        cleanRepo();        
+    }
+    
+    private void cleanRepo() {
+    	businessEventRepository.deleteAll();
+    	invoiceDataRepository.deleteAll();
+    }
+
 }
