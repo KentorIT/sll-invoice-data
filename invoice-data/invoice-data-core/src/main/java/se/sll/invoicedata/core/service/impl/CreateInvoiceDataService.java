@@ -67,7 +67,7 @@ public class CreateInvoiceDataService extends ValidationService {
     	
     	InvoiceDataEntity invoiceDataEntity = invoiceDataEntityList.get(0);
 		invoiceDataEntity.setCreatedBy(createInvoiceDataRequest.getCreatedBy());
-		invoiceDataEntity.setPending(Boolean.FALSE);
+		invoiceDataEntity.setPending(null);
 		
 		validateGeneratedInvoice(invoiceDataEntity);		
         final InvoiceDataEntity saved = save(invoiceDataEntity);

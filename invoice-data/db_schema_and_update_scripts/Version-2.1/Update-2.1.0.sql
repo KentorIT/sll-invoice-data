@@ -20,3 +20,7 @@
 -- Add costCenter in invoice_data_event and invoice_data
 ALTER TABLE `invoice_data_event` DROP COLUMN `pending`;
 ALTER TABLE `invoice_data` ADD COLUMN `versionField` bigint(20) NOT NULL;
+
+DROP INDEX invoice_data_event_query_ix_2 ON invoice_data_event;
+ALTER TABLE `invoice_data` MODIFY COLUMN `pending` bit(1) DEFAULT TRUE NULL;
+UPDATE `invoice_data` SET `pending`=NULL where `pending`=false;

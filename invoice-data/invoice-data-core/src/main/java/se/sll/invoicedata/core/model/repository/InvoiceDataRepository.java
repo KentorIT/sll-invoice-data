@@ -35,15 +35,52 @@ import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
  */
 public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, Long> {
     
+	/**
+	 * Used to find GetPendingInvoices
+	 * @return
+	 */
 	List<InvoiceDataEntity> findByPendingIsTrue();
 	
+	/**
+	 * Removing old events if configured
+	 * @param maxDate
+	 * @return
+	 */
 	List<InvoiceDataEntity> findByEndDateLessThan(Date maxDate);
 	
+	/**
+	 * Used only in tests
+	 * @param supplierId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
 	List<InvoiceDataEntity> findBySupplierIdAndStartDateBetween(String supplierId, Date startDate, Date endDate);
 	
-	List<InvoiceDataEntity> findBySupplierIdAndPendingIsFalseAndStartDateBetween(String supplierId, Date startDate, Date endDate);
+	/**
+	 * Lists invoice data
+	 * @param supplierId
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<InvoiceDataEntity> findBySupplierIdAndPendingIsNullAndStartDateBetween(String supplierId, Date startDate, Date endDate);
 	
-	List<InvoiceDataEntity> findByPaymentResponsibleAndPendingIsFalseAndStartDateBetween(String paymentResponsible, Date startDate, Date endDate);
+	/**
+	 * Lists invoice data
+	 * @param paymentResponsible
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<InvoiceDataEntity> findByPaymentResponsibleAndPendingIsNullAndStartDateBetween(String paymentResponsible, Date startDate, Date endDate);
 	
+	/**
+	 * Used when registering event
+	 * @param supplierId
+	 * @param paymentResponsible
+	 * @param costCenter
+	 * @return
+	 */
 	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(String supplierId, String paymentResponsible, String costCenter);
 }

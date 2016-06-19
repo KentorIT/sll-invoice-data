@@ -110,7 +110,7 @@ public class InvoiceDataEntity {
     @Column(name=TOTAL_AMOUNT, precision=12, scale=2, updatable=true)
     private BigDecimal totalAmount;
     
-    @Column(name=PENDING, nullable=false, updatable=true)
+    @Column(name=PENDING, nullable=true, updatable=true)
     private Boolean pending = Boolean.TRUE;
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy="invoiceData", orphanRemoval=true, cascade=CascadeType.DETACH)    

@@ -145,7 +145,7 @@ public abstract class TestSupport {
         e.setCreatedBy("createdBy");
         e.setPaymentResponsible("HSF");
         e.setCostCenter("cost-center");
-        e.setPending(false);
+        e.setPending(null);
         
         return e;
     }
