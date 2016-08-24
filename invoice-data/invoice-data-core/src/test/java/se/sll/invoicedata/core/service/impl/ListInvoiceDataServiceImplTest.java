@@ -98,6 +98,8 @@ public class ListInvoiceDataServiceImplTest extends TestSupport {
 		final InvoiceDataEntity ie = createSampleInvoiceDataEntity();
 		invoiceDataRepository.save(ie);
 
+		assertEquals(1, invoiceDataRepository.findAll().size());
+		
         ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
         invoiceListRequest.setPaymentResponsible(ie.getPaymentResponsible());
 
@@ -245,12 +247,13 @@ public class ListInvoiceDataServiceImplTest extends TestSupport {
         ListInvoiceDataRequest invoiceListRequest = new ListInvoiceDataRequest();
         invoiceListRequest.setSupplierId(e1.getSupplierId());
         invoiceListRequest.setPaymentResponsible(e1.getPaymentResponsible());
+        //year-11-10 : year-12-01
         invoiceListRequest.setFromDate(CoreUtil.getCustomDate(10, 10));
-        invoiceListRequest.setToDate(CoreUtil.getCustomDate(11, 31));
+        invoiceListRequest.setToDate(CoreUtil.getCustomDate(10, 31));
         
         List<InvoiceDataHeader> invoiceDataList = invoiceDataService
                 .listAllInvoiceData(invoiceListRequest);
-
+        List<InvoiceDataEntity> ide = invoiceDataRepository.findAll();
         assertNotNull(invoiceDataList);
         assertEquals(1, invoiceDataList.size());
         assertEquals(e1.getPaymentResponsible(), invoiceDataList.get(0)

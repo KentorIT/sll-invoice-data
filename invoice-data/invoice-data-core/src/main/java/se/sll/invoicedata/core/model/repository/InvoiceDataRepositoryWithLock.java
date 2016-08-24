@@ -19,10 +19,12 @@
 
 package se.sll.invoicedata.core.model.repository;
 
-import java.util.Date;
 import java.util.List;
 
+import javax.persistence.LockModeType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
@@ -33,54 +35,8 @@ import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
  * @see InvoiceDataEntity
  * @author Peter 
  */
-public interface InvoiceDataRepository extends JpaRepository<InvoiceDataEntity, Long> {
+public interface InvoiceDataRepositoryWithLock extends JpaRepository<InvoiceDataEntity, Long> {
     
-	/**
-	 * Used to find GetPendingInvoices
-	 * @return
-	 */
-	List<InvoiceDataEntity> findByPendingIsTrue();
-	
-	/**
-	 * Removing old events if configured
-	 * @param maxDate
-	 * @return
-	 */
-	List<InvoiceDataEntity> findByEndDateLessThan(Date maxDate);
-	
-	/**
-	 * Used only in tests
-	 * @param supplierId
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	List<InvoiceDataEntity> findBySupplierIdAndStartDateBetween(String supplierId, Date startDate, Date endDate);
-	
-	/**
-	 * Lists invoice data
-	 * @param supplierId
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	List<InvoiceDataEntity> findBySupplierIdAndPendingIsNullAndStartDateBetween(String supplierId, Date startDate, Date endDate);
-	
-	/**
-	 * Lists invoice data
-	 * @param paymentResponsible
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	List<InvoiceDataEntity> findByPaymentResponsibleAndPendingIsNullAndStartDateBetween(String paymentResponsible, Date startDate, Date endDate);
-	
-	/**
-	 * Used when registering event
-	 * @param supplierId
-	 * @param paymentResponsible
-	 * @param costCenter
-	 * @return
-	 */
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	List<InvoiceDataEntity> findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(String supplierId, String paymentResponsible, String costCenter);
 }

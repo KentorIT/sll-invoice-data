@@ -4,7 +4,7 @@
    </soapenv:Header>
    <soapenv:Body>
       <urn1:RegisterInvoiceData>
-         <urn2:eventId>1664c45f-67e9-48a4-b2e5-2602d3375102</urn2:eventId>
+         <urn2:eventId>${uuid}</urn2:eventId>
          <urn2:supplierId>TEST_556482-8654</urn2:supplierId>
          <urn2:healthcareFacility>HSF</urn2:healthcareFacility>
          <urn2:refContractId>1664c45f-67e9-48a4-b2e5-2602d3375102</urn2:refContractId>

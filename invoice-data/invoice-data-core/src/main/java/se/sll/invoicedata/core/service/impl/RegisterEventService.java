@@ -26,9 +26,11 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hibernate.StaleObjectStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +51,6 @@ import se.sll.invoicedata.core.service.impl.register.BusinessEventEntityState;
 import se.sll.invoicedata.core.util.CoreUtil;
 
 @Service
-@Transactional
 public class RegisterEventService extends ValidationService {
 	
 	private static final Logger TX_LOG = LoggerFactory.getLogger("TX-API");
@@ -63,6 +64,17 @@ public class RegisterEventService extends ValidationService {
 	@Autowired
     private InvoiceDataRepository invoiceDataRepository;
 	
+	@Transactional
+	public synchronized BusinessEventEntity validateAndPrepare(Event event) {
+		validateForAnyDuplicateDiscountItems(event);
+    	final BusinessEventEntity businessEventEntity = EntityBeanConverter.toBusinessEventEntity(event);
+    	validateBusinessEventWithItemList(businessEventEntity);
+    	addDiscountItemsToBusinessEventEntity(businessEventEntity, event.getDiscountItemList());
+    	
+    	createInvoiceDataIfNotExists(event);
+    	return businessEventEntity;
+	}
+	
 	/**
 	 * Registers an event as BusinessEntity
 	 * validates the indata - DiscountItem, Item
@@ -70,38 +82,64 @@ public class RegisterEventService extends ValidationService {
 	 * @param event
 	 * @return
 	 */
-	public synchronized String registerEventAsBusinessEntity(Event event) {
-		validateForAnyDuplicateDiscountItems(event);
-    	final BusinessEventEntity businessEventEntity = EntityBeanConverter.toBusinessEventEntity(event);
-    	validateBusinessEventWithItemList(businessEventEntity);
-    	addDiscountItemsToBusinessEventEntity(businessEventEntity, event.getDiscountItemList());
-    	
+	@Transactional
+	public String registerEventAsBusinessEntity(Event event, BusinessEventEntity businessEventEntity) {
     	BusinessEventEntityState entityState = processRequestForEventRegistration(businessEventEntity);
     	rate(entityState.getNewRegisteredEntity(), event.getDiscountItemList());
         registerBusinessEvent(entityState);
-        InvoiceDataEntity invoiceDataEntity = getExistingInvoiceIfAvailableOrCreateNew(event);
-		invoiceDataEntity.addBusinessEventEntity(businessEventEntity);
+        InvoiceDataEntity invoiceDataEntity = findInvoiceData(event);
+        invoiceDataEntity.addBusinessEventEntity(businessEventEntity);
 		
 		if (entityState.hasCreditEntity()) {
 			entityState = getPreviouslyProcessedEntityAsCreditEntity(entityState);
 			invoiceDataEntity.addBusinessEventEntity(entityState.getNewCreditEntityFromProcessedEntity());
+			save(entityState.getNewCreditEntityFromProcessedEntity());
 		}
-		
-		final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
-        invoiceDataRepository.flush();
+		save(entityState.getNewRegisteredEntity());
+		final InvoiceDataEntity saved = save(invoiceDataEntity);
         return saved.getReferenceId();
 	}
+	
+	private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
+        try {
+            final InvoiceDataEntity saved = invoiceDataRepository.saveAndFlush(invoiceDataEntity);
+            return saved;
+        } catch(HibernateOptimisticLockingFailureException | StaleObjectStateException e) {
+        	throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Failed to register event due to concurrent modification.", "Try re-sending request");
+        } catch(Exception e) {
+        	throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Failed to register event due to technical error.", "Contact administrator");
+        }
+    }
 	
 	private BusinessEventEntityState processRequestForEventRegistration(final BusinessEventEntity businessEventEntity) {
 		BusinessEventEntityState entityState = new BusinessEventEntityState(businessEventEntity.getEventId());
 		entityState.setNewRegisteredEntity(businessEventEntity);
-		entityState.setExistingRegisteredEntity(businessEventRepository.findByEventIdAndPendingIsTrueAndCreditIsNull(entityState.getEventId()));
-		entityState.setExistingProcessedRegisteredEntity(businessEventRepository.findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(entityState.getEventId()));
 		
+		List<BusinessEventEntity> businessEventEntities = businessEventRepository.findByEventIdAndCreditIsNull(entityState.getEventId());
+		LOG.info("Does any events exists already?: " + businessEventEntities.size());
+		for (BusinessEventEntity entity : businessEventEntities) {
+			if (entity.isPending()) {
+				entityState.setExistingRegisteredEntity(entity);
+			} else if (entity.isNotPreviouslyCredited()) {
+				entityState.setExistingProcessedRegisteredEntity(entity);
+			}
+		}
 		return entityState;
 	}
 	
-	private InvoiceDataEntity getExistingInvoiceIfAvailableOrCreateNew(final Event event) {
+	private void createInvoiceDataIfNotExists(final Event event) {
+		List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.
+				findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(event.getSupplierId(), event.getPaymentResponsible(), event.getCostCenter());
+		
+		if (invoiceDataEntityList.isEmpty()) {
+			InvoiceDataEntity invoiceDataEntity = createDraftVersionOfInvoiceData(event);
+			save(invoiceDataEntity);
+		} else if (invoiceDataEntityList.size() > 1) {
+			throw InvoiceDataErrorCodeEnum.ILLEGAL_STATE_DUPLICATE_DRAFT_VERSIONS_OF_INVOICES.createException("Contact system administrator");
+		}
+	}
+	
+	private InvoiceDataEntity findInvoiceData(final Event event) {
 		List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.
 				findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(event.getSupplierId(), event.getPaymentResponsible(), event.getCostCenter());
 		
@@ -109,10 +147,8 @@ public class RegisterEventService extends ValidationService {
 		
 		if (invoiceDataEntityList.size() == 1) {
 			invoiceDataEntity = invoiceDataEntityList.get(0);
-		} else if (invoiceDataEntityList.isEmpty()) {
-			invoiceDataEntity = createDraftVersionOfInvoiceData(event);
-		} else if (invoiceDataEntityList.size() > 1) {
-			throw InvoiceDataErrorCodeEnum.ILLEGAL_STATE_DUPLICATE_DRAFT_VERSIONS_OF_INVOICES.createException("Contact system administrator");
+		} else {
+			throw InvoiceDataErrorCodeEnum.NOTFOUND_ERROR.createException("Respective InvoiceData not found, Try sending event again", event);
 		}
 		return invoiceDataEntity;
 	}

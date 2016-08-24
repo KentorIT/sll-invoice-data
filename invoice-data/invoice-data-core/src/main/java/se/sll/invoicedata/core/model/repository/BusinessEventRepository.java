@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
+import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
 
 /**
  * Business event repository functions.
@@ -36,25 +37,14 @@ import se.sll.invoicedata.core.model.entity.BusinessEventEntity;
 public interface BusinessEventRepository extends JpaRepository<BusinessEventEntity, Long> {
     
     /**
-     * Returns a pending, non-credit event by eventId. <p>
-     * 
-     * Please note: Maximum one (1) only event is expected to match the criteria.
-     * 
+     * Returns a non-credit event by eventId. <p>
+     * Futher on this method filters are applied to check if the event is pending (invoicedata.isPending())
+     *  
      * @param eventId the event id.
      * @return the event or an empty list when none matches the criteria.
      */
-    BusinessEventEntity findByEventIdAndPendingIsTrueAndCreditIsNull(String eventId);
+	List<BusinessEventEntity> findByEventIdAndCreditIsNull(String eventId);
     
-    /**
-     * Returns a non-pending, non-credit, non-credited event by eventId. <p>
-     *
-     * Please note: Maximum one (1) only event is expected to match the criteria.
-     *   
-     * @param eventId the event id.
-     * @return the event or an empty list when none matches the criteria.
-     */
-    BusinessEventEntity findByEventIdAndPendingIsNullAndCreditedIsNullAndCreditIsNull(String eventId);
-
     /**
      * Returns entities for a supplier and where start time is within a period of time.
      * 
@@ -65,12 +55,20 @@ public interface BusinessEventRepository extends JpaRepository<BusinessEventEnti
      * 
      * @return the list of matching events, might be empty when none matches the criteria.
      */
-    List<BusinessEventEntity> findBySupplierIdAndPendingIsTrueAndStartTimeBetween(String supplierId, Date startTime, Date endTime, Pageable pageable);
+	List<BusinessEventEntity> findBySupplierIdAndStartTimeBetween(String supplierId, Date startTime, Date endTime, Pageable pageable);
+	
+    /**
+     * To fetch all events by invoice_id
+     * Used by ViewInvoiceData
+     * @param id
+     * @return
+     */
+    List<BusinessEventEntity> findByInvoiceData(final InvoiceDataEntity id);
     
     /**
      * Used in migrating event from version 1.4 to 2.0 
      * In 2.0 draft invoice is created and all events are connected to an event
      * @return
      */
-    List<BusinessEventEntity> findByPendingIsTrueAndInvoiceDataIsNull();
+    List<BusinessEventEntity> findByInvoiceDataIsNull();
 }

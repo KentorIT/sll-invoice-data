@@ -42,7 +42,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Index;
@@ -55,24 +54,19 @@ import org.hibernate.annotations.Index;
 @Entity
 @javax.persistence.Table(name = BusinessEventEntity.TABLE_NAME)
 @org.hibernate.annotations.Table(appliesTo=BusinessEventEntity.TABLE_NAME, indexes = { 
-@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.EVENT_ID, BusinessEventEntity.PENDING, BusinessEventEntity.CREDIT }),
-@Index(name=BusinessEventEntity.INDEX_NAME_2, columnNames = { BusinessEventEntity.EVENT_ID, BusinessEventEntity.PENDING, BusinessEventEntity.CREDITED, 
-																														BusinessEventEntity.CREDIT }),
-@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.PENDING, 
-																						BusinessEventEntity.START_TIME, BusinessEventEntity.END_TIME }) })
+@Index(name=BusinessEventEntity.INDEX_NAME_1, columnNames = { BusinessEventEntity.EVENT_ID, BusinessEventEntity.CREDIT }),
+@Index(name=BusinessEventEntity.INDEX_NAME_3, columnNames = { BusinessEventEntity.SUPPLIER_ID, BusinessEventEntity.START_TIME, BusinessEventEntity.END_TIME }) })
 
 public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     static final String TABLE_NAME = "invoice_data_event";
     // Used in RegisterEvent - 
     static final String INDEX_NAME_1 = "invoice_data_event_query_ix_1";
-    // Used in RegisterEvent -
-    static final String INDEX_NAME_2 = "invoice_data_event_query_ix_2";
+    
     // Used in GetInvoiceData Service
     static final String INDEX_NAME_3 = "invoice_data_event_query_ix_3";
     
     static final String EVENT_ID = "event_id";
     static final String SUPPLIER_ID = "supplier_id";
-    static final String PENDING = "pending";
     
     static final String CREDIT = "credit";
     static final String CREDITED = "credited";
@@ -153,29 +147,13 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     @JoinColumn(name="invoice_data_id")
     private InvoiceDataEntity invoiceData;
 
-    /** Derived field enabling indexed queries on supplier and pending events.
-     * 
-     * If pending is true the event is not yet assigned to any invoice data.
-     */
-    @Column(name=PENDING, nullable=true, updatable=true)
-    private Boolean pending;
-
     @PrePersist
     void onPrePerist() {
-        updatePending();
         setCreatedTimestamp(new Date());
     }
     
     @PreUpdate
     void onPreUpdate() {
-        updatePending();
-    }
-
-    /**
-     * Updates the pending value (derived).
-     */
-    private void updatePending() {
-        setPending(isInvoiceDataPending() ? Boolean.TRUE : null);        
     }
 
     public Long getId() {
@@ -228,6 +206,10 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
 
     public boolean isCredited() {
         return (this.credited == Boolean.TRUE);
+    }
+    
+    public boolean isNotPreviouslyCredited() {
+    	return (this.credited == null);
     }
     
     public String getSupplierName() {
@@ -366,14 +348,6 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         this.healthCareCommission = healthCareCommission;
     }
 
-    public boolean isPending() {
-        return (pending == Boolean.TRUE);
-    }
-
-    protected void setPending(Boolean pending) {
-        this.pending = pending;
-    }
- 
     /**
      * Returns the total amount for all items.
      * 
@@ -394,8 +368,13 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
         return amount;
     }
     
-    public boolean isInvoiceDataPending() {
+    public boolean isPending() {
+    	//Note: invoiceData == null happens only when testing directly BusinessEventRepository
     	return (invoiceData == null || invoiceData.isPending());
+    }
+    
+    public boolean isNotPending() {
+    	return !isPending();
     }
 
     @Override
@@ -418,7 +397,19 @@ public class BusinessEventEntity implements Comparable<BusinessEventEntity> {
     
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    	StringBuilder sb = new StringBuilder()
+    			.append("id:").append(id)
+    			.append(", eventId:").append(eventId)
+    			.append(", supplierId:").append(supplierId)
+    			.append(", paymentResponsible:").append(paymentResponsible)
+    			.append(", costCenter:").append(costCenter)
+    			.append(", startTime:").append(startTime)
+    			.append(", endTime:").append(endTime);
+    	
+    	if (invoiceData != null) {
+    		sb.append(", invoiceData:").append(invoiceData.getId());
+    	}
+    	return sb.toString();
     }
     
     @Override

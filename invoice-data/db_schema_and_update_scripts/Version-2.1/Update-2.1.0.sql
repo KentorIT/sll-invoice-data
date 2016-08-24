@@ -18,16 +18,9 @@
 --
 
 -- Add costCenter in invoice_data_event and invoice_data
-ALTER TABLE `invoice_data` ADD COLUMN `cost_center` varchar(64) NOT NULL;
-ALTER TABLE `invoice_data_event` ADD COLUMN `cost_center` varchar(64) NOT NULL;
+ALTER TABLE `invoice_data_event` DROP COLUMN `pending`;
+ALTER TABLE `invoice_data` ADD COLUMN `versionField` bigint(20) NOT NULL;
 
-ALTER TABLE `invoice_data` ADD COLUMN `pending` bit(1) DEFAULT TRUE;
-UPDATE `invoice_data` SET `pending`=false;
-UPDATE `invoice_data_event` SET `cost_center`='230' WHERE `payment_responsible`='HSF';
-UPDATE `invoice_data` SET `cost_center`='230' WHERE `payment_responsible`='HSF';
-
-INSERT INTO operation_access_config VALUES(11, 'GET_PENDING_INVOICE_DATA', 'SE2321000016-7P7D', '*');
-
-
-
-
+DROP INDEX invoice_data_event_query_ix_2 ON invoice_data_event;
+ALTER TABLE `invoice_data` MODIFY COLUMN `pending` bit(1) DEFAULT TRUE NULL;
+UPDATE `invoice_data` SET `pending`=NULL where `pending`=false;

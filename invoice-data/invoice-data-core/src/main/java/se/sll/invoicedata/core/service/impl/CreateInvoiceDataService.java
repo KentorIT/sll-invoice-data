@@ -24,16 +24,18 @@ package se.sll.invoicedata.core.service.impl;
 
 import java.util.List;
 
+import org.hibernate.StaleObjectStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import riv.sll.invoicedata.createinvoicedataresponder._1.CreateInvoiceDataRequest;
 import se.sll.invoicedata.core.jmx.StatusBean;
 import se.sll.invoicedata.core.model.entity.InvoiceDataEntity;
-import se.sll.invoicedata.core.model.repository.InvoiceDataRepository;
+import se.sll.invoicedata.core.model.repository.InvoiceDataRepositoryWithLock;
 import se.sll.invoicedata.core.service.InvoiceDataErrorCodeEnum;
 
 /**
@@ -50,10 +52,10 @@ public class CreateInvoiceDataService extends ValidationService {
     private StatusBean statusBean;
 	
 	@Autowired
-    private InvoiceDataRepository invoiceDataRepository;
+    private InvoiceDataRepositoryWithLock invoiceDataRepositoryWithLock;
 	
     public String createInvoiceData(final CreateInvoiceDataRequest createInvoiceDataRequest) {
-    	List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(
+    	List<InvoiceDataEntity> invoiceDataEntityList = invoiceDataRepositoryWithLock.findBySupplierIdAndPaymentResponsibleAndCostCenterAndPendingIsTrue(
     			createInvoiceDataRequest.getSupplierId(), createInvoiceDataRequest.getPaymentResponsible(), createInvoiceDataRequest.getCostCenter());
     	
     	if (invoiceDataEntityList.size() > 1) {
@@ -65,7 +67,7 @@ public class CreateInvoiceDataService extends ValidationService {
     	
     	InvoiceDataEntity invoiceDataEntity = invoiceDataEntityList.get(0);
 		invoiceDataEntity.setCreatedBy(createInvoiceDataRequest.getCreatedBy());
-		invoiceDataEntity.setPending(Boolean.FALSE);
+		invoiceDataEntity.setPending(null);
 		
 		validateGeneratedInvoice(invoiceDataEntity);		
         final InvoiceDataEntity saved = save(invoiceDataEntity);
@@ -76,9 +78,12 @@ public class CreateInvoiceDataService extends ValidationService {
     private InvoiceDataEntity save(InvoiceDataEntity invoiceDataEntity) {
         statusBean.start("InvoiceDataService.save()");
         try {
-            final InvoiceDataEntity saved = invoiceDataRepository.save(invoiceDataEntity);
-            invoiceDataRepository.flush();
+            final InvoiceDataEntity saved = invoiceDataRepositoryWithLock.saveAndFlush(invoiceDataEntity);
             return saved;
+        } catch(HibernateOptimisticLockingFailureException | StaleObjectStateException e) {
+        	throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Failed to create invoicedata due to concurrent modification.", "Try re-sending request");
+        } catch(Exception e) {
+        	throw InvoiceDataErrorCodeEnum.TECHNICAL_ERROR.createException("Failed to create invoicedata due to technical error.", "Contact administrator");
         } finally {
             statusBean.stop();  
         }

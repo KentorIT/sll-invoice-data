@@ -98,11 +98,11 @@ public class ListInvoiceDataService extends ValidationService {
         List<InvoiceDataEntity> invoiceDataEntityList = new ArrayList<InvoiceDataEntity>();
         
         if (CoreUtil.isNotEmpty(request.getSupplierId())) {
-        	invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPendingIsFalseAndStartDateBetween(
+        	invoiceDataEntityList = invoiceDataRepository.findBySupplierIdAndPendingIsNullAndStartDateBetween(
         			request.getSupplierId(), dateFrom, dateTo);
         	LOG.info("@getBySupplierIdOrPaymentResponsible: Items fetched by SupplierId: " + invoiceDataEntityList.size());
         } else if (CoreUtil.isNotEmpty(request.getPaymentResponsible())) {
-        	invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndPendingIsFalseAndStartDateBetween(
+        	invoiceDataEntityList = invoiceDataRepository.findByPaymentResponsibleAndPendingIsNullAndStartDateBetween(
         			request.getPaymentResponsible(), dateFrom, dateTo);
         	LOG.info("@getBySupplierIdOrPaymentResponsible: Items fetched by PaymentResponsible: " + invoiceDataEntityList.size());
         }
