@@ -24,3 +24,5 @@ ALTER TABLE `invoice_data` ADD COLUMN `versionField` bigint(20) NOT NULL;
 DROP INDEX invoice_data_event_query_ix_2 ON invoice_data_event;
 ALTER TABLE `invoice_data` MODIFY COLUMN `pending` bit(1) DEFAULT TRUE NULL;
 UPDATE `invoice_data` SET `pending`=NULL where `pending`=false;
+
+ALTER TABLE `invoice_data` ADD CONSTRAINT `UC_Only_One_Pending` UNIQUE KEY (`supplier_id`,`payment_responsible`,`cost_center`,`pending`);
