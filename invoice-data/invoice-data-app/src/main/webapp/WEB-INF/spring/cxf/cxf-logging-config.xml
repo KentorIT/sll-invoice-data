@@ -26,7 +26,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
     http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd">
     
-  <beans profile="test">
+  <beans profile="test local">
   	<bean id="loggingFeature" class="org.apache.cxf.feature.LoggingFeature">
 		<property name="prettyLogging" value="true" />
 	</bean>

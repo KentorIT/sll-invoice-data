@@ -29,10 +29,10 @@
   <import resource="/cxf/cxf-services-config.xml" />
   <import resource="/cxf/cxf-logging-config.xml" />
   
-  <beans profile="test">
+  <beans profile="test, local">
   	<import resource="classpath:none-security.xml" />
   </beans>
-  
+
    <beans profile="prod">
   	<import resource="classpath:x509-security.xml" />
   </beans>

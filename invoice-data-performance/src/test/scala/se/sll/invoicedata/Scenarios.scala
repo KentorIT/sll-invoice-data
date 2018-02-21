@@ -56,7 +56,7 @@ object Scenarios {
 	      http("RegisterInvoiceData_No_DiscountItem")
 	         .post("/invoicedata-web-app/ws/registerInvoiceData/v1")
 			 .headers(Headers.registerInvoiceData_Http_headers)
-		     .body(ELFileBody("data/RegisterInvoiceData_No_DiscountItem_OK.xml")).asXML
+		     .body(ElFileBody("data/RegisterInvoiceData_No_DiscountItem_OK.xml")).asXML
 	  		 .check(status.is(200))
 	         .check(xpath("soap:Envelope", List("soap" -> "http://schemas.xmlsoap.org/soap/envelope/")).exists)
 	         .check(xpath("//pr:RegisterInvoiceDataResponse", List("pr" -> "urn:riv:sll:invoicedata:RegisterInvoiceDataResponder:1")).count.is(1))

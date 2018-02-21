@@ -75,6 +75,24 @@
 		</bean>
 	</beans>
 
+    <beans profile="local">
+        <context:property-placeholder
+                location="classpath:/application-local.properties,file:///${user.home}/.invoicedata-config.properties"
+                ignore-unresolvable="true" ignore-resource-not-found="true" />
+
+        <bean id="jpaProperties"
+              class="org.springframework.beans.factory.config.MapFactoryBean">
+            <property name="sourceMap">
+                <map>
+                    <entry key="hibernate.dialect" value="${database.dialect}" />
+                    <entry key="hibernate.connection.pool_size" value="${database.connections}" />
+                    <entry key="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider" />
+                    <entry key="hibernate.hbm2ddl.auto" value="${database.updateStrategy}" />
+                </map>
+            </property>
+        </bean>
+    </beans>
+
 	<beans>
 		<context:annotation-config />
 	
